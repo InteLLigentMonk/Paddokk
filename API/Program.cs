@@ -1,0 +1,86 @@
+using API.Data;
+using API.Extensions;
+using API.Middleware;
+using API.Models.Entities;
+using Azure.Communication.Email;
+using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+
+
+// Add Azure Communication Services Email
+builder.Services.AddSingleton<EmailClient>(serviceProvider =>
+{
+    var connectionString = builder.Configuration["AzureEmail:ConnectionString"];
+    return new EmailClient(connectionString);
+});
+
+
+// Database
+builder.Services.AddDbContext<PaddokkDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Azure Blob Storage
+builder.Services.AddSingleton(x =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("AzureStorage")
+        ?? builder.Configuration["AzureStorage:ConnectionString"];
+    return new BlobServiceClient(connectionString);
+});
+
+
+// JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// Application Services
+builder.Services.AddApplicationServices();
+
+// Email Service
+builder.Services.AddEmailServices();
+
+// Swagger
+builder.Services.AddSwaggerWithJwt();
+
+// CORS
+builder.Services.AddCorsPolicy();
+
+// Health checks
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<PaddokkDbContext>();
+
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+//app.UseHttpsRedirection();
+app.UseCors("AllowNextJsApp");
+
+app.UseAuthentication();
+app.UseMiddleware<UserSyncMiddleware>();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapHealthChecks("/health");
+
+// Ensure database is created and seeded
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<PaddokkDbContext>();
+    await context.Database.MigrateAsync();
+}
+
+app.Run();

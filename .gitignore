@@ -1,0 +1,36 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Client (TanStack Start / Node)
+client/node_modules/
+client/dist/
+client/dist-ssr/
+client/.nitro/
+client/.tanstack/
+client/.wrangler/
+client/.output/
+client/.vinxi/
+client/count.txt
+client/todos.json
+
+# API (C# / .NET)
+API/bin/
+API/obj/
+API/appsettings.json
+API/appsettings.*.json
+
+# Environment / secrets
+*.local
+.env
+.env.*
+!.env.example
+
+# Misc
+*.log

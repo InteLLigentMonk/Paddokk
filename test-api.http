@@ -1,0 +1,53 @@
+### Paddokk API Test Requests - Better-Auth EdDSA Integration
+
+@baseUrl = http://localhost:5037
+# Get your token from:
+# 1. Login to your app at http://localhost:3000
+# 2. Open Browser DevTools > Application/Storage
+# 3. Find JWT token in localStorage or cookies
+# 4. Paste it below:
+@token = PASTE_YOUR_JWT_TOKEN_HERE
+
+### 1. Health Check (no auth required)
+GET {{baseUrl}}/api/users/ping
+
+###
+
+### 2. Check JWKS (verify better-auth keys)
+GET http://localhost:3000/api/auth/jwks
+
+###
+
+### 3. Debug Token (decode without validation)
+GET {{baseUrl}}/api/users/debug-token
+Authorization: Bearer {{token}}
+
+###
+
+### 4. Test Authentication (validates EdDSA token)
+GET {{baseUrl}}/api/users/test-auth
+Authorization: Bearer {{token}}
+
+###
+
+### 5. Get Current User
+GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{token}}
+
+###
+
+### 6. Get User by ID
+GET {{baseUrl}}/api/users/1
+Authorization: Bearer {{token}}
+
+###
+
+### 7. Update Current User
+PUT {{baseUrl}}/api/users/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "displayName": "Updated Name",
+  "bio": "Updated bio via API"
+}
