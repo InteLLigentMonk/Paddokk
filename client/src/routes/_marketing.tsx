@@ -1,9 +1,9 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { MarketingHeader, MarketingFooter } from '@/components/marketing'
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { MarketingFooter, MarketingHeader } from "@/components/marketing";
 
-export const Route = createFileRoute('/_marketing')({
+export const Route = createFileRoute("/_marketing")({
   component: MarketingLayout,
-})
+});
 
 function MarketingLayout() {
   return (
@@ -14,5 +14,5 @@ function MarketingLayout() {
       </main>
       <MarketingFooter />
     </div>
-  )
+  );
 }

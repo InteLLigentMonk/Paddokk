@@ -49,12 +49,14 @@ These are critical infrastructure even if tools report them as unused:
 ## Safety Checklist
 
 Before removing:
+
 - [ ] Run detection tools
 - [ ] Grep for all references (including dynamic imports)
 - [ ] Check if part of file-based routing
 - [ ] Run all tests
 
 After each removal:
+
 - [ ] Build succeeds (`npm run build`)
 - [ ] Tests pass (`npm run test`)
 - [ ] No console errors

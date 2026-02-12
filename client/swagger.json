@@ -8,9 +8,7 @@
   "paths": {
     "/api/users/me/cars/{carId}/images": {
       "get": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -55,9 +53,7 @@
         }
       },
       "post": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -121,9 +117,7 @@
     },
     "/api/users/me/cars/{carId}/images/{imageId}": {
       "get": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -168,9 +162,7 @@
         }
       },
       "put": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -234,9 +226,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -266,9 +256,7 @@
     },
     "/api/users/me/cars/{carId}/images/{imageId}/setprimary": {
       "put": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -298,9 +286,7 @@
     },
     "/api/users/me/cars/{carId}/images/canupload": {
       "get": {
-        "tags": [
-          "CarImages"
-        ],
+        "tags": ["CarImages"],
         "parameters": [
           {
             "name": "carId",
@@ -321,9 +307,7 @@
     },
     "/api/Cars/makes": {
       "get": {
-        "tags": [
-          "Cars"
-        ],
+        "tags": ["Cars"],
         "responses": {
           "200": {
             "description": "OK",
@@ -359,9 +343,7 @@
     },
     "/api/Cars/makes/{makeId}/models": {
       "get": {
-        "tags": [
-          "Cars"
-        ],
+        "tags": ["Cars"],
         "parameters": [
           {
             "name": "makeId",
@@ -408,9 +390,7 @@
     },
     "/api/Cars/models/{modelId}/generations": {
       "get": {
-        "tags": [
-          "Cars"
-        ],
+        "tags": ["Cars"],
         "parameters": [
           {
             "name": "modelId",
@@ -457,9 +437,7 @@
     },
     "/api/Cars/makes/{makeId}": {
       "get": {
-        "tags": [
-          "Cars"
-        ],
+        "tags": ["Cars"],
         "parameters": [
           {
             "name": "makeId",
@@ -497,9 +475,7 @@
     },
     "/api/Cars/models/{modelId}": {
       "get": {
-        "tags": [
-          "Cars"
-        ],
+        "tags": ["Cars"],
         "parameters": [
           {
             "name": "modelId",
@@ -537,9 +513,7 @@
     },
     "/api/Cars/generations/{generationId}": {
       "get": {
-        "tags": [
-          "Cars"
-        ],
+        "tags": ["Cars"],
         "parameters": [
           {
             "name": "generationId",
@@ -577,9 +551,7 @@
     },
     "/api/comments/{commentId}": {
       "get": {
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "name": "commentId",
@@ -615,9 +587,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "name": "commentId",
@@ -672,9 +642,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "name": "commentId",
@@ -695,9 +663,7 @@
     },
     "/api/comments/{commentId}/report": {
       "post": {
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "name": "commentId",
@@ -737,9 +703,7 @@
     },
     "/api/users/me/Dashboard": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "responses": {
           "200": {
             "description": "OK"
@@ -749,9 +713,7 @@
     },
     "/api/users/me/Dashboard/feed": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "parameters": [
           {
             "name": "skip",
@@ -807,17 +769,12 @@
     },
     "/api/Images/upload": {
       "post": {
-        "tags": [
-          "Images"
-        ],
+        "tags": ["Images"],
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
-                "required": [
-                  "Context",
-                  "File"
-                ],
+                "required": ["Context", "File"],
                 "type": "object",
                 "properties": {
                   "File": {
@@ -881,9 +838,7 @@
     },
     "/api/Images/limits": {
       "get": {
-        "tags": [
-          "Images"
-        ],
+        "tags": ["Images"],
         "responses": {
           "200": {
             "description": "OK",
@@ -910,9 +865,7 @@
     },
     "/api/Images": {
       "delete": {
-        "tags": [
-          "Images"
-        ],
+        "tags": ["Images"],
         "parameters": [
           {
             "name": "imageUrl",
@@ -931,9 +884,7 @@
     },
     "/api/Journeys": {
       "get": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "Query",
@@ -1038,9 +989,7 @@
     },
     "/api/Journeys/{journeyId}": {
       "get": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1078,9 +1027,7 @@
     },
     "/api/Journeys/featured": {
       "get": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1116,9 +1063,7 @@
     },
     "/api/Journeys/trending": {
       "get": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1154,9 +1099,7 @@
     },
     "/api/Journeys/{journeyId}/subscribe": {
       "post": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1175,9 +1118,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1198,9 +1139,7 @@
     },
     "/api/Journeys/{journeyId}/like": {
       "post": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1219,9 +1158,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1242,9 +1179,7 @@
     },
     "/api/Journeys/{journeyId}/posts": {
       "get": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1307,9 +1242,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -1366,9 +1299,7 @@
     },
     "/api/Journeys/posts/{postId}": {
       "get": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "postId",
@@ -1404,9 +1335,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "postId",
@@ -1461,9 +1390,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Journeys"
-        ],
+        "tags": ["Journeys"],
         "parameters": [
           {
             "name": "postId",
@@ -1484,9 +1411,7 @@
     },
     "/api/posts/{postId}/comments": {
       "get": {
-        "tags": [
-          "PostComments"
-        ],
+        "tags": ["PostComments"],
         "parameters": [
           {
             "name": "postId",
@@ -1540,9 +1465,7 @@
         }
       },
       "post": {
-        "tags": [
-          "PostComments"
-        ],
+        "tags": ["PostComments"],
         "parameters": [
           {
             "name": "postId",
@@ -1599,9 +1522,7 @@
     },
     "/api/posts/{postId}/comments/{commentId}": {
       "get": {
-        "tags": [
-          "PostComments"
-        ],
+        "tags": ["PostComments"],
         "parameters": [
           {
             "name": "postId",
@@ -1646,9 +1567,7 @@
         }
       },
       "put": {
-        "tags": [
-          "PostComments"
-        ],
+        "tags": ["PostComments"],
         "parameters": [
           {
             "name": "postId",
@@ -1712,9 +1631,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "PostComments"
-        ],
+        "tags": ["PostComments"],
         "parameters": [
           {
             "name": "postId",
@@ -1744,9 +1661,7 @@
     },
     "/api/users/me/cars": {
       "get": {
-        "tags": [
-          "UserCars"
-        ],
+        "tags": ["UserCars"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1780,9 +1695,7 @@
         }
       },
       "post": {
-        "tags": [
-          "UserCars"
-        ],
+        "tags": ["UserCars"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1828,9 +1741,7 @@
     },
     "/api/users/me/cars/{carId}": {
       "get": {
-        "tags": [
-          "UserCars"
-        ],
+        "tags": ["UserCars"],
         "parameters": [
           {
             "name": "carId",
@@ -1866,9 +1777,7 @@
         }
       },
       "put": {
-        "tags": [
-          "UserCars"
-        ],
+        "tags": ["UserCars"],
         "parameters": [
           {
             "name": "carId",
@@ -1923,9 +1832,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "UserCars"
-        ],
+        "tags": ["UserCars"],
         "parameters": [
           {
             "name": "carId",
@@ -1946,9 +1853,7 @@
     },
     "/api/users/me/cars/can-add": {
       "get": {
-        "tags": [
-          "UserCars"
-        ],
+        "tags": ["UserCars"],
         "responses": {
           "200": {
             "description": "OK"
@@ -1958,9 +1863,7 @@
     },
     "/api/users/me/journeys": {
       "get": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1994,9 +1897,7 @@
         }
       },
       "post": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2042,9 +1943,7 @@
     },
     "/api/users/me/journeys/{journeyId}": {
       "get": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -2080,9 +1979,7 @@
         }
       },
       "put": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -2137,9 +2034,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -2160,9 +2055,7 @@
     },
     "/api/users/me/journeys/default-active": {
       "get": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "responses": {
           "200": {
             "description": "OK",
@@ -2189,9 +2082,7 @@
     },
     "/api/users/me/journeys/{journeyId}/set-default-active": {
       "put": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "parameters": [
           {
             "name": "journeyId",
@@ -2212,9 +2103,7 @@
     },
     "/api/users/me/journeys/stats": {
       "get": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "responses": {
           "200": {
             "description": "OK",
@@ -2241,9 +2130,7 @@
     },
     "/api/users/me/journeys/can-create": {
       "get": {
-        "tags": [
-          "UserJourneys"
-        ],
+        "tags": ["UserJourneys"],
         "responses": {
           "200": {
             "description": "OK"
@@ -2253,9 +2140,7 @@
     },
     "/api/Users/me": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "responses": {
           "200": {
             "description": "OK",
@@ -2280,9 +2165,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2328,9 +2211,7 @@
     },
     "/api/Users/{userId}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "name": "userId",
@@ -2367,9 +2248,7 @@
     },
     "/api/Users/email/{email}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "name": "email",
@@ -2439,15 +2318,7 @@
         "additionalProperties": false
       },
       "CarGroup": {
-        "enum": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
-        ],
+        "enum": [1, 2, 3, 4, 5, 6, 7],
         "type": "integer",
         "format": "int32"
       },
@@ -2575,9 +2446,7 @@
         "additionalProperties": false
       },
       "CreateCommentRequest": {
-        "required": [
-          "content"
-        ],
+        "required": ["content"],
         "type": "object",
         "properties": {
           "content": {
@@ -2589,9 +2458,7 @@
         "additionalProperties": false
       },
       "CreateJourneyPostImageRequest": {
-        "required": [
-          "imageUrl"
-        ],
+        "required": ["imageUrl"],
         "type": "object",
         "properties": {
           "imageUrl": {
@@ -2631,11 +2498,7 @@
         "additionalProperties": false
       },
       "CreateJourneyRequest": {
-        "required": [
-          "category",
-          "title",
-          "userCarId"
-        ],
+        "required": ["category", "title", "userCarId"],
         "type": "object",
         "properties": {
           "title": {
@@ -2663,12 +2526,7 @@
         "additionalProperties": false
       },
       "CreateUserCarRequest": {
-        "required": [
-          "carMakeId",
-          "carModelId",
-          "isPrimary",
-          "year"
-        ],
+        "required": ["carMakeId", "carModelId", "isPrimary", "year"],
         "type": "object",
         "properties": {
           "carMakeId": {
@@ -2715,11 +2573,7 @@
         "additionalProperties": false
       },
       "ImageContext": {
-        "enum": [
-          1,
-          2,
-          3
-        ],
+        "enum": [1, 2, 3],
         "type": "integer",
         "format": "int32"
       },
@@ -2798,13 +2652,7 @@
         "additionalProperties": false
       },
       "JourneyCategory": {
-        "enum": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
+        "enum": [1, 2, 3, 4, 5],
         "type": "integer",
         "format": "int32"
       },
@@ -2993,13 +2841,7 @@
         "additionalProperties": false
       },
       "JourneySortBy": {
-        "enum": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
+        "enum": [1, 2, 3, 4, 5],
         "type": "integer",
         "format": "int32"
       },
@@ -3034,12 +2876,7 @@
         "additionalProperties": false
       },
       "JourneyStatus": {
-        "enum": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "enum": [1, 2, 3, 4],
         "type": "integer",
         "format": "int32"
       },
@@ -3091,13 +2928,7 @@
         "additionalProperties": false
       },
       "SubscriptionTier": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4
-        ],
+        "enum": [0, 1, 2, 3, 4],
         "type": "integer",
         "format": "int32"
       },
@@ -3123,9 +2954,7 @@
         "additionalProperties": false
       },
       "UpdateCommentRequest": {
-        "required": [
-          "content"
-        ],
+        "required": ["content"],
         "type": "object",
         "properties": {
           "content": {
@@ -3371,7 +3200,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }

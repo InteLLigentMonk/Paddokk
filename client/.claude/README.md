@@ -29,6 +29,7 @@ This directory contains Claude Code configuration for the Paddokk client project
 ## Rules
 
 2 rule files loaded into every conversation:
+
 - **agents.md** - Agent selection, parallel execution, feature implementation workflow
 - **performance.md** - Model selection strategy, context window management, extended thinking
 

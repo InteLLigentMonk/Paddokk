@@ -1,4 +1,4 @@
-import type { UseQueryOptions } from '@tanstack/react-query'
+import type { UseQueryOptions } from "@tanstack/react-query";
 
 /**
  * Mobile-optimized query defaults
@@ -10,4 +10,4 @@ export const mobileQueryDefaults: Partial<UseQueryOptions> = {
   refetchOnWindowFocus: false, // Avoid refetch on tab switch
   refetchOnReconnect: true, // Refetch when connection restored
   retry: 2, // Reduce retries to save mobile data
-}
+};

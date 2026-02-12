@@ -21,6 +21,7 @@ All steps from the plan have been successfully implemented:
 ## 📁 Files Created/Modified
 
 ### Created Files:
+
 - `src/lib/api/client.ts` - Custom Axios fetcher with JWT integration
 - `src/lib/api/index.ts` - API barrel export
 - `src/lib/api/query-defaults.ts` - Mobile-optimized query defaults
@@ -31,6 +32,7 @@ All steps from the plan have been successfully implemented:
 - `src/vite-env.d.ts` - TypeScript environment types
 
 ### Modified Files:
+
 - `src/lib/auth.ts` - Added JWT plugin
 - `src/lib/auth-client.ts` - Added JWT plugin and exports
 - `package.json` - Added api:generate and api:watch scripts
@@ -72,12 +74,12 @@ function MyComponent() {
 ### Mobile-First Query Defaults
 
 ```typescript
-import { useGetApiJourneys, mobileQueryDefaults } from '@/lib/api'
+import { useGetApiJourneys, mobileQueryDefaults } from "@/lib/api";
 
 function MobileOptimizedComponent() {
   const { data } = useGetApiJourneys({
     query: mobileQueryDefaults, // 5min stale time, no refetch on focus
-  })
+  });
 }
 ```
 
@@ -118,28 +120,28 @@ When the .NET API changes:
 ### Step 1: Sign In
 
 ```typescript
-import { authClient } from '@/lib/auth-client'
+import { authClient } from "@/lib/auth-client";
 
 await authClient.signIn.email({
-  email: 'user@example.com',
-  password: 'password123',
-})
+  email: "user@example.com",
+  password: "password123",
+});
 ```
 
 ### Step 2: Verify Token
 
 ```typescript
-const tokenResponse = await authClient.token()
-console.log('JWT Token:', tokenResponse.data?.token)
+const tokenResponse = await authClient.token();
+console.log("JWT Token:", tokenResponse.data?.token);
 ```
 
 ### Step 3: Make API Call
 
 ```typescript
-import { useGetApiUsersMeCars } from '@/lib/api'
+import { useGetApiUsersMeCars } from "@/lib/api";
 
 function UserCars() {
-  const { data, isLoading } = useGetApiUsersMeCars()
+  const { data, isLoading } = useGetApiUsersMeCars();
   // Data is properly typed and includes Authorization header
 }
 ```
@@ -235,16 +237,19 @@ BETTER_AUTH_DB_CONNECTION_STRING=postgresql://...
 ## 🐛 Troubleshooting
 
 ### Issue: API calls return 401 Unauthorized
+
 - Verify user is signed in: `authClient.useSession()`
 - Check JWT token: `await authClient.token()`
 - Verify token is sent in headers (Network tab)
 
 ### Issue: TypeScript errors on generated code
+
 - Regenerate: `npm run api:generate`
 - Check Swagger is valid JSON
 - Verify custom fetcher signature matches
 
 ### Issue: Generated hooks not found
+
 - Check `src/generated/api/` exists
 - Run `npm run api:generate`
 - Restart TypeScript server in IDE

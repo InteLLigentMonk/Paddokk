@@ -1,11 +1,22 @@
-import { Box, Container, Divider, SimpleGrid, Stack, Text } from '@mantine/core'
-import { footerNavLinks, legalLinks } from '@/data/marketing'
+import {
+  Box,
+  Container,
+  Divider,
+  SimpleGrid,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { footerNavLinks, legalLinks } from "@/data/marketing";
 
 export function MarketingFooter() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
-    <Box component="footer" py="xl" style={{ borderTop: '1px solid var(--mantine-color-gray-3)' }}>
+    <Box
+      component="footer"
+      py="xl"
+      style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}
+    >
       <Container size="lg">
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
           {/* Brand Column */}
@@ -14,8 +25,8 @@ export function MarketingFooter() {
               Paddokk
             </Text>
             <Text fz="sm" c="dimmed">
-              The social platform for car enthusiasts.
-              Document your journey, share your builds.
+              The social platform for car enthusiasts. Document your journey,
+              share your builds.
             </Text>
           </Stack>
 
@@ -31,7 +42,7 @@ export function MarketingFooter() {
                 href={link.href}
                 fz="sm"
                 c="dimmed"
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: "none" }}
               >
                 {link.label}
               </Text>
@@ -50,7 +61,7 @@ export function MarketingFooter() {
                 href={link.href}
                 fz="sm"
                 c="dimmed"
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: "none" }}
               >
                 {link.label}
               </Text>
@@ -65,5 +76,5 @@ export function MarketingFooter() {
         </Text>
       </Container>
     </Box>
-  )
+  );
 }

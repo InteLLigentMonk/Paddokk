@@ -10,35 +10,41 @@ You are a TDD specialist for Paddokk, a TanStack Start app using Vitest and @tes
 ## TDD Workflow
 
 ### Step 1: Write Test First (RED)
-```typescript
-import { describe, it, expect } from 'vitest'
 
-describe('formatCarName', () => {
-  it('returns make and model combined', () => {
-    expect(formatCarName({ make: 'BMW', model: 'E30' })).toBe('BMW E30')
-  })
-})
+```typescript
+import { describe, it, expect } from "vitest";
+
+describe("formatCarName", () => {
+  it("returns make and model combined", () => {
+    expect(formatCarName({ make: "BMW", model: "E30" })).toBe("BMW E30");
+  });
+});
 ```
 
 ### Step 2: Run Test - Verify it FAILS
+
 ```bash
 npx vitest run src/path/to/file.test.ts
 ```
 
 ### Step 3: Write Minimal Implementation (GREEN)
+
 Implement just enough to make the test pass.
 
 ### Step 4: Run Test - Verify it PASSES
+
 ```bash
 npx vitest run src/path/to/file.test.ts
 ```
 
 ### Step 5: Refactor (IMPROVE)
+
 Clean up while keeping tests green.
 
 ## Testing Patterns
 
 ### Component Testing with Mantine
+
 ```typescript
 import { render, screen } from '@testing-library/react'
 import { MantineProvider } from '@mantine/core'
@@ -56,6 +62,7 @@ describe('CarCard', () => {
 ```
 
 ### TanStack Query Testing
+
 ```typescript
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -76,19 +83,20 @@ function renderWithQuery(ui: React.ReactElement) {
 ```
 
 ### Mocking with Vitest
+
 ```typescript
-import { vi } from 'vitest'
+import { vi } from "vitest";
 
 // Mock a module
-vi.mock('@/lib/auth-client', () => ({
+vi.mock("@/lib/auth-client", () => ({
   authClient: {
     useSession: vi.fn(() => ({ data: mockSession })),
   },
-}))
+}));
 
 // Mock a function
-const mockFn = vi.fn()
-mockFn.mockResolvedValue({ data: [] })
+const mockFn = vi.fn();
+mockFn.mockResolvedValue({ data: [] });
 ```
 
 ## Edge Cases to Test

@@ -25,24 +25,28 @@ npx eslint . --ext .ts,.tsx         # ESLint check
 ## Common Paddokk-Specific Errors
 
 ### Path Alias Resolution
+
 ```typescript
 // ERROR: Cannot find module '@/lib/utils'
 // FIX: Verify tsconfig.json paths and vite.config.ts resolve.alias both have @/* -> src/*
 ```
 
 ### Mantine Type Issues
+
 ```typescript
 // ERROR: Type 'string' is not assignable to type 'MantineSize'
 // FIX: Use Mantine's accepted values: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 ```
 
 ### TanStack Router Types
+
 ```typescript
 // ERROR: Route '...' not found in route tree
 // FIX: Run the dev server to regenerate routeTree.gen.ts, never edit it manually
 ```
 
 ### TanStack Query Types
+
 ```typescript
 // ERROR: Property 'data' does not exist on type...
 // FIX: Ensure queryFn return type matches the generic: useQuery<ReturnType>(...)

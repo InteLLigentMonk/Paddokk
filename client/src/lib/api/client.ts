@@ -1,8 +1,9 @@
-import Axios, { AxiosRequestConfig, AxiosError } from "axios";
+import Axios from "axios";
+import type { AxiosError, AxiosRequestConfig } from "axios";
 import { authClient } from "@/lib/auth-client";
 
-export type ErrorType<Error> = AxiosError<Error>;
-export type BodyType<Data> = Data;
+export type ErrorType<TError> = AxiosError<TError>;
+export type BodyType<TData> = TData;
 
 /**
  * Validate required environment variables
@@ -112,7 +113,7 @@ export const apiFetcher = <T>(
     } else if (Array.isArray(options.headers)) {
       headers = Object.fromEntries(options.headers);
     } else {
-      headers = options.headers as Record<string, string>;
+      headers = options.headers;
     }
   }
 
