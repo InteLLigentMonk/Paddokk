@@ -21,8 +21,7 @@ Run a single test file: `npx vitest run src/path/to/file.test.ts`
 Paddokk is a SaaS social platform for car enthusiasts. It aims to bridge the gap between old school
 forums with proper threads and modern image and quick-message focused social platforms like instagram
 or facebook.
-The platform is centered around Journeys. A member can add their car/cars and make journeys with them
-whether it be a new enginebuild or a roadtrip.
+The platform is centered around Journeys. A member can add their car/cars and make journeys with them whether it be a new enginebuild or a roadtrip.
 
 ## Tech Stack
 

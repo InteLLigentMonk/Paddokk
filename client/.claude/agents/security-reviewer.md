@@ -24,6 +24,7 @@ For each category, check:
 ## Paddokk-Specific Security Concerns
 
 ### Better Auth
+
 - [ ] All protected routes validate session via Better Auth
 - [ ] JWT tokens properly validated on every request
 - [ ] Auth API route (`/api/auth/$`) is the only auth entry point
@@ -31,6 +32,7 @@ For each category, check:
 - [ ] Rate limiting on auth endpoints
 
 ### User-Generated Content
+
 - [ ] Car descriptions and journey posts are sanitized (Tiptap output)
 - [ ] Image uploads validated (type, size, dimensions)
 - [ ] No stored XSS via rich text content
@@ -38,6 +40,7 @@ For each category, check:
 - [ ] Content moderation considerations
 
 ### API Security
+
 - [ ] All API routes in `src/routes/api/` require auth (except public endpoints)
 - [ ] Input validation with Zod on all parameters
 - [ ] Rate limiting per user/IP on write endpoints

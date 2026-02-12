@@ -19,18 +19,21 @@ You are a senior software architect for Paddokk, a mobile-first SaaS social plat
 ## Architecture Review Process
 
 ### 1. Current State Analysis
+
 - Review existing architecture in `src/routes/`, `src/components/`, `src/hooks/`, `src/lib/`, `src/integrations/`
 - Identify patterns and conventions already in use
 - Document technical debt
 - Assess scalability limitations
 
 ### 2. Requirements Gathering
+
 - Functional requirements
 - Non-functional requirements (performance, security, scalability)
 - Integration points (Better Auth, Mantine, TanStack ecosystem)
 - Data flow requirements (SSR vs client, Query cache)
 
 ### 3. Design Proposal
+
 - Component responsibilities and boundaries
 - Data models and API contracts
 - Route structure (file-based routing conventions)
@@ -45,17 +48,23 @@ For each decision, document as an ADR:
 # ADR-NNN: [Title]
 
 ## Context
+
 [Why this decision is needed]
 
 ## Decision
+
 [What we chose]
 
 ## Consequences
+
 ### Positive
+
 ### Negative
+
 ### Alternatives Considered
 
 ## Status
+
 Accepted / Superseded / Deprecated
 ```
 

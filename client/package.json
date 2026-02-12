@@ -10,10 +10,8 @@
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
-
     "api:generate": "orval --config orval.config.ts",
     "api:watch": "orval --config orval.config.ts --watch",
-
     "db:reset": "dotenv -e .env.local -- tsx scripts/reset-auth-db.ts",
     "db:push": "dotenv -e .env.local -- drizzle-kit push --force",
     "db:generate": "dotenv -e .env.local -- drizzle-kit generate",

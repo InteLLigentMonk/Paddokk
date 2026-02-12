@@ -15,6 +15,6 @@
  * ```
  */
 
-export * from '@/generated/api'
-export { apiFetcher } from './client'
-export { mobileQueryDefaults } from './query-defaults'
+export * from "@/generated/api";
+export { apiFetcher } from "./client";
+export { mobileQueryDefaults } from "./query-defaults";

@@ -1,31 +1,31 @@
-import { Button, Stack } from '@mantine/core'
-import { useNotifications } from '@/integrations/mantine'
-import { useMutation } from '@tanstack/react-query'
+import { Button, Stack } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
+import { useNotifications } from "@/integrations/mantine";
 
 export function NotificationExamples() {
-  const notifications = useNotifications()
+  const notifications = useNotifications();
 
   const mutation = useMutation({
     mutationFn: async () => {
-      throw new Error('This is a test error from a mutation')
+      throw new Error("This is a test error from a mutation");
     },
-  })
+  });
 
   const successMutation = useMutation({
     mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 500))
-      return { success: true }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      return { success: true };
     },
     onSuccess: () => {
-      notifications.success({ message: 'Operation completed successfully!' })
+      notifications.success({ message: "Operation completed successfully!" });
     },
-  })
+  });
 
   return (
     <Stack gap="md">
       <Button
         onClick={() =>
-          notifications.success({ message: 'This is a success notification' })
+          notifications.success({ message: "This is a success notification" })
         }
       >
         Show Success Notification
@@ -33,7 +33,7 @@ export function NotificationExamples() {
 
       <Button
         onClick={() =>
-          notifications.error({ message: 'This is an error notification' })
+          notifications.error({ message: "This is an error notification" })
         }
         color="red"
       >
@@ -42,7 +42,7 @@ export function NotificationExamples() {
 
       <Button
         onClick={() =>
-          notifications.warning({ message: 'This is a warning notification' })
+          notifications.warning({ message: "This is a warning notification" })
         }
         color="yellow"
       >
@@ -51,7 +51,7 @@ export function NotificationExamples() {
 
       <Button
         onClick={() =>
-          notifications.info({ message: 'This is an info notification' })
+          notifications.info({ message: "This is an info notification" })
         }
         color="blue"
       >
@@ -61,8 +61,8 @@ export function NotificationExamples() {
       <Button
         onClick={() =>
           notifications.success({
-            title: 'Custom Title',
-            message: 'This notification has a custom title',
+            title: "Custom Title",
+            message: "This notification has a custom title",
             autoClose: 10000,
           })
         }
@@ -78,5 +78,5 @@ export function NotificationExamples() {
         Test Success with Mutation
       </Button>
     </Stack>
-  )
+  );
 }

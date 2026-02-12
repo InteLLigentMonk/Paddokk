@@ -5,17 +5,17 @@ Mantine notifications are integrated globally via `src/integrations/mantine/`. T
 ## Usage in React Components
 
 ```typescript
-import { useNotifications } from "@/integrations/mantine"
+import { useNotifications } from "@/integrations/mantine";
 
 function MyComponent() {
-  const notifications = useNotifications()
+  const notifications = useNotifications();
 
   const handleAction = () => {
-    notifications.success({ message: "Changes saved!" })
-    notifications.error({ message: "Failed to save" })
-    notifications.warning({ message: "Check your input" })
-    notifications.info({ message: "Data loaded" })
-  }
+    notifications.success({ message: "Changes saved!" });
+    notifications.error({ message: "Failed to save" });
+    notifications.warning({ message: "Check your input" });
+    notifications.info({ message: "Data loaded" });
+  };
 }
 ```
 
@@ -48,9 +48,9 @@ const mutation = useMutation({
   mutationFn: api.updateUser,
   onError: (error) => {
     // Custom handling overrides global error notification
-    notifications.warning({ message: "Please check your input" })
+    notifications.warning({ message: "Please check your input" });
   },
-})
+});
 ```
 
 ## Notification Options
