@@ -3,41 +3,45 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
-} from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core'
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+} from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
+import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
-import StoreDevtools from '../lib/demo-store-devtools'
+import StoreDevtools from "../lib/demo-store-devtools";
 
-import appCss from '../styles.css?url'
+import appCss from "../styles.css?url";
 
-import { Provider as MantineProvider, NotificationsContainer } from '../integrations/mantine'
+import {
+  Provider as MantineProvider,
+  NotificationsContainer,
+} from "../integrations/mantine";
 
-import type { QueryClient } from '@tanstack/react-query'
+import type { QueryClient } from "@tanstack/react-query";
+import BetterAuthHeader from "@/integrations/better-auth/header-user";
 
 interface MyRouterContext {
-  queryClient: QueryClient
+  queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
       {
-        title: 'TanStack Start Starter',
+        title: "TanStack Start Starter",
       },
     ],
     links: [
       {
-        rel: 'stylesheet',
+        rel: "stylesheet",
         href: appCss,
       },
     ],
@@ -45,7 +49,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   shellComponent: RootDocument,
   component: RootProviders,
-})
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -55,14 +59,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <BetterAuthHeader />
         {children}
         <TanStackDevtools
           config={{
-            position: 'bottom-right',
+            position: "bottom-right",
           }}
           plugins={[
             {
-              name: 'Tanstack Router',
+              name: "Tanstack Router",
               render: <TanStackRouterDevtoolsPanel />,
             },
             TanStackQueryDevtools,
@@ -72,7 +77,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }
 
 function RootProviders() {
@@ -81,5 +86,5 @@ function RootProviders() {
       <NotificationsContainer />
       <Outlet />
     </MantineProvider>
-  )
+  );
 }

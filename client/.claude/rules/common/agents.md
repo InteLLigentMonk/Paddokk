@@ -1,5 +1,7 @@
 # Agent Orchestration
 
+See also: `plugins.md` for skills, MCP servers, and when to use skills vs agents.
+
 ## Available Agents
 
 | Agent                | Model  | Purpose                 | When to Use                   |
@@ -21,6 +23,11 @@ No user prompt needed:
 3. Bug fix or new feature - Use **tdd-guide** agent
 4. Architectural decision - Use **architect** agent
 
+## Proactive Tool Usage
+
+- **Context7** - Always consult before writing code against third-party library APIs (Mantine, TanStack, Tiptap, Zod, Better Auth). Prefer verified docs over guessing.
+- **GitHub MCP** - Use for all GitHub operations (issues, PRs, code search) instead of `gh` CLI when possible.
+
 ## Parallel Task Execution
 
 ALWAYS use parallel Task execution for independent operations.
@@ -28,6 +35,7 @@ ALWAYS use parallel Task execution for independent operations.
 ## Feature Implementation Workflow
 
 1. **Plan** - Use **planner** agent to create implementation plan
-2. **TDD** - Use **tdd-guide** agent: write tests first (RED), implement (GREEN), refactor (IMPROVE)
-3. **Review** - Use **code-reviewer** agent, address CRITICAL and HIGH issues
-4. **Commit** - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `ci:`
+2. **Research** - Use **Context7** to verify library APIs needed for the feature
+3. **TDD** - Use **tdd-guide** agent: write tests first (RED), implement (GREEN), refactor (IMPROVE)
+4. **Review** - Use **code-reviewer** agent, address CRITICAL and HIGH issues
+5. **Commit** - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `ci:`
