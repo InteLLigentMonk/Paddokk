@@ -19,7 +19,6 @@ import {
 } from "../integrations/mantine";
 
 import type { QueryClient } from "@tanstack/react-query";
-import BetterAuthHeader from "@/integrations/better-auth/header-user";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -36,7 +35,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Paddokk - The Social Platform for Car Enthusiasts",
+      },
+      {
+        name: "description",
+        content:
+          "Document your car journeys, share your builds, and connect with fellow car enthusiasts. Paddokk bridges the gap between forums and modern social platforms.",
       },
     ],
     links: [
@@ -59,7 +63,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <BetterAuthHeader />
         {children}
         <TanStackDevtools
           config={{
