@@ -11,3 +11,12 @@ count.txt
 .output
 .vinxi
 todos.json
+
+# Orval generated files
+src/generated/
+
+# Security - Never commit private keys
+*.pem
+*.key
+*.p12
+*.pfx

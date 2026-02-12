@@ -15,7 +15,14 @@
       "Bash(git log *)",
       "Bash(git diff *)",
       "Bash(git branch *)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: initial monorepo setup with client and API\n\nMonorepo structure with TanStack Start client and C# ASP.NET API.\nClient includes Claude Code configuration, Mantine v8, Better Auth,\nand TanStack ecosystem. API includes controllers, services, EF Core\nmigrations, and EdDSA JWT security. Appsettings excluded from tracking\n\\(contains secrets\\).\nEOF\n\\)\")",
+      "Bash(npm install:*)",
+      "Bash(npx @better-auth/cli generate:*)",
+      "Bash(npx drizzle-kit push:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git checkout:*)"
     ]
   },
   "hooks": {
