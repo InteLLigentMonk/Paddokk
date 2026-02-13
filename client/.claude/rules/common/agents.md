@@ -44,9 +44,10 @@ ALWAYS use parallel Task execution for independent operations.
 
 ## Feature Implementation Workflow
 
+0. **Branch** - Create feature branch from `main` (e.g., `feat/user-profile`, `fix/auth-redirect`). See `git-workflow.md` for branching strategy.
 1. **Architect** (for major features only) - Use **architect** agent to design system architecture
 2. **Plan** - Use **planner** agent to create implementation plan
 3. **Research** - Use **Context7** to verify library APIs needed for the feature
 4. **TDD** - Use **tdd-guide** agent: write tests first (RED), implement (GREEN), refactor (IMPROVE)
 5. **Review** - Use **code-reviewer** agent, address CRITICAL and HIGH issues
-6. **Commit** - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `ci:`
+6. **Commit** - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `ci:` (enforced by commitlint)

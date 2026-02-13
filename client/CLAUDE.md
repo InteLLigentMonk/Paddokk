@@ -12,6 +12,8 @@ npm run test         # Run all tests (vitest run)
 npm run lint         # ESLint
 npm run format       # Prettier
 npm run check        # Auto-format + auto-fix lint (prettier --write . && eslint --fix)
+npm run release      # Bump version, generate changelog, create git tag
+npm run release:dry  # Preview release without making changes
 ```
 
 Run a single test file: `npx vitest run src/path/to/file.test.ts`
@@ -94,6 +96,12 @@ Better Auth configured in `src/lib/auth.ts` (server) and `src/lib/auth-client.ts
 ### Notifications
 
 See `.claude/rules/common/notifications.md` for usage patterns (React hook, non-React helper, automatic error handling, options).
+
+### Versioning
+
+Paddokk follows [Semantic Versioning](https://semver.org/) with automated version bumping and changelog generation via `commit-and-tag-version`. Version bumps are determined by conventional commit types. Use the `/release` skill for guided releases or run `npm run release` manually.
+
+See `.claude/rules/common/versioning.md` for SemVer rules, release workflow, and commands. See `.claude/rules/common/git-workflow.md` for branching strategy and commit message format.
 
 ### 1. Code Organization
 
