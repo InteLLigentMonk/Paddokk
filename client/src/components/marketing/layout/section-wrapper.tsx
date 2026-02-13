@@ -15,8 +15,10 @@ export function SectionWrapper({
 }: SectionWrapperProps) {
   const bgMap = {
     default: undefined,
-    muted: "var(--mantine-color-gray-0)",
-    primary: "var(--mantine-color-myColor-0)",
+    muted:
+      "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))",
+    primary:
+      "light-dark(var(--mantine-color-myColor-0), var(--mantine-color-dark-7))",
   } as const;
 
   return (

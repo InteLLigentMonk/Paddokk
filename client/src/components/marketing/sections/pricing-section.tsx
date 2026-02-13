@@ -99,7 +99,7 @@ export function PricingSection() {
                 style={{
                   position: "relative",
                   ...(plan.popular && {
-                    borderColor: "var(--mantine-color-myColor-6)",
+                    borderColor: "var(--mantine-primary-color-filled)",
                     borderWidth: 2,
                   }),
                 }}
@@ -142,7 +142,7 @@ export function PricingSection() {
                     icon={
                       <Check
                         size={16}
-                        style={{ color: "var(--mantine-color-myColor-6)" }}
+                        style={{ color: "var(--mantine-primary-color-filled)" }}
                       />
                     }
                   >

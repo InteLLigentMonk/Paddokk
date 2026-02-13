@@ -15,7 +15,7 @@ export function MarketingFooter() {
     <Box
       component="footer"
       py="xl"
-      style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}
+      style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}
     >
       <Container size="lg">
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">

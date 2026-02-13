@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { Button, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { SectionWrapper } from "../layout/section-wrapper";
+import { openLogin, openSignup } from "@/lib/stores/auth-modal-store";
 
 export function CtaSection() {
   return (
@@ -18,10 +18,10 @@ export function CtaSection() {
           </Stack>
 
           <Group justify="center" gap="md">
-            <Button component={Link} to="/signup" size="lg" variant="white">
+            <Button onClick={openSignup} size="lg" variant="white">
               Get Started Free
             </Button>
-            <Button component={Link} to="/login" size="lg" variant="default">
+            <Button onClick={openLogin} size="lg" variant="default">
               Sign In
             </Button>
           </Group>

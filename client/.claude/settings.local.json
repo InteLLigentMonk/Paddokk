@@ -22,7 +22,10 @@
       "Bash(npx @better-auth/cli generate:*)",
       "Bash(npx drizzle-kit push:*)",
       "Bash(npx tsc:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)"
     ]
   },
   "hooks": {

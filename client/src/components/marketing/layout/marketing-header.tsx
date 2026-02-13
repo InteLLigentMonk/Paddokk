@@ -1,33 +1,57 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router"
 import {
   Box,
   Burger,
   Button,
   Container,
-  Divider,
   Drawer,
   Group,
   Stack,
   Text,
   UnstyledButton,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import type { NavLink } from "@/data/marketing";
-import { mainNavLinks } from "@/data/marketing";
+} from "@mantine/core"
+import { useDisclosure } from "@mantine/hooks"
+import type { NavLink } from "@/data/marketing"
+import { mainNavLinks } from "@/data/marketing"
+import { openLogin, openSignup } from "@/lib/stores/auth-modal-store"
+import { ColorSchemeToggle } from "@/components/common/color-scheme-toggle"
 
-function NavAnchor({ link, onClick }: { link: NavLink; onClick?: () => void }) {
+interface NavAnchorProps {
+  link: NavLink
+  onClick?: () => void
+  mobile?: boolean
+}
+
+function NavAnchor({ link, onClick, mobile = false }: NavAnchorProps) {
+  const commonProps = mobile
+    ? {
+        w: "100%" as const,
+        p: "md",
+        style: {
+          display: "block",
+          borderRadius: "var(--mantine-radius-md)",
+          fontSize: "1rem",
+          fontWeight: 500,
+          color: "var(--mantine-color-text)",
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        },
+      }
+    : {
+        fz: "sm" as const,
+        fw: 500,
+      }
+
   if (link.type === "anchor") {
     return (
       <UnstyledButton
         component="a"
         href={link.href}
         onClick={onClick}
-        fz="sm"
-        fw={500}
+        {...commonProps}
       >
         {link.label}
       </UnstyledButton>
-    );
+    )
   }
 
   return (
@@ -35,17 +59,16 @@ function NavAnchor({ link, onClick }: { link: NavLink; onClick?: () => void }) {
       component={Link}
       to={link.href}
       onClick={onClick}
-      fz="sm"
-      fw={500}
+      {...commonProps}
     >
       {link.label}
     </UnstyledButton>
-  );
+  )
 }
 
 export function MarketingHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
-    useDisclosure(false);
+    useDisclosure(false)
 
   return (
     <Box
@@ -54,7 +77,7 @@ export function MarketingHeader() {
         position: "sticky",
         top: 0,
         zIndex: 100,
-        borderBottom: "1px solid var(--mantine-color-gray-3)",
+        borderBottom: "1px solid var(--mantine-color-default-border)",
         backgroundColor: "var(--mantine-color-body)",
       }}
     >
@@ -76,21 +99,24 @@ export function MarketingHeader() {
 
           {/* Desktop CTA */}
           <Group gap="sm" visibleFrom="sm">
-            <Button variant="subtle" component={Link} to="/login" size="sm">
+            <ColorSchemeToggle />
+            <Button variant="subtle" onClick={openLogin} size="sm">
               Sign In
             </Button>
-            <Button component={Link} to="/signup" size="sm">
+            <Button onClick={openSignup} size="sm">
               Get Started
             </Button>
           </Group>
 
           {/* Mobile Burger */}
-          <Burger
-            opened={drawerOpened}
-            onClick={toggleDrawer}
-            hiddenFrom="sm"
-            aria-label="Toggle navigation"
-          />
+          <Group gap="xs" hiddenFrom="sm">
+            <ColorSchemeToggle />
+            <Burger
+              opened={drawerOpened}
+              onClick={toggleDrawer}
+              aria-label="Toggle navigation"
+            />
+          </Group>
         </Group>
       </Container>
 
@@ -100,55 +126,95 @@ export function MarketingHeader() {
         onClose={closeDrawer}
         position="right"
         size="80%"
-        padding="md"
-        title="Paddokk"
+        padding={0}
+        withCloseButton={false}
         hiddenFrom="sm"
         zIndex={200}
+        styles={{
+          content: {
+            backgroundColor: "var(--mantine-color-body)",
+            backdropFilter: "blur(12px)",
+            boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.12)",
+          },
+          overlay: {
+            backdropFilter: "blur(2px)",
+            backgroundColor: "rgba(0, 0, 0, 0.25)",
+          },
+        }}
+        transitionProps={{
+          transition: "slide-left",
+          duration: 250,
+          timingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
       >
-        <Stack gap={0}>
+        <Stack gap={0} h="100%">
+          {/* Header */}
+          <Group
+            justify="space-between"
+            p="lg"
+            style={{
+              borderBottom: "1px solid var(--mantine-color-default-border)",
+            }}
+          >
+            <Text fw={700} fz="xl" c="myColor">
+              Paddokk
+            </Text>
+            <Burger
+              opened={drawerOpened}
+              onClick={closeDrawer}
+              aria-label="Close navigation"
+              size="sm"
+            />
+          </Group>
+
           {/* Navigation Links */}
-          <Stack gap="xs">
-            {mainNavLinks.map((link) => (
-              <UnstyledButton
+          <Stack gap={0} p="md" style={{ flex: 1 }}>
+            {mainNavLinks.map((link, index) => (
+              <Box
                 key={link.href}
-                component={link.type === "anchor" ? "a" : Link}
-                href={link.type === "anchor" ? link.href : undefined}
-                to={link.type === "route" ? link.href : undefined}
-                onClick={closeDrawer}
-                p="sm"
-                style={(theme) => ({
-                  borderRadius: theme.radius.sm,
-                  transition: "background-color 0.15s ease",
-                  ":hover": {
-                    backgroundColor: theme.colors.gray[0],
-                  },
-                })}
+                style={{
+                  opacity: drawerOpened ? 1 : 0,
+                  transform: drawerOpened
+                    ? "translateX(0)"
+                    : "translateX(20px)",
+                  transition: `opacity 0.3s ease ${index * 0.05}s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s`,
+                }}
               >
-                <Text fw={500} fz="md">
-                  {link.label}
-                </Text>
-              </UnstyledButton>
+                <NavAnchor link={link} onClick={closeDrawer} mobile />
+              </Box>
             ))}
           </Stack>
 
-          <Divider my="md" />
-
           {/* CTA Buttons */}
-          <Stack gap="sm">
+          <Stack
+            gap="sm"
+            p="lg"
+            style={{
+              borderTop: "1px solid var(--mantine-color-default-border)",
+              backgroundColor:
+                "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))",
+            }}
+          >
             <Button
-              variant="subtle"
-              component={Link}
-              to="/login"
-              onClick={closeDrawer}
+              variant="light"
+              onClick={() => {
+                closeDrawer()
+                openLogin()
+              }}
               fullWidth
+              size="md"
+              radius="md"
             >
               Sign In
             </Button>
             <Button
-              component={Link}
-              to="/signup"
-              onClick={closeDrawer}
+              onClick={() => {
+                closeDrawer()
+                openSignup()
+              }}
               fullWidth
+              size="md"
+              radius="md"
             >
               Get Started
             </Button>
@@ -156,5 +222,5 @@ export function MarketingHeader() {
         </Stack>
       </Drawer>
     </Box>
-  );
+  )
 }
