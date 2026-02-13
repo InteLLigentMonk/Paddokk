@@ -3,6 +3,8 @@ name: planner
 description: Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks.
 tools: ["Read", "Grep", "Glob"]
 model: opus
+scope: general
+read-when: [planning-feature, complex-refactoring, breaking-down-tasks]
 ---
 
 You are an expert planning specialist for Paddokk, a mobile-first SaaS social platform for car enthusiasts.
@@ -103,3 +105,10 @@ Create detailed steps with:
 - Missing error handling
 - Hardcoded values
 - Missing tests
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - Agent selection and orchestration
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Skills vs agents decision table
+- [../rules/common/performance.md](../rules/common/performance.md) - Model selection (why this agent uses opus)
+- [../INDEX.md](../INDEX.md) - Complete documentation map

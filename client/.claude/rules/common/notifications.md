@@ -1,3 +1,9 @@
+---
+scope: project-specific
+applies-to: [notifications, mantine, error-handling, tanstack-query]
+read-when: [showing-notifications, error-handling, user-feedback]
+---
+
 # Notifications
 
 Mantine notifications are integrated globally via `src/integrations/mantine/`. The system provides:
@@ -61,3 +67,9 @@ All notification methods accept:
 - `title` (optional): Custom title (defaults: Success, Error, Warning, Info)
 - `autoClose` (optional): Auto-close delay in ms or `false` to disable (default: 4000)
 - `withCloseButton` (optional): Show/hide close button (default: true)
+
+## Related Documentation
+
+- [CLAUDE.md](../../../CLAUDE.md) - Notifications overview in architecture section
+- [SCENARIOS.md](../../SCENARIOS.md) - "Using Notifications" scenario
+- [INDEX.md](../../INDEX.md) - Complete documentation map

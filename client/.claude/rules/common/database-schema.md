@@ -1,3 +1,9 @@
+---
+scope: project-specific
+applies-to: [database, schema, better-auth, drizzle, migrations]
+read-when: [schema-errors, adding-auth-plugins, managing-database]
+---
+
 # Database Schema Management
 
 Better Auth generates the authoritative schema definition. Drizzle manages the database.
@@ -132,3 +138,8 @@ Always verify with `npx @better-auth/cli generate` when unsure.
 - Drizzle config: `drizzle.config.ts`
 - Migrations: `drizzle/`
 - Env vars: `.env.local` (`BETTER_AUTH_DB_CONNECTION_STRING`)
+
+## Related Documentation
+
+- [CLAUDE.md](../../../CLAUDE.md) - Auth configuration and environment variables
+- [INDEX.md](../../INDEX.md) - Complete documentation map

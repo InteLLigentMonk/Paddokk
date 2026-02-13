@@ -3,6 +3,8 @@ name: refactor-cleaner
 description: Dead code cleanup and consolidation specialist. Use PROACTIVELY for removing unused code, duplicates, and refactoring. Runs analysis tools (knip, depcheck, ts-prune) to identify dead code and safely removes it.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
+scope: general
+read-when: [dead-code-cleanup, refactoring, code-maintenance]
 ---
 
 You clean up dead code and consolidate duplicates in the Paddokk codebase.
@@ -60,3 +62,10 @@ After each removal:
 - [ ] Build succeeds (`npm run build`)
 - [ ] Tests pass (`npm run test`)
 - [ ] No console errors
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - When to use refactor-cleaner agent
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Skills vs agents decision table
+- [../rules/common/performance.md](../rules/common/performance.md) - Model selection (why this agent uses sonnet)
+- [../INDEX.md](../INDEX.md) - Complete documentation map

@@ -1,4 +1,13 @@
+---
+scope: project-specific
+applies-to: [mantine, dark-mode, ssr, hydration]
+read-when: [hydration-errors, dark-mode-issues, mantine-ssr]
+critical: yes
+---
+
 # Mantine Dark Mode & SSR
+
+> **CRITICAL**: This file contains essential SSR patterns to prevent hydration mismatches. Read this immediately if encountering "Hydration failed" errors or dark mode rendering issues.
 
 ## Critical: No Conditional JSX Based on Color Scheme
 
@@ -96,3 +105,9 @@ Use separate light/dark shades for brand colors with poor dark-mode contrast:
 ```tsx
 createTheme({ primaryShade: { light: 6, dark: 4 } })
 ```
+
+## Related Documentation
+
+- [CLAUDE.md](../../../CLAUDE.md) - Tech stack and styling overview
+- [SCENARIOS.md](../../SCENARIOS.md) - "Fixing Dark Mode Hydration Errors" scenario
+- [INDEX.md](../../INDEX.md) - Complete documentation map

@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Documentation Navigation
+
+- [.claude/INDEX.md](./.claude/INDEX.md) - Complete documentation index (18 files)
+- [.claude/SCENARIOS.md](./.claude/SCENARIOS.md) - Task-based quick start guide
+- [.claude/README.md](./.claude/README.md) - .claude/ directory overview and structure
+
+**Key rules to reference:**
+- [Versioning & Releases](./.claude/rules/common/versioning.md) - SemVer, release workflow
+- [Git Workflow](./.claude/rules/common/git-workflow.md) - Branching, conventional commits
+- [Mantine Dark Mode](./.claude/rules/common/mantine-dark-mode.md) - SSR patterns (CRITICAL)
+- [Database Schema](./.claude/rules/common/database-schema.md) - Better Auth + Drizzle
+- [Agents](./.claude/rules/common/agents.md) - Agent orchestration and workflow
+
 ## Commands
 
 ```bash
@@ -70,6 +83,8 @@ API routes live under `src/routes/api/` (e.g., `src/routes/api/auth/$.ts` is the
 
 Tailwind CSS v4 for utilities, Mantine for component library. PostCSS config (`postcss.config.cjs`) includes `postcss-preset-mantine` and Mantine breakpoint variables. Both coexist — use Mantine components for complex UI, Tailwind for layout/utility classes.
 
+**Dark Mode:** See [.claude/rules/common/mantine-dark-mode.md](./.claude/rules/common/mantine-dark-mode.md) for critical SSR patterns. Never conditionally render JSX based on `colorScheme` (causes hydration mismatch).
+
 ### Design Principles
 
 **Mobile-First Approach:** Paddokk is a mobile-first application. Always design and develop with mobile as the primary target, then progressively enhance for tablet and desktop. When implementing features or components:
@@ -93,15 +108,20 @@ Mantine breakpoints (from `postcss.config.cjs`):
 
 Better Auth configured in `src/lib/auth.ts` (server) and `src/lib/auth-client.ts` (client). Currently stateless — needs a database adapter (Prisma/Drizzle + `npx @better-auth/cli migrate`) to persist users. Environment variables in `.env.local`: `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`.
 
+**Schema management:** See [.claude/rules/common/database-schema.md](./.claude/rules/common/database-schema.md) for Better Auth + Drizzle workflow.
+
 ### Notifications
 
 See `.claude/rules/common/notifications.md` for usage patterns (React hook, non-React helper, automatic error handling, options).
 
-### Versioning
+### Versioning & Git Workflow
 
-Paddokk follows [Semantic Versioning](https://semver.org/) with automated version bumping and changelog generation via `commit-and-tag-version`. Version bumps are determined by conventional commit types. Use the `/release` skill for guided releases or run `npm run release` manually.
+Paddokk follows [Semantic Versioning](https://semver.org/) with automated version bumping and changelog generation. Use the `/release` skill for guided releases.
 
-See `.claude/rules/common/versioning.md` for SemVer rules, release workflow, and commands. See `.claude/rules/common/git-workflow.md` for branching strategy and commit message format.
+**See:**
+- [.claude/rules/common/versioning.md](./.claude/rules/common/versioning.md) - SemVer rules, release workflow, commands
+- [.claude/rules/common/git-workflow.md](./.claude/rules/common/git-workflow.md) - Branching strategy, conventional commits
+- [.claude/commands/release.md](./.claude/commands/release.md) - `/release` skill workflow
 
 ### 1. Code Organization
 
