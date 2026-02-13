@@ -1,0 +1,17 @@
+{
+  "types": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "perf", "section": "Performance" },
+    { "type": "refactor", "section": "Refactoring" },
+    { "type": "chore", "section": "Maintenance" },
+    { "type": "revert", "section": "Reverts" },
+    { "type": "docs", "hidden": true },
+    { "type": "style", "hidden": true },
+    { "type": "test", "hidden": true },
+    { "type": "ci", "hidden": true }
+  ],
+  "commitUrlFormat": "https://github.com/InteLLigentMonk/Paddokk/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/InteLLigentMonk/Paddokk/compare/{{previousTag}}...{{currentTag}}",
+  "tagPrefix": "v"
+}

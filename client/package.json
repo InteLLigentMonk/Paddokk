@@ -1,5 +1,6 @@
 {
   "name": "paddokk",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,7 +17,13 @@
     "db:push": "dotenv -e .env.local -- drizzle-kit push --force",
     "db:generate": "dotenv -e .env.local -- drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
-    "db:studio": "dotenv -e .env.local -- drizzle-kit studio"
+    "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
+    "release": "commit-and-tag-version",
+    "release:dry": "commit-and-tag-version --dry-run",
+    "release:major": "commit-and-tag-version --release-as major",
+    "release:minor": "commit-and-tag-version --release-as minor",
+    "release:patch": "commit-and-tag-version --release-as patch",
+    "release:first": "commit-and-tag-version --first-release"
   },
   "dependencies": {
     "@mantine/carousel": "^8.3.14",
@@ -60,6 +67,8 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@tanstack/devtools-event-client": "^0.4.0",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/eslint-config": "^0.3.0",
@@ -72,6 +81,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "commit-and-tag-version": "^12.6.1",
     "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.31.9",
     "jsdom": "^27.0.0",

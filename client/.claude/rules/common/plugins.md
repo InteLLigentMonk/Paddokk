@@ -47,6 +47,7 @@ Full GitHub API access for issues, PRs, branches, code search, and repository ma
 | -------------- | ----------------- | ------------------------------------------------ |
 | commit         | `/commit`         | Create a git commit                              |
 | commit-push-pr | `/commit-push-pr` | Commit, push, and open a PR in one step          |
+| release        | `/release`        | Guided version bump and changelog generation     |
 | clean_gone     | `/clean_gone`     | Clean up local branches deleted on remote        |
 | code-review    | `/code-review`    | Review a pull request                            |
 | review-pr      | `/review-pr`      | Comprehensive PR review using specialized agents |
