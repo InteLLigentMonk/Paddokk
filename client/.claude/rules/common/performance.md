@@ -1,3 +1,9 @@
+---
+scope: general
+applies-to: [performance, model-selection, context-window, extended-thinking]
+read-when: [choosing-model, optimizing-performance, managing-context]
+---
+
 # Performance Optimization
 
 ## Model Selection Strategy
@@ -19,6 +25,8 @@
 - Complex architectural decisions
 - Maximum reasoning requirements
 - Research and analysis tasks
+
+**Current agent assignments:** See [agents.md](./agents.md) for which model each agent uses (opus: architect, planner; sonnet: all others).
 
 ## Context Window Management
 
@@ -57,7 +65,12 @@ For complex tasks requiring deep reasoning:
 
 If build fails:
 
-1. Use **build-error-resolver** agent
+1. Use **build-error-resolver** agent (see [agents.md](./agents.md))
 2. Analyze error messages
 3. Fix incrementally
 4. Verify after each fix
+
+## Related Documentation
+
+- [agents.md](./agents.md) - Agent model assignments and when to use which agent
+- [INDEX.md](../../INDEX.md) - Complete documentation map

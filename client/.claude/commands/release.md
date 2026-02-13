@@ -1,6 +1,8 @@
 ---
 name: release
 description: Guided semantic version release workflow with changelog generation
+scope: general
+read-when: [creating-release, version-bumping, changelog-generation]
 ---
 
 You are helping the user create a semantic version release for the Paddokk project.
@@ -115,9 +117,19 @@ Common errors:
 
 ## Related Documentation
 
-- See `.claude/rules/common/versioning.md` for SemVer rules
-- See `.claude/rules/common/git-workflow.md` for commit format
-- See `client/.versionrc.json` for changelog configuration
+This `/release` skill workflow is also documented in:
+- [../rules/common/versioning.md](../rules/common/versioning.md) - References this file for detailed workflow
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Lists this skill in Git & PR Workflow table
+
+**See also:**
+- [../rules/common/versioning.md](../rules/common/versioning.md) - SemVer rules, version bumping, release commands
+- [../rules/common/git-workflow.md](../rules/common/git-workflow.md) - Commit format, branching strategy, conventional commits
+- [../../CLAUDE.md](../../CLAUDE.md) - Versioning overview
+
+**Config files:**
+- `client/.versionrc.json` - Changelog configuration
+- `client/package.json` - Version field and release scripts
+- `commitlint.config.js` - Commit message linting
 
 ## Important Notes
 

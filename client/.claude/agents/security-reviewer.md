@@ -3,6 +3,8 @@ name: security-reviewer
 description: Security vulnerability detection and remediation specialist. Use PROACTIVELY after writing code that handles user input, authentication, API endpoints, or sensitive data. Flags secrets, SSRF, injection, unsafe crypto, and OWASP Top 10 vulnerabilities.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
+scope: general
+read-when: [security-review, vulnerability-scan, before-commits]
 ---
 
 You are a security specialist reviewing Paddokk, a social platform for car enthusiasts built with TanStack Start and Better Auth.
@@ -72,3 +74,10 @@ Fix: Secure implementation
 npm audit                              # Check vulnerable dependencies
 npm audit --audit-level=high           # High severity only
 ```
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - When to use security-reviewer agent
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Skills vs agents decision table
+- [../rules/common/performance.md](../rules/common/performance.md) - Model selection (why this agent uses sonnet)
+- [../INDEX.md](../INDEX.md) - Complete documentation map

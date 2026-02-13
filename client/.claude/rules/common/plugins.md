@@ -1,3 +1,9 @@
+---
+scope: general
+applies-to: [mcp-servers, skills, context7, github, tools]
+read-when: [finding-right-tool, using-context7, github-operations]
+---
+
 # Plugins, Skills & MCP Servers
 
 ## MCP Servers
@@ -43,14 +49,14 @@ Full GitHub API access for issues, PRs, branches, code search, and repository ma
 
 ### Git & PR Workflow
 
-| Skill          | Command           | Purpose                                          |
-| -------------- | ----------------- | ------------------------------------------------ |
-| commit         | `/commit`         | Create a git commit                              |
-| commit-push-pr | `/commit-push-pr` | Commit, push, and open a PR in one step          |
-| release        | `/release`        | Guided version bump and changelog generation     |
-| clean_gone     | `/clean_gone`     | Clean up local branches deleted on remote        |
-| code-review    | `/code-review`    | Review a pull request                            |
-| review-pr      | `/review-pr`      | Comprehensive PR review using specialized agents |
+| Skill          | Command           | Purpose                                          | Documentation |
+| -------------- | ----------------- | ------------------------------------------------ | ------------- |
+| commit         | `/commit`         | Create a git commit                              | See [git-workflow.md](./git-workflow.md) |
+| commit-push-pr | `/commit-push-pr` | Commit, push, and open a PR in one step          | See [git-workflow.md](./git-workflow.md) |
+| release        | `/release`        | Guided version bump and changelog generation     | [commands/release.md](../../commands/release.md), [versioning.md](./versioning.md) |
+| clean_gone     | `/clean_gone`     | Clean up local branches deleted on remote        | See [git-workflow.md](./git-workflow.md) |
+| code-review    | `/code-review`    | Review a pull request                            | See [agents.md](./agents.md) |
+| review-pr      | `/review-pr`      | Comprehensive PR review using specialized agents | See [agents.md](./agents.md) |
 
 ### Sentry (Error Monitoring)
 
@@ -78,3 +84,11 @@ Some capabilities overlap. Use this to pick the right tool:
 | Git commit/PR          | `/commit`, `/commit-push-pr`                | -                                               |
 
 **General rule:** Skills are interactive workflows invoked by the user. Agents are autonomous workers dispatched by Claude. Use skills when the user asks for a workflow; use agents proactively when completing a task.
+
+## Related Documentation
+
+- [agents.md](./agents.md) - Agent selection and orchestration
+- [performance.md](./performance.md) - Model selection for agents
+- [git-workflow.md](./git-workflow.md) - Commit format and branching
+- [versioning.md](./versioning.md) - Release workflow and SemVer
+- [commands/release.md](../../commands/release.md) - `/release` skill details

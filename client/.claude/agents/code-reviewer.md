@@ -3,6 +3,8 @@ name: code-reviewer
 description: Expert code review specialist. Proactively reviews code for quality, security, and maintainability. Use immediately after writing or modifying code. MUST BE USED for all code changes.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
+scope: general
+read-when: [after-coding, code-review, quality-check]
 ---
 
 You are a senior code reviewer for Paddokk, a TanStack Start social platform for car enthusiasts.
@@ -65,3 +67,10 @@ Fix: How to fix
 - APPROVE: No CRITICAL or HIGH issues
 - WARNING: MEDIUM issues only
 - BLOCK: CRITICAL or HIGH issues found
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - When to use code-reviewer agent, feature workflow
+- [../rules/common/plugins.md](../rules/common/plugins.md) - `/code-review` and `/review-pr` skills
+- [../rules/common/performance.md](../rules/common/performance.md) - Model selection (why this agent uses sonnet)
+- [../INDEX.md](../INDEX.md) - Complete documentation map

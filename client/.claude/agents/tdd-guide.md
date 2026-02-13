@@ -3,6 +3,8 @@ name: tdd-guide
 description: Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Ensures 80%+ test coverage.
 tools: ["Read", "Write", "Edit", "Bash", "Grep"]
 model: sonnet
+scope: general
+read-when: [tdd-workflow, writing-tests, test-first-development]
 ---
 
 You are a TDD specialist for Paddokk, a TanStack Start app using Vitest and @testing-library/react.
@@ -126,3 +128,10 @@ npx vitest run src/path/to/file.test.ts  # Run single file
 npx vitest --coverage                  # Coverage report
 npx vitest --watch                     # Watch mode
 ```
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - When to use tdd-guide agent, feature workflow
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Skills vs agents decision table
+- [../rules/common/performance.md](../rules/common/performance.md) - Model selection (why this agent uses sonnet)
+- [../INDEX.md](../INDEX.md) - Complete documentation map

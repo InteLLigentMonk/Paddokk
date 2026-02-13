@@ -1,3 +1,9 @@
+---
+scope: general
+applies-to: [git, branching, commits, conventional-commits, pr-workflow]
+read-when: [making-commits, creating-pr, branching-strategy]
+---
+
 # Git Workflow
 
 ## Branching Strategy
@@ -118,8 +124,14 @@ Document these hooks so developers can recreate them with `/hookify`:
 
 To create these hooks, run `/hookify` and follow the prompts.
 
-## Related Files
+## Related Documentation
 
+- [versioning.md](./versioning.md) - SemVer rules, release workflow, version bumping
+- [agents.md](./agents.md) - Feature implementation workflow
+- [commands/release.md](../../commands/release.md) - `/release` skill workflow
+- [plugins.md](./plugins.md) - `/commit` and `/commit-push-pr` skills
+- [settings-hooks.md](./settings-hooks.md) - Recommended branch protection and force push hooks
+
+**Config files:**
 - `commitlint.config.js` - Commit message linting rules
 - `.versionrc.json` - Changelog generation config
-- `versioning.md` - SemVer and release workflow

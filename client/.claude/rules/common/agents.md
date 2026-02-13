@@ -1,18 +1,26 @@
+---
+scope: general
+applies-to: [agents, workflow, feature-development, parallel-execution]
+read-when: [planning-feature, choosing-agent, understanding-workflow]
+---
+
 # Agent Orchestration
 
-See also: `plugins.md` for skills, MCP servers, and when to use skills vs agents.
+See also: [plugins.md](./plugins.md) for skills, MCP servers, and when to use skills vs agents.
 
 ## Available Agents
 
-| Agent                | Model  | Purpose                 | When to Use                   |
-| -------------------- | ------ | ----------------------- | ----------------------------- |
-| planner              | opus   | Implementation planning | Complex features, refactoring |
-| architect            | opus   | System design           | Architectural decisions       |
-| code-reviewer        | sonnet | Code review             | After writing code            |
-| tdd-guide            | sonnet | Test-driven development | New features, bug fixes       |
-| build-error-resolver | sonnet | Fix build errors        | When build fails              |
-| security-reviewer    | sonnet | Security analysis       | Before commits                |
-| refactor-cleaner     | sonnet | Dead code cleanup       | Code maintenance              |
+| Agent | Model | Purpose | When to Use | Documentation |
+|---|---|---|---|---|
+| planner | opus | Implementation planning | Complex features, refactoring | [agents/planner.md](../../agents/planner.md) |
+| architect | opus | System design | Architectural decisions | [agents/architect.md](../../agents/architect.md) |
+| code-reviewer | sonnet | Code review | After writing code | [agents/code-reviewer.md](../../agents/code-reviewer.md) |
+| tdd-guide | sonnet | Test-driven development | New features, bug fixes | [agents/tdd-guide.md](../../agents/tdd-guide.md) |
+| build-error-resolver | sonnet | Fix build errors | When build fails | [agents/build-error-resolver.md](../../agents/build-error-resolver.md) |
+| security-reviewer | sonnet | Security analysis | Before commits | [agents/security-reviewer.md](../../agents/security-reviewer.md) |
+| refactor-cleaner | sonnet | Dead code cleanup | Code maintenance | [agents/refactor-cleaner.md](../../agents/refactor-cleaner.md) |
+
+**Quick reference:** See [INDEX.md](../../INDEX.md) for complete documentation map. See [performance.md](./performance.md) for model selection strategy.
 
 ## Immediate Agent Usage
 
@@ -44,10 +52,10 @@ ALWAYS use parallel Task execution for independent operations.
 
 ## Feature Implementation Workflow
 
-0. **Branch** - Create feature branch from `main` (e.g., `feat/user-profile`, `fix/auth-redirect`). See `git-workflow.md` for branching strategy.
-1. **Architect** (for major features only) - Use **architect** agent to design system architecture
-2. **Plan** - Use **planner** agent to create implementation plan
-3. **Research** - Use **Context7** to verify library APIs needed for the feature
-4. **TDD** - Use **tdd-guide** agent: write tests first (RED), implement (GREEN), refactor (IMPROVE)
-5. **Review** - Use **code-reviewer** agent, address CRITICAL and HIGH issues
-6. **Commit** - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `ci:` (enforced by commitlint)
+0. **Branch** - Create feature branch from `main` (e.g., `feat/user-profile`, `fix/auth-redirect`). See [git-workflow.md](./git-workflow.md) for branching strategy.
+1. **Architect** (for major features only) - Use **architect** agent to design system architecture ([agents/architect.md](../../agents/architect.md))
+2. **Plan** - Use **planner** agent to create implementation plan ([agents/planner.md](../../agents/planner.md))
+3. **Research** - Use **Context7** to verify library APIs needed for the feature (see [plugins.md](./plugins.md))
+4. **TDD** - Use **tdd-guide** agent: write tests first (RED), implement (GREEN), refactor (IMPROVE) ([agents/tdd-guide.md](../../agents/tdd-guide.md))
+5. **Review** - Use **code-reviewer** agent, address CRITICAL and HIGH issues ([agents/code-reviewer.md](../../agents/code-reviewer.md))
+6. **Commit** - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `ci:` (enforced by commitlint, see [git-workflow.md](./git-workflow.md))

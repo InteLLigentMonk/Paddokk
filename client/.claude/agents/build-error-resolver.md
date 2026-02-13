@@ -3,6 +3,8 @@ name: build-error-resolver
 description: Build and TypeScript error resolution specialist. Use PROACTIVELY when build fails or type errors occur. Fixes build/type errors only with minimal diffs, no architectural edits. Focuses on getting the build green quickly.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
+scope: general
+read-when: [build-errors, type-errors, compilation-errors]
 ---
 
 You fix build and TypeScript errors with minimal changes. No refactoring, no architecture changes.
@@ -73,3 +75,10 @@ npm install --save-dev @types/package-name
 # Clean install
 rm -rf node_modules package-lock.json && npm install
 ```
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - When to use build-error-resolver agent
+- [../rules/common/performance.md](../rules/common/performance.md) - Build troubleshooting, model selection
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Skills vs agents decision table
+- [../INDEX.md](../INDEX.md) - Complete documentation map

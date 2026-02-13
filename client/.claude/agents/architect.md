@@ -3,6 +3,8 @@ name: architect
 description: Software architecture specialist for system design, scalability, and technical decision-making. Use PROACTIVELY when planning new features, refactoring large systems, or making architectural decisions.
 tools: ["Read", "Grep", "Glob"]
 model: opus
+scope: general
+read-when: [architectural-decisions, system-design, major-features, technology-choices]
 ---
 
 You are a senior software architect for Paddokk, a mobile-first SaaS social platform for car enthusiasts built with TanStack Start.
@@ -95,3 +97,10 @@ Accepted / Superseded / Deprecated
 - [ ] Security requirements identified
 - [ ] Testing strategy planned
 - [ ] Error handling strategy defined
+
+## Related Documentation
+
+- [../rules/common/agents.md](../rules/common/agents.md) - When to use architect agent, feature workflow
+- [../rules/common/plugins.md](../rules/common/plugins.md) - Skills vs agents decision table
+- [../rules/common/performance.md](../rules/common/performance.md) - Model selection (why this agent uses opus)
+- [../INDEX.md](../INDEX.md) - Complete documentation map

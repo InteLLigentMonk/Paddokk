@@ -1,3 +1,9 @@
+---
+scope: general
+applies-to: [semver, releases, versioning, changelog]
+read-when: [creating-release, understanding-semver, version-bumping]
+---
+
 # Versioning & Releases
 
 ## Semantic Versioning
@@ -49,21 +55,7 @@ Use `release:dry` to preview before running the real release.
 
 ## Release Workflow
 
-### Automated Release (Recommended)
-
-Use the `/release` skill for guided workflow:
-
-```
-/release
-```
-
-This will:
-1. Verify you're on `main` branch
-2. Show commits since last tag
-3. Run `release:dry` to preview changes
-4. Ask for confirmation
-5. Run `npm run release`
-6. Push with tags
+Use the `/release` skill for guided workflow (see [commands/release.md](../../commands/release.md) for detailed steps).
 
 ### Manual Release
 
@@ -119,7 +111,7 @@ Tags are annotated and include the changelog for that version.
 
 - `client/package.json` - `version` field, release scripts
 - `client/.versionrc.json` - Changelog sections, URL formats, tag prefix
-- See `git-workflow.md` for commit message format
+- See [git-workflow.md](./git-workflow.md) for commit message format
 
 ## First Release
 
@@ -150,3 +142,9 @@ git push --follow-tags
 ```
 
 Or use the `/release` skill which handles this automatically.
+
+## Related Documentation
+
+- [commands/release.md](../../commands/release.md) - Detailed `/release` skill workflow
+- [git-workflow.md](./git-workflow.md) - Commit format and branching strategy
+- [plugins.md](./plugins.md) - Skills and MCP servers
