@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { Button, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { SectionWrapper } from "../layout/section-wrapper";
+import { openLogin, openSignup } from "@/lib/stores/auth-modal-store";
 
 export function HeroSection() {
   return (
@@ -29,10 +29,10 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <Group justify="center" gap="md">
-            <Button component={Link} to="/signup" size="lg">
+            <Button onClick={openSignup} size="lg">
               Get Started
             </Button>
-            <Button component={Link} to="/login" variant="default" size="lg">
+            <Button onClick={openLogin} variant="default" size="lg">
               Sign In
             </Button>
           </Group>

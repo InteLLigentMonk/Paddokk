@@ -18,13 +18,34 @@ import {
   NotificationsContainer,
 } from "../integrations/mantine";
 
+import { getAuthSession } from "../lib/auth-session.server";
 import type { QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
   queryClient: QueryClient;
+  auth: {
+    isAuthenticated: boolean;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      image?: string;
+    } | null;
+  };
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async () => {
+    const session = await getAuthSession();
+
+    return {
+      auth: {
+        isAuthenticated: !!session.user,
+        user: session.user ?? null,
+      },
+    };
+  },
+
   head: () => ({
     meta: [
       {
@@ -59,7 +80,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" {...mantineHtmlProps}>
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="auto" />
         <HeadContent />
       </head>
       <body>

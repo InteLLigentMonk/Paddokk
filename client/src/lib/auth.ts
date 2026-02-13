@@ -13,6 +13,19 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: false, // Set to true when email service is integrated
+    sendResetPassword: async ({ user, url }) => {
+      // TODO: Integrate email service (Resend, SendGrid, etc.)
+      console.log(`[DEV] Password reset link for ${user.email}: ${url}`);
+    },
+  },
+
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      // TODO: Integrate email service
+      console.log(`[DEV] Verification email for ${user.email}: ${url}`);
+    },
   },
 
   session: {

@@ -55,7 +55,7 @@ export function FeaturesSection() {
           <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="lg" mt="xl">
             {features.map((feature) => (
               <Stack key={feature.title} gap="md">
-                <div style={{ color: "var(--mantine-color-myColor-6)" }}>
+                <div style={{ color: "var(--mantine-primary-color-filled)" }}>
                   {feature.icon}
                 </div>
                 <Stack gap="xs">

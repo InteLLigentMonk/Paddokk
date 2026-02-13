@@ -13,6 +13,10 @@ export const getRouter = () => {
     routeTree,
     context: {
       ...rqContext,
+      auth: {
+        isAuthenticated: false,
+        user: null,
+      },
     },
 
     defaultPreload: "intent",

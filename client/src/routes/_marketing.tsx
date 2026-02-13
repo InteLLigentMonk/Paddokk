@@ -1,7 +1,14 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { MarketingFooter, MarketingHeader } from "@/components/marketing";
+import { AuthModal } from "@/components/auth";
 
 export const Route = createFileRoute("/_marketing")({
+  beforeLoad: ({ context }) => {
+    // Redirect authenticated users to the app
+    if (context.auth.isAuthenticated) {
+      throw redirect({ to: "/app/dashboard" });
+    }
+  },
   component: MarketingLayout,
 });
 
@@ -13,6 +20,7 @@ function MarketingLayout() {
         <Outlet />
       </main>
       <MarketingFooter />
+      <AuthModal />
     </div>
   );
 }
