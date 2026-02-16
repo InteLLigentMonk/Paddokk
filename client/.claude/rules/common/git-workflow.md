@@ -43,18 +43,18 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) specificatio
 
 ### Types
 
-| Type       | Purpose                                      | Changelog Section |
-| ---------- | -------------------------------------------- | ----------------- |
-| `feat`     | New feature                                  | Features          |
-| `fix`      | Bug fix                                      | Bug Fixes         |
-| `perf`     | Performance improvement                      | Performance       |
-| `refactor` | Code change that neither fixes nor adds      | Refactoring       |
-| `chore`    | Maintenance (deps, config, tooling)          | Maintenance       |
-| `revert`   | Revert a previous commit                     | Reverts           |
-| `docs`     | Documentation only                           | (hidden)          |
-| `style`    | Formatting, whitespace, semicolons           | (hidden)          |
-| `test`     | Add/update tests                             | (hidden)          |
-| `ci`       | CI/CD configuration                          | (hidden)          |
+| Type       | Purpose                                 | Changelog Section |
+| ---------- | --------------------------------------- | ----------------- |
+| `feat`     | New feature                             | Features          |
+| `fix`      | Bug fix                                 | Bug Fixes         |
+| `perf`     | Performance improvement                 | Performance       |
+| `refactor` | Code change that neither fixes nor adds | Refactoring       |
+| `chore`    | Maintenance (deps, config, tooling)     | Maintenance       |
+| `revert`   | Revert a previous commit                | Reverts           |
+| `docs`     | Documentation only                      | (hidden)          |
+| `style`    | Formatting, whitespace, semicolons      | (hidden)          |
+| `test`     | Add/update tests                        | (hidden)          |
+| `ci`       | CI/CD configuration                     | (hidden)          |
 
 ### Scopes
 
@@ -72,6 +72,7 @@ Common scopes (warning-level enforcement, new scopes allowed):
 - `landing` - Landing page
 - `deps` - Dependencies
 - `release` - Release process
+- `docs` - Documentation
 
 ### Breaking Changes
 
@@ -133,5 +134,6 @@ To create these hooks, run `/hookify` and follow the prompts.
 - [settings-hooks.md](./settings-hooks.md) - Recommended branch protection and force push hooks
 
 **Config files:**
+
 - `commitlint.config.js` - Commit message linting rules
 - `.versionrc.json` - Changelog generation config
