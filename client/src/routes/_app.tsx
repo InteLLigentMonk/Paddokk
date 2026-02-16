@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { Avatar, Box, Button, Container, Group, Text } from "@mantine/core";
-import { useAuth } from "@/hooks/use-auth";
-import { ColorSchemeToggle } from "@/components/common/color-scheme-toggle";
+import { Box } from "@mantine/core";
+import { AppHeader } from "@/components/common/app-header";
+import { AppSpotlight } from "@/components/common/app-spotlight";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: ({ context }) => {
@@ -14,52 +14,10 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  const { user, logout, isLoggingOut } = useAuth();
-
   return (
     <Box>
-      {/* App Header */}
-      <Box
-        component="header"
-        style={{
-          borderBottom: "1px solid var(--mantine-color-default-border)",
-          backgroundColor: "var(--mantine-color-body)",
-        }}
-      >
-        <Container size="lg" py="sm">
-          <Group justify="space-between">
-            <Text fw={700} fz="xl" c="myColor">
-              Paddokk
-            </Text>
-
-            <Group gap="md">
-              <ColorSchemeToggle />
-              {user && (
-                <>
-                  <Group gap="xs">
-                    <Avatar size="sm" radius="xl">
-                      {user.name.charAt(0).toUpperCase()}
-                    </Avatar>
-                    <Text size="sm" fw={500}>
-                      {user.name}
-                    </Text>
-                  </Group>
-                  <Button
-                    variant="subtle"
-                    size="sm"
-                    onClick={() => logout()}
-                    loading={isLoggingOut}
-                  >
-                    Sign out
-                  </Button>
-                </>
-              )}
-            </Group>
-          </Group>
-        </Container>
-      </Box>
-
-      {/* App Content */}
+      <AppSpotlight />
+      <AppHeader />
       <Box component="main">
         <Outlet />
       </Box>
