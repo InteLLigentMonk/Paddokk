@@ -1,21 +1,60 @@
 {
   "permissions": {
     "allow": [
+      "Bash(npm run *)",
       "Bash(npm install:*)",
+      "Bash(npx vitest *)",
+      "Bash(npx prettier *)",
+      "Bash(npx eslint *)",
+      "Bash(npx @better-auth/cli generate:*)",
+      "Bash(npx drizzle-kit push:*)",
+      "Bash(npx tsc:*)",
       "Bash(npx husky init)",
-      "Bash(ls -la \"C:\\\\WebDev\\\\paddokk.tanstack\\\\client\\\\.claude\"\" 2>/dev/null || echo \"Directory check \")",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git commit -m *)",
+      "Bash(git push:*)",
+      "Bash(ls *)",
+      "Bash(echo:*)",
+      "Bash(cat *)",
       "Bash(wc:*)",
       "Bash(grep:*)",
-      "Bash(xargs basename:*)",
-      "Bash(ls:*)",
-      "Bash(for file in \"./SCENARIOS.md\" \"./INDEX.md\" \"./agents/architect.md\" \"./rules/common/versioning.md\" \"./commands/release.md\")",
-      "Bash(do test -f \"$file\")",
-      "Bash(echo:*)",
-      "Bash(done)",
-      "Bash(git checkout:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs\\(claude\\): improve documentation navigation and discoverability\n\nAdd comprehensive documentation navigation system with master index,\ntask-based quick start guide, and complete cross-referencing.\n\nNew files:\n- INDEX.md: Master documentation index listing all 18 files\n- SCENARIOS.md: Task-based guide \\(\"I want to do X, read Y\"\\)\n- settings-hooks.md: Configuration documentation for permissions/hooks\n\nUpdates:\n- README.md: Add navigation links, fix \"2 rules\" → \"8 rules\"\n- CLAUDE.md: Add navigation section, reduce duplication\n- All 8 rule files: Add scope labels and cross-references\n- All 7 agent files: Add scope/read-when frontmatter and footers\n- release.md: Add scope and expanded references\n\nImprovements:\n- Remove duplicated release workflow from versioning.md\n- Add critical warning box to mantine-dark-mode.md\n- Create ~30 cross-references between related files\n- Document all permissions and hooks in settings.local.json\n\nImpact: +943 lines added, -13 lines removed \\(duplication\\)\nFiles updated: 21 total \\(3 new, 18 updated\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push:*)",
-      "mcp__plugin_github_github__create_pull_request"
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "mcp__plugin_github_github__*"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Look at this Bash command: $ARGUMENTS\n\nIf the command contains 'git commit', output exactly this message:\n💡 Consider running /update-docs to sync documentation with your changes (or skip if already up-to-date).\n\nIf the command does NOT contain 'git commit', output: SKIP\n\nBe very brief.",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs npx prettier --write 2>/dev/null || true",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }
