@@ -10,7 +10,7 @@ function AppDashboard() {
   const { auth } = Route.useRouteContext();
 
   return (
-    <Container size="lg" py="xl">
+    <Container size="xl" py="xl">
       <Stack gap="xl">
         {/* Welcome Header */}
         <Stack gap="xs">
