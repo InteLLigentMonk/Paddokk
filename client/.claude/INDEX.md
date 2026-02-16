@@ -8,9 +8,9 @@ Complete reference for all Claude Code documentation in the Paddokk project.
 - **Getting started:** Read [README.md](./README.md) for overview and structure
 - **Project-level config:** See [CLAUDE.md](../CLAUDE.md) for tech stack and architecture
 
-## All Documentation Files (18 files)
+## All Documentation Files (20 files)
 
-### Agents (7 files)
+### Agents (8 files)
 
 Specialized sub-agents for complex tasks. All agents use YAML frontmatter for metadata.
 
@@ -20,19 +20,21 @@ Specialized sub-agents for complex tasks. All agents use YAML frontmatter for me
 | planner | opus | Implementation planning for complex features | [agents/planner.md](./agents/planner.md) |
 | build-error-resolver | sonnet | Fix build errors and compilation issues | [agents/build-error-resolver.md](./agents/build-error-resolver.md) |
 | code-reviewer | sonnet | Code review for quality and security | [agents/code-reviewer.md](./agents/code-reviewer.md) |
+| docs-updater | sonnet | Documentation synchronization (pre-commit) | [agents/docs-updater.md](./agents/docs-updater.md) |
 | refactor-cleaner | sonnet | Dead code cleanup and refactoring | [agents/refactor-cleaner.md](./agents/refactor-cleaner.md) |
 | security-reviewer | sonnet | Security vulnerability analysis | [agents/security-reviewer.md](./agents/security-reviewer.md) |
 | tdd-guide | sonnet | Test-driven development workflow | [agents/tdd-guide.md](./agents/tdd-guide.md) |
 
 **When to use:** See [rules/common/agents.md](./rules/common/agents.md) for agent selection decision table.
 
-### Commands (1 file)
+### Commands (2 files)
 
-Skills invoked via slash commands (e.g., `/release`).
+Skills invoked via slash commands (e.g., `/release`, `/update-docs`).
 
 | Command | Skill | Purpose | File |
 |---|---|---|---|
 | release | `/release` | Guided semantic version release with changelog | [commands/release.md](./commands/release.md) |
+| update-docs | `/update-docs` | Sync documentation with code changes (pre-commit) | [commands/update-docs.md](./commands/update-docs.md) |
 
 **Note:** Other skills are documented in [rules/common/plugins.md](./rules/common/plugins.md).
 
@@ -128,11 +130,11 @@ Project-specific rules and guidelines loaded into every conversation.
 
 ## Documentation Stats
 
-- **Total files:** 18 documentation files
-- **Agents:** 7 specialized agents (4 sonnet, 3 opus)
-- **Rules:** 8 rule files (~1,200 lines)
-- **Commands:** 1 command file
-- **Lines of documentation:** ~1,600 lines total
+- **Total files:** 20 documentation files
+- **Agents:** 8 specialized agents (6 sonnet, 2 opus)
+- **Rules:** 9 rule files (~1,500 lines)
+- **Commands:** 2 command files
+- **Lines of documentation:** ~2,000 lines total
 
 ## Contributing to Documentation
 

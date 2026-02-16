@@ -54,6 +54,7 @@ Full GitHub API access for issues, PRs, branches, code search, and repository ma
 | commit         | `/commit`         | Create a git commit                              | See [git-workflow.md](./git-workflow.md) |
 | commit-push-pr | `/commit-push-pr` | Commit, push, and open a PR in one step          | See [git-workflow.md](./git-workflow.md) |
 | release        | `/release`        | Guided version bump and changelog generation     | [commands/release.md](../../commands/release.md), [versioning.md](./versioning.md) |
+| update-docs    | `/update-docs`    | Sync documentation with code changes (pre-commit) | [commands/update-docs.md](../../commands/update-docs.md), [agents/docs-updater.md](../../agents/docs-updater.md) |
 | clean_gone     | `/clean_gone`     | Clean up local branches deleted on remote        | See [git-workflow.md](./git-workflow.md) |
 | code-review    | `/code-review`    | Review a pull request                            | See [agents.md](./agents.md) |
 | review-pr      | `/review-pr`      | Comprehensive PR review using specialized agents | See [agents.md](./agents.md) |

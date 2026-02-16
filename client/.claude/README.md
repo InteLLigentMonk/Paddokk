@@ -16,16 +16,18 @@ This directory contains Claude Code configuration for the Paddokk client project
 ├── SCENARIOS.md                  # Task-based quick start guide
 ├── README.md                     # This file
 ├── settings.local.json           # Permissions + hooks config
-├── agents/                       # Specialized sub-agents (7 files)
+├── agents/                       # Specialized sub-agents (8 files)
 │   ├── architect.md              # System design (opus)
 │   ├── planner.md                # Implementation planning (opus)
 │   ├── build-error-resolver.md   # Fix build errors (sonnet)
 │   ├── code-reviewer.md          # Code review (sonnet)
+│   ├── docs-updater.md           # Documentation sync (sonnet)
 │   ├── refactor-cleaner.md       # Dead code cleanup (sonnet)
 │   ├── security-reviewer.md      # Security analysis (sonnet)
 │   └── tdd-guide.md              # Test-driven development (sonnet)
-├── commands/                     # Slash command skills (1 file)
-│   └── release.md                # /release skill workflow
+├── commands/                     # Slash command skills (2 files)
+│   ├── release.md                # /release skill workflow
+│   └── update-docs.md            # /update-docs skill workflow
 └── rules/
     └── common/                   # Project rules (8 files)
         ├── agents.md             # Agent orchestration and workflow
@@ -41,7 +43,7 @@ This directory contains Claude Code configuration for the Paddokk client project
 
 ## Agents
 
-7 specialized agents with right-sized models. See `rules/common/agents.md` for the full table and usage guidance.
+8 specialized agents with right-sized models. See `rules/common/agents.md` for the full table and usage guidance.
 
 ## Rules
 

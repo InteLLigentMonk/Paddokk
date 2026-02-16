@@ -17,6 +17,7 @@ See also: [plugins.md](./plugins.md) for skills, MCP servers, and when to use sk
 | code-reviewer | sonnet | Code review | After writing code | [agents/code-reviewer.md](../../agents/code-reviewer.md) |
 | tdd-guide | sonnet | Test-driven development | New features, bug fixes | [agents/tdd-guide.md](../../agents/tdd-guide.md) |
 | build-error-resolver | sonnet | Fix build errors | When build fails | [agents/build-error-resolver.md](../../agents/build-error-resolver.md) |
+| docs-updater | sonnet | Documentation synchronization | Before commits, when docs are out of sync | [agents/docs-updater.md](../../agents/docs-updater.md) |
 | security-reviewer | sonnet | Security analysis | Before commits | [agents/security-reviewer.md](../../agents/security-reviewer.md) |
 | refactor-cleaner | sonnet | Dead code cleanup | Code maintenance | [agents/refactor-cleaner.md](../../agents/refactor-cleaner.md) |
 

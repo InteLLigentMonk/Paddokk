@@ -29,6 +29,18 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Look at this Bash command: $ARGUMENTS\n\nIf the command contains 'git commit', output exactly this message:\n💡 Consider running /update-docs to sync documentation with your changes (or skip if already up-to-date).\n\nIf the command does NOT contain 'git commit', output: SKIP\n\nBe very brief.",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
