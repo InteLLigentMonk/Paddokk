@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Avatar,
   Box,
-  Burger,
   Container,
   Group,
   Kbd,
@@ -11,7 +10,7 @@ import {
   rem,
 } from "@mantine/core";
 import { spotlight } from "@mantine/spotlight";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import { LogOut, Search, Settings, User } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { ColorSchemeToggle } from "./color-scheme-toggle";
@@ -125,97 +124,19 @@ function HeaderSearch({ isLargeScreen }: { isLargeScreen: boolean }) {
   );
 }
 
-interface MobileUserMenuProps {
-  user: { name: string; email: string };
-  isOpen: boolean;
-  onToggle: () => void;
-  onClose: () => void;
-  onLogout: () => void;
-  isLoggingOut: boolean;
-}
-
-function MobileUserMenu({
-  user,
-  isOpen,
-  onToggle,
-  onClose,
-  onLogout,
-  isLoggingOut,
-}: MobileUserMenuProps) {
-  return (
-    <Menu
-      opened={isOpen}
-      onChange={onToggle}
-      position="bottom-end"
-      offset={8}
-      withArrow
-    >
-      <Menu.Target>
-        <Burger
-          opened={isOpen}
-          onClick={onToggle}
-          size="sm"
-          aria-label="Toggle navigation"
-        />
-      </Menu.Target>
-
-      <Menu.Dropdown>
-        <Menu.Label>
-          <UserInfo name={user.name} email={user.email} />
-        </Menu.Label>
-
-        <Menu.Divider />
-
-        <Menu.Item
-          leftSection={<Settings {...iconProps} />}
-          onClick={() => {
-            onClose();
-            // TODO: Navigate to settings
-          }}
-        >
-          Settings
-        </Menu.Item>
-
-        <Menu.Item
-          leftSection={<LogOut {...iconProps} />}
-          color="red"
-          onClick={() => {
-            onClose();
-            onLogout();
-          }}
-          disabled={isLoggingOut}
-        >
-          Sign out
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
-  );
-}
-
-interface DesktopUserActionsProps {
+interface UserMenuProps {
   user: { name: string; email: string };
   onLogout: () => void;
   isLoggingOut: boolean;
 }
 
-function DesktopUserActions({
+function UserMenu({
   user,
   onLogout,
   isLoggingOut,
-}: DesktopUserActionsProps) {
+}: UserMenuProps) {
   return (
     <>
-      <ActionIcon
-        variant="subtle"
-        size="lg"
-        aria-label="Sign out"
-        onClick={onLogout}
-        disabled={isLoggingOut}
-        color="red"
-      >
-        <LogOut {...iconProps} />
-      </ActionIcon>
-
       <Menu position="bottom-end" offset={8} withArrow>
         <Menu.Target>
           <Avatar
@@ -259,6 +180,17 @@ function DesktopUserActions({
           >
             Settings
           </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item
+            leftSection={<LogOut {...iconProps} />}
+            color="red"
+            onClick={onLogout}
+            disabled={isLoggingOut}
+          >
+            Sign out
+          </Menu.Item>
         </Menu.Dropdown>
       </Menu>
     </>
@@ -266,10 +198,6 @@ function DesktopUserActions({
 }
 
 export function AppHeader() {
-  const [
-    mobileMenuOpened,
-    { toggle: toggleMobileMenu, close: closeMobileMenu },
-  ] = useDisclosure();
   const { user, logout, isLoggingOut } = useAuth();
   const isLargeScreen = useMediaQuery("(min-width: 62em)");
 
@@ -303,22 +231,11 @@ export function AppHeader() {
 
             <ColorSchemeToggle />
 
-            {!isLargeScreen ? (
-              <MobileUserMenu
-                user={user}
-                isOpen={mobileMenuOpened}
-                onToggle={toggleMobileMenu}
-                onClose={closeMobileMenu}
-                onLogout={logout}
-                isLoggingOut={isLoggingOut}
-              />
-            ) : (
-              <DesktopUserActions
-                user={user}
-                onLogout={logout}
-                isLoggingOut={isLoggingOut}
-              />
-            )}
+            <UserMenu
+              user={user}
+              onLogout={logout}
+              isLoggingOut={isLoggingOut}
+            />
           </Group>
         </Group>
       </Container>
