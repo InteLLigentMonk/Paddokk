@@ -1,0 +1,87 @@
+import { Card, Image, Stack, Group, Text, ActionIcon, Menu, Badge, Box } from '@mantine/core'
+import { MoreVertical, Edit, Trash } from 'lucide-react'
+import type { UserCarDto } from '@/generated/api'
+import { openEditCarModal, openDeleteCarConfirm } from '@/lib/stores/cars-page-store'
+
+interface CarCardProps {
+  car: UserCarDto
+}
+
+export function CarCard({ car }: CarCardProps) {
+  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`
+
+  return (
+    <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <Card.Section>
+        <Image
+          src={car.primaryImageUrl || 'https://placehold.co/600x400/e9ecef/495057?text=No+Image'}
+          h={180}
+          alt={displayName}
+          fit="cover"
+        />
+      </Card.Section>
+
+      <Stack gap="sm" mt="md">
+        <Group justify="space-between" align="flex-start" wrap="nowrap">
+          <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+            <Text fw={600} lineClamp={1}>
+              {car.carMakeName} {car.carModelName}
+            </Text>
+            <Text size="sm" c="dimmed">
+              {car.year}
+              {car.carGenerationName && ` • ${car.carGenerationName}`}
+            </Text>
+            {car.nickname && (
+              <Text size="sm" c="dimmed" lineClamp={1}>
+                "{car.nickname}"
+              </Text>
+            )}
+          </Stack>
+
+          <Menu shadow="md" width={200} position="bottom-end">
+            <Menu.Target>
+              <ActionIcon
+                variant="subtle"
+                size={44}
+                aria-label="Car actions"
+                style={{ flexShrink: 0 }}
+              >
+                <MoreVertical size={18} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={<Edit size={16} />}
+                onClick={(e) => {
+                  e.preventDefault()
+                  openEditCarModal(car.id)
+                }}
+              >
+                Edit
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<Trash size={16} />}
+                c="red"
+                onClick={(e) => {
+                  e.preventDefault()
+                  openDeleteCarConfirm(car.id)
+                }}
+              >
+                Delete
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+
+        {car.journeyCount !== undefined && car.journeyCount > 0 && (
+          <Box>
+            <Badge variant="light" size="sm">
+              {car.journeyCount} {car.journeyCount === 1 ? 'Journey' : 'Journeys'}
+            </Badge>
+          </Box>
+        )}
+      </Stack>
+    </Card>
+  )
+}

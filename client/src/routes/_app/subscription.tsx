@@ -1,0 +1,90 @@
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { Container, Title, Text, Stack, Button, Card, SimpleGrid, Badge, List } from '@mantine/core'
+import { ArrowLeft } from 'lucide-react'
+
+export const Route = createFileRoute('/_app/subscription')({
+  component: SubscriptionPage,
+})
+
+function SubscriptionPage() {
+  return (
+    <Container size="lg" py="xl">
+      <Button
+        component={Link}
+        to="/cars"
+        variant="subtle"
+        leftSection={<ArrowLeft size={16} />}
+        mb="xl"
+      >
+        Back to My Cars
+      </Button>
+
+      <Stack gap="xl">
+        <div>
+          <Title order={1}>Subscription Plans</Title>
+          <Text c="dimmed" mt="sm">
+            Choose the plan that's right for you
+          </Text>
+        </div>
+
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg">
+          <Card shadow="sm" padding="xl" radius="md" withBorder>
+            <Stack gap="md">
+              <div>
+                <Badge size="lg" variant="light" mb="sm">
+                  Free
+                </Badge>
+                <Title order={2}>Starter</Title>
+                <Text size="xl" fw={700} mt="sm">
+                  $0<Text component="span" size="sm" c="dimmed">/month</Text>
+                </Text>
+              </div>
+
+              <List spacing="sm">
+                <List.Item>Up to 2 cars</List.Item>
+                <List.Item>Unlimited journeys</List.Item>
+                <List.Item>Basic image uploads</List.Item>
+                <List.Item>Community access</List.Item>
+              </List>
+
+              <Button variant="light" disabled>
+                Current Plan
+              </Button>
+            </Stack>
+          </Card>
+
+          <Card shadow="sm" padding="xl" radius="md" withBorder>
+            <Stack gap="md">
+              <div>
+                <Badge size="lg" variant="filled" mb="sm">
+                  Pro
+                </Badge>
+                <Title order={2}>Enthusiast</Title>
+                <Text size="xl" fw={700} mt="sm">
+                  $9.99<Text component="span" size="sm" c="dimmed">/month</Text>
+                </Text>
+              </div>
+
+              <List spacing="sm">
+                <List.Item>Unlimited cars</List.Item>
+                <List.Item>Unlimited journeys</List.Item>
+                <List.Item>High-res image uploads</List.Item>
+                <List.Item>Priority support</List.Item>
+                <List.Item>Advanced analytics</List.Item>
+                <List.Item>Custom badges</List.Item>
+              </List>
+
+              <Button>
+                Coming Soon
+              </Button>
+            </Stack>
+          </Card>
+        </SimpleGrid>
+
+        <Text size="sm" c="dimmed" ta="center">
+          Subscription management and payment processing will be available soon.
+        </Text>
+      </Stack>
+    </Container>
+  )
+}

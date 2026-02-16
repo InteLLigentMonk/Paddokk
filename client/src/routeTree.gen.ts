@@ -18,6 +18,7 @@ import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AppSubscriptionRouteImport } from './routes/_app/subscription'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
@@ -29,6 +30,8 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCommunityRouteImport } from './routes/_app/community'
 import { Route as AppCarsRouteImport } from './routes/_app/cars'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppCarsNewRouteImport } from './routes/_app/cars/new'
+import { Route as AppCarsCarIdEditRouteImport } from './routes/_app/cars/$carId/edit'
 
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
@@ -71,6 +74,11 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
+} as any)
+const AppSubscriptionRoute = AppSubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
@@ -127,10 +135,20 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppCarsNewRoute = AppCarsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppCarsRoute,
+} as any)
+const AppCarsCarIdEditRoute = AppCarsCarIdEditRouteImport.update({
+  id: '/$carId/edit',
+  path: '/$carId/edit',
+  getParentRoute: () => AppCarsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
-  '/cars': typeof AppCarsRoute
+  '/cars': typeof AppCarsRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/dashboard': typeof AppDashboardRoute
   '/explore': typeof AppExploreRoute
@@ -140,16 +158,19 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
+  '/subscription': typeof AppSubscriptionRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/cars/new': typeof AppCarsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/cars/$carId/edit': typeof AppCarsCarIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
-  '/cars': typeof AppCarsRoute
+  '/cars': typeof AppCarsRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/dashboard': typeof AppDashboardRoute
   '/explore': typeof AppExploreRoute
@@ -159,19 +180,22 @@ export interface FileRoutesByTo {
   '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
+  '/subscription': typeof AppSubscriptionRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/cars/new': typeof AppCarsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/cars/$carId/edit': typeof AppCarsCarIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_marketing': typeof MarketingRouteWithChildren
-  '/_app/cars': typeof AppCarsRoute
+  '/_app/cars': typeof AppCarsRouteWithChildren
   '/_app/community': typeof AppCommunityRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/explore': typeof AppExploreRoute
@@ -181,13 +205,16 @@ export interface FileRoutesById {
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/subscription': typeof AppSubscriptionRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_marketing/': typeof MarketingIndexRoute
+  '/_app/cars/new': typeof AppCarsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_app/cars/$carId/edit': typeof AppCarsCarIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,12 +230,15 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/subscription'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/cars/new'
     | '/api/auth/$'
+    | '/cars/$carId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -222,12 +252,15 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/subscription'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/cars/new'
     | '/api/auth/$'
+    | '/cars/$carId/edit'
   id:
     | '__root__'
     | '/_app'
@@ -243,13 +276,16 @@ export interface FileRouteTypes {
     | '/_app/notifications'
     | '/_app/profile'
     | '/_app/settings'
+    | '/_app/subscription'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/reset-password'
     | '/_auth/signup'
     | '/_auth/verify-email'
     | '/_marketing/'
+    | '/_app/cars/new'
     | '/api/auth/$'
+    | '/_app/cars/$carId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -323,6 +359,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/forgot-password'
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_app/subscription': {
+      id: '/_app/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof AppSubscriptionRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/settings': {
       id: '/_app/settings'
@@ -401,11 +444,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/cars/new': {
+      id: '/_app/cars/new'
+      path: '/new'
+      fullPath: '/cars/new'
+      preLoaderRoute: typeof AppCarsNewRouteImport
+      parentRoute: typeof AppCarsRoute
+    }
+    '/_app/cars/$carId/edit': {
+      id: '/_app/cars/$carId/edit'
+      path: '/$carId/edit'
+      fullPath: '/cars/$carId/edit'
+      preLoaderRoute: typeof AppCarsCarIdEditRouteImport
+      parentRoute: typeof AppCarsRoute
+    }
   }
 }
 
+interface AppCarsRouteChildren {
+  AppCarsNewRoute: typeof AppCarsNewRoute
+  AppCarsCarIdEditRoute: typeof AppCarsCarIdEditRoute
+}
+
+const AppCarsRouteChildren: AppCarsRouteChildren = {
+  AppCarsNewRoute: AppCarsNewRoute,
+  AppCarsCarIdEditRoute: AppCarsCarIdEditRoute,
+}
+
+const AppCarsRouteWithChildren =
+  AppCarsRoute._addFileChildren(AppCarsRouteChildren)
+
 interface AppRouteChildren {
-  AppCarsRoute: typeof AppCarsRoute
+  AppCarsRoute: typeof AppCarsRouteWithChildren
   AppCommunityRoute: typeof AppCommunityRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppExploreRoute: typeof AppExploreRoute
@@ -415,10 +485,11 @@ interface AppRouteChildren {
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppSubscriptionRoute: typeof AppSubscriptionRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppCarsRoute: AppCarsRoute,
+  AppCarsRoute: AppCarsRouteWithChildren,
   AppCommunityRoute: AppCommunityRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppExploreRoute: AppExploreRoute,
@@ -428,6 +499,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppNotificationsRoute: AppNotificationsRoute,
   AppProfileRoute: AppProfileRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppSubscriptionRoute: AppSubscriptionRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
