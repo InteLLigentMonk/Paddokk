@@ -1,9 +1,10 @@
 ﻿using System.Security.Claims;
 using API.Data;
 using API.Extensions;
-using API.Models.DTOs;
-using API.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Interfaces;
+using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.Entities;
 
 namespace API.Services;
 

@@ -1,9 +1,9 @@
 ﻿using API.Extensions;
-using API.Models.DTOs;
-using API.Models.Entities;
-using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Paddokk.Core.Interfaces;
+using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.Entities;
 
 namespace API.Controllers;
 

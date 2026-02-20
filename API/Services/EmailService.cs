@@ -1,6 +1,7 @@
 ﻿using System.Text.Encodings.Web;
 using Azure;
 using Azure.Communication.Email;
+using Paddokk.Core.Interfaces;
 
 namespace API.Services;
 

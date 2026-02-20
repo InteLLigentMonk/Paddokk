@@ -1,7 +1,7 @@
-﻿using API.Models.Entities;
+﻿using Paddokk.Core.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Models.DTOs;
+namespace Paddokk.Core.Models.DTOs;
 
 public class JourneyDto
 {

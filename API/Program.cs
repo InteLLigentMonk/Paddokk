@@ -1,10 +1,8 @@
 using API.Data;
 using API.Extensions;
 using API.Middleware;
-using API.Models.Entities;
 using Azure.Communication.Email;
 using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

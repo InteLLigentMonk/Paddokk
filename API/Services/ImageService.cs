@@ -1,10 +1,11 @@
 ﻿using API.Data;
-using API.Models.DTOs;
-using API.Models.Entities;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs;
 using SkiaSharp;
 using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Interfaces;
+using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.Entities;
 
 namespace API.Services;
 

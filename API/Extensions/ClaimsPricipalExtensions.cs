@@ -1,5 +1,5 @@
-﻿using API.Models.Entities;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Paddokk.Core.Models.Entities;
 
 namespace API.Extensions;
 

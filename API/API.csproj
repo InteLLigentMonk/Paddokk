@@ -31,8 +31,10 @@
 
   <ItemGroup>
     <Folder Include="Data\Configurations\" />
-    <Folder Include="Models\Requests\" />
-    <Folder Include="Models\Responses\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Paddokk.Core\Paddokk.Core.csproj" />
   </ItemGroup>
 
 </Project>

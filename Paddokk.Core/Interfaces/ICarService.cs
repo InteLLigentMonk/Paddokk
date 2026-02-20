@@ -1,8 +1,7 @@
-﻿using System.Security.Claims;
-using API.Models.DTOs;
-using API.Models.Entities;
+﻿using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.Entities;
 
-namespace API.Services;
+namespace Paddokk.Core.Interfaces;
 
 public interface ICarService
 {

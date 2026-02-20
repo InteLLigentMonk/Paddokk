@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using API.Data;
-using API.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Models.Entities;
 
 namespace API.Middleware
 {

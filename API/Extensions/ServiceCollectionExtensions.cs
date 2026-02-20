@@ -3,6 +3,7 @@ using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Paddokk.Core.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;

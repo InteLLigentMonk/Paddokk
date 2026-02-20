@@ -1,6 +1,7 @@
-﻿using API.Models.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using Paddokk.Core.Models.DTOs;
 
-namespace API.Services;
+namespace Paddokk.Core.Interfaces;
 
 public interface IImageService
 {

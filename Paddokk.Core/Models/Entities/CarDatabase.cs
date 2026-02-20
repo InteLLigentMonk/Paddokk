@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Models.Entities;
+namespace Paddokk.Core.Models.Entities;
 
 public class CarMake
 {

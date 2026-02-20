@@ -1,4 +1,4 @@
-﻿namespace API.Services;
+﻿namespace Paddokk.Core.Interfaces;
 
 public interface IEmailService
 {

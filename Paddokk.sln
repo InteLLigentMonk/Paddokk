@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35806.99 d17.13
+VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{5A5BD736-A588-45CD-90B4-368F3969A89F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paddokk.Core", "Paddokk.Core\Paddokk.Core.csproj", "{54189453-8050-41E7-B7E8-E812A7E8F5B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5A5BD736-A588-45CD-90B4-368F3969A89F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A5BD736-A588-45CD-90B4-368F3969A89F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A5BD736-A588-45CD-90B4-368F3969A89F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54189453-8050-41E7-B7E8-E812A7E8F5B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54189453-8050-41E7-B7E8-E812A7E8F5B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54189453-8050-41E7-B7E8-E812A7E8F5B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54189453-8050-41E7-B7E8-E812A7E8F5B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

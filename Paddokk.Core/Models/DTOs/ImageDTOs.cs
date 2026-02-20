@@ -1,7 +1,8 @@
-﻿using API.Models.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using Paddokk.Core.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Models.DTOs;
+namespace Paddokk.Core.Models.DTOs;
 
 public class ImageUploadDto
 {

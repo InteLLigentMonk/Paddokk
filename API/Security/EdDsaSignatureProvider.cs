@@ -1,8 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Crypto.Parameters;
-using System;
-using System.Linq;
 
 namespace API.Security;
 

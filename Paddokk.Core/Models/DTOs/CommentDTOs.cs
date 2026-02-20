@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Models.DTOs;
+namespace Paddokk.Core.Models.DTOs;
 
 public class PostCommentDto
 {

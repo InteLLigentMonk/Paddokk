@@ -30,6 +30,23 @@ API/obj/
 API/appsettings.json
 API/appsettings.*.json
 
+# .NET build artifacts (global)
+**/bin/
+**/obj/
+*.pdb
+*.dll
+*.exe
+*.cache
+*.nupkg
+*.snupkg
+*.dgspec.json
+*.nuget.props
+*.nuget.targets
+*.nuget.g.props
+*.nuget.g.targets
+project.assets.json
+launchSettings.json
+
 # Environment / secrets
 *.local
 .env

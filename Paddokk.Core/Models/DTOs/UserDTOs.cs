@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using API.Models.Entities;
+using Paddokk.Core.Models.Entities;
 
-namespace API.Models.DTOs
+namespace Paddokk.Core.Models.DTOs
 {
     public class UserDto
     {
