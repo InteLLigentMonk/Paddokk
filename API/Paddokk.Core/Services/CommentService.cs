@@ -3,24 +3,25 @@ using Microsoft.EntityFrameworkCore;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.Entities;
 using Paddokk.Core.Models.DTOs.Comment;
+using Microsoft.Extensions.Logging;
 
 namespace Paddokk.Api.Services;
 
 public class CommentService : ICommentService
 {
-    private readonly PaddokkDbContext _context;
     private readonly ILogger<CommentService> _logger;
+    private readonly ICommentRepository _commentRepository;
 
-    public CommentService(PaddokkDbContext context, ILogger<CommentService> logger)
+    public CommentService(ICommentRepository commentRepository, ILogger<CommentService> logger)
     {
-        _context = context;
+        _commentRepository = commentRepository;
         _logger = logger;
     }
 
-    public async Task<CommentsPagedResponse> GetPostCommentsAsync(int postId, int page = 1, int pageSize = 20, string? currentUserId = null)
+    public async Task<CommentsPagedResponse> GetPostCommentsAsync(int postId, CancellationToken cancellationToken, int page = 1, int pageSize = 20, string? currentUserId = null)
     {
         // Validate post exists
-        var postExists = await _context.JourneyPosts.AnyAsync(p => p.Id == postId);
+        var postExists = await _context.JourneyPosts.AnyAsync(p => p.Id == postId, cancellationToken);
         if (!postExists)
             throw new ArgumentException("Post not found");
 
@@ -51,7 +52,7 @@ public class CommentService : ICommentService
         };
     }
 
-    public async Task<PostCommentDto?> GetCommentByIdAsync(int commentId, string? currentUserId = null)
+    public async Task<PostCommentDto?> GetCommentByIdAsync(int commentId, string? currentUserId = null, CancellationToken cancellationToken)
     {
         var comment = await _context.PostComments
             .Include(c => c.User)

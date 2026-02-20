@@ -30,6 +30,7 @@ public class PostCommentsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<CommentsPagedResponse>> GetPostComments(
         int postId,
+        CancellationToken cancellationToken,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
@@ -40,7 +41,7 @@ public class PostCommentsController : ControllerBase
             if (pageSize < 1 || pageSize > 100) pageSize = 20;
 
             var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-            var comments = await _commentService.GetPostCommentsAsync(postId, page, pageSize, currentUserId);
+            var comments = await _commentService.GetPostCommentsAsync(postId, page, pageSize, currentUserId, cancellationToken);
 
             return Ok(comments);
         }
@@ -55,12 +56,12 @@ public class PostCommentsController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<PostCommentDto>> CreateComment(int postId, [FromBody] CreateCommentRequest request)
+    public async Task<ActionResult<PostCommentDto>> CreateComment(int postId, [FromBody] CreateCommentRequest request, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
-            var comment = await _commentService.CreateCommentAsync(userId, postId, request);
+            var comment = await _commentService.CreateCommentAsync(userId, postId, request, cancellationToken);
 
             return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.Id }, comment);
         }
@@ -78,10 +79,10 @@ public class PostCommentsController : ControllerBase
     /// Get specific comment
     /// </summary>
     [HttpGet("{commentId}")]
-    public async Task<ActionResult<PostCommentDto>> GetComment(int postId, int commentId)
+    public async Task<ActionResult<PostCommentDto>> GetComment(int postId, int commentId, CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var comment = await _commentService.GetCommentByIdAsync(commentId, currentUserId);
+        var comment = await _commentService.GetCommentByIdAsync(commentId, currentUserId, cancellationToken);
 
         if (comment == null || comment.JourneyPostId != postId)
             return NotFound(new { message = "Comment not found" });
@@ -94,10 +95,10 @@ public class PostCommentsController : ControllerBase
     /// </summary>
     [HttpPut("{commentId}")]
     [Authorize]
-    public async Task<ActionResult<PostCommentDto>> UpdateComment(int postId, int commentId, [FromBody] UpdateCommentRequest request)
+    public async Task<ActionResult<PostCommentDto>> UpdateComment(int postId, int commentId, [FromBody] UpdateCommentRequest request, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var comment = await _commentService.UpdateCommentAsync(userId, commentId, request);
+        var comment = await _commentService.UpdateCommentAsync(userId, commentId, request, cancellationToken);
 
         if (comment == null)
             return NotFound(new { message = "Comment not found or you don't have permission to edit it" });
@@ -110,10 +111,10 @@ public class PostCommentsController : ControllerBase
     /// </summary>
     [HttpDelete("{commentId}")]
     [Authorize]
-    public async Task<IActionResult> DeleteComment(int postId, int commentId)
+    public async Task<IActionResult> DeleteComment(int postId, int commentId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var result = await _commentService.DeleteCommentAsync(userId, commentId);
+        var result = await _commentService.DeleteCommentAsync(userId, commentId, cancellationToken);
 
         if (!result)
             return NotFound(new { message = "Comment not found or you don't have permission to delete it" });
