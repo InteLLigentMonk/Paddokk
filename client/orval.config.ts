@@ -7,11 +7,30 @@ export default defineConfig({
     },
     output: {
       mode: "tags-split", // Split by controller tags
-      target: "src/generated/api/api.ts",
+      target: "src/generated/api/",
       schemas: "src/generated/api/api.schemas.ts",
-      client: "react-query",
+      client: "fetch",
       mock: false,
       override: {
+        zod: {
+          strict: {
+            param: true,
+            query: true,
+            body: true,
+            response: true,
+          },
+          generate: {
+            param: true,
+            query: true,
+            body: true,
+            response: true,
+          }
+        },
+        fetch: {
+          includeHttpResponseReturnType: true,
+        }
+      },
+    },
         mutator: {
           path: "src/lib/api/client.ts",
           name: "apiFetcher",

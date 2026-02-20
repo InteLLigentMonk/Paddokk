@@ -25,10 +25,12 @@ client/count.txt
 client/todos.json
 
 # API (C# / .NET)
-API/bin/
-API/obj/
-API/appsettings.json
-API/appsettings.*.json
+API/Paddokk.Api/bin/
+API/Paddokk.Api/obj/
+API/Paddokk.Api/appsettings.json
+API/Paddokk.Api/appsettings.*.json
+API/Paddokk.Core/bin/
+API/Paddokk.Core/obj/
 
 # .NET build artifacts (global)
 **/bin/
