@@ -1,18 +1,19 @@
 ﻿using Paddokk.Core.Models.DTOs.Comment;
+using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Interfaces;
 
 public interface ICommentRepository
 {
-    Task<CommentsPagedResponse> GetPostCommentsAsync(int postId, CancellationToken cancellationToken, int page = 1, int pageSize = 20);
+    Task<(List<PostComment> postComments, int totalCount)> GetPostCommentsAsync(int postId, CancellationToken cancellationToken, int page = 1, int pageSize = 20);
 
-    Task<PostCommentDto?> GetCommentByIdAsync(int commentId, CancellationToken cancellationToken, string? currentUserId = null);
+    Task<PostComment?> GetCommentByIdAsync(int commentId, CancellationToken cancellationToken, string? currentUserId = null);
 
-    Task<PostCommentDto> CreateCommentAsync(string userId, int postId, CreateCommentRequest request, CancellationToken cancellationToken);
+    Task CreateCommentAsync(PostComment comment, CancellationToken cancellationToken);
 
-    Task<PostCommentDto?> UpdateCommentAsync(string userId, int commentId, UpdateCommentRequest request, CancellationToken cancellationToken);
+    Task<bool> UpdateCommentAsync(string userId, int commentId, UpdateCommentRequest request, CancellationToken cancellationToken);
 
-    Task<bool> DeleteCommentAsync(string userId, int commentId, CancellationToken cancellationToken);
+    Task DeleteCommentAsync(PostComment comment, CancellationToken cancellationToken);
 
     Task<int> GetPostCommentCountAsync(int postId, CancellationToken cancellationToken);
 

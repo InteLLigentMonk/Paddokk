@@ -1,11 +1,9 @@
-﻿using Paddokk.Data;
-using Microsoft.EntityFrameworkCore;
-using Paddokk.Core.Interfaces;
+﻿using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.Entities;
 using Paddokk.Core.Models.DTOs.Comment;
 using Microsoft.Extensions.Logging;
 
-namespace Paddokk.Api.Services;
+namespace Paddokk.Core.Services;
 
 public class CommentService : ICommentService
 {
@@ -20,26 +18,9 @@ public class CommentService : ICommentService
 
     public async Task<CommentsPagedResponse> GetPostCommentsAsync(int postId, CancellationToken cancellationToken, int page = 1, int pageSize = 20, string? currentUserId = null)
     {
-        // Validate post exists
-        var postExists = await _context.JourneyPosts.AnyAsync(p => p.Id == postId, cancellationToken);
-        if (!postExists)
-            throw new ArgumentException("Post not found");
+        var (postComments, totalCount) = await _commentRepository.GetPostCommentsAsync(postId, cancellationToken, page, pageSize);
 
-        var query = _context.PostComments
-            .Include(c => c.User)
-            .Include(c => c.JourneyPost)
-                .ThenInclude(p => p.User)
-            .Where(c => c.JourneyPostId == postId)
-            .OrderBy(c => c.CreatedAt); // Chronological order (oldest first)
-
-        var totalCount = await query.CountAsync();
-
-        var comments = await query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        var commentDtos = comments.Select(c => MapToCommentDto(c, currentUserId)).ToList();
+        var commentDtos = postComments.Select(c => MapToCommentDto(c, currentUserId)).ToList();
 
         return new CommentsPagedResponse
         {
@@ -52,30 +33,18 @@ public class CommentService : ICommentService
         };
     }
 
-    public async Task<PostCommentDto?> GetCommentByIdAsync(int commentId, string? currentUserId = null, CancellationToken cancellationToken)
+    public async Task<PostCommentDto?> GetCommentByIdAsync(int commentId, CancellationToken cancellationToken, string? currentUserId = null)
     {
-        var comment = await _context.PostComments
-            .Include(c => c.User)
-            .Include(c => c.JourneyPost)
-                .ThenInclude(p => p.User)
-            .FirstOrDefaultAsync(c => c.Id == commentId);
+        var comment = await _commentRepository.GetCommentByIdAsync(commentId, cancellationToken, currentUserId);
 
         return comment != null ? MapToCommentDto(comment, currentUserId) : null;
     }
 
-    public async Task<PostCommentDto> CreateCommentAsync(string userId, int postId, CreateCommentRequest request)
+    public async Task<PostCommentDto> CreateCommentAsync(string userId, int postId, CreateCommentRequest request, CancellationToken cancellationToken)
     {
         // Validate user can comment on this post
-        if (!await CanUserCommentOnPostAsync(userId, postId))
+        if (!await CanUserCommentOnPostAsync(userId, postId, cancellationToken))
             throw new InvalidOperationException("Cannot comment on this post");
-
-        // Get the post to include in response
-        var post = await _context.JourneyPosts
-            .Include(p => p.User)
-            .FirstOrDefaultAsync(p => p.Id == postId);
-
-        if (post == null)
-            throw new ArgumentException("Post not found");
 
         var comment = new PostComment
         {
@@ -85,41 +54,31 @@ public class CommentService : ICommentService
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-
-        _context.PostComments.Add(comment);
-        await _context.SaveChangesAsync();
+        
+        await _commentRepository.CreateCommentAsync(comment, cancellationToken);
 
         _logger.LogInformation("User {UserId} commented on post {PostId}", userId, postId);
 
         // Return the created comment with full details
-        return await GetCommentByIdAsync(comment.Id, userId)
+        return await GetCommentByIdAsync(comment.Id, cancellationToken, userId)
             ?? throw new InvalidOperationException("Failed to retrieve created comment");
     }
 
-    public async Task<PostCommentDto?> UpdateCommentAsync(string userId, int commentId, UpdateCommentRequest request)
+    public async Task<PostCommentDto?> UpdateCommentAsync(string userId, int commentId, UpdateCommentRequest request, CancellationToken cancellationToken)
     {
-        var comment = await _context.PostComments
-            .FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == userId);
-
-        if (comment == null)
+        var update = await _commentRepository.UpdateCommentAsync(userId, commentId, request, cancellationToken);
+        if (!update)
             return null;
-
-        comment.Content = request.Content.Trim();
-        comment.UpdatedAt = DateTime.UtcNow;
-        comment.IsEdited = true;
-
-        await _context.SaveChangesAsync();
 
         _logger.LogInformation("User {UserId} updated comment {CommentId}", userId, commentId);
 
-        return await GetCommentByIdAsync(commentId, userId);
+        return await GetCommentByIdAsync(commentId, cancellationToken, userId);
     }
 
-    public async Task<bool> DeleteCommentAsync(string userId, int commentId)
+    public async Task<bool> DeleteCommentAsync(string userId, int commentId, CancellationToken cancellationToken)
     {
-        var comment = await _context.PostComments
-            .Include(c => c.JourneyPost)
-            .FirstOrDefaultAsync(c => c.Id == commentId);
+
+        var comment = await _commentRepository.GetCommentByIdAsync(commentId, cancellationToken);
 
         if (comment == null)
             return false;
@@ -130,31 +89,22 @@ public class CommentService : ICommentService
         if (!canDelete)
             return false;
 
-        _context.PostComments.Remove(comment);
-        await _context.SaveChangesAsync();
+        await _commentRepository.DeleteCommentAsync(comment, cancellationToken);
 
         _logger.LogInformation("Comment {CommentId} deleted by user {UserId}", commentId, userId);
 
         return true;
     }
 
-    public async Task<int> GetPostCommentCountAsync(int postId)
-    {
-        return await _context.PostComments.CountAsync(c => c.JourneyPostId == postId);
-    }
+    public async Task<int> GetPostCommentCountAsync(int postId, CancellationToken cancellationToken)
+        => await _commentRepository.GetPostCommentCountAsync(postId, cancellationToken);
 
-    public async Task<bool> CanUserCommentOnPostAsync(string userId, int postId)
+    public async Task<bool> CanUserCommentOnPostAsync(string userId, int postId, CancellationToken cancellationToken)
     {
         // Check if post exists and user exists
-        var post = await _context.JourneyPosts
-            .Include(p => p.Journey)
-            .FirstOrDefaultAsync(p => p.Id == postId);
-
-        if (post == null)
+        if (!await _commentRepository.JourneyPostExists(postId, cancellationToken))
             return false;
-
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null || user.IsDeleted)
+        if (!await _commentRepository.UserExist(userId, cancellationToken))
             return false;
 
         // For now, any authenticated user can comment
@@ -166,13 +116,7 @@ public class CommentService : ICommentService
         return true;
     }
 
-    public async Task<bool> UserOwnsCommentAsync(string userId, int commentId)
-    {
-        return await _context.PostComments
-            .AnyAsync(c => c.Id == commentId && c.UserId == userId);
-    }
-
-    public async Task<bool> ReportCommentAsync(string userId, int commentId, string reason)
+    public async Task<bool> ReportCommentAsync(string userId, int commentId, string reason, CancellationToken cancellationToken)
     {
         // Placeholder for future moderation system
         // Could create a CommentReport entity
