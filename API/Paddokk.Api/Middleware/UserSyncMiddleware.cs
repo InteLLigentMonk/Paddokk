@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
-using API.Data;
+using Paddokk.Data;
 using Microsoft.EntityFrameworkCore;
 using Paddokk.Core.Models.Entities;
 
-namespace API.Middleware
+namespace Paddokk.Api.Middleware
 {
     public class UserSyncMiddleware(RequestDelegate next)
     {

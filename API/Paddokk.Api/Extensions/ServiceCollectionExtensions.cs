@@ -1,5 +1,5 @@
-﻿using API.Security;
-using API.Services;
+﻿using Paddokk.Api.Security;
+using Paddokk.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -7,9 +7,11 @@ using Paddokk.Core.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Paddokk.Data.Repositories;
+using Paddokk.Core.Services;
 
 
-namespace API.Extensions;
+namespace Paddokk.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -233,12 +235,15 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        // Register application services here
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICarService, CarService>();
         services.AddScoped<IJourneyService, JourneyService>();
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<ICommentService, CommentService>();
-        // Add other services here as we build them
+
+        // Register application repositories here
+        services.AddScoped<ICarRepository, CarRepository>();
 
         return services;
     }

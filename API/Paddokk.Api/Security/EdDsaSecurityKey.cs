@@ -3,7 +3,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math.EC;
 using System.Text;
 
-namespace API.Security;
+namespace Paddokk.Api.Security;
 
 /// <summary>
 /// Custom SecurityKey for EdDSA (Ed25519) validation using BouncyCastle

@@ -1,4 +1,4 @@
-﻿using Paddokk.Core.Models.DTOs;
+﻿using Paddokk.Core.Models.DTOs.Comment;
 
 namespace Paddokk.Core.Interfaces;
 

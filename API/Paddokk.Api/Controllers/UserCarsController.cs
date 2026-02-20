@@ -1,11 +1,11 @@
-﻿using API.Extensions;
+﻿using Paddokk.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Paddokk.Core.Interfaces;
-using Paddokk.Core.Models.DTOs;
 using Paddokk.Core.Models.Entities;
+using Paddokk.Core.Models.DTOs.Car;
 
-namespace API.Controllers;
+namespace Paddokk.Api.Controllers;
 
 [ApiController]
 [Route("api/users/me/cars")]
@@ -13,27 +13,25 @@ namespace API.Controllers;
 public class UserCarsController : ControllerBase
 {
     private readonly ICarService _carService;
-    private readonly ILogger<UserCarsController> _logger;
 
-    public UserCarsController(ICarService carService, ILogger<UserCarsController> logger)
+    public UserCarsController(ICarService carService)
     {
         _carService = carService;
-        _logger = logger;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserCarDto>>> GetUserCars()
+    public async Task<ActionResult<IEnumerable<UserCarDto>>> GetUserCars(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var cars = await _carService.GetUserCarsAsync(userId);
+        var cars = await _carService.GetUserCarsAsync(userId, cancellationToken);
         return Ok(cars);
     }
 
     [HttpGet("{carId}")]
-    public async Task<ActionResult<UserCarDto>> GetUserCar(int carId)
+    public async Task<ActionResult<UserCarDto>> GetUserCar(int carId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var car = await _carService.GetUserCarByIdAsync(userId, carId);
+        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
 
         if (car == null)
             return NotFound();
@@ -42,13 +40,13 @@ public class UserCarsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserCarDto>> CreateUserCar([FromBody] CreateUserCarRequest request)
+    public async Task<ActionResult<UserCarDto>> CreateUserCar([FromBody] CreateUserCarRequest request, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
             var subTier = User.GetSubscriptionTier();
-            var car = await _carService.CreateUserCarAsync(subTier, userId, request);
+            var car = await _carService.CreateUserCarAsync(subTier, userId, request, cancellationToken);
             return CreatedAtAction(nameof(GetUserCar), new { carId = car.Id }, car);
         }
         catch (InvalidOperationException ex)
@@ -62,10 +60,11 @@ public class UserCarsController : ControllerBase
     }
 
     [HttpPut("{carId}")]
-    public async Task<ActionResult<UserCarDto>> UpdateUserCar(int carId, [FromBody] UpdateUserCarRequest request)
+    public async Task<ActionResult<UserCarDto>> UpdateUserCar(int carId, [FromBody] UpdateUserCarRequest request, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var car = await _carService.UpdateUserCarAsync(userId, carId, request);
+
+        var car = await _carService.UpdateUserCarAsync(userId, carId, request, cancellationToken);
 
         if (car == null)
             return NotFound();
@@ -74,12 +73,12 @@ public class UserCarsController : ControllerBase
     }
 
     [HttpDelete("{carId}")]
-    public async Task<IActionResult> DeleteUserCar(int carId)
+    public async Task<IActionResult> DeleteUserCar(int carId, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
-            var deleted = await _carService.DeleteUserCarAsync(userId, carId);
+            var deleted = await _carService.DeleteUserCarAsync(userId, carId, cancellationToken);
 
             if (!deleted)
                 return NotFound();
@@ -93,31 +92,10 @@ public class UserCarsController : ControllerBase
     }
 
     [HttpGet("can-add")]
-    public async Task<ActionResult<object>> CanAddCar()
+    public async Task<ActionResult<CarLimitDto>> CanAddCar(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var subTier = User.GetSubscriptionTier();
-        var canAdd = await _carService.CanUserAddCarAsync(subTier, userId);
-        var currentCount = await _carService.GetUserCarCountAsync(userId);
-
-        // Get max cars for user's subscription tier
         var subscriptionTier = User.GetSubscriptionTier();
-        var maxCars = subscriptionTier switch
-        {
-            SubscriptionTier.Free => 1,
-            SubscriptionTier.Silver => 3,
-            SubscriptionTier.Gold => 10,
-            SubscriptionTier.Platinum => 20,
-            SubscriptionTier.Diamond => int.MaxValue,
-            _ => 1
-        };
-
-        return Ok(new
-        {
-            canAdd,
-            currentCount,
-            maxCars = maxCars == int.MaxValue ? "Unlimited" : maxCars.ToString(),
-            subscriptionTier = subscriptionTier.ToString()
-        });
+        return await _carService.CanUserAddCarAsync(subscriptionTier, userId, cancellationToken);
     }
 }

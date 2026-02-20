@@ -30,11 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Configurations\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Paddokk.Core\Paddokk.Core.csproj" />
+    <ProjectReference Include="..\Paddokk.Data\Paddokk.Data.csproj" />
   </ItemGroup>
 
 </Project>

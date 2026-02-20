@@ -1,11 +1,11 @@
-﻿using API.Extensions;
-using API.Services;
+﻿using Paddokk.Api.Extensions;
+using Paddokk.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Paddokk.Core.Interfaces;
-using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.DTOs.Image;
 
-namespace API.Controllers;
+namespace Paddokk.Api.Controllers;
 
 [ApiController]
 [Route("api/users/me/cars/{carId}/images")]

@@ -1,4 +1,4 @@
-using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.DTOs.User;
 
 namespace Paddokk.Core.Interfaces;
 

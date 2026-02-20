@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Paddokk.Core.Models.Entities;
 
-namespace API.Extensions;
+namespace Paddokk.Api.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {

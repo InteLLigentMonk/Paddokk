@@ -6,6 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\Requests\**" />
+    <Compile Remove="Models\Responses\**" />
+    <EmbeddedResource Remove="Models\Requests\**" />
+    <EmbeddedResource Remove="Models\Responses\**" />
+    <None Remove="Models\Requests\**" />
+    <None Remove="Models\Responses\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Azure.communication.Email" Version="1.0.1" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
@@ -27,11 +36,6 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Models\Requests\" />
-	  <Folder Include="Models\Responses\" />
 	</ItemGroup>
 	
 </Project>

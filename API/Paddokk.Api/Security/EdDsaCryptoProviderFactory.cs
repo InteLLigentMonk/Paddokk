@@ -1,6 +1,6 @@
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Security;
+namespace Paddokk.Api.Security;
 
 /// <summary>
 /// Custom CryptoProviderFactory for EdDSA algorithm support

@@ -1,10 +1,10 @@
-﻿using API.Extensions;
+﻿using Paddokk.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Paddokk.Core.Interfaces;
-using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.DTOs.Journey;
 
-namespace API.Controllers;
+namespace Paddokk.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

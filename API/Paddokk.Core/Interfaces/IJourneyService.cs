@@ -1,4 +1,4 @@
-﻿using Paddokk.Core.Models.DTOs;
+﻿using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Core.Interfaces;
 

@@ -1,6 +1,6 @@
-using API.Data;
-using API.Extensions;
-using API.Middleware;
+using Paddokk.Data;
+using Paddokk.Api.Extensions;
+using Paddokk.Api.Middleware;
 using Azure.Communication.Email;
 using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;

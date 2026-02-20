@@ -1,7 +1,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Signers;
 
-namespace API.Security;
+namespace Paddokk.Api.Security;
 
 /// <summary>
 /// Custom SignatureProvider for EdDSA (Ed25519) using BouncyCastle

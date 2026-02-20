@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Paddokk.Core.Models.DTOs;
+using Paddokk.Core.Models.DTOs.Image;
+using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Core.Interfaces;
 
