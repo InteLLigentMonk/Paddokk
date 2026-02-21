@@ -244,6 +244,7 @@ public static class ServiceCollectionExtensions
 
         // Register application repositories here
         services.AddScoped<ICarRepository, CarRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
 
         return services;
     }

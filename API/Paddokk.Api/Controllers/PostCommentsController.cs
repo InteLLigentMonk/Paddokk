@@ -41,7 +41,7 @@ public class PostCommentsController : ControllerBase
             if (pageSize < 1 || pageSize > 100) pageSize = 20;
 
             var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-            var comments = await _commentService.GetPostCommentsAsync(postId, page, pageSize, currentUserId, cancellationToken);
+            var comments = await _commentService.GetPostCommentsAsync(postId, cancellationToken, page, pageSize, currentUserId);
 
             return Ok(comments);
         }
@@ -82,7 +82,7 @@ public class PostCommentsController : ControllerBase
     public async Task<ActionResult<PostCommentDto>> GetComment(int postId, int commentId, CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var comment = await _commentService.GetCommentByIdAsync(commentId, currentUserId, cancellationToken);
+        var comment = await _commentService.GetCommentByIdAsync(commentId, cancellationToken, currentUserId);
 
         if (comment == null || comment.JourneyPostId != postId)
             return NotFound(new { message = "Comment not found" });

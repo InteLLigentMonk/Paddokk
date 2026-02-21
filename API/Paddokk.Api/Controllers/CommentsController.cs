@@ -25,7 +25,7 @@ public class CommentsController : ControllerBase
     public async Task<ActionResult<PostCommentDto>> GetComment(int commentId, CancellationToken cancellationToken)
     {
         var currentUserId = User.GetUserId();
-        var comment = await _commentService.GetCommentByIdAsync(commentId, currentUserId, cancellationToken);
+        var comment = await _commentService.GetCommentByIdAsync(commentId, cancellationToken, currentUserId);
 
         if (comment == null)
             return NotFound(new { message = "Comment not found" });
@@ -37,10 +37,14 @@ public class CommentsController : ControllerBase
     /// Update comment (owner only)
     /// </summary>
     [HttpPut("{commentId}")]
-    public async Task<ActionResult<PostCommentDto>> UpdateComment(int commentId, [FromBody] UpdateCommentRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<PostCommentDto>> UpdateComment(
+        int commentId,
+        [FromBody] UpdateCommentRequest request,
+        CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var comment = await _commentService.UpdateCommentAsync(userId, commentId, request, cancellationToken);
+        var comment = await _commentService.UpdateCommentAsync(
+            userId, commentId, request, cancellationToken);
 
         if (comment == null)
             return NotFound(new { message = "Comment not found or you don't have permission to edit it" });

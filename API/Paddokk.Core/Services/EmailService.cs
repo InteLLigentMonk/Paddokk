@@ -1,9 +1,11 @@
 ﻿using System.Text.Encodings.Web;
 using Azure;
 using Azure.Communication.Email;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Paddokk.Core.Interfaces;
 
-namespace Paddokk.Api.Services;
+namespace Paddokk.Core.Services;
 
 public class AzureEmailService : IEmailService
 {

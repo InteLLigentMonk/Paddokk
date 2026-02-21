@@ -33,7 +33,7 @@ public class DashboardController : ControllerBase
     /// Get dashboard data for authenticated user
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<object>> GetDashboard()
+    public async Task<ActionResult<object>> GetDashboard(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
         var subTier = User.GetSubscriptionTier();
@@ -47,7 +47,7 @@ public class DashboardController : ControllerBase
         var journeyStats = await _journeyService.GetUserJourneyStatsAsync(userId);
 
         // Get user's cars
-        var cars = await _carService.GetUserCarsAsync(userId);
+        var cars = await _carService.GetUserCarsAsync(userId, cancellationToken);
         var carCount = cars.Count();
 
         // Get user's active journeys (recent activity)
@@ -61,7 +61,7 @@ public class DashboardController : ControllerBase
         var defaultActiveJourney = await _journeyService.GetUserDefaultActiveJourneyAsync(userId);
 
         // Get subscription limits and usage
-        var canAddCar = await _carService.CanUserAddCarAsync(subTier, userId);
+        var canAddCar = await _carService.CanUserAddCarAsync(subTier, userId, cancellationToken);
         var canCreateJourney = await _journeyService.CanUserCreateJourneyAsync(userId);
 
         var maxCars = user.SubscriptionTier switch
