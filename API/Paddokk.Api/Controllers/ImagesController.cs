@@ -24,16 +24,16 @@ public class ImagesController : ControllerBase
     /// Upload image with automatic optimization and multiple sizes
     /// </summary>
     [HttpPost("upload")]
-    public async Task<ActionResult<ImageUploadDto>> UploadImage([FromForm] ImageUploadRequest request)
+    public async Task<ActionResult<ImageUploadDto>> UploadImage([FromForm] ImageUploadRequest request, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
 
             // Check if user can upload images for this context
-            if (!await _imageService.CanUserUploadImageAsync(userId, request.Context, request.ContextId))
+            if (!await _imageService.CanUserUploadImageAsync(userId, request.Context, request.ContextId, cancellationToken))
             {
-                var limits = await _imageService.GetImageLimitsAsync(userId);
+                var limits = await _imageService.GetImageLimitsAsync(userId, cancellationToken);
                 return BadRequest(new
                 {
                     message = $"Image limit reached. Your plan allows {GetLimitForContext(limits, request.Context)} images.",
@@ -45,7 +45,8 @@ public class ImagesController : ControllerBase
                 request.File,
                 request.Context,
                 request.ContextId,
-                request.Caption);
+                request.Caption,
+                cancellationToken);
 
             return Ok(result);
         }
@@ -68,10 +69,10 @@ public class ImagesController : ControllerBase
     /// Get user's image upload limits based on subscription
     /// </summary>
     [HttpGet("limits")]
-    public async Task<ActionResult<ImageLimitsDto>> GetImageLimits()
+    public async Task<ActionResult<ImageLimitsDto>> GetImageLimits(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var limits = await _imageService.GetImageLimitsAsync(userId);
+        var limits = await _imageService.GetImageLimitsAsync(userId, cancellationToken);
         return Ok(limits);
     }
 
@@ -79,12 +80,12 @@ public class ImagesController : ControllerBase
     /// Delete uploaded image
     /// </summary>
     [HttpDelete]
-    public async Task<IActionResult> DeleteImage([FromQuery] string imageUrl)
+    public async Task<IActionResult> DeleteImage([FromQuery] string imageUrl, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(imageUrl))
             return BadRequest(new { message = "Image URL is required" });
 
-        var result = await _imageService.DeleteImageAsync(imageUrl);
+        var result = await _imageService.DeleteImageAsync(imageUrl, cancellationToken);
 
         if (!result)
             return NotFound(new { message = "Image not found or could not be deleted" });
@@ -92,7 +93,7 @@ public class ImagesController : ControllerBase
         return Ok(new { message = "Image deleted successfully" });
     }
 
-    private string GetLimitForContext(ImageLimitsDto limits, ImageContext context)
+    private static string GetLimitForContext(ImageLimitsDto limits, ImageContext context)
     {
         return context switch
         {

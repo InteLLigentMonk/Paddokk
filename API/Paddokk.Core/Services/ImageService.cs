@@ -1,5 +1,4 @@
-﻿using Paddokk.Data;
-using Azure.Storage.Blobs.Models;
+﻿using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs;
 using SkiaSharp;
 using Microsoft.EntityFrameworkCore;
@@ -7,12 +6,16 @@ using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.Entities;
 using Paddokk.Core.Models.DTOs.Image;
 using Paddokk.Core.Models.DTOs.Journey;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
-namespace Paddokk.Api.Services;
+namespace Paddokk.Core.Services;
 
 public class ImageService : IImageService
 {
-    private readonly PaddokkDbContext _context;
+    private readonly IUserService _user;
+    private readonly IImageRepository _imageRepository;
     private readonly BlobServiceClient _blobServiceClient;
     private readonly IConfiguration _configuration;
     private readonly ILogger<ImageService> _logger;
@@ -30,18 +33,20 @@ public class ImageService : IImageService
     private readonly string[] _allowedFormats = { "image/jpeg", "image/png", "image/webp" };
 
     public ImageService(
-        PaddokkDbContext context,
+        IUserService userService,
         BlobServiceClient blobServiceClient,
         IConfiguration configuration,
-        ILogger<ImageService> logger)
+        ILogger<ImageService> logger,
+        IImageRepository imageRepository)
     {
-        _context = context;
+        _user = userService;
         _blobServiceClient = blobServiceClient;
         _configuration = configuration;
         _logger = logger;
+        _imageRepository = imageRepository;
     }
 
-    public async Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, int? contextId = null, string? caption = null)
+    public async Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, CancellationToken cancellationToken, int? contextId = null, string? caption = null)
     {
         // Validate file
         await ValidateImageFileAsync(file);
@@ -52,7 +57,7 @@ public class ImageService : IImageService
 
         // Get blob container
         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-        await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+        await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: cancellationToken);
 
         try
         {
@@ -71,15 +76,15 @@ public class ImageService : IImageService
                 throw new InvalidOperationException("Failed to create bitmap from image");
 
             // Upload original/full size
-            var fullUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "full");
+            var fullUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "full", cancellationToken);
             urls["full"] = fullUrl;
 
             // Upload medium size
-            var mediumUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "medium");
+            var mediumUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "medium", cancellationToken);
             urls["medium"] = mediumUrl;
 
             // Upload thumbnail
-            var thumbnailUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "thumbnail");
+            var thumbnailUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "thumbnail", cancellationToken);
             urls["thumbnail"] = thumbnailUrl;
 
             _logger.LogInformation("Successfully uploaded image {FileName} with sizes: {Sizes}",
@@ -142,7 +147,7 @@ public class ImageService : IImageService
 
     public async Task<ImageLimitsDto> GetImageLimitsAsync(string userId)
     {
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _user.GetUserByIdAsync(userId);
         if (user == null)
             throw new ArgumentException("User not found");
 
@@ -167,7 +172,7 @@ public class ImageService : IImageService
         };
     }
 
-    public async Task<bool> CanUserUploadImageAsync(string userId, ImageContext context, int? contextId = null)
+    public async Task<bool> CanUserUploadImageAsync(string userId, ImageContext context, CancellationToken cancellationToken, int? contextId = null)
     {
         var limits = await GetImageLimitsAsync(userId);
 
@@ -176,8 +181,7 @@ public class ImageService : IImageService
             case ImageContext.Car:
                 if (contextId.HasValue)
                 {
-                    var carImageCount = await _context.UserCarImages
-                        .CountAsync(i => i.UserCarId == contextId.Value);
+                    var carImageCount = await _imageRepository.GetImageCountByContextAsync(context.ToString(), contextId.Value, cancellationToken);
                     return carImageCount < limits.MaxImagesPerCar;
                 }
                 return true;
@@ -195,32 +199,32 @@ public class ImageService : IImageService
     }
 
     // Car Image Methods
-    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId)
+    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId, CancellationToken cancellationToken)
     {
-        var images = await _context.UserCarImages
-            .Where(i => i.UserCarId == userCarId)
-            .OrderByDescending(i => i.IsPrimary)
-            .ThenBy(i => i.SortOrder)
-            .ThenBy(i => i.CreatedAt)
-            .ToListAsync();
+        var images = await _imageRepository.GetCarImagesAsync(userCarId, cancellationToken);
+        //var images = await _user.UserCarImages
+        //    .Where(i => i.UserCarId == userCarId)
+        //    .OrderByDescending(i => i.IsPrimary)
+        //    .ThenBy(i => i.SortOrder)
+        //    .ThenBy(i => i.CreatedAt)
+        //    .ToListAsync();
 
         return images.Select(MapToCarImageDto);
     }
 
     public async Task<CarImageDto?> GetCarImageByIdAsync(int carImageId)
     {
-        var image = await _context.UserCarImages
+        var image = await _user.UserCarImages
             .FirstOrDefaultAsync(i => i.Id == carImageId);
 
         return image != null ? MapToCarImageDto(image) : null;
     }
 
-    public async Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, string? caption = null)
+    public async Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, CancellationToken cancellationToken, string? caption = null)
     {
         // Validate user owns the car
-        var userCar = await _context.UserCars
-            .FirstOrDefaultAsync(c => c.Id == carId && c.UserId == userId && c.IsActive);
-
+        var userCar = await _user.UserCars
+            .FirstOrDefaultAsync(c => c.Id == carId && c.UserId == userId && c.IsActive, cancellationToken);
         if (userCar == null)
             throw new ArgumentException("Car not found or not owned by user");
 
@@ -232,7 +236,7 @@ public class ImageService : IImageService
         var uploadResult = await UploadImageAsync(file, ImageContext.Car, carId, caption);
 
         // Determine if this should be primary (first image)
-        var existingImageCount = await _context.UserCarImages.CountAsync(i => i.UserCarId == carId);
+        var existingImageCount = await _user.UserCarImages.CountAsync(i => i.UserCarId == carId);
         var isPrimary = existingImageCount == 0;
 
         // Create car image record
@@ -252,7 +256,7 @@ public class ImageService : IImageService
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.UserCarImages.Add(carImage);
+        _user.UserCarImages.Add(carImage);
 
         // Update car's primary image URL if this is primary
         if (isPrimary)
@@ -260,7 +264,7 @@ public class ImageService : IImageService
             userCar.PrimaryImageUrl = uploadResult.MediumUrl;
         }
 
-        await _context.SaveChangesAsync();
+        await _user.SaveChangesAsync();
 
         _logger.LogInformation("User {UserId} added image to car {CarId}", userId, carId);
 
@@ -269,7 +273,7 @@ public class ImageService : IImageService
 
     public async Task<CarImageDto?> UpdateCarImageAsync(string userId, int carImageId, UpdateCarImageRequest request)
     {
-        var carImage = await _context.UserCarImages
+        var carImage = await _user.UserCarImages
             .Include(i => i.UserCar)
             .FirstOrDefaultAsync(i => i.Id == carImageId && i.UserCar.UserId == userId);
 
@@ -288,7 +292,7 @@ public class ImageService : IImageService
         if (request.IsPrimary == true && !carImage.IsPrimary)
         {
             // Unset other primary images for this car
-            await _context.UserCarImages
+            await _user.UserCarImages
                 .Where(i => i.UserCarId == carImage.UserCarId && i.IsPrimary)
                 .ExecuteUpdateAsync(i => i.SetProperty(p => p.IsPrimary, false));
 
@@ -298,14 +302,14 @@ public class ImageService : IImageService
             carImage.UserCar.PrimaryImageUrl = carImage.MediumUrl;
         }
 
-        await _context.SaveChangesAsync();
+        await _user.SaveChangesAsync();
 
         return MapToCarImageDto(carImage);
     }
 
     public async Task<bool> DeleteCarImageAsync(string userId, int carImageId)
     {
-        var carImage = await _context.UserCarImages
+        var carImage = await _user.UserCarImages
             .Include(i => i.UserCar)
             .FirstOrDefaultAsync(i => i.Id == carImageId && i.UserCar.UserId == userId);
 
@@ -318,7 +322,7 @@ public class ImageService : IImageService
         // If this was the primary image, set another as primary
         if (carImage.IsPrimary)
         {
-            var nextPrimary = await _context.UserCarImages
+            var nextPrimary = await _user.UserCarImages
                 .Where(i => i.UserCarId == carImage.UserCarId && i.Id != carImageId)
                 .OrderBy(i => i.SortOrder)
                 .FirstOrDefaultAsync();
@@ -334,15 +338,15 @@ public class ImageService : IImageService
             }
         }
 
-        _context.UserCarImages.Remove(carImage);
-        await _context.SaveChangesAsync();
+        _user.UserCarImages.Remove(carImage);
+        await _user.SaveChangesAsync();
 
         return true;
     }
 
     public async Task<bool> SetCarPrimaryImageAsync(string userId, int carId, int carImageId)
     {
-        var carImage = await _context.UserCarImages
+        var carImage = await _user.UserCarImages
             .Include(i => i.UserCar)
             .FirstOrDefaultAsync(i => i.Id == carImageId &&
                                     i.UserCarId == carId &&
@@ -352,7 +356,7 @@ public class ImageService : IImageService
             return false;
 
         // Unset current primary
-        await _context.UserCarImages
+        await _user.UserCarImages
             .Where(i => i.UserCarId == carId && i.IsPrimary)
             .ExecuteUpdateAsync(i => i.SetProperty(p => p.IsPrimary, false));
 
@@ -360,7 +364,7 @@ public class ImageService : IImageService
         carImage.IsPrimary = true;
         carImage.UserCar.PrimaryImageUrl = carImage.MediumUrl;
 
-        await _context.SaveChangesAsync();
+        await _user.SaveChangesAsync();
 
         return true;
     }
@@ -424,7 +428,7 @@ public class ImageService : IImageService
         }
     }
 
-    private async Task<string> UploadImageSizeAsync(BlobContainerClient containerClient, SKBitmap originalBitmap, string baseFileName, string sizeKey)
+    private async Task<string> UploadImageSizeAsync(BlobContainerClient containerClient, SKBitmap originalBitmap, string baseFileName, string sizeKey, CancellationToken cancellationToken)
     {
         var targetSize = _imageSizes[sizeKey];
         var fileName = $"{Path.GetFileNameWithoutExtension(baseFileName)}_{sizeKey}.webp";
@@ -433,7 +437,7 @@ public class ImageService : IImageService
         var (newWidth, newHeight) = CalculateResizeDimensions(originalBitmap.Width, originalBitmap.Height, targetSize);
 
         // Create resized bitmap
-        using var resizedBitmap = originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+        using var resizedBitmap = originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), new SKSamplingOptions(SKCubicResampler.Mitchell));
 
         if (resizedBitmap == null)
             throw new InvalidOperationException("Failed to resize image");
@@ -453,7 +457,7 @@ public class ImageService : IImageService
         await blobClient.UploadAsync(outputStream, new BlobUploadOptions
         {
             HttpHeaders = blobHttpHeaders
-        });
+        }, cancellationToken);
 
         return blobClient.Uri.ToString();
     }
