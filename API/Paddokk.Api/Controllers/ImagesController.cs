@@ -31,7 +31,7 @@ public class ImagesController : ControllerBase
             var userId = User.GetUserId();
 
             // Check if user can upload images for this context
-            if (!await _imageService.CanUserUploadImageAsync(userId, request.Context, request.ContextId, cancellationToken))
+            if (!await _imageService.CanUserUploadImageAsync(userId, request.Context, cancellationToken, request.ContextId))
             {
                 var limits = await _imageService.GetImageLimitsAsync(userId, cancellationToken);
                 return BadRequest(new
@@ -44,9 +44,9 @@ public class ImagesController : ControllerBase
             var result = await _imageService.UploadImageAsync(
                 request.File,
                 request.Context,
+                cancellationToken,
                 request.ContextId,
-                request.Caption,
-                cancellationToken);
+                request.Caption);
 
             return Ok(result);
         }

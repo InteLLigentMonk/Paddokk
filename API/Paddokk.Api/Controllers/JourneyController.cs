@@ -23,10 +23,10 @@ public class JourneysController : ControllerBase
     /// Search and browse journeys with filtering
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> SearchJourneys([FromQuery] JourneySearchRequest request)
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> SearchJourneys([FromQuery] JourneySearchRequest request, CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var journeys = await _journeyService.SearchJourneysAsync(request, currentUserId);
+        var journeys = await _journeyService.SearchJourneysAsync(request, cancellationToken, currentUserId);
         return Ok(journeys);
     }
 
@@ -34,10 +34,10 @@ public class JourneysController : ControllerBase
     /// Get specific journey details
     /// </summary>
     [HttpGet("{journeyId}")]
-    public async Task<ActionResult<JourneyDto>> GetJourney(int journeyId)
+    public async Task<ActionResult<JourneyDto>> GetJourney(int journeyId, CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, currentUserId);
+        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken, currentUserId);
 
         if (journey == null)
             return NotFound(new { message = "Journey not found" });
@@ -49,10 +49,10 @@ public class JourneysController : ControllerBase
     /// Get featured journeys (curated/most liked)
     /// </summary>
     [HttpGet("featured")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetFeaturedJourneys()
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetFeaturedJourneys(CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var journeys = await _journeyService.GetFeaturedJourneysAsync(currentUserId);
+        var journeys = await _journeyService.GetFeaturedJourneysAsync(cancellationToken, currentUserId);
         return Ok(journeys);
     }
 
@@ -60,10 +60,10 @@ public class JourneysController : ControllerBase
     /// Get trending journeys (recently active)
     /// </summary>
     [HttpGet("trending")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetTrendingJourneys()
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetTrendingJourneys(CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var journeys = await _journeyService.GetTrendingJourneysAsync(currentUserId);
+        var journeys = await _journeyService.GetTrendingJourneysAsync(cancellationToken, currentUserId);
         return Ok(journeys);
     }
 
@@ -72,19 +72,19 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpPost("{journeyId}/subscribe")]
     [Authorize]
-    public async Task<IActionResult> SubscribeToJourney(int journeyId)
+    public async Task<IActionResult> SubscribeToJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
 
         // Prevent users from subscribing to their own journeys
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, userId);
+        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken, userId);
         if (journey == null)
             return NotFound(new { message = "Journey not found" });
 
         if (journey.UserId == userId)
             return BadRequest(new { message = "Cannot subscribe to your own journey" });
 
-        var result = await _journeyService.SubscribeToJourneyAsync(userId, journeyId);
+        var result = await _journeyService.SubscribeToJourneyAsync(userId, journeyId, cancellationToken);
 
         if (!result)
             return BadRequest(new { message = "Failed to subscribe to journey" });
@@ -97,10 +97,10 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpDelete("{journeyId}/subscribe")]
     [Authorize]
-    public async Task<IActionResult> UnsubscribeFromJourney(int journeyId)
+    public async Task<IActionResult> UnsubscribeFromJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var result = await _journeyService.UnsubscribeFromJourneyAsync(userId, journeyId);
+        var result = await _journeyService.UnsubscribeFromJourneyAsync(userId, journeyId, cancellationToken);
 
         if (!result)
             return BadRequest(new { message = "Failed to unsubscribe from journey" });
@@ -113,12 +113,12 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpPost("{journeyId}/like")]
     [Authorize]
-    public async Task<IActionResult> LikeJourney(int journeyId)
+    public async Task<IActionResult> LikeJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
 
         // Allow users to like their own journeys
-        var result = await _journeyService.LikeJourneyAsync(userId, journeyId);
+        var result = await _journeyService.LikeJourneyAsync(userId, journeyId, cancellationToken);
 
         if (!result)
             return BadRequest(new { message = "Failed to like journey" });
@@ -131,10 +131,10 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpDelete("{journeyId}/like")]
     [Authorize]
-    public async Task<IActionResult> UnlikeJourney(int journeyId)
+    public async Task<IActionResult> UnlikeJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var result = await _journeyService.UnlikeJourneyAsync(userId, journeyId);
+        var result = await _journeyService.UnlikeJourneyAsync(userId, journeyId, cancellationToken);
 
         if (!result)
             return BadRequest(new { message = "Failed to unlike journey" });
@@ -148,16 +148,17 @@ public class JourneysController : ControllerBase
     [HttpGet("{journeyId}/posts")]
     public async Task<ActionResult<IEnumerable<JourneyPostDto>>> GetJourneyPosts(
         int journeyId,
+        CancellationToken cancellationToken,
         [FromQuery] int skip = 0,
         [FromQuery] int take = 20)
     {
         // Validate journey exists
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId);
+        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken : cancellationToken);
         if (journey == null)
             return NotFound(new { message = "Journey not found" });
 
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var posts = await _journeyService.GetJourneyPostsAsync(journeyId, skip, take, currentUserId);
+        var posts = await _journeyService.GetJourneyPostsAsync(journeyId, skip, take, cancellationToken, currentUserId);
         return Ok(posts);
     }
 
@@ -166,12 +167,12 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpPost("{journeyId}/posts")]
     [Authorize]
-    public async Task<ActionResult<JourneyPostDto>> CreateJourneyPost(int journeyId, [FromBody] CreateJourneyPostRequest request)
+    public async Task<ActionResult<JourneyPostDto>> CreateJourneyPost(int journeyId, [FromBody] CreateJourneyPostRequest request, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
-            var post = await _journeyService.CreateJourneyPostAsync(userId, journeyId, request);
+            var post = await _journeyService.CreateJourneyPostAsync(userId, journeyId, request, cancellationToken);
             return CreatedAtAction(nameof(GetJourneyPost), new { postId = post.Id }, post);
         }
         catch (InvalidOperationException ex)
@@ -188,10 +189,10 @@ public class JourneysController : ControllerBase
     /// Get specific journey post
     /// </summary>
     [HttpGet("posts/{postId}")]
-    public async Task<ActionResult<JourneyPostDto>> GetJourneyPost(int postId)
+    public async Task<ActionResult<JourneyPostDto>> GetJourneyPost(int postId, CancellationToken cancellationToken)
     {
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var post = await _journeyService.GetJourneyPostByIdAsync(postId, currentUserId);
+        var post = await _journeyService.GetJourneyPostByIdAsync(postId, cancellationToken, currentUserId);
 
         if (post == null)
             return NotFound(new { message = "Post not found" });
@@ -204,10 +205,10 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpPut("posts/{postId}")]
     [Authorize]
-    public async Task<ActionResult<JourneyPostDto>> UpdateJourneyPost(int postId, [FromBody] UpdateJourneyPostRequest request)
+    public async Task<ActionResult<JourneyPostDto>> UpdateJourneyPost(int postId, [FromBody] UpdateJourneyPostRequest request, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var post = await _journeyService.UpdateJourneyPostAsync(userId, postId, request);
+        var post = await _journeyService.UpdateJourneyPostAsync(userId, postId, request, cancellationToken);
 
         if (post == null)
             return NotFound(new { message = "Post not found or you don't have permission to edit it" });
@@ -220,10 +221,10 @@ public class JourneysController : ControllerBase
     /// </summary>
     [HttpDelete("posts/{postId}")]
     [Authorize]
-    public async Task<IActionResult> DeleteJourneyPost(int postId)
+    public async Task<IActionResult> DeleteJourneyPost(int postId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var result = await _journeyService.DeleteJourneyPostAsync(userId, postId);
+        var result = await _journeyService.DeleteJourneyPostAsync(userId, postId, cancellationToken);
 
         if (!result)
             return NotFound(new { message = "Post not found or you don't have permission to delete it" });
