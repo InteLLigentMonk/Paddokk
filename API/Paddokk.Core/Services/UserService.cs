@@ -46,15 +46,7 @@ public class UserService : IUserService
 
         user.UpdatedAt = DateTime.UtcNow;
 
-        try
-        {
-            await _userRepository.UpdateAsync(user, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to update user {UserId}", userId);
-            return null;
-        }
+        await _userRepository.UpdateAsync(user, cancellationToken);
 
         return MapToUserDto(user);
     }
@@ -66,17 +58,9 @@ public class UserService : IUserService
         if (user is null)
             return false;
 
-        try
-        {
-            await _userRepository.SoftDeleteAsync(userId, cancellationToken);
-            _logger.LogInformation("User {UserId} soft deleted", userId);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to delete user {UserId}", userId);
-            return false;
-        }
+        await _userRepository.SoftDeleteAsync(userId, cancellationToken);
+        _logger.LogInformation("User {UserId} soft deleted", userId);
+        return true;
     }
 
     private static UserDto MapToUserDto(ApplicationUser user)

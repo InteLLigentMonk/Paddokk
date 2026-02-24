@@ -13,7 +13,7 @@ public interface IImageService
     Task<bool> CanUserUploadImageAsync(string userId, ImageContext context, CancellationToken cancellationToken, int? contextId = null);
 
     // Car Images
-    Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId, CancellationToken cancellationToken);
+    Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId, string userId, CancellationToken cancellationToken);
     Task<CarImageDto?> GetCarImageByIdAsync(int carImageId, CancellationToken cancellationToken);
     Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, CancellationToken cancellationToken, string? caption = null);
     Task<CarImageDto?> UpdateCarImageAsync(string userId, int carImageId, UpdateCarImageRequest request, CancellationToken cancellationToken);

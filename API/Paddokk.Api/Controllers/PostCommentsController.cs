@@ -11,17 +11,10 @@ namespace Paddokk.Api.Controllers;
 public class PostCommentsController : ControllerBase
 {
     private readonly ICommentService _commentService;
-    private readonly IJourneyService _journeyService;
-    private readonly ILogger<PostCommentsController> _logger;
 
-    public PostCommentsController(
-        ICommentService commentService,
-        IJourneyService journeyService,
-        ILogger<PostCommentsController> logger)
+    public PostCommentsController(ICommentService commentService)
     {
         _commentService = commentService;
-        _journeyService = journeyService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -34,21 +27,11 @@ public class PostCommentsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        try
-        {
-            // Validate page parameters
-            if (page < 1) page = 1;
-            if (pageSize < 1 || pageSize > 100) pageSize = 20;
+        if (page < 1) page = 1;
+        if (pageSize is < 1 or > 100) pageSize = 20;
 
-            var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-            var comments = await _commentService.GetPostCommentsAsync(postId, cancellationToken, page, pageSize, currentUserId);
-
-            return Ok(comments);
-        }
-        catch (ArgumentException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
+        return Ok(await _commentService.GetPostCommentsAsync(postId, cancellationToken, page, pageSize, currentUserId));
     }
 
     /// <summary>
@@ -58,21 +41,8 @@ public class PostCommentsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<PostCommentDto>> CreateComment(int postId, [FromBody] CreateCommentRequest request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var userId = User.GetUserId();
-            var comment = await _commentService.CreateCommentAsync(userId, postId, request, cancellationToken);
-
-            return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.Id }, comment);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var comment = await _commentService.CreateCommentAsync(User.GetUserId(), postId, request, cancellationToken);
+        return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.Id }, comment);
     }
 
     /// <summary>
@@ -81,11 +51,11 @@ public class PostCommentsController : ControllerBase
     [HttpGet("{commentId}")]
     public async Task<ActionResult<PostCommentDto>> GetComment(int postId, int commentId, CancellationToken cancellationToken)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
+        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
         var comment = await _commentService.GetCommentByIdAsync(commentId, cancellationToken, currentUserId);
 
-        if (comment == null || comment.JourneyPostId != postId)
-            return NotFound(new { message = "Comment not found" });
+        if (comment is null || comment.JourneyPostId != postId)
+            return NotFound();
 
         return Ok(comment);
     }
@@ -97,11 +67,10 @@ public class PostCommentsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<PostCommentDto>> UpdateComment(int postId, int commentId, [FromBody] UpdateCommentRequest request, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-        var comment = await _commentService.UpdateCommentAsync(userId, commentId, request, cancellationToken);
+        var comment = await _commentService.UpdateCommentAsync(User.GetUserId(), commentId, request, cancellationToken);
 
-        if (comment == null)
-            return NotFound(new { message = "Comment not found or you don't have permission to edit it" });
+        if (comment is null)
+            return NotFound();
 
         return Ok(comment);
     }
@@ -113,11 +82,10 @@ public class PostCommentsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> DeleteComment(int postId, int commentId, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-        var result = await _commentService.DeleteCommentAsync(userId, commentId, cancellationToken);
+        var result = await _commentService.DeleteCommentAsync(User.GetUserId(), commentId, cancellationToken);
 
         if (!result)
-            return NotFound(new { message = "Comment not found or you don't have permission to delete it" });
+            return NotFound();
 
         return NoContent();
     }

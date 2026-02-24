@@ -5,21 +5,16 @@ using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Core.Services;
 
-public class JourneyService : IJourneyService
+public class JourneyService(
+    IJourneyRepository journeyRepository,
+    IImageService imageService,
+    IUnitOfWork unitOfWork,
+    ILogger<JourneyService> logger) : IJourneyService
 {
-    private readonly IJourneyRepository _journeyRepository;
-    private readonly IImageService _imageService;
-    private readonly ILogger<JourneyService> _logger;
-
-    public JourneyService(
-        IJourneyRepository journeyRepository,
-      IImageService imageService,
-        ILogger<JourneyService> logger)
-    {
-        _journeyRepository = journeyRepository;
-        _imageService = imageService;
-        _logger = logger;
-    }
+    private readonly IJourneyRepository _journeyRepository = journeyRepository;
+    private readonly IImageService _imageService = imageService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ILogger<JourneyService> _logger = logger;
 
     // Journey Management Methods
     public async Task<IEnumerable<JourneyDto>> GetUserJourneysAsync(
@@ -158,7 +153,7 @@ public class JourneyService : IJourneyService
     }
 
     public async Task<JourneyPostDto> CreateJourneyPostAsync(
-    string userId, int journeyId, CreateJourneyPostRequest request, CancellationToken cancellationToken)
+        string userId, int journeyId, CreateJourneyPostRequest request, CancellationToken cancellationToken)
     {
         if (!await CanUserPostToJourneyAsync(userId, journeyId, cancellationToken))
             throw new InvalidOperationException("User cannot post to this journey");
@@ -175,26 +170,29 @@ public class JourneyService : IJourneyService
             UpdatedAt = DateTime.UtcNow
         };
 
-        await _journeyRepository.CreateJourneyPostAsync(post, cancellationToken);
-
-        if (request.Images.Any())
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            var images = request.Images.Select(img => new JourneyPostImage
+            await _journeyRepository.CreateJourneyPostAsync(post, cancellationToken);
+
+            if (request.Images.Any())
             {
-                JourneyPostId = post.Id,
-                ImageUrl = img.ImageUrl,
-                Caption = img.Caption,
-                SortOrder = img.SortOrder,
-                CreatedAt = DateTime.UtcNow
-            }).ToList();
+                var images = request.Images.Select(img => new JourneyPostImage
+                {
+                    JourneyPostId = post.Id,
+                    ImageUrl = img.ImageUrl,
+                    Caption = img.Caption,
+                    SortOrder = img.SortOrder,
+                    CreatedAt = DateTime.UtcNow
+                }).ToList();
 
-            await _journeyRepository.AddPostImagesAsync(images, cancellationToken);
-        }
+                await _journeyRepository.AddPostImagesAsync(images, cancellationToken);
+            }
 
-        await _journeyRepository.TouchJourneyAsync(journeyId, cancellationToken);
+            await _journeyRepository.TouchJourneyAsync(journeyId, cancellationToken);
+        }, cancellationToken);
 
         _logger.LogInformation("User {UserId} created post {PostId} in journey {JourneyId} with {ImageCount} images",
-            userId, post.Id, journeyId, request.Images.Count);
+        userId, post.Id, journeyId, request.Images.Count);
 
         return await GetJourneyPostByIdAsync(post.Id, cancellationToken, userId)
             ?? throw new InvalidOperationException("Failed to retrieve created post");

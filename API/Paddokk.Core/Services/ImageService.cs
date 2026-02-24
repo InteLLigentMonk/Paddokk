@@ -15,6 +15,7 @@ public class ImageService : IImageService
     private readonly IUserService _userService;
     private readonly ICarService _carService;
     private readonly IImageRepository _imageRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly BlobServiceClient _blobServiceClient;
     private readonly ILogger<ImageService> _logger;
 
@@ -35,13 +36,15 @@ public class ImageService : IImageService
         BlobServiceClient blobServiceClient,
         ILogger<ImageService> logger,
         IImageRepository imageRepository,
-        ICarService carService)
+        ICarService carService,
+        IUnitOfWork unitOfWork)
     {
         _userService = userService;
         _blobServiceClient = blobServiceClient;
         _logger = logger;
         _imageRepository = imageRepository;
         _carService = carService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, CancellationToken cancellationToken, int? contextId = null, string? caption = null)
@@ -197,15 +200,13 @@ public class ImageService : IImageService
     }
 
     // Car Image Methods
-    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, string userId, CancellationToken cancellationToken)
     {
-        var images = await _imageRepository.GetCarImagesAsync(carId, cancellationToken);
-        //var images = await _user.UserCarImages
-        //    .Where(i => i.UserCarId == userCarId)
-        //    .OrderByDescending(i => i.IsPrimary)
-        //    .ThenBy(i => i.SortOrder)
-        //    .ThenBy(i => i.CreatedAt)
-        //    .ToListAsync();
+        if (!await _carService.UserOwnsCarAsync(userId, carId, cancellationToken))
+            throw new UnauthorizedAccessException("User does not own this car");
+
+        var images = await _imageRepository.GetCarImagesAsync(carId, cancellationToken)
+            ?? throw new InvalidOperationException("Failed to retrieve car images");
 
         return images.Select(MapToCarImageDto);
     }
@@ -213,7 +214,6 @@ public class ImageService : IImageService
     public async Task<CarImageDto?> GetCarImageByIdAsync(int carImageId, CancellationToken cancellationToken)
     {
         var image = await _imageRepository.GetCarImageByIdAsync(carImageId, cancellationToken);
-
         return image != null ? MapToCarImageDto(image) : null;
     }
 
@@ -228,7 +228,8 @@ public class ImageService : IImageService
             throw new InvalidOperationException("Image limit reached for this car");
 
         // Upload image
-        var uploadResult = await UploadImageAsync(file, ImageContext.Car, cancellationToken, carId, caption);
+        var uploadResult = await UploadImageAsync(file, ImageContext.Car, cancellationToken, carId, caption) 
+            ?? throw new InvalidOperationException("Image upload failed");
 
         // Determine if this should be primary (first image)
         var existingImageCount = await _imageRepository.GetImageCountByContextAsync(
@@ -252,14 +253,16 @@ public class ImageService : IImageService
             CreatedAt = DateTime.UtcNow
         };
 
-        await _imageRepository.AddCarImageAsync(carImage, cancellationToken);
-
-        // Update car's primary image URL if this is primary
-        if (isPrimary)
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await _imageRepository.SetPrimaryImageAsync(carId, carImage.Id, cancellationToken);
-            await _carService.UpdatePrimaryImageUrlAsync(carId, uploadResult.MediumUrl, cancellationToken);
-        }
+            await _imageRepository.AddCarImageAsync(carImage, cancellationToken);
+
+            if (isPrimary)
+            {
+                await _imageRepository.SetPrimaryImageAsync(carId, carImage.Id, cancellationToken);
+                await _carService.UpdatePrimaryImageUrlAsync(carId, uploadResult.MediumUrl, cancellationToken);
+            }
+        }, cancellationToken);
 
         _logger.LogInformation("User {UserId} added image to car {CarId}", userId, carId);
 
@@ -281,17 +284,20 @@ public class ImageService : IImageService
         if (request.SortOrder.HasValue)
             carImage.SortOrder = request.SortOrder.Value;
 
-        // Handle primary image change
-        if (request.IsPrimary == true && !carImage.IsPrimary)
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            // Unset other primary images for this car
-            await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, carImageId, cancellationToken);
+            // Handle primary image change
+            if (request.IsPrimary == true && !carImage.IsPrimary)
+            {
+                // Unset other primary images for this car
+                await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, carImageId, cancellationToken);
 
-            // Update car's primary image URL
-            await _carService.UpdatePrimaryImageUrlAsync(carImage.UserCarId, carImage.MediumUrl, cancellationToken);
-        }
+                // Update car's primary image URL
+                await _carService.UpdatePrimaryImageUrlAsync(carImage.UserCarId, carImage.MediumUrl, cancellationToken);
+            }
 
-        await _imageRepository.UpdateCarImageAsync(carImage, cancellationToken);
+            await _imageRepository.UpdateCarImageAsync(carImage, cancellationToken);
+        }, cancellationToken);
 
         return MapToCarImageDto(carImage);
     }
@@ -306,19 +312,22 @@ public class ImageService : IImageService
         // Delete from blob storage
         await DeleteImageAsync(carImage.ImageUrl, cancellationToken);
 
-        // If this was the primary image, set another as primary
-        if (carImage.IsPrimary)
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            var nextPrimary = await _imageRepository.GetNextPrimaryImageAsync(
-                carImage.UserCarId, carImageId, cancellationToken);
+            // If this was the primary image, set another as primary
+            if (carImage.IsPrimary)
+            {
+                var nextPrimary = await _imageRepository.GetNextPrimaryImageAsync(
+                    carImage.UserCarId, carImageId, cancellationToken);
 
-            if (nextPrimary is not null)
-                await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, nextPrimary.Id, cancellationToken);
+                if (nextPrimary is not null)
+                    await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, nextPrimary.Id, cancellationToken);
 
-            await _carService.UpdatePrimaryImageUrlAsync(carImage.UserCarId, nextPrimary?.MediumUrl, cancellationToken);
-        }
+                await _carService.UpdatePrimaryImageUrlAsync(carImage.UserCarId, nextPrimary?.MediumUrl, cancellationToken);
+            }
 
-        await _imageRepository.DeleteCarImageAsync(carImage.Id, cancellationToken);
+            await _imageRepository.DeleteCarImageAsync(carImage.Id, cancellationToken);
+        }, cancellationToken);
 
         return true;
     }
@@ -332,8 +341,11 @@ public class ImageService : IImageService
         if (image is null || image.UserCarId != carId)
             return false;
 
-        await _imageRepository.SetPrimaryImageAsync(carId, carImageId, cancellationToken);
-        await _carService.UpdatePrimaryImageUrlAsync(carId, image.MediumUrl, cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            await _imageRepository.SetPrimaryImageAsync(carId, carImageId, cancellationToken);
+            await _carService.UpdatePrimaryImageUrlAsync(carId, image.MediumUrl, cancellationToken);
+        }, cancellationToken);
 
         return true;
     }

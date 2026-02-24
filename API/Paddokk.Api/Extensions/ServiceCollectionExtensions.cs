@@ -1,13 +1,15 @@
-﻿using Paddokk.Api.Security;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Paddokk.Api.Filters;
+using Paddokk.Api.Security;
 using Paddokk.Core.Interfaces;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using Paddokk.Data.Repositories;
 using Paddokk.Core.Services;
+using Paddokk.Data;
+using Paddokk.Data.Repositories;
 
 
 namespace Paddokk.Api.Extensions;
@@ -227,6 +229,8 @@ public static class ServiceCollectionExtensions
                         Array.Empty<string>()
                     }
                 });
+
+            c.OperationFilter<DefaultResponsesOperationFilter>();
         });
 
         return services;
@@ -247,6 +251,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<IJourneyRepository, JourneyRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

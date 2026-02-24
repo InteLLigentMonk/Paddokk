@@ -9,68 +9,49 @@ namespace Paddokk.Api.Controllers;
 [ApiController]
 [Route("api/users/me/cars/{carId}/images")]
 [Authorize]
-public class CarImagesController : ControllerBase
+public class CarImagesController(IImageService imageService, ICarService carService) : ControllerBase
 {
-    private readonly IImageService _imageService;
-    private readonly ICarService _carService;
-    private readonly ILogger<CarImagesController> _logger;
-
-    public CarImagesController(
-        IImageService imageService,
-        ICarService carService,
-        ILogger<CarImagesController> logger)
-    {
-        _imageService = imageService;
-        _carService = carService;
-        _logger = logger;
-    }
+    private readonly IImageService _imageService = imageService;
+    private readonly ICarService _carService = carService;
 
     /// <summary>
     /// Get all images for a car
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CarImageDto>>> GetCarImages(
+    public async Task<IEnumerable<CarImageDto>> GetCarImages(
         int carId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-
-        // Verify user owns the car
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-        if (car == null)
-            return NotFound(new { message = "Car not found" });
-
-        var images = await _imageService.GetCarImagesAsync(carId, cancellationToken);
-        return Ok(images);
+        return await _imageService.GetCarImagesAsync(carId, userId, cancellationToken);
     }
 
     /// <summary>
     /// Upload new image for car
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<CarImageDto>> UploadCarImage(
+    public async Task<CarImageDto> UploadCarImage(
         int carId, IFormFile file, CancellationToken cancellationToken, [FromForm] string? caption = null)
     {
-        try
-        {
-            var userId = User.GetUserId();
-
-            // Verify user owns the car
-            var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-            if (car == null)
-                return NotFound(new { message = "Car not found" });
-
-            var result = await _imageService.AddCarImageAsync(userId, carId, file, cancellationToken, caption);
-            return CreatedAtAction(nameof(GetCarImage), new { carId, imageId = result.Id }, result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var userId = User.GetUserId();
+        return await _imageService.AddCarImageAsync(userId, carId, file, cancellationToken, caption);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// Get specific car image
@@ -79,16 +60,12 @@ public class CarImagesController : ControllerBase
     public async Task<ActionResult<CarImageDto>> GetCarImage(
         int carId, int imageId, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-
-        // Verify user owns the car
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-        if (car == null)
-            return NotFound(new { message = "Car not found" });
+        if (!await _carService.UserOwnsCarAsync(User.GetUserId(), carId, cancellationToken))
+            return NotFound();
 
         var image = await _imageService.GetCarImageByIdAsync(imageId, cancellationToken);
-        if (image == null || image.UserCarId != carId)
-            return NotFound(new { message = "Image not found" });
+        if (image is null || image.UserCarId != carId)
+            return NotFound();
 
         return Ok(image);
     }
@@ -100,16 +77,9 @@ public class CarImagesController : ControllerBase
     public async Task<ActionResult<CarImageDto>> UpdateCarImage(
         int carId, int imageId, [FromBody] UpdateCarImageRequest request, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-
-        // Verify user owns the car
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-        if (car == null)
-            return NotFound(new { message = "Car not found" });
-
-        var result = await _imageService.UpdateCarImageAsync(userId, imageId, request, cancellationToken);
-        if (result == null)
-            return NotFound(new { message = "Image not found" });
+        var result = await _imageService.UpdateCarImageAsync(User.GetUserId(), imageId, request, cancellationToken);
+        if (result is null)
+            return NotFound();
 
         return Ok(result);
     }
@@ -121,16 +91,9 @@ public class CarImagesController : ControllerBase
     public async Task<IActionResult> DeleteCarImage(
         int carId, int imageId, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-
-        // Verify user owns the car
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-        if (car == null)
-            return NotFound(new { message = "Car not found" });
-
-        var result = await _imageService.DeleteCarImageAsync(userId, imageId, cancellationToken);
+        var result = await _imageService.DeleteCarImageAsync(User.GetUserId(), imageId, cancellationToken);
         if (!result)
-            return NotFound(new { message = "Image not found" });
+            return NotFound();
 
         return NoContent();
     }
@@ -141,18 +104,11 @@ public class CarImagesController : ControllerBase
     [HttpPut("{imageId}/setprimary")]
     public async Task<IActionResult> SetPrimaryImage(int carId, int imageId, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
-
-        // Verify user owns the car
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-        if (car == null)
-            return NotFound(new { message = "Car not found" });
-
-        var result = await _imageService.SetCarPrimaryImageAsync(userId, carId, imageId, cancellationToken);
+        var result = await _imageService.SetCarPrimaryImageAsync(User.GetUserId(), carId, imageId, cancellationToken);
         if (!result)
-            return NotFound(new { message = "Image not found" });
+            return NotFound();
 
-        return Ok(new { message = "Primary image updated successfully" });
+        return NoContent();
     }
 
     /// <summary>
@@ -163,14 +119,12 @@ public class CarImagesController : ControllerBase
     {
         var userId = User.GetUserId();
 
-        // Verify user owns the car
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-        if (car == null)
-            return NotFound(new { message = "Car not found" });
+        if (!await _carService.UserOwnsCarAsync(userId, carId, cancellationToken))
+            return NotFound();
 
         var canUpload = await _imageService.CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId);
         var limits = await _imageService.GetImageLimitsAsync(userId, cancellationToken);
-        var currentImages = await _imageService.GetCarImagesAsync(carId, cancellationToken);
+        var currentImages = await _imageService.GetCarImagesAsync(carId, userId, cancellationToken);
 
         return Ok(new
         {

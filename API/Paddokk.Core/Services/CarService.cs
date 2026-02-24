@@ -8,11 +8,13 @@ namespace Paddokk.Core.Services;
 public class CarService : ICarService
 {
     private readonly ICarRepository _carRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CarService> _logger;
 
-    public CarService(ICarRepository carRepository, ILogger<CarService> logger)
+    public CarService(ICarRepository carRepository, IUnitOfWork unitOfWork, ILogger<CarService> logger)
     {
         _carRepository = carRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -26,7 +28,7 @@ public class CarService : ICarService
             Country = m.Country,
             Group = m.Group,
             ModelCount = m.Models.Count
-        });
+        }) ?? throw new InvalidOperationException("Failed to retrieve car makes");
     }
 
     public async Task<IEnumerable<CarModelDto>> GetCarModelsByMakeAsync(
@@ -58,13 +60,11 @@ public class CarService : ICarService
             });
     }
 
-    public async Task<CarMakeDto?> GetCarMakeByIdAsync(
+    public async Task<CarMakeDto> GetCarMakeByIdAsync(
         int carMakeId, CancellationToken cancellationToken)
     {
-        var carMake = await _carRepository.GetCarMakeByIdAsync(carMakeId, cancellationToken);
-
-        if (carMake == null)
-            return null;
+        var carMake = await _carRepository.GetCarMakeByIdAsync(carMakeId, cancellationToken) 
+            ?? throw new KeyNotFoundException($"Car make with ID {carMakeId} not found");
 
         return new CarMakeDto
             {
@@ -76,13 +76,11 @@ public class CarService : ICarService
             };
     }
 
-    public async Task<CarModelDto?> GetCarModelByIdAsync(
+    public async Task<CarModelDto> GetCarModelByIdAsync(
         int carModelId, CancellationToken cancellationToken)
     {
-        var carModel = await _carRepository.GetCarModelByIdAsync(carModelId, CancellationToken.None);
-
-        if (carModel == null)
-            return null;
+        var carModel = await _carRepository.GetCarModelByIdAsync(carModelId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Car model with ID {carModelId} not found");
 
         return new CarModelDto
             {
@@ -94,14 +92,11 @@ public class CarService : ICarService
             };
     }
 
-    public async Task<CarGenerationDto?> GetCarGenerationByIdAsync(
+    public async Task<CarGenerationDto> GetCarGenerationByIdAsync(
         int carGenerationId, CancellationToken cancellationToken)
     {
-        var carGeneration = await _carRepository.GetCarGenerationByIdAsync(
-            carGenerationId, cancellationToken);
-
-        if (carGeneration == null)
-            return null;
+        var carGeneration = await _carRepository.GetCarGenerationByIdAsync(carGenerationId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Car generation with ID {carGenerationId} not found");
 
         return new CarGenerationDto
             {
@@ -141,13 +136,11 @@ public class CarService : ICarService
             });
     }
 
-    public async Task<UserCarDto?> GetUserCarByIdAsync(
+    public async Task<UserCarDto> GetUserCarByIdAsync(
         string userId, int carId, CancellationToken cancellationToken)
     {
-        var userCar = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
-
-        if (userCar == null)
-            return null;
+        var userCar = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Car with ID {carId} not found for user {userId}");
 
         return new UserCarDto
             {
@@ -189,13 +182,6 @@ public class CarService : ICarService
         // If this is the user's first car, make it primary
         var userCarCount = await GetUserCarCountAsync(userId, cancellationToken);
         var isPrimary = request.IsPrimary || userCarCount == 0;
-
-        // If setting as primary, unset other primary cars
-        if (isPrimary)
-        {
-            await _carRepository.UnsetPrimaryCar(userId, cancellationToken);
-        }
-
         var userCar = new UserCar
         {
             UserId = userId,
@@ -211,7 +197,13 @@ public class CarService : ICarService
             UpdatedAt = DateTime.UtcNow
         };
 
-        await _carRepository.CreateUserCarAsync(userCar, cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            if (isPrimary)
+                await _carRepository.UnsetPrimaryCar(userId, cancellationToken);
+
+            await _carRepository.CreateUserCarAsync(userCar, cancellationToken);
+        }, cancellationToken);
 
         _logger.LogInformation("User {UserId} created car {CarId}: {Make} {Model} {Year}",
             userId, userCar.Id, request.CarMakeId, request.CarModelId, request.Year);
@@ -220,32 +212,38 @@ public class CarService : ICarService
             ?? throw new InvalidOperationException("Failed to retrieve created car");
     }
 
-    public async Task<UserCarDto?> UpdateUserCarAsync(string userId, int carId, UpdateUserCarRequest request, CancellationToken cancellationToken)
+    public async Task<UserCarDto> UpdateUserCarAsync(
+        string userId, int carId, UpdateUserCarRequest request, CancellationToken cancellationToken)
     {
-        var userCar = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
+        var userCar = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Car {carId} not found");
+        
+        if (request.Nickname != null)
+            userCar.Nickname = request.Nickname;
 
-        if (userCar == null)
-            throw new KeyNotFoundException($"Car {carId} not found");
+        if (request.Color != null)
+            userCar.Color = request.Color;
 
-        // If setting as primary, unset other primary cars
-        if (request.IsPrimary == true)
-        {
-            await _carRepository.UnsetPrimaryCar(userId, cancellationToken);
-        }
+        if (request.Description != null)
+            userCar.Description = request.Description;
 
-        // Update fields
-        if (request.Nickname != null) userCar.Nickname = request.Nickname;
-        if (request.Color != null) userCar.Color = request.Color;
-        if (request.Description != null) userCar.Description = request.Description;
-        if (request.IsPrimary.HasValue) userCar.IsPrimary = request.IsPrimary.Value;
+        if (request.IsPrimary.HasValue)
+            userCar.IsPrimary = request.IsPrimary.Value;
 
         userCar.UpdatedAt = DateTime.UtcNow;
 
-        await _carRepository.UpdateUserCarAsync(userCar, cancellationToken);
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            if (request.IsPrimary == true)
+                await _carRepository.UnsetPrimaryCar(userId, cancellationToken);
+
+            await _carRepository.UpdateUserCarAsync(userCar, cancellationToken);
+        }, cancellationToken);
 
         _logger.LogInformation("User {UserId} updated car {CarId}", userId, carId);
 
-        return await GetUserCarByIdAsync(userId, carId, cancellationToken);
+        return await GetUserCarByIdAsync(userId, carId, cancellationToken)
+            ?? throw new InvalidOperationException("Failed to retrieve updated car");
     }
 
     public async Task<bool> DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken)

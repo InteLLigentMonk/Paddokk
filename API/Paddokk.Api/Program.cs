@@ -64,7 +64,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+if (app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseCors("AllowNextJsApp");
 
 app.UseAuthentication();
