@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
     /// Get current authenticated user's profile
     /// </summary>
     [HttpGet("me")]
-    public async Task<ActionResult<UserDto>> GetCurrentUser()
+    public async Task<ActionResult<UserDto>> GetCurrentUser(CancellationToken cancellationToken)
     {
         try
         {
@@ -33,7 +33,7 @@ public class UsersController : ControllerBase
             var userId = User.GetUserId();
             _logger.LogInformation("Retrieved user ID: {UserId}", userId);
 
-            var user = await _userService.GetUserByIdAsync(userId);
+            var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
             _logger.LogInformation("Retrieved user from service: {User}", user != null ? "Found" : "Not Found");
 
             if (user == null)
@@ -52,12 +52,12 @@ public class UsersController : ControllerBase
     /// Update current authenticated user's profile
     /// </summary>
     [HttpPut("me")]
-    public async Task<ActionResult<UserDto>> UpdateCurrentUser([FromBody] UpdateUserRequest request)
+    public async Task<ActionResult<UserDto>> UpdateCurrentUser([FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
-            var user = await _userService.UpdateUserAsync(userId, request);
+            var user = await _userService.UpdateUserAsync(userId, request, cancellationToken);
 
             if (user == null)
                 return NotFound(new { message = "User not found" });
@@ -76,11 +76,11 @@ public class UsersController : ControllerBase
     /// </summary>
     [HttpGet("{userId}")]
     [AllowAnonymous]
-    public async Task<ActionResult<UserDto>> GetUserById(string userId)
+    public async Task<ActionResult<UserDto>> GetUserById(string userId, CancellationToken cancellationToken)
     {
         try
         {
-            var user = await _userService.GetUserByIdAsync(userId);
+            var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
 
             if (user == null)
                 return NotFound(new { message = "User not found" });
@@ -99,11 +99,11 @@ public class UsersController : ControllerBase
     /// </summary>
     [HttpGet("email/{email}")]
     [AllowAnonymous]
-    public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
+    public async Task<ActionResult<UserDto>> GetUserByEmail(string email, CancellationToken cancellationToken)
     {
         try
         {
-            var user = await _userService.GetUserByEmailAsync(email);
+            var user = await _userService.GetUserByEmailAsync(email, cancellationToken);
 
             if (user == null)
                 return NotFound(new { message = "User not found" });

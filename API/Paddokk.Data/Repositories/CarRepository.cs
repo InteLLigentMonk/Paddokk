@@ -72,7 +72,7 @@ public class CarRepository : ICarRepository
             .Where(c => c.UserId == userId && c.IsActive)
             .OrderByDescending(c => c.IsPrimary)
             .ThenByDescending(c => c.CreatedAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<UserCar?> GetUserCarByIdAsync(string userId, int carId, CancellationToken cancellationToken)
@@ -83,7 +83,7 @@ public class CarRepository : ICarRepository
             .Include(c => c.CarGeneration)
             .Include(c => c.Journeys)
             .Where(c => c.UserId == userId && c.Id == carId && c.IsActive)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<int> CreateUserCarAsync(UserCar userCar, CancellationToken cancellationToken)

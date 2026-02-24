@@ -25,10 +25,10 @@ public class UserJourneysController : ControllerBase
     /// Get current user's journeys
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetUserJourneys()
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetUserJourneys(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var journeys = await _journeyService.GetUserJourneysAsync(userId, userId);
+        var journeys = await _journeyService.GetUserJourneysAsync(userId, cancellationToken, userId);
         return Ok(journeys);
     }
 
@@ -36,10 +36,10 @@ public class UserJourneysController : ControllerBase
     /// Get specific user journey
     /// </summary>
     [HttpGet("{journeyId}")]
-    public async Task<ActionResult<JourneyDto>> GetUserJourney(int journeyId)
+    public async Task<ActionResult<JourneyDto>> GetUserJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, userId);
+        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken, userId);
 
         if (journey == null || journey.UserId != userId)
             return NotFound(new { message = "Journey not found or you don't own it" });
@@ -51,12 +51,12 @@ public class UserJourneysController : ControllerBase
     /// Create new journey
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<JourneyDto>> CreateJourney([FromBody] CreateJourneyRequest request)
+    public async Task<ActionResult<JourneyDto>> CreateJourney([FromBody] CreateJourneyRequest request, CancellationToken cancellationToken)
     {
         try
         {
             var userId = User.GetUserId();
-            var journey = await _journeyService.CreateJourneyAsync(userId, request);
+            var journey = await _journeyService.CreateJourneyAsync(userId, request, cancellationToken);
             return CreatedAtAction(nameof(GetUserJourney), new { journeyId = journey.Id }, journey);
         }
         catch (InvalidOperationException ex)
@@ -73,10 +73,10 @@ public class UserJourneysController : ControllerBase
     /// Update journey details
     /// </summary>
     [HttpPut("{journeyId}")]
-    public async Task<ActionResult<JourneyDto>> UpdateJourney(int journeyId, [FromBody] UpdateJourneyRequest request)
+    public async Task<ActionResult<JourneyDto>> UpdateJourney(int journeyId, [FromBody] UpdateJourneyRequest request, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var journey = await _journeyService.UpdateJourneyAsync(userId, journeyId, request);
+        var journey = await _journeyService.UpdateJourneyAsync(userId, journeyId, request, cancellationToken);
 
         if (journey == null)
             return NotFound(new { message = "Journey not found or you don't own it" });
@@ -88,10 +88,10 @@ public class UserJourneysController : ControllerBase
     /// Delete journey
     /// </summary>
     [HttpDelete("{journeyId}")]
-    public async Task<IActionResult> DeleteJourney(int journeyId)
+    public async Task<IActionResult> DeleteJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var result = await _journeyService.DeleteJourneyAsync(userId, journeyId);
+        var result = await _journeyService.DeleteJourneyAsync(userId, journeyId, cancellationToken);
 
         if (!result)
             return NotFound(new { message = "Journey not found or you don't own it" });
@@ -103,10 +103,10 @@ public class UserJourneysController : ControllerBase
     /// Get user's default active journey (for smart FAB)
     /// </summary>
     [HttpGet("default-active")]
-    public async Task<ActionResult<JourneyDto>> GetDefaultActiveJourney()
+    public async Task<ActionResult<JourneyDto>> GetDefaultActiveJourney(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var journey = await _journeyService.GetUserDefaultActiveJourneyAsync(userId);
+        var journey = await _journeyService.GetUserDefaultActiveJourneyAsync(userId, cancellationToken);
 
         if (journey == null)
             return NotFound(new { message = "No default active journey set" });
@@ -118,10 +118,10 @@ public class UserJourneysController : ControllerBase
     /// Set journey as default active (for smart FAB)
     /// </summary>
     [HttpPut("{journeyId}/set-default-active")]
-    public async Task<IActionResult> SetDefaultActiveJourney(int journeyId)
+    public async Task<IActionResult> SetDefaultActiveJourney(int journeyId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var result = await _journeyService.SetUserDefaultActiveJourneyAsync(userId, journeyId);
+        var result = await _journeyService.SetUserDefaultActiveJourneyAsync(userId, journeyId, cancellationToken);
 
         if (!result)
             return BadRequest(new { message = "Failed to set default active journey. Journey not found or not owned by user." });
@@ -133,10 +133,10 @@ public class UserJourneysController : ControllerBase
     /// Get user's journey statistics
     /// </summary>
     [HttpGet("stats")]
-    public async Task<ActionResult<JourneyStatsDto>> GetUserJourneyStats()
+    public async Task<ActionResult<JourneyStatsDto>> GetUserJourneyStats(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var stats = await _journeyService.GetUserJourneyStatsAsync(userId);
+        var stats = await _journeyService.GetUserJourneyStatsAsync(userId, cancellationToken);
         return Ok(stats);
     }
 
@@ -144,10 +144,10 @@ public class UserJourneysController : ControllerBase
     /// Check if user can create more journeys
     /// </summary>
     [HttpGet("can-create")]
-    public async Task<ActionResult<object>> CanCreateJourney()
+    public async Task<ActionResult<object>> CanCreateJourney(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var canCreate = await _journeyService.CanUserCreateJourneyAsync(userId);
+        var canCreate = await _journeyService.CanUserCreateJourneyAsync(userId, cancellationToken);
 
         // Get current journey count and limits
         var subscriptionTier = User.GetSubscriptionTier();
@@ -161,7 +161,7 @@ public class UserJourneysController : ControllerBase
             _ => 1
         };
 
-        var currentCount = await _journeyService.GetUserJourneyStatsAsync(userId);
+        var currentCount = await _journeyService.GetUserJourneyStatsAsync(userId, cancellationToken);
 
         return Ok(new
         {

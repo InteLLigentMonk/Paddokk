@@ -158,7 +158,7 @@ public class JourneysController : ControllerBase
             return NotFound(new { message = "Journey not found" });
 
         var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : (string?)null;
-        var posts = await _journeyService.GetJourneyPostsAsync(journeyId, skip, take, cancellationToken, currentUserId);
+        var posts = await _journeyService.GetJourneyPostsAsync(journeyId, cancellationToken, skip, take, currentUserId);
         return Ok(posts);
     }
 

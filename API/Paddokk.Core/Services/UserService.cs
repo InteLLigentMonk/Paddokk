@@ -1,65 +1,54 @@
-using Paddokk.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.Entities;
 using Paddokk.Core.Models.DTOs.User;
 
-namespace Paddokk.Api.Services;
+namespace Paddokk.Core.Services;
 
 public class UserService : IUserService
 {
-    private readonly PaddokkDbContext _context;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
 
-    public UserService(
-        PaddokkDbContext context,
-        ILogger<UserService> logger)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger)
     {
-        _context = context;
+        _userRepository = userRepository;
         _logger = logger;
     }
 
-    public async Task<UserDto?> GetUserByIdAsync(string userId)
+    public async Task<UserDto?> GetUserByIdAsync(string userId, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .Include(u => u.Cars)
-            .Include(u => u.Journeys)
-            .FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
-
-        return user != null ? MapToUserDto(user) : null;
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        return user is not null ? MapToUserDto(user) : null;
     }
 
-    public async Task<UserDto?> GetUserByEmailAsync(string email)
+    public async Task<UserDto?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .Include(u => u.Cars)
-            .Include(u => u.Journeys)
-            .FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
-
-        return user != null ? MapToUserDto(user) : null;
+        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        return user is not null ? MapToUserDto(user) : null;
     }
 
-
-    public async Task<UserDto?> UpdateUserAsync(string userId, UpdateUserRequest request)
+    public async Task<UserDto?> UpdateUserAsync(string userId, UpdateUserRequest request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
-        if (user == null || user.IsDeleted)
+        if (user is null)
             return null;
 
         if (!string.IsNullOrEmpty(request.DisplayName))
             user.DisplayName = request.DisplayName;
-        
+
         if (request.Bio != null)
             user.Bio = request.Bio;
-        
+
+        if (request.AvatarUrl != null)
+            user.AvatarUrl = request.AvatarUrl;
+
         user.UpdatedAt = DateTime.UtcNow;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _userRepository.UpdateAsync(user, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -67,23 +56,20 @@ public class UserService : IUserService
             return null;
         }
 
-        return await GetUserByIdAsync(userId);
+        return MapToUserDto(user);
     }
 
-    public async Task<bool> DeleteUserAsync(string userId)
+    public async Task<bool> DeleteUserAsync(string userId, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
-        if (user == null)
+        if (user is null)
             return false;
-
-        user.IsDeleted = true;
-        user.DeletedAt = DateTime.UtcNow;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _userRepository.SoftDeleteAsync(userId, cancellationToken);
+            _logger.LogInformation("User {UserId} soft deleted", userId);
             return true;
         }
         catch (Exception ex)

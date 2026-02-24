@@ -33,7 +33,7 @@ public class EdDsaSignatureProvider : SignatureProvider
 
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
@@ -50,15 +50,15 @@ public class EdDsaSignatureProvider : SignatureProvider
             // If the offsets/lengths already point to the whole arrays, avoid copying
             byte[] inputSegment = (inputOffset == 0 && inputLength == input.Length) 
                 ? input 
-                : input.Skip(inputOffset).Take(inputLength).ToArray();
+                : [.. input.Skip(inputOffset).Take(inputLength)];
 
             byte[] sigSegment = (signatureOffset == 0 && signatureLength == signature.Length) 
                 ? signature 
-                : signature.Skip(signatureOffset).Take(signatureLength).ToArray();
+                : [.. signature.Skip(signatureOffset).Take(signatureLength)];
 
             return Verify(inputSegment, sigSegment);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }

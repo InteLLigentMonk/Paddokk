@@ -39,30 +39,30 @@ public class DashboardController : ControllerBase
         var subTier = User.GetSubscriptionTier();
 
         // Get user info
-        var user = await _userService.GetUserByIdAsync(userId);
+        var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
         if (user == null)
             return NotFound(new { message = "User not found" });
 
         // Get user's journey stats
-        var journeyStats = await _journeyService.GetUserJourneyStatsAsync(userId);
+        var journeyStats = await _journeyService.GetUserJourneyStatsAsync(userId, cancellationToken);
 
         // Get user's cars
         var cars = await _carService.GetUserCarsAsync(userId, cancellationToken);
         var carCount = cars.Count();
 
         // Get user's active journeys (recent activity)
-        var activeJourneys = await _journeyService.GetUserJourneysAsync(userId, userId);
+        var activeJourneys = await _journeyService.GetUserJourneysAsync(userId, cancellationToken, userId);
         var recentJourneys = activeJourneys
             .Where(j => j.Status == JourneyStatus.Active)
             .OrderByDescending(j => j.UpdatedAt)
             .Take(5);
 
         // Get default active journey for FAB
-        var defaultActiveJourney = await _journeyService.GetUserDefaultActiveJourneyAsync(userId);
+        var defaultActiveJourney = await _journeyService.GetUserDefaultActiveJourneyAsync(userId, cancellationToken);
 
         // Get subscription limits and usage
         var canAddCar = await _carService.CanUserAddCarAsync(subTier, userId, cancellationToken);
-        var canCreateJourney = await _journeyService.CanUserCreateJourneyAsync(userId);
+        var canCreateJourney = await _journeyService.CanUserCreateJourneyAsync(userId, cancellationToken);
 
         var maxCars = user.SubscriptionTier switch
         {
@@ -128,6 +128,7 @@ public class DashboardController : ControllerBase
     /// </summary>
     [HttpGet("feed")]
     public async Task<ActionResult<IEnumerable<JourneyDto>>> GetActivityFeed(
+        CancellationToken cancellationToken,
         [FromQuery] int skip = 0,
         [FromQuery] int take = 20)
     {
@@ -135,7 +136,7 @@ public class DashboardController : ControllerBase
 
         // For now, return trending journeys as placeholder
         // In future, this would be journeys the user has subscribed to
-        var feed = await _journeyService.GetTrendingJourneysAsync(userId);
+        var feed = await _journeyService.GetTrendingJourneysAsync(cancellationToken, userId);
 
         return Ok(feed.Skip(skip).Take(take));
     }

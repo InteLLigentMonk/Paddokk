@@ -145,7 +145,7 @@ public class ImageService : IImageService
 
     public async Task<ImageLimitsDto> GetImageLimitsAsync(string userId, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByIdAsync(userId);
+        var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
         if (user == null)
             throw new ArgumentException("User not found");
 

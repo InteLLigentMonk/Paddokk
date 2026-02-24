@@ -1,5 +1,4 @@
 ﻿using Paddokk.Api.Security;
-using Paddokk.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -245,6 +244,9 @@ public static class ServiceCollectionExtensions
         // Register application repositories here
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IImageRepository, ImageRepository>();
+        services.AddScoped<IJourneyRepository, JourneyRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
