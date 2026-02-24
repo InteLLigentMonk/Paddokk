@@ -36,80 +36,50 @@ public class CarImagesController(IImageService imageService, ICarService carServ
         return await _imageService.AddCarImageAsync(userId, carId, file, cancellationToken, caption);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /// <summary>
     /// Get specific car image
     /// </summary>
     [HttpGet("{imageId}")]
-    public async Task<ActionResult<CarImageDto>> GetCarImage(
+    public async Task<CarImageDto> GetCarImage(
         int carId, int imageId, CancellationToken cancellationToken)
     {
-        if (!await _carService.UserOwnsCarAsync(User.GetUserId(), carId, cancellationToken))
-            return NotFound();
-
-        var image = await _imageService.GetCarImageByIdAsync(imageId, cancellationToken);
-        if (image is null || image.UserCarId != carId)
-            return NotFound();
-
-        return Ok(image);
+        var userId = User.GetUserId();
+        return await _imageService.GetCarImageByIdAsync(imageId, carId, userId, cancellationToken);
     }
 
     /// <summary>
     /// Update car image details
     /// </summary>
     [HttpPut("{imageId}")]
-    public async Task<ActionResult<CarImageDto>> UpdateCarImage(
-        int carId, int imageId, [FromBody] UpdateCarImageRequest request, CancellationToken cancellationToken)
-    {
-        var result = await _imageService.UpdateCarImageAsync(User.GetUserId(), imageId, request, cancellationToken);
-        if (result is null)
-            return NotFound();
-
-        return Ok(result);
-    }
+    public async Task<CarImageDto> UpdateCarImage(
+        int imageId, [FromBody] UpdateCarImageRequest request, CancellationToken cancellationToken) => 
+            await _imageService.UpdateCarImageAsync(User.GetUserId(), imageId, request, cancellationToken);
 
     /// <summary>
     /// Delete car image
     /// </summary>
     [HttpDelete("{imageId}")]
-    public async Task<IActionResult> DeleteCarImage(
-        int carId, int imageId, CancellationToken cancellationToken)
-    {
-        var result = await _imageService.DeleteCarImageAsync(User.GetUserId(), imageId, cancellationToken);
-        if (!result)
-            return NotFound();
-
-        return NoContent();
-    }
+    public async Task DeleteCarImage(
+        int carId, int imageId, CancellationToken cancellationToken) =>
+            await _imageService.DeleteCarImageAsync(User.GetUserId(), carId, imageId, cancellationToken);
 
     /// <summary>
     /// Set image as primary for car
     /// </summary>
     [HttpPut("{imageId}/setprimary")]
-    public async Task<IActionResult> SetPrimaryImage(int carId, int imageId, CancellationToken cancellationToken)
-    {
-        var result = await _imageService.SetCarPrimaryImageAsync(User.GetUserId(), carId, imageId, cancellationToken);
-        if (!result)
-            return NotFound();
+    public async Task SetPrimaryImage(int carId, int imageId, CancellationToken cancellationToken) =>
+        await _imageService.SetCarPrimaryImageAsync(User.GetUserId(), carId, imageId, cancellationToken);
 
-        return NoContent();
-    }
+
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// Check if user can upload more images for this car
@@ -119,8 +89,7 @@ public class CarImagesController(IImageService imageService, ICarService carServ
     {
         var userId = User.GetUserId();
 
-        if (!await _carService.UserOwnsCarAsync(userId, carId, cancellationToken))
-            return NotFound();
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
 
         var canUpload = await _imageService.CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId);
         var limits = await _imageService.GetImageLimitsAsync(userId, cancellationToken);

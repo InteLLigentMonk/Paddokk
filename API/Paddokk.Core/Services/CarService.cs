@@ -315,9 +315,10 @@ public class CarService : ICarService
         return true;
     }
 
-    public async Task<bool> UserOwnsCarAsync(string userId, int carId, CancellationToken cancellationToken)
+    public async Task UserOwnsCarAsync(string userId, int carId, CancellationToken cancellationToken)
     {
-        return await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken) is not null;
+        _ = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken) 
+            ?? throw new InvalidOperationException("User does not own the specified car");
     }
 
     public async Task UpdatePrimaryImageUrlAsync(int carId, string? imageUrl, CancellationToken cancellationToken)

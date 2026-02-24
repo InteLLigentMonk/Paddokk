@@ -112,7 +112,7 @@ public class ImageService : IImageService
         }
     }
 
-    public async Task<bool> DeleteImageAsync(string imageUrl, CancellationToken cancellationToken)
+    public async Task DeleteImageAsync(string imageUrl, CancellationToken cancellationToken)
     {
         try
         {
@@ -136,13 +136,11 @@ public class ImageService : IImageService
                 var sizedBlobName = $"{baseName}_{size}{extension}";
                 await containerClient.DeleteBlobIfExistsAsync(sizedBlobName, cancellationToken : cancellationToken);
             }
-
-            return true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to delete image {ImageUrl}", imageUrl);
-            return false;
+            throw new InvalidOperationException("Failed to delete image", ex);
         }
     }
 
@@ -202,8 +200,7 @@ public class ImageService : IImageService
     // Car Image Methods
     public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, string userId, CancellationToken cancellationToken)
     {
-        if (!await _carService.UserOwnsCarAsync(userId, carId, cancellationToken))
-            throw new UnauthorizedAccessException("User does not own this car");
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
 
         var images = await _imageRepository.GetCarImagesAsync(carId, cancellationToken)
             ?? throw new InvalidOperationException("Failed to retrieve car images");
@@ -211,17 +208,18 @@ public class ImageService : IImageService
         return images.Select(MapToCarImageDto);
     }
 
-    public async Task<CarImageDto?> GetCarImageByIdAsync(int carImageId, CancellationToken cancellationToken)
+    public async Task<CarImageDto> GetCarImageByIdAsync(int carImageId, int carId, string userId, CancellationToken cancellationToken)
     {
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
+
         var image = await _imageRepository.GetCarImageByIdAsync(carImageId, cancellationToken);
-        return image != null ? MapToCarImageDto(image) : null;
+        return image != null ? MapToCarImageDto(image) : throw new InvalidOperationException("Car image not found");
     }
 
     public async Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, CancellationToken cancellationToken, string? caption = null)
     {
         // Validate user owns the car
-        if (!await _carService.UserOwnsCarAsync(userId, carId, cancellationToken))
-            throw new UnauthorizedAccessException("User does not own this car");
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
 
         // Check image limits
         if (!await CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId))
@@ -269,12 +267,10 @@ public class ImageService : IImageService
         return MapToCarImageDto(carImage);
     }
 
-    public async Task<CarImageDto?> UpdateCarImageAsync(string userId, int carImageId, UpdateCarImageRequest request, CancellationToken cancellationToken)
+    public async Task<CarImageDto> UpdateCarImageAsync(string userId, int carImageId, UpdateCarImageRequest request, CancellationToken cancellationToken)
     {
-        var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken);
-
-        if (carImage == null)
-            return null;
+        var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken)
+            ?? throw new InvalidOperationException("Car image not found");
 
         // Update caption
         if (request.Caption != null)
@@ -302,12 +298,12 @@ public class ImageService : IImageService
         return MapToCarImageDto(carImage);
     }
 
-    public async Task<bool> DeleteCarImageAsync(string userId, int carImageId, CancellationToken cancellationToken)
+    public async Task DeleteCarImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken)
     {
-        var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken);
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
 
-        if (carImage == null)
-            return false;
+        var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken)
+             ?? throw new InvalidOperationException("Car image not found");
 
         // Delete from blob storage
         await DeleteImageAsync(carImage.ImageUrl, cancellationToken);
@@ -328,32 +324,27 @@ public class ImageService : IImageService
 
             await _imageRepository.DeleteCarImageAsync(carImage.Id, cancellationToken);
         }, cancellationToken);
-
-        return true;
     }
 
-    public async Task<bool> SetCarPrimaryImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken)
+    public async Task SetCarPrimaryImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken)
     {
-        if (!await _carService.UserOwnsCarAsync(userId, carId, cancellationToken))
-            return false;
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
 
         var image = await _imageRepository.GetCarImageByIdAsync(carImageId, cancellationToken);
         if (image is null || image.UserCarId != carId)
-            return false;
+            throw new InvalidOperationException("Car image not found or does not belong to the specified car");
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             await _imageRepository.SetPrimaryImageAsync(carId, carImageId, cancellationToken);
             await _carService.UpdatePrimaryImageUrlAsync(carId, image.MediumUrl, cancellationToken);
         }, cancellationToken);
-
-        return true;
     }
 
-    public async Task<bool> ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken)
+    public async Task ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken)
     {
-        if (!images.Any())
-            return true;
+        if (images.Count == 0)
+            throw new ArgumentException("At least one image is required");
 
         var limits = await GetImageLimitsAsync(userId, cancellationToken);
 
@@ -370,8 +361,6 @@ public class ImageService : IImageService
 
             // Additional validation can be added here
         }
-
-        return true;
     }
 
     // Helper Methods
