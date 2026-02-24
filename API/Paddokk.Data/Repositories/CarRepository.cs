@@ -121,4 +121,13 @@ public class CarRepository : ICarRepository
             .Where(c => c.UserId == userId && c.IsActive)
             .CountAsync(cancellationToken);
     }
+
+    public async Task UpdatePrimaryImageUrlAsync(int carId, string? imageUrl, CancellationToken cancellationToken)
+    {
+        await _db.UserCars
+            .Where(c => c.Id == carId)
+            .ExecuteUpdateAsync(c => c
+                .SetProperty(p => p.PrimaryImageUrl, imageUrl)
+                .SetProperty(p => p.UpdatedAt, DateTime.UtcNow), cancellationToken);
+    }
 }

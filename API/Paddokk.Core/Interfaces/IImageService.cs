@@ -7,23 +7,23 @@ namespace Paddokk.Core.Interfaces;
 public interface IImageService
 {
     // Image Upload & Processing
-    Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, int? contextId = null, string? caption = null);
-    Task<bool> DeleteImageAsync(string imageUrl);
-    Task<ImageLimitsDto> GetImageLimitsAsync(string userId);
-    Task<bool> CanUserUploadImageAsync(string userId, ImageContext context, int? contextId = null);
+    Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, CancellationToken cancellationToken, int? contextId = null, string? caption = null);
+    Task<bool> DeleteImageAsync(string imageUrl, CancellationToken cancellationToken);
+    Task<ImageLimitsDto> GetImageLimitsAsync(string userId, CancellationToken cancellationToken);
+    Task<bool> CanUserUploadImageAsync(string userId, ImageContext context, CancellationToken cancellationToken, int? contextId = null);
 
     // Car Images
-    Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId);
-    Task<CarImageDto?> GetCarImageByIdAsync(int carImageId);
-    Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, string? caption = null);
-    Task<CarImageDto?> UpdateCarImageAsync(string userId, int carImageId, UpdateCarImageRequest request);
-    Task<bool> DeleteCarImageAsync(string userId, int carImageId);
-    Task<bool> SetCarPrimaryImageAsync(string userId, int carId, int carImageId);
+    Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId, CancellationToken cancellationToken);
+    Task<CarImageDto?> GetCarImageByIdAsync(int carImageId, CancellationToken cancellationToken);
+    Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, CancellationToken cancellationToken, string? caption = null);
+    Task<CarImageDto?> UpdateCarImageAsync(string userId, int carImageId, UpdateCarImageRequest request, CancellationToken cancellationToken);
+    Task<bool> DeleteCarImageAsync(string userId, int carImageId, CancellationToken cancellationToken);
+    Task<bool> SetCarPrimaryImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken);
 
     // Journey Post Images (integrated with existing post creation)
-    Task<bool> ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images);
+    Task<bool> ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken);
 
     // Image URL Generation
-    Task<string> GenerateSecureUploadUrlAsync(string fileName, ImageContext context);
-    Task<string> GetOptimizedImageUrlAsync(string originalUrl, int? width = null, int? height = null);
+    Task<string> GenerateSecureUploadUrlAsync(string fileName, ImageContext context, CancellationToken cancellationToken);
+    Task<string> GetOptimizedImageUrlAsync(string originalUrl, CancellationToken cancellationToken, int? width = null, int? height = null);
 }

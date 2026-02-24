@@ -316,4 +316,14 @@ public class CarService : ICarService
 
         return true;
     }
+
+    public async Task<bool> UserOwnsCarAsync(string userId, int carId, CancellationToken cancellationToken)
+    {
+        return await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken) is not null;
+    }
+
+    public async Task UpdatePrimaryImageUrlAsync(int carId, string? imageUrl, CancellationToken cancellationToken)
+    {
+        await _carRepository.UpdatePrimaryImageUrlAsync(carId, imageUrl, cancellationToken);
+    }
 }

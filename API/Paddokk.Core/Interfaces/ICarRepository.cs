@@ -29,4 +29,6 @@ public interface ICarRepository
     Task DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken);
 
     Task<int> GetUserCarCountAsync(string userId, CancellationToken cancellationToken);
+
+    Task UpdatePrimaryImageUrlAsync(int carId, string? imageUrl, CancellationToken cancellationToken);
 }
