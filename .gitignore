@@ -57,3 +57,4 @@ launchSettings.json
 
 # Misc
 *.log
+*.Backup.tmp
