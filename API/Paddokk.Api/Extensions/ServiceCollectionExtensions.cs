@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Paddokk.Api.Filters;
 using Paddokk.Api.Security;
@@ -203,6 +204,13 @@ public static class ServiceCollectionExtensions
                 Title = "Paddokk API",
                 Version = "v1",
                 Description = "The automotive journey sharing platform API"
+            });
+
+            c.CustomOperationIds(apiDesc =>
+            {
+                var controller = apiDesc.ActionDescriptor.RouteValues["controller"];
+                var action = apiDesc.ActionDescriptor.RouteValues["action"];
+                return $"{controller}_{action}";
             });
 
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

@@ -197,6 +197,24 @@ public class ImageService : IImageService
         }
     }
 
+    public async Task<CanUploadImageResponse> GetUploadStatusAsync(string userId, int carId, CancellationToken cancellationToken)
+    {
+        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
+
+        var canUpload = await CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId);
+        var limits = await GetImageLimitsAsync(userId, cancellationToken);
+        var imageCount = await _imageRepository.GetImageCountByContextAsync(
+            ImageContext.Car.ToString(), carId, cancellationToken);
+
+        return new CanUploadImageResponse
+        {
+            CanUpload = canUpload,
+            CurrentCount = imageCount,
+            MaxAllowed = limits.MaxImagesPerCar,
+            SubscriptionTier = limits.SubscriptionTier
+        };
+    }
+
     // Car Image Methods
     public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, string userId, CancellationToken cancellationToken)
     {
@@ -343,9 +361,6 @@ public class ImageService : IImageService
 
     public async Task ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken)
     {
-        if (images.Count == 0)
-            throw new ArgumentException("At least one image is required");
-
         var limits = await GetImageLimitsAsync(userId, cancellationToken);
 
         if (images.Count > limits.MaxImagesPerPost)

@@ -11,6 +11,7 @@ public interface IImageService
     Task DeleteImageAsync(string imageUrl, CancellationToken cancellationToken);
     Task<ImageLimitsDto> GetImageLimitsAsync(string userId, CancellationToken cancellationToken);
     Task<bool> CanUserUploadImageAsync(string userId, ImageContext context, CancellationToken cancellationToken, int? contextId = null);
+    Task<CanUploadImageResponse> GetUploadStatusAsync(string userId, int carId, CancellationToken cancellationToken);
 
     // Car Images
     Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int userCarId, string userId, CancellationToken cancellationToken);
@@ -21,7 +22,7 @@ public interface IImageService
     Task SetCarPrimaryImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken);
 
     // Journey Post Images (integrated with existing post creation)
-    Task<bool> ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken);
+    Task ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken);
 
     // Image URL Generation
     Task<string> GenerateSecureUploadUrlAsync(string fileName, ImageContext context, CancellationToken cancellationToken);
