@@ -24,13 +24,11 @@ export default defineConfig({
             query: true,
             body: true,
             response: true,
-          }
+          },
         },
         fetch: {
           includeHttpResponseReturnType: true,
-        }
-      },
-    },
+        },
         mutator: {
           path: "src/lib/api/client.ts",
           name: "apiFetcher",

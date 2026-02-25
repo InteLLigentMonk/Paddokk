@@ -216,20 +216,16 @@ public class ImageService : IImageService
     }
 
     // Car Image Methods
-    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, string userId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, CancellationToken cancellationToken)
     {
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
-
         var images = await _imageRepository.GetCarImagesAsync(carId, cancellationToken)
             ?? throw new InvalidOperationException("Failed to retrieve car images");
 
         return images.Select(MapToCarImageDto);
     }
 
-    public async Task<CarImageDto> GetCarImageByIdAsync(int carImageId, int carId, string userId, CancellationToken cancellationToken)
+    public async Task<CarImageDto> GetCarImageByIdAsync(int carImageId, int carId, CancellationToken cancellationToken)
     {
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
-
         var image = await _imageRepository.GetCarImageByIdAsync(carImageId, cancellationToken);
         return image != null ? MapToCarImageDto(image) : throw new InvalidOperationException("Car image not found");
     }
