@@ -197,21 +197,35 @@ public class ImageService : IImageService
         }
     }
 
-    // Car Image Methods
-    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, string userId, CancellationToken cancellationToken)
+    public async Task<CanUploadImageResponse> GetUploadStatusAsync(string userId, int carId, CancellationToken cancellationToken)
     {
         await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
 
+        var canUpload = await CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId);
+        var limits = await GetImageLimitsAsync(userId, cancellationToken);
+        var imageCount = await _imageRepository.GetImageCountByContextAsync(
+            ImageContext.Car.ToString(), carId, cancellationToken);
+
+        return new CanUploadImageResponse
+        {
+            CanUpload = canUpload,
+            CurrentCount = imageCount,
+            MaxAllowed = limits.MaxImagesPerCar,
+            SubscriptionTier = limits.SubscriptionTier
+        };
+    }
+
+    // Car Image Methods
+    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, CancellationToken cancellationToken)
+    {
         var images = await _imageRepository.GetCarImagesAsync(carId, cancellationToken)
             ?? throw new InvalidOperationException("Failed to retrieve car images");
 
         return images.Select(MapToCarImageDto);
     }
 
-    public async Task<CarImageDto> GetCarImageByIdAsync(int carImageId, int carId, string userId, CancellationToken cancellationToken)
+    public async Task<CarImageDto> GetCarImageByIdAsync(int carImageId, int carId, CancellationToken cancellationToken)
     {
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
-
         var image = await _imageRepository.GetCarImageByIdAsync(carImageId, cancellationToken);
         return image != null ? MapToCarImageDto(image) : throw new InvalidOperationException("Car image not found");
     }
@@ -343,9 +357,6 @@ public class ImageService : IImageService
 
     public async Task ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken)
     {
-        if (images.Count == 0)
-            throw new ArgumentException("At least one image is required");
-
         var limits = await GetImageLimitsAsync(userId, cancellationToken);
 
         if (images.Count > limits.MaxImagesPerPost)

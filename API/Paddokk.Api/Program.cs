@@ -4,14 +4,12 @@ using Paddokk.Api.Middleware;
 using Azure.Communication.Email;
 using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-
-
 
 // Add Azure Communication Services Email
 builder.Services.AddSingleton<EmailClient>(serviceProvider =>
@@ -19,7 +17,6 @@ builder.Services.AddSingleton<EmailClient>(serviceProvider =>
     var connectionString = builder.Configuration["AzureEmail:ConnectionString"];
     return new EmailClient(connectionString);
 });
-
 
 // Database
 builder.Services.AddDbContext<PaddokkDbContext>(options =>
@@ -33,9 +30,8 @@ builder.Services.AddSingleton(x =>
     return new BlobServiceClient(connectionString);
 });
 
-
 // JWT Authentication
-builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment);
 
 // Application Services
 builder.Services.AddApplicationServices();
@@ -44,7 +40,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddEmailServices();
 
 // Swagger
-builder.Services.AddSwaggerWithJwt();
+builder.Services.AddOpenApiWithJwt();
 
 // CORS
 builder.Services.AddCorsPolicy();
@@ -60,8 +56,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi(); // serves /openapi/v1.json
+
+    var devToken = app.Configuration["Development:BearerToken"];
+    app.MapScalarApiReference(options =>
+    {
+        options.AddPreferredSecuritySchemes("Bearer");
+        if (!string.IsNullOrEmpty(devToken))
+            options.AddHttpAuthentication("Bearer", auth => auth.Token = devToken);
+    });
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();

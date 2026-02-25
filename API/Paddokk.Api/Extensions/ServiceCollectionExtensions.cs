@@ -1,10 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Paddokk.Api.Filters;
+using Paddokk.Api.OpenApi;
 using Paddokk.Api.Security;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Services;
@@ -16,7 +15,7 @@ namespace Paddokk.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         var jwtSettings = configuration.GetSection("BetterAuth:Jwt");
         var secretKey = jwtSettings["SecretKey"];
@@ -64,53 +63,14 @@ public static class ServiceCollectionExtensions
                     }
                 };
 
-                // Configure for EdDSA with JWKS
+                // EdDSA with JWKS is handled by EdDsaJwtBearerConfigureOptions (registered below)
                 if (algorithm.Equals("EdDSA", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(jwksUri))
-                {                    
-                    var httpClient = new HttpClient();
-                    var jwksJson = httpClient.GetStringAsync(jwksUri).Result;
-                    
-                    var jwks = JsonSerializer.Deserialize<JsonElement>(jwksJson);
-                    
-                    var keys = new List<SecurityKey>();
-                    
-                    if (jwks.TryGetProperty("keys", out var keysArray))
-                    {
-                        foreach (var key in keysArray.EnumerateArray())
-                        {
-                            var alg = key.GetProperty("alg").GetString();
-                            var kty = key.GetProperty("kty").GetString();
-                            
-                            if (alg == "EdDSA" && kty == "OKP")
-                            {
-                                var x = key.GetProperty("x").GetString();
-                                var kid = key.GetProperty("kid").GetString();
-                                
-                                var edDsaKey = EdDsaSecurityKey.FromJwk(x!, kid!);
-                                keys.Add(edDsaKey);
-                                
-                            }
-                        }
-                    }
-                    
-                    if (keys.Count == 0)
-                        throw new InvalidOperationException("No valid EdDSA keys found in JWKS");
-                    
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKeys = keys,
-                        ValidAlgorithms = ["EdDSA"],
-                        ClockSkew = TimeSpan.Zero,
-                        CryptoProviderFactory = new EdDsaCryptoProviderFactory()
-                    };
+                {
+                    // No-op here — keys are loaded lazily and asynchronously via IConfigureNamedOptions
                 }
                 // If JWKS URI is provided (non-EdDSA), use it to fetch keys automatically
                 else if (!string.IsNullOrEmpty(jwksUri))
-                {                    
+                {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
@@ -119,21 +79,19 @@ public static class ServiceCollectionExtensions
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero
                     };
-                    
+
                     options.MetadataAddress = jwksUri;
-                    options.RequireHttpsMetadata = false; // Only for development
+                    options.RequireHttpsMetadata = !environment.IsDevelopment();
                 }
                 // Configure token validation based on algorithm
-                else if (algorithm.StartsWith("EdDSA", StringComparison.OrdinalIgnoreCase) || 
+                else if (algorithm.StartsWith("EdDSA", StringComparison.OrdinalIgnoreCase) ||
                     algorithm.StartsWith("ES", StringComparison.OrdinalIgnoreCase))
                 {
-                    // EdDSA or ECDSA - requires public key
                     if (string.IsNullOrEmpty(publicKey))
                         throw new InvalidOperationException($"Public Key is required for {algorithm} algorithm");
-                                        
-                    // For EdDSA, we need to use JsonWebKey
+
                     var jsonWebKey = new JsonWebKey(publicKey);
-                    
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
@@ -141,28 +99,22 @@ public static class ServiceCollectionExtensions
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = jsonWebKey,
-                        // EdDSA uses specific algorithms
                         ValidAlgorithms = new[] { "EdDSA", "ES256", "ES384", "ES512" },
                         ClockSkew = TimeSpan.Zero
                     };
 
-                    //// Add custom crypto provider for EdDSA
                     if (algorithm.StartsWith("EdDSA", StringComparison.OrdinalIgnoreCase))
-                    {
                         options.TokenValidationParameters.CryptoProviderFactory = new EdDsaCryptoProviderFactory();
-                    }
                 }
                 else if (algorithm.StartsWith("RS", StringComparison.OrdinalIgnoreCase))
                 {
-                    // RSA - requires public key
                     if (string.IsNullOrEmpty(publicKey))
                         throw new InvalidOperationException($"Public Key is required for {algorithm} algorithm");
 
-                    
                     var rsa = RSA.Create();
                     rsa.ImportFromPem(publicKey);
                     var rsaKey = new RsaSecurityKey(rsa);
-                    
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
@@ -177,7 +129,7 @@ public static class ServiceCollectionExtensions
                 {
                     // HS256/HS384/HS512 - symmetric key
                     var keyBytes = Encoding.UTF8.GetBytes(secretKey!);
-                    
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
@@ -190,47 +142,35 @@ public static class ServiceCollectionExtensions
                 }
             });
 
+        // Register async JWKS loader for EdDSA — runs on first request, not at startup
+        if (algorithm.Equals("EdDSA", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(jwksUri))
+        {
+            services.AddHttpClient();
+            services.AddSingleton<IConfigureOptions<JwtBearerOptions>, EdDsaJwtBearerConfigureOptions>();
+        }
+
         services.AddAuthorization();
         return services;
     }
 
-    public static IServiceCollection AddSwaggerWithJwt(this IServiceCollection services)
+    public static IServiceCollection AddOpenApiWithJwt(this IServiceCollection services)
     {
-        services.AddSwaggerGen(c =>
+        services.AddOpenApi(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo
+            // Info is set via a document transformer in Microsoft.OpenApi v2
+            options.AddDocumentTransformer((document, context, ct) =>
             {
-                Title = "Paddokk API",
-                Version = "v1",
-                Description = "The automotive journey sharing platform API"
-            });
-
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Description = "JWT Authorization header. Enter your token in the text input below. Example: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT"
-            });
-
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                document.Info = new()
                 {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+                    Title = "Paddokk API",
+                    Version = "v1",
+                    Description = "The automotive journey sharing platform API"
+                };
+                return Task.CompletedTask;
+            });
 
-            c.OperationFilter<DefaultResponsesOperationFilter>();
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+            options.AddOperationTransformer<DefaultResponsesOperationTransformer>();
         });
 
         return services;
