@@ -91,11 +91,4 @@ public class UserCarsController : ControllerBase
         }
     }
 
-    [HttpGet("can-add")]
-    public async Task<ActionResult<CarLimitDto>> CanAddCar(CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-        var subscriptionTier = User.GetSubscriptionTier();
-        return await _carService.CanUserAddCarAsync(subscriptionTier, userId, cancellationToken);
-    }
 }
