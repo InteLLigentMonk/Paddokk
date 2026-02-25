@@ -1,8 +1,7 @@
-﻿using Paddokk.Api.Extensions;
+using Paddokk.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Paddokk.Core.Interfaces;
-using Paddokk.Core.Models.Entities;
 using Paddokk.Core.Models.DTOs.Car;
 
 namespace Paddokk.Api.Controllers;
@@ -10,85 +9,41 @@ namespace Paddokk.Api.Controllers;
 [ApiController]
 [Route("api/users/me/cars")]
 [Authorize]
-public class UserCarsController : ControllerBase
+public class UserCarsController(ICarService carService) : ControllerBase
 {
-    private readonly ICarService _carService;
-
-    public UserCarsController(ICarService carService)
-    {
-        _carService = carService;
-    }
+    private readonly ICarService _carService = carService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserCarDto>>> GetUserCars(CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-        var cars = await _carService.GetUserCarsAsync(userId, cancellationToken);
-        return Ok(cars);
-    }
+    [EndpointSummary("Get all cars for the current user")]
+    public async Task<UserCarsResponse> GetUserCars(CancellationToken ct) =>
+        new() { Cars = [.. await _carService.GetUserCarsAsync(User.GetUserId(), ct)] };
 
     [HttpGet("{carId}")]
-    public async Task<ActionResult<UserCarDto>> GetUserCar(int carId, CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-        var car = await _carService.GetUserCarByIdAsync(userId, carId, cancellationToken);
-
-        if (car == null)
-            return NotFound();
-
-        return Ok(car);
-    }
+    [EndpointSummary("Get a specific car for the current user")]
+    public async Task<UserCarDto> GetUserCar(int carId, CancellationToken ct) =>
+        await _carService.GetUserCarByIdAsync(User.GetUserId(), carId, ct);
 
     [HttpPost]
-    public async Task<ActionResult<UserCarDto>> CreateUserCar([FromBody] CreateUserCarRequest request, CancellationToken cancellationToken)
+    [EndpointSummary("Add a new car for the current user")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<UserCarDto> CreateUserCar([FromBody] CreateUserCarRequest request, CancellationToken ct)
     {
-        try
-        {
-            var userId = User.GetUserId();
-            var subTier = User.GetSubscriptionTier();
-            var car = await _carService.CreateUserCarAsync(subTier, userId, request, cancellationToken);
-            return CreatedAtAction(nameof(GetUserCar), new { carId = car.Id }, car);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var car = await _carService.CreateUserCarAsync(User.GetSubscriptionTier(), User.GetUserId(), request, ct);
+        Response.StatusCode = StatusCodes.Status201Created;
+        return car;
     }
 
     [HttpPut("{carId}")]
-    public async Task<ActionResult<UserCarDto>> UpdateUserCar(int carId, [FromBody] UpdateUserCarRequest request, CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-
-        var car = await _carService.UpdateUserCarAsync(userId, carId, request, cancellationToken);
-
-        if (car == null)
-            return NotFound();
-
-        return Ok(car);
-    }
+    [EndpointSummary("Update a car for the current user")]
+    public async Task<UserCarDto> UpdateUserCar(int carId, [FromBody] UpdateUserCarRequest request, CancellationToken ct) =>
+        await _carService.UpdateUserCarAsync(User.GetUserId(), carId, request, ct);
 
     [HttpDelete("{carId}")]
-    public async Task<IActionResult> DeleteUserCar(int carId, CancellationToken cancellationToken)
+    [EndpointSummary("Delete a car for the current user")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task DeleteUserCar(int carId, CancellationToken ct)
     {
-        try
-        {
-            var userId = User.GetUserId();
-            var deleted = await _carService.DeleteUserCarAsync(userId, carId, cancellationToken);
-
-            if (!deleted)
-                return NotFound();
-
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        await _carService.DeleteUserCarAsync(User.GetUserId(), carId, ct);
+        Response.StatusCode = StatusCodes.Status204NoContent;
     }
-
 }

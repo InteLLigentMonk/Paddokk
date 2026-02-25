@@ -208,8 +208,7 @@ public class CarService : ICarService
         _logger.LogInformation("User {UserId} created car {CarId}: {Make} {Model} {Year}",
             userId, userCar.Id, request.CarMakeId, request.CarModelId, request.Year);
 
-        return await GetUserCarByIdAsync(userId, userCar.Id, cancellationToken)
-            ?? throw new InvalidOperationException("Failed to retrieve created car");
+        return await GetUserCarByIdAsync(userId, userCar.Id, cancellationToken);
     }
 
     public async Task<UserCarDto> UpdateUserCarAsync(
@@ -242,16 +241,13 @@ public class CarService : ICarService
 
         _logger.LogInformation("User {UserId} updated car {CarId}", userId, carId);
 
-        return await GetUserCarByIdAsync(userId, carId, cancellationToken)
-            ?? throw new InvalidOperationException("Failed to retrieve updated car");
+        return await GetUserCarByIdAsync(userId, carId, cancellationToken);
     }
 
-    public async Task<bool> DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken)
+    public async Task DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken)
     {
-        var userCar = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
-
-        if (userCar == null)
-            return false;
+        var userCar = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Car {carId} not found for user {userId}");
 
         // Check if car has active journeys
         if (userCar.Journeys.Any(j => j.Status == JourneyStatus.Active))
@@ -260,8 +256,6 @@ public class CarService : ICarService
         await _carRepository.DeleteUserCarAsync(userId, carId, cancellationToken);
 
         _logger.LogInformation("User {UserId} deleted car {CarId}", userId, carId);
-
-        return true;
     }
 
     public async Task<int> GetUserCarCountAsync(string userId, CancellationToken cancellationToken)

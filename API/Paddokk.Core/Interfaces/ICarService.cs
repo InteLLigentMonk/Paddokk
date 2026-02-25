@@ -18,7 +18,7 @@ public interface ICarService
     Task<UserCarDto> GetUserCarByIdAsync(string userId, int carId, CancellationToken cancellationToken);
     Task<UserCarDto> CreateUserCarAsync(SubscriptionTier subTier, string userId, CreateUserCarRequest request, CancellationToken cancellationToken);
     Task<UserCarDto> UpdateUserCarAsync(string userId, int carId, UpdateUserCarRequest request, CancellationToken cancellationToken);
-    Task<bool> DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken);
+    Task DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken);
     Task<int> GetUserCarCountAsync(string userId, CancellationToken cancellationToken);
     Task<CarLimitDto> CanUserAddCarAsync(SubscriptionTier subTier, string userId, CancellationToken cancellationToken);
     Task<bool> ValidateCarCombinationAsync(CreateUserCarRequest request, CancellationToken cancellationToken);
