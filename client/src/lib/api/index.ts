@@ -17,4 +17,5 @@
 
 export * from "@/generated/api";
 export { apiFetcher } from "./client";
+export { ApiError } from "./api-error";
 export { mobileQueryDefaults } from "./query-defaults";

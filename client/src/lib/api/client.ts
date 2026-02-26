@@ -1,130 +1,73 @@
-import Axios from "axios";
-import type { AxiosError, AxiosRequestConfig } from "axios";
-import { authClient } from "@/lib/auth-client";
+import { ApiError } from './api-error'
 
-export type ErrorType<TError> = AxiosError<TError>;
-export type BodyType<TData> = TData;
+export type ErrorType<_TError> = ApiError
+export type BodyType<TData> = TData
 
-/**
- * Validate required environment variables
- */
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL
+if (!apiUrl) throw new Error('VITE_API_URL is required')
 
-if (!apiUrl) {
-  throw new Error("VITE_API_URL environment variable is required");
-}
-
-/**
- * Custom Axios instance with Better Auth JWT integration
- */
-const axiosInstance = Axios.create({
-  baseURL: apiUrl,
-  timeout: 30000, // 30 seconds (mobile-friendly)
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add request interceptor to inject JWT token
-axiosInstance.interceptors.request.use(
-  async (config) => {
+const getAuthToken = async (): Promise<string | null> => {
+  if (typeof window === 'undefined') {
+    // Server: call auth.api.token() — same pattern as auth.api.getSession()
     try {
-      // Extract JWT token using Better Auth JWT plugin
-      const tokenResponse = await authClient.token();
-      const token = tokenResponse.data?.token;
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      const [{ getRequestHeaders }, { auth }] = await Promise.all([
+        import('@tanstack/react-start/server'),
+        import('@/lib/auth'),
+      ])
+      // auth.api.token is added dynamically by the JWT plugin — cast to access it
+      type ApiWithToken = typeof auth.api & {
+        token: (opts: { headers: Headers }) => Promise<{ token: string }>
       }
-    } catch (error) {
-      // Log token extraction failure but allow request to proceed
-      // The API will return 401 if auth is required
-      console.error("Failed to extract JWT token:", error);
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-// Add response interceptor to handle authentication errors
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    // Handle CORS errors
-    if (!error.response && error.message === "Network Error") {
-      console.error(
-        "CORS Error: Ensure API has CORS configured for",
-        import.meta.env.VITE_API_URL,
-      );
-    }
-
-    // Handle authentication errors
-    if (error.response?.status === 401) {
-      // Try refreshing the token one more time before giving up
-      const tokenResponse = await authClient.token();
-      if (tokenResponse.data?.token) {
-        // Retry the original request with the new token
-        error.config.headers.Authorization = `Bearer ${tokenResponse.data.token}`;
-        return axiosInstance(error.config);
-      }
-      // Refresh truly failed — session is dead
-      await authClient.signOut();
-      window.location.href = "/";
-    }
-
-    // Log errors in development
-    if (import.meta.env.DEV) {
-      console.error("API Error:", {
-        url: error.config?.url,
-        method: error.config?.method,
-        status: error.response?.status,
-        data: error.response?.data,
-      });
-    }
-
-    return Promise.reject(error);
-  },
-);
-
-/**
- * Custom Axios fetcher for Orval
- *
- * This fetcher:
- * - Accepts RequestInit (Fetch API signature) from Orval-generated code
- * - Converts it to AxiosRequestConfig with proper type safety
- * - Uses Axios with JWT token injection via interceptor
- * - Handles request cancellation via AbortSignal (TanStack Query)
- * - Works with SSR (token extracted server-side)
- */
-export const apiFetcher = <T>(
-  url: string,
-  options?: RequestInit,
-): Promise<T> => {
-  // Convert headers safely to avoid type issues
-  let headers: Record<string, string> = {};
-  if (options?.headers) {
-    if (options.headers instanceof Headers) {
-      options.headers.forEach((value, key) => {
-        headers[key] = value;
-      });
-    } else if (Array.isArray(options.headers)) {
-      headers = Object.fromEntries(options.headers);
-    } else {
-      headers = options.headers;
+      const result = await (auth.api as ApiWithToken).token({ headers: getRequestHeaders() })
+      return result?.token ?? null
+    } catch {
+      return null
     }
   }
 
-  // Convert RequestInit to AxiosRequestConfig
-  const axiosConfig: AxiosRequestConfig = {
-    url,
-    method: options?.method as string,
-    data: options?.body ?? undefined, // Explicit undefined for no body
-    headers,
-    signal: options?.signal || undefined, // TanStack Query provides AbortSignal
-  };
+  // Client: use Better Auth client JWT plugin
+  try {
+    const { authClient } = await import('@/lib/auth-client')
+    const { data } = await authClient.token()
+    return data?.token ?? null
+  } catch {
+    return null
+  }
+}
 
-  return axiosInstance.request<T>(axiosConfig).then(({ data }) => data);
-};
+const normalizeHeaders = (incoming: HeadersInit): Record<string, string> => {
+  if (incoming instanceof Headers) return Object.fromEntries(incoming)
+  if (Array.isArray(incoming)) return Object.fromEntries(incoming)
+  return incoming as Record<string, string>
+}
+
+export const apiFetcher = async <T>(url: string, options?: RequestInit): Promise<T> => {
+  const token = await getAuthToken()
+
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  if (options?.headers) {
+    Object.assign(headers, normalizeHeaders(options.headers))
+  }
+
+  const res = await fetch(`${apiUrl}${url}`, { ...options, headers })
+
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null)
+    throw new ApiError(
+      res.status,
+      problem?.title ?? `API error: ${res.status}`,
+      problem?.detail,
+      problem?.errors,
+    )
+  }
+
+  if (res.status === 204) {
+    return { data: null, status: res.status, headers: res.headers } as T
+  }
+
+  const data = await res.json()
+  return { data, status: res.status, headers: res.headers } as T
+}
