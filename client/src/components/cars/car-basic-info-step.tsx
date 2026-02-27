@@ -1,31 +1,13 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Group, NumberInput, Select, Stack, TextInput } from "@mantine/core"
 import { useForm } from "@tanstack/react-form"
-import { z } from "zod"
-import {
-  useGetApiCarsMakes,
-  useGetApiCarsMakesMakeIdModels,
-  useGetApiCarsModelsModelIdGenerations,
-} from "@/generated/api/cars/cars"
-import {
-  usePostApiUsersMeCars,
-  usePutApiUsersMeCarsCarId,
-  getGetApiUsersMeCarsQueryKey,
-} from "@/generated/api/user-cars/user-cars"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { carsGetCarMakes, carsGetCarModels, carsGetCarGenerations } from "@/generated/api/cars/cars"
+import { userCarsCreateUserCar, userCarsUpdateUserCar } from "@/generated/api/user-cars/user-cars"
+import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas"
 import { useNotifications } from "@/integrations/mantine"
-import { useQueryClient } from "@tanstack/react-query"
 
-// Step 1 schema matching API requirements
-const stepOneSchema = z.object({
-  carMakeId: z.number().min(1, "Please select a make"),
-  carModelId: z.number().min(1, "Please select a model"),
-  carGenerationId: z.number().optional().nullable(),
-  year: z.number().min(1900, "Year must be 1900 or later").max(2030, "Year must be 2030 or earlier"),
-  nickname: z.string().max(100).optional().nullable(),
-  color: z.string().max(50).optional().nullable(),
-})
 
-type StepOneFormValues = z.infer<typeof stepOneSchema>
 
 interface CarBasicInfoStepProps {
   carId: number | null // If editing after going back from Step 2
@@ -37,99 +19,88 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
   const notifications = useNotifications()
   const queryClient = useQueryClient()
 
-  // TODO: Extract cascading dropdowns logic from car-form.tsx
   const [selectedMakeId, setSelectedMakeId] = useState<number | undefined>()
   const [selectedModelId, setSelectedModelId] = useState<number | undefined>()
 
-  // Fetch makes, models, generations
-  const { data: makesData } = useGetApiCarsMakes()
-  const { data: modelsData } = useGetApiCarsMakesMakeIdModels(
-    selectedMakeId ?? 0,
-    {
-      query: { enabled: !!selectedMakeId },
-    }
+  const { data: makesData } = useQuery({
+    queryKey: ["car-makes"],
+    queryFn: () => carsGetCarMakes(),
+  })
+  const { data: modelsData } = useQuery({
+    queryKey: ["car-models", selectedMakeId],
+    queryFn: () => carsGetCarModels(selectedMakeId!),
+    enabled: !!selectedMakeId,
+  })
+  const { data: generationsData } = useQuery({
+    queryKey: ["car-generations", selectedModelId],
+    queryFn: () => carsGetCarGenerations(selectedModelId!),
+    enabled: !!selectedModelId,
+  })
+
+  const makes = makesData?.status === 200 ? makesData.data.makes : []
+  const models = modelsData?.status === 200 ? modelsData.data.models : []
+  const generations = generationsData?.status === 200 ? generationsData.data.generations : []
+
+  const makesSelectData = useMemo(
+    () => makes.map((make) => ({ value: make.id.toString(), label: make.name })),
+    [makes],
   )
-  const { data: generationsData } = useGetApiCarsModelsModelIdGenerations(
-    selectedModelId ?? 0,
-    {
-      query: { enabled: !!selectedModelId },
-    }
+  const modelsSelectData = useMemo(
+    () => models.map((model) => ({ value: model.id.toString(), label: model.name })),
+    [models],
+  )
+  const generationsSelectData = useMemo(
+    () => generations.map((gen) => ({ value: gen.id.toString(), label: gen.name })),
+    [generations],
   )
 
-  // Handle both array (direct DTO) and object ({data, status}) response formats
-  const makes = Array.isArray(makesData) ? makesData : (makesData?.data ?? [])
-  const models = Array.isArray(modelsData) ? modelsData : (modelsData?.data ?? [])
-  const generations = Array.isArray(generationsData) ? generationsData : (generationsData?.data ?? [])
+  const addMutation = useMutation({
+    mutationFn: (payload: Omit<CreateUserCarCommand, "subscriptionTier">) =>
+      userCarsCreateUserCar(payload as CreateUserCarCommand),
+  })
 
-  // Transform data for Select components
-  const makesSelectData = useMemo(() => {
-    return makes.map((make) => ({
-      value: make.id!.toString(),
-      label: make.name!,
-    }))
-  }, [makes])
+  const editMutation = useMutation({
+    mutationFn: ({ id, nickname, color }: { id: number; nickname: string | null; color: string | null }) =>
+      userCarsUpdateUserCar(id, { carId: id, nickname, color, description: null, isPrimary: null }),
+  })
 
-  const modelsSelectData = useMemo(() => {
-    return models.map((model) => ({
-      value: model.id!.toString(),
-      label: model.name!,
-    }))
-  }, [models])
-
-  const generationsSelectData = useMemo(() => {
-    return generations.map((gen) => ({
-      value: gen.id!.toString(),
-      label: gen.name!,
-    }))
-  }, [generations])
-
-  // TODO: Setup mutations (POST for create, PUT for edit)
-  const addMutation = usePostApiUsersMeCars()
-  const editMutation = usePutApiUsersMeCarsCarId()
-
-  // TODO: Setup TanStack Form
-  const form = useForm<StepOneFormValues>({
+  const form = useForm({
     defaultValues: {
       carMakeId: 0,
       carModelId: 0,
-      carGenerationId: undefined,
+      carGenerationId: undefined as number | null | undefined,
       year: new Date().getFullYear(),
       nickname: "",
       color: "",
     },
     onSubmit: async ({ value }) => {
       try {
-        // Prepare JSON payload matching CreateUserCarRequest
-        const payload = {
-          carMakeId: value.carMakeId,
-          carModelId: value.carModelId,
-          carGenerationId: value.carGenerationId || null,
-          year: value.year,
-          nickname: value.nickname || null,
-          color: value.color || null,
-          description: null, // Not in Step 1
-          isPrimary: false, // Not relevant for multi-step flow
-        }
-
-        let carResponse
         if (carId) {
-          // Update existing car
-          carResponse = await editMutation.mutateAsync({
-            carId,
-            data: payload,
+          await editMutation.mutateAsync({
+            id: carId,
+            nickname: value.nickname || null,
+            color: value.color || null,
           })
           notifications.success({ message: "Car updated!" })
+          queryClient.invalidateQueries({ queryKey: ["user-cars"] })
+          onNext(carId)
         } else {
-          // Create new car
-          carResponse = await addMutation.mutateAsync({
-            data: payload,
+          const result = await addMutation.mutateAsync({
+            carMakeId: value.carMakeId,
+            carModelId: value.carModelId,
+            carGenerationId: value.carGenerationId || null,
+            year: value.year,
+            nickname: value.nickname || null,
+            color: value.color || null,
+            description: null,
+            isPrimary: false,
           })
+          queryClient.invalidateQueries({ queryKey: ["user-cars"] })
           notifications.success({ message: "Car created! Now add photos." })
+          const car = result.data as UserCarDto
+          onNext(Number(car.id))
         }
-
-        queryClient.invalidateQueries({ queryKey: getGetApiUsersMeCarsQueryKey() })
-        onNext(carResponse.id)
-      } catch (error) {
+      } catch {
         notifications.error({
           message: carId ? "Failed to update car" : "Failed to create car",
         })
@@ -137,7 +108,6 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
     },
   })
 
-  // TODO: Reset dependent fields when parent changes
   useEffect(() => {
     if (selectedMakeId) {
       form.setFieldValue("carModelId", 0)
@@ -152,6 +122,8 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
     }
   }, [selectedModelId])
 
+  const isPending = addMutation.isPending || editMutation.isPending
+
   return (
     <form
       onSubmit={(e) => {
@@ -160,12 +132,10 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
       }}
     >
       <Stack gap="md" mt="md">
-        {/* TODO: Render Make dropdown */}
         <form.Field
           name="carMakeId"
           validators={{
-            onChange: ({ value }) =>
-              value < 1 ? "Please select a make" : undefined,
+            onChange: ({ value }) => (value < 1 ? "Please select a make" : undefined),
           }}
         >
           {(field) => (
@@ -186,12 +156,10 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
           )}
         </form.Field>
 
-        {/* TODO: Render Model dropdown */}
         <form.Field
           name="carModelId"
           validators={{
-            onChange: ({ value }) =>
-              value < 1 ? "Please select a model" : undefined,
+            onChange: ({ value }) => (value < 1 ? "Please select a model" : undefined),
           }}
         >
           {(field) => (
@@ -213,7 +181,6 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
           )}
         </form.Field>
 
-        {/* TODO: Render Generation dropdown */}
         <form.Field name="carGenerationId">
           {(field) => (
             <Select
@@ -222,8 +189,7 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
               data={generationsSelectData}
               value={field.state.value ? field.state.value.toString() : null}
               onChange={(value) => {
-                const numValue = value ? parseInt(value) : undefined
-                field.handleChange(numValue)
+                field.handleChange(value ? parseInt(value) : undefined)
               }}
               disabled={!selectedModelId}
               searchable
@@ -232,7 +198,6 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
           )}
         </form.Field>
 
-        {/* TODO: Render Year, Nickname, Color fields */}
         <form.Field
           name="year"
           validators={{
@@ -262,7 +227,7 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
             <TextInput
               label="Nickname (optional)"
               placeholder="Enter nickname"
-              value={field.state.value}
+              value={field.state.value ?? ""}
               onChange={(e) => field.handleChange(e.target.value)}
             />
           )}
@@ -273,27 +238,20 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
             <TextInput
               label="Color (optional)"
               placeholder="Enter color"
-              value={field.state.value}
+              value={field.state.value ?? ""}
               onChange={(e) => field.handleChange(e.target.value)}
             />
           )}
         </form.Field>
 
-        {/* Cancel and Next buttons */}
         <Group justify="flex-end" mt="md">
-          <Button
-            variant="subtle"
-            onClick={onCancel}
-            disabled={addMutation.isPending || editMutation.isPending}
-          >
+          <Button variant="subtle" onClick={onCancel} disabled={isPending}>
             Cancel
           </Button>
           <Button
             type="submit"
-            loading={addMutation.isPending || editMutation.isPending}
-            disabled={
-              form.state.values.carMakeId < 1 || form.state.values.carModelId < 1
-            }
+            loading={isPending}
+            disabled={form.state.values.carMakeId < 1 || form.state.values.carModelId < 1}
           >
             {carId ? "Update & Continue" : "Next"}
           </Button>

@@ -1,16 +1,21 @@
 import { Modal, Loader, Center } from '@mantine/core'
 import { useStore } from '@tanstack/react-store'
 import { carsPageStore, closeEditCarModal } from '@/lib/stores/cars-page-store'
-import { useGetApiUsersMeCarsCarId } from '@/generated/api/user-cars/user-cars'
+import { userCarsGetUserCar } from '@/generated/api/user-cars/user-cars'
+import { useQuery } from '@tanstack/react-query'
 import { CarForm } from './car-form'
 
 export function EditCarModal() {
   const editCarState = useStore(carsPageStore, (state) => state.modals.editCar)
   const { open: isOpen, carId } = editCarState
 
-  const { data, isLoading } = useGetApiUsersMeCarsCarId(carId!, {
-    query: { enabled: isOpen && !!carId },
+  const { data, isLoading } = useQuery({
+    queryKey: ['user-car', carId],
+    queryFn: () => userCarsGetUserCar(carId!),
+    enabled: isOpen && !!carId,
   })
+
+  const car = data?.status === 200 ? data.data : undefined
 
   return (
     <Modal
@@ -24,9 +29,9 @@ export function EditCarModal() {
         <Center py="xl">
           <Loader />
         </Center>
-      ) : data?.data ? (
+      ) : car ? (
         <CarForm
-          initialValues={data.data}
+          initialValues={car}
           carId={carId!}
           onSuccess={closeEditCarModal}
           onCancel={closeEditCarModal}

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Container, Title, Loader, Center, Alert } from '@mantine/core'
-import { useGetApiUsersMeCarsCarId } from '@/generated/api/user-cars/user-cars'
+import { useQuery } from '@tanstack/react-query'
+import { userCarsGetUserCar } from '@/generated/api/user-cars/user-cars'
 import { CarForm } from '@/components/cars/car-form'
 import { AlertCircle } from 'lucide-react'
 
@@ -11,7 +12,12 @@ export const Route = createFileRoute('/_app/cars/$carId/edit')({
 function EditCarPage() {
   const { carId } = Route.useParams()
   const navigate = useNavigate()
-  const { data, isLoading, error } = useGetApiUsersMeCarsCarId(Number(carId))
+  const { data, isLoading } = useQuery({
+    queryKey: ['user-car', Number(carId)],
+    queryFn: () => userCarsGetUserCar(Number(carId)),
+  })
+
+  const car = data?.status === 200 ? data.data : undefined
 
   if (isLoading) {
     return (
@@ -23,7 +29,7 @@ function EditCarPage() {
     )
   }
 
-  if (error || !data?.data) {
+  if (!car) {
     return (
       <Container size="md" py="xl">
         <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
@@ -39,7 +45,7 @@ function EditCarPage() {
         Edit Car
       </Title>
       <CarForm
-        initialValues={data.data}
+        initialValues={car}
         carId={Number(carId)}
         onSuccess={() => navigate({ to: '/cars' })}
         onCancel={() => navigate({ to: '/cars' })}

@@ -17,101 +17,87 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from "@dnd-kit/sortable"
-import { useGetApiImagesLimits } from "@/generated/api/images/images"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { limitsGetImageLimits } from "@/generated/api/limits/limits"
 import {
-  usePostApiUsersMeCarsCarIdImages,
-  useDeleteApiUsersMeCarsCarIdImagesImageId,
-  usePutApiUsersMeCarsCarIdImagesImageId,
-  usePutApiUsersMeCarsCarIdImagesImageIdSetprimary,
+  carImagesUploadCarImage,
+  carImagesDeleteCarImage,
+  carImagesUpdateCarImage,
+  carImagesSetPrimaryImage,
 } from "@/generated/api/car-images/car-images"
-import { getGetApiUsersMeCarsQueryKey } from "@/generated/api/user-cars/user-cars"
-import type { CarImageDto } from "@/generated/api"
+import type { CarImageDto, UpdateCarImageRequest } from "@/generated/api/schemas"
 import { useNotifications } from "@/integrations/mantine"
-import { useQueryClient } from "@tanstack/react-query"
 import { CarImagePreview } from "./car-image-preview"
 
 interface CarImagesStepProps {
-  carId: number // From Step 1
-  onFinish: () => void // Close modal
-  onBack: () => void // Return to Step 1
+  carId: number
+  onFinish: () => void
+  onBack: () => void
 }
 
 export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
   const notifications = useNotifications()
   const queryClient = useQueryClient()
 
-  // Fetch image limits
-  const { data: limitsData } = useGetApiImagesLimits()
-  // Handle both direct DTO and {data, status} response formats
-  const limits = limitsData && 'data' in limitsData ? limitsData.data : limitsData
-  const maxImages = limits?.maxImagesPerCar ?? 10
+  const { data: limitsData } = useQuery({
+    queryKey: ["image-limits"],
+    queryFn: () => limitsGetImageLimits(),
+  })
+  const maxImages = limitsData?.status === 200 ? Number(limitsData.data.maxImagesPerCar) : 10
 
-  // TODO: State for uploaded images
   const [uploadedImages, setUploadedImages] = useState<CarImageDto[]>([])
   const [isUploading, setIsUploading] = useState(false)
 
-  // TODO: Setup mutations
-  const uploadImageMutation = usePostApiUsersMeCarsCarIdImages()
-  const deleteImageMutation = useDeleteApiUsersMeCarsCarIdImagesImageId()
-  const updateImageMutation = usePutApiUsersMeCarsCarIdImagesImageId()
-  const setPrimaryMutation = usePutApiUsersMeCarsCarIdImagesImageIdSetprimary()
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => carImagesUploadCarImage(carId, { File: file }),
+  })
 
-  // Setup drag-and-drop sensors
+  const deleteMutation = useMutation({
+    mutationFn: (imageId: number | string) => carImagesDeleteCarImage(carId, imageId),
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ imageId, data }: { imageId: number | string; data: UpdateCarImageRequest }) =>
+      carImagesUpdateCarImage(String(carId), imageId, data),
+  })
+
+  const setPrimaryMutation = useMutation({
+    mutationFn: (imageId: number | string) => carImagesSetPrimaryImage(carId, imageId),
+  })
+
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
-  // TODO: Handle file drop (instant upload)
   const handleFileDrop = async (files: File[]) => {
     setIsUploading(true)
     let successCount = 0
-    let failCount = 0
 
     for (const file of files) {
       if (uploadedImages.length + successCount >= maxImages) {
-        notifications.warning({
-          message: `Subscription limit reached (${maxImages}/${maxImages})`,
-        })
+        notifications.warning({ message: `Subscription limit reached (${maxImages}/${maxImages})` })
         break
       }
 
-      const formData = new FormData()
-      formData.append("file", file)
-
       try {
-        const newImage = await uploadImageMutation.mutateAsync({
-          carId,
-          data: formData,
-        })
-
+        const result = await uploadMutation.mutateAsync(file)
+        const newImage = result.data as CarImageDto
         setUploadedImages((prev) => [...prev, newImage])
         successCount++
 
-        // If first image, auto-set as primary
-        if (uploadedImages.length === 0 && successCount === 1) {
-          await setPrimaryMutation.mutateAsync({
-            carId,
-            imageId: newImage.id,
-          })
-          // Update isPrimary flag in local state
+        if (uploadedImages.length === 0 && successCount === 1 && newImage.id != null) {
+          await setPrimaryMutation.mutateAsync(newImage.id)
           setUploadedImages((prev) =>
-            prev.map((img) =>
-              img.id === newImage.id ? { ...img, isPrimary: true } : img
-            )
+            prev.map((img) => ({ ...img, isPrimary: img.id === newImage.id })),
           )
         }
-      } catch (error) {
+      } catch {
         notifications.error({ message: `Failed to upload ${file.name}` })
-        failCount++
       }
     }
 
     setIsUploading(false)
-
-    // Show success notification
     if (successCount > 0) {
       notifications.success({
         message: `${successCount} image${successCount > 1 ? "s" : ""} uploaded successfully!`,
@@ -119,85 +105,63 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
     }
   }
 
-  // TODO: Handle delete
-  const handleDelete = async (imageId: number) => {
+  const handleDelete = async (imageId: number | string) => {
     try {
-      await deleteImageMutation.mutateAsync({ carId, imageId })
-
       const deletedImage = uploadedImages.find((img) => img.id === imageId)
+      await deleteMutation.mutateAsync(imageId)
       setUploadedImages((prev) => prev.filter((img) => img.id !== imageId))
 
-      // If deleted image was primary, set first remaining as primary
       if (deletedImage?.isPrimary && uploadedImages.length > 1) {
         const newPrimary = uploadedImages.find((img) => img.id !== imageId)
-        if (newPrimary) {
-          await setPrimaryMutation.mutateAsync({
-            carId,
-            imageId: newPrimary.id,
-          })
+        if (newPrimary?.id != null) {
+          await setPrimaryMutation.mutateAsync(newPrimary.id)
           setUploadedImages((prev) =>
-            prev.map((img) =>
-              img.id === newPrimary.id ? { ...img, isPrimary: true } : img
-            )
+            prev.map((img) => ({ ...img, isPrimary: img.id === newPrimary.id })),
           )
         }
       }
-    } catch (error) {
+    } catch {
       notifications.error({ message: "Failed to delete image" })
     }
   }
 
-  // TODO: Handle set primary
-  const handleSetPrimary = async (imageId: number) => {
+  const handleSetPrimary = async (imageId: number | string) => {
     try {
-      await setPrimaryMutation.mutateAsync({ carId, imageId })
-
-      // Update local state
-      setUploadedImages((prev) =>
-        prev.map((img) => ({ ...img, isPrimary: img.id === imageId }))
-      )
-    } catch (error) {
+      await setPrimaryMutation.mutateAsync(imageId)
+      setUploadedImages((prev) => prev.map((img) => ({ ...img, isPrimary: img.id === imageId })))
+    } catch {
       notifications.error({ message: "Failed to set primary image" })
     }
   }
 
-  // Handle drag end (reorder images)
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    // Find indices
     const oldIndex = uploadedImages.findIndex((img) => img.id === Number(active.id))
     const newIndex = uploadedImages.findIndex((img) => img.id === Number(over.id))
-
     if (oldIndex === -1 || newIndex === -1) return
 
-    // Optimistic update
     const oldImages = uploadedImages
     const reordered = arrayMove(uploadedImages, oldIndex, newIndex)
     setUploadedImages(reordered)
 
     try {
-      // Update sortOrder for all affected images
       await Promise.all(
         reordered.map((img, index) =>
-          updateImageMutation.mutateAsync({
-            carId,
-            imageId: img.id,
-            data: { sortOrder: index },
-          })
-        )
+          img.id != null
+            ? updateMutation.mutateAsync({ imageId: img.id, data: { sortOrder: index } })
+            : Promise.resolve(),
+        ),
       )
-    } catch (error) {
-      // Revert on error
+    } catch {
       setUploadedImages(oldImages)
       notifications.error({ message: "Failed to reorder images" })
     }
   }
 
-  // TODO: Handle finish
   const handleFinish = () => {
-    queryClient.invalidateQueries({ queryKey: getGetApiUsersMeCarsQueryKey() })
+    queryClient.invalidateQueries({ queryKey: ["user-cars"] })
     notifications.success({ message: "Car added successfully!" })
     onFinish()
   }
@@ -206,7 +170,6 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
 
   return (
     <Stack gap="md" mt="md">
-      {/* TODO: Render Dropzone */}
       <div>
         <Group justify="space-between" mb="sm">
           <Text size="sm" fw={500}>
@@ -220,7 +183,7 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
         <Dropzone
           onDrop={handleFileDrop}
           accept={IMAGE_MIME_TYPE}
-          maxSize={5 * 1024 * 1024} // 5MB
+          maxSize={5 * 1024 * 1024}
           multiple
           disabled={!canUploadMore || isUploading}
         >
@@ -259,15 +222,10 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
         </Dropzone>
       </div>
 
-      {/* TODO: Render uploaded images grid with drag-and-drop */}
       {uploadedImages.length > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
-            items={uploadedImages.map((img) => img.id)}
+            items={uploadedImages.map((img) => Number(img.id))}
             strategy={rectSortingStrategy}
           >
             <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
@@ -275,11 +233,11 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
                 <CarImagePreview
                   key={image.id}
                   image={image}
-                  isPrimary={image.isPrimary}
-                  onDelete={() => handleDelete(image.id)}
-                  onSetPrimary={() => handleSetPrimary(image.id)}
-                  id={image.id}
-                  index={image.sortOrder}
+                  isPrimary={image.isPrimary ?? false}
+                  onDelete={() => image.id != null && handleDelete(image.id)}
+                  onSetPrimary={() => image.id != null && handleSetPrimary(image.id)}
+                  id={Number(image.id)}
+                  index={Number(image.sortOrder)}
                 />
               ))}
             </SimpleGrid>
@@ -287,7 +245,6 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
         </DndContext>
       )}
 
-      {/* Empty state */}
       {uploadedImages.length === 0 && !isUploading && (
         <Center py="xl">
           <Stack gap="xs" align="center">
@@ -304,7 +261,6 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
         </Center>
       )}
 
-      {/* Loading state */}
       {isUploading && uploadedImages.length === 0 && (
         <Center py="xl">
           <Stack gap="md" align="center">
@@ -316,7 +272,6 @@ export function CarImagesStep({ carId, onFinish, onBack }: CarImagesStepProps) {
         </Center>
       )}
 
-      {/* TODO: Add Back and Finish buttons */}
       <Group justify="space-between" mt="md">
         <Button variant="subtle" onClick={onBack}>
           Back

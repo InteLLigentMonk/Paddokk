@@ -2,7 +2,7 @@ import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core"
 import { Trash2, GripVertical } from "lucide-react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import type { CarImageDto } from "@/generated/api"
+import type { CarImageDto } from "@/generated/api/schemas"
 
 interface CarImagePreviewProps {
   image: CarImageDto
@@ -96,7 +96,7 @@ export function CarImagePreview({
         }}
       >
         <Image
-          src={image.thumbnailUrl || image.url}
+          src={image.thumbnailUrl || image.imageUrl}
           alt={`Car image ${image.id}`}
           fit="cover"
           w="100%"

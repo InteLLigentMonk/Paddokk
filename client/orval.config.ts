@@ -6,9 +6,10 @@ export default defineConfig({
       target: "./swagger.json", // Use local file for reliability
     },
     output: {
+      workspace: "src/",
       mode: "tags-split", // Split by controller tags
-      target: "src/generated/api/",
-      schemas: "src/generated/api/api.schemas.ts",
+      target: "./generated/api",
+      schemas: "./generated/api/schemas",
       client: "fetch",
       mock: false,
       override: {
@@ -30,7 +31,7 @@ export default defineConfig({
           includeHttpResponseReturnType: true,
         },
         mutator: {
-          path: "src/lib/api/client.ts",
+          path: "./lib/api/client.ts",
           name: "apiFetcher",
         },
       },

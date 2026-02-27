@@ -4,7 +4,6 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useMemo, useState, useEffect } from "react";
 import { useStore } from "@tanstack/react-store";
 import { AlertCircle } from "lucide-react";
-import { useGetApiUsersMeCars } from "@/generated/api/user-cars/user-cars";
 import {
   carsPageStore,
   setSortBy,
@@ -17,8 +16,15 @@ import { CarsGrid } from "@/components/cars/cars-grid";
 import { AddCarModal } from "@/components/cars/add-car-modal";
 import { EditCarModal } from "@/components/cars/edit-car-modal";
 import { DeleteCarConfirm } from "@/components/cars/delete-car-confirm";
+import { getUserCarsFn } from "@/lib/api/user-cars.server";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_app/cars")({
+  loader: ({ context: { queryClient } }) =>
+    queryClient.ensureQueryData({
+      queryKey: ["user-cars"],
+      queryFn: () => getUserCarsFn(),
+    }),
   component: CarsPage,
 });
 
@@ -28,9 +34,12 @@ function CarsPage() {
   const isDesktop = useMediaQuery("(min-width: 62em)");
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, error } = useGetApiUsersMeCars();
-  const cars = data?.data ?? [];
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["user-cars"],
+    queryFn: () => getUserCarsFn(),
+  });
 
+  const cars = data?.cars ?? [];
   const sortBy = useStore(carsPageStore, (state) => state.sortBy);
 
   // Sort cars

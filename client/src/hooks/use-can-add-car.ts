@@ -1,10 +1,16 @@
-import { useGetApiUsersMeCarsCanAdd } from '@/generated/api/user-cars/user-cars'
+import { useQuery } from '@tanstack/react-query'
+import { limitsGetCarLimits } from '@/generated/api/limits/limits'
 
 export function useCanAddCar() {
-  const { data, isLoading } = useGetApiUsersMeCarsCanAdd()
+  const { data, isLoading } = useQuery({
+    queryKey: ['car-limits'],
+    queryFn: () => limitsGetCarLimits(),
+  })
+
+  const limits = data?.status === 200 ? data.data : undefined
 
   return {
-    canAdd: data?.status === 200,
+    canAdd: limits?.canAdd ?? false,
     isLoading,
   }
 }

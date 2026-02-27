@@ -1,4 +1,4 @@
-import type { UserCarDto } from '@/generated/api'
+import type { UserCarDto } from '@/generated/api/schemas'
 import type { SortOption } from '@/lib/stores/cars-page-store'
 
 export function sortCars(cars: UserCarDto[], sortBy: SortOption): UserCarDto[] {
@@ -30,13 +30,13 @@ export function sortCars(cars: UserCarDto[], sortBy: SortOption): UserCarDto[] {
       })
 
     case 'year-new':
-      return sorted.sort((a, b) => b.year - a.year)
+      return sorted.sort((a, b) => Number(b.year) - Number(a.year))
 
     case 'year-old':
-      return sorted.sort((a, b) => a.year - b.year)
+      return sorted.sort((a, b) => Number(a.year) - Number(b.year))
 
     case 'journeys':
-      return sorted.sort((a, b) => (b.journeyCount || 0) - (a.journeyCount || 0))
+      return sorted.sort((a, b) => Number(b.journeyCount) - Number(a.journeyCount))
 
     default:
       return sorted

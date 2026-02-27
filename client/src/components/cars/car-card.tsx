@@ -1,6 +1,6 @@
 import { Card, Image, Stack, Group, Text, ActionIcon, Menu, Badge, Box } from '@mantine/core'
 import { MoreVertical, Edit, Trash } from 'lucide-react'
-import type { UserCarDto } from '@/generated/api'
+import type { UserCarDto } from '@/generated/api/schemas'
 import { openEditCarModal, openDeleteCarConfirm } from '@/lib/stores/cars-page-store'
 
 interface CarCardProps {
@@ -55,7 +55,7 @@ export function CarCard({ car }: CarCardProps) {
                 leftSection={<Edit size={16} />}
                 onClick={(e) => {
                   e.preventDefault()
-                  openEditCarModal(car.id)
+                  openEditCarModal(Number(car.id))
                 }}
               >
                 Edit
@@ -65,7 +65,7 @@ export function CarCard({ car }: CarCardProps) {
                 c="red"
                 onClick={(e) => {
                   e.preventDefault()
-                  openDeleteCarConfirm(car.id)
+                  openDeleteCarConfirm(Number(car.id))
                 }}
               >
                 Delete
@@ -74,7 +74,7 @@ export function CarCard({ car }: CarCardProps) {
           </Menu>
         </Group>
 
-        {car.journeyCount !== undefined && car.journeyCount > 0 && (
+        {Number(car.journeyCount) > 0 && (
           <Box>
             <Badge variant="light" size="sm">
               {car.journeyCount} {car.journeyCount === 1 ? 'Journey' : 'Journeys'}

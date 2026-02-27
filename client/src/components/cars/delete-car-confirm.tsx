@@ -1,12 +1,8 @@
 import { Modal, Text, Button, Group, Stack } from '@mantine/core'
 import { useStore } from '@tanstack/react-store'
 import { carsPageStore, closeDeleteCarConfirm } from '@/lib/stores/cars-page-store'
-import {
-  useDeleteApiUsersMeCarsCarId,
-  getGetApiUsersMeCarsQueryKey,
-  useGetApiUsersMeCarsCarId,
-} from '@/generated/api/user-cars/user-cars'
-import { useQueryClient } from '@tanstack/react-query'
+import { userCarsDeleteUserCar, userCarsGetUserCar } from '@/generated/api/user-cars/user-cars'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotifications } from '@/integrations/mantine'
 
 export function DeleteCarConfirm() {
@@ -15,48 +11,29 @@ export function DeleteCarConfirm() {
   const queryClient = useQueryClient()
   const notifications = useNotifications()
 
-  const { data } = useGetApiUsersMeCarsCarId(carId!, {
-    query: { enabled: isOpen && !!carId },
+  const { data } = useQuery({
+    queryKey: ['user-car', carId],
+    queryFn: () => userCarsGetUserCar(carId!),
+    enabled: isOpen && !!carId,
   })
 
-  const car = data?.data
+  const car = data?.status === 200 ? data.data : undefined
 
-  const deleteMutation = useDeleteApiUsersMeCarsCarId({
-    mutation: {
-      onMutate: async ({ carId }) => {
-        const queryKey = getGetApiUsersMeCarsQueryKey()
-        await queryClient.cancelQueries({ queryKey })
-        const previous = queryClient.getQueryData(queryKey)
-
-        queryClient.setQueryData(queryKey, (old: any) => {
-          if (!old?.data) return old
-          return {
-            ...old,
-            data: old.data.filter((c: any) => c.id !== carId),
-          }
-        })
-
-        return { previous, queryKey }
-      },
-      onError: (err, vars, context) => {
-        if (context?.queryKey && context?.previous) {
-          queryClient.setQueryData(context.queryKey, context.previous)
-        }
-        notifications.error({ message: 'Failed to delete car. Please try again.' })
-      },
-      onSuccess: () => {
-        notifications.success({ message: 'Car deleted successfully' })
-        closeDeleteCarConfirm()
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: getGetApiUsersMeCarsQueryKey() })
-      },
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => userCarsDeleteUserCar(id),
+    onError: () => {
+      notifications.error({ message: 'Failed to delete car. Please try again.' })
+    },
+    onSuccess: () => {
+      notifications.success({ message: 'Car deleted successfully' })
+      queryClient.invalidateQueries({ queryKey: ['user-cars'] })
+      closeDeleteCarConfirm()
     },
   })
 
   const handleDelete = () => {
     if (carId) {
-      deleteMutation.mutate({ carId })
+      deleteMutation.mutate(carId)
     }
   }
 
@@ -75,7 +52,7 @@ export function DeleteCarConfirm() {
           undone.
         </Text>
 
-        {car?.journeyCount !== undefined && car.journeyCount > 0 && (
+        {car && Number(car.journeyCount) > 0 && (
           <Text size="sm" c="orange">
             Warning: This car has {car.journeyCount}{' '}
             {car.journeyCount === 1 ? 'journey' : 'journeys'} associated with it.

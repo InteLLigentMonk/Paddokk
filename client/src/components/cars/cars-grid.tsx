@@ -1,5 +1,5 @@
 import { SimpleGrid, Skeleton } from '@mantine/core'
-import type { UserCarDto } from '@/generated/api'
+import type { UserCarDto } from '@/generated/api/schemas'
 import { CarCard } from './car-card'
 import { CarsEmptyState } from './cars-empty-state'
 
