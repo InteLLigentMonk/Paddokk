@@ -7,10 +7,6 @@ import {
   Menu,
   Camera,
   Library,
-  Bell,
-  User,
-  Settings,
-  Plus,
   FileText,
   Upload,
 } from 'lucide-react'

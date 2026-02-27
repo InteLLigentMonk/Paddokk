@@ -24,7 +24,8 @@ export function NavItem({ item, showTooltip = false, onClick }: NavItemProps) {
       offset={4}
     >
       <ActionIcon
-        component={item.href ? Link : 'button'}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        component={item.href ? (Link as any) : 'button'}
         to={item.href}
         variant={isActive ? 'filled' : 'subtle'}
         color={isActive ? undefined : 'dark'}

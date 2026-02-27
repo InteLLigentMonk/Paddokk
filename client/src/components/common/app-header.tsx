@@ -17,29 +17,6 @@ import { ColorSchemeToggle } from "./color-scheme-toggle";
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const;
 
-interface UserInfoProps {
-  name: string;
-  email: string;
-  size?: "sm" | "md";
-}
-
-function UserInfo({ name, email, size = "sm" }: UserInfoProps) {
-  return (
-    <Group gap="xs">
-      <Avatar size={size} radius="xl">
-        {name.charAt(0).toUpperCase()}
-      </Avatar>
-      <Box>
-        <Box fw={500} fz="sm">
-          {name}
-        </Box>
-        <Box fz="xs" c="dimmed">
-          {email}
-        </Box>
-      </Box>
-    </Group>
-  );
-}
 
 function HeaderLogo({ showCarDropdown }: { showCarDropdown: boolean }) {
   return (

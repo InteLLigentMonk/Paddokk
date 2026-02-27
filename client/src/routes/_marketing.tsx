@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_marketing")({
   beforeLoad: ({ context }) => {
     // Redirect authenticated users to the app
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: "/app/dashboard" });
+      throw redirect({ to: "/dashboard" });
     }
   },
   component: MarketingLayout,

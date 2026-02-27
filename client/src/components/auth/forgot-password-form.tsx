@@ -4,7 +4,6 @@ import { Alert, Anchor, Button, Stack, Text, TextInput } from "@mantine/core";
 import { Check } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { AuthFormWrapper } from "./auth-form-wrapper";
-import type { ForgotPasswordFormData } from "@/lib/validation/auth-schemas";
 import { forgotPasswordSchema } from "@/lib/validation/auth-schemas";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -101,7 +100,7 @@ export function ForgotPasswordForm({
                 error={
                   field.state.meta.isTouched &&
                   field.state.meta.errors.length > 0
-                    ? field.state.meta.errors.map((e) => e.message).join(", ")
+                    ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
                     : undefined
                 }
                 disabled={isRequestingReset}
