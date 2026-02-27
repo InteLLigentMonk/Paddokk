@@ -1,14 +1,11 @@
-﻿using Paddokk.Core.Models.Entities;
+using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Models.DTOs.Image;
 
 public class CanUploadImageResponse
 {
-    public bool CanUpload { get; set; }
-
-    public int CurrentCount { get; set; }
-
-    public int MaxAllowed { get; set; }
-
-    public SubscriptionTier SubscriptionTier { get; set; }
+    public required bool CanUpload { get; set; }
+    public required int CurrentCount { get; set; }
+    public required int MaxAllowed { get; set; }
+    public required SubscriptionTier SubscriptionTier { get; set; }
 }

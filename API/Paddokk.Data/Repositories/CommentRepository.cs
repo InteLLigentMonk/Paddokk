@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Paddokk.Core.Interfaces;
-using Paddokk.Core.Models.DTOs.Comment;
 using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Data.Repositories;
@@ -36,7 +35,7 @@ public class CommentRepository : ICommentRepository
         return (postComments, totalCount);
     }
 
-    public async Task<PostComment?> GetCommentByIdAsync(int commentId, CancellationToken cancellationToken, string? currentUserId = null)
+    public async Task<PostComment?> GetCommentByIdAsync(int commentId, CancellationToken cancellationToken)
     {
         return await _db.PostComments
             .Include(c => c.User)
@@ -51,14 +50,14 @@ public class CommentRepository : ICommentRepository
         await _db.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> UpdateCommentAsync(string userId, int commentId, UpdateCommentRequest request, CancellationToken cancellationToken)
+    public async Task<bool> UpdateCommentAsync(string userId, int commentId, string content, CancellationToken cancellationToken)
     {
         var comment = await _db.PostComments
             .FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == userId, cancellationToken);
         if (comment == null)
-            return false;   
-        
-        comment.Content = request.Content.Trim();
+            return false;
+
+        comment.Content = content.Trim();
         comment.UpdatedAt = DateTime.UtcNow;
         comment.IsEdited = true;
 

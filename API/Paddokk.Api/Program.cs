@@ -1,7 +1,7 @@
+using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Data;
 using Paddokk.Api.Extensions;
 using Paddokk.Api.Middleware;
-using Azure.Communication.Email;
 using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -10,12 +10,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddApiVersioningV1();
+builder.Services.AddValidation();
+builder.Services.AddMediator();
 
-// Add Azure Communication Services Email
-builder.Services.AddSingleton<EmailClient>(serviceProvider =>
+// Rate limiting
+builder.Services.AddRateLimiter(options =>
 {
-    var connectionString = builder.Configuration["AzureEmail:ConnectionString"];
-    return new EmailClient(connectionString);
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddFixedWindowLimiter("writes", o =>
+    {
+        o.PermitLimit = 30;
+        o.Window = TimeSpan.FromMinutes(1);
+    });
+
+    options.AddFixedWindowLimiter("reads", o =>
+    {
+        o.PermitLimit = 200;
+        o.Window = TimeSpan.FromMinutes(1);
+    });
 });
 
 // Database
@@ -36,9 +50,6 @@ builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment
 // Application Services
 builder.Services.AddApplicationServices();
 
-// Email Service
-builder.Services.AddEmailServices();
-
 // Swagger
 builder.Services.AddOpenApiWithJwt();
 
@@ -58,6 +69,27 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi(); // serves /openapi/v1.json
 
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                using var client = new HttpClient();
+                var url = app.Urls.FirstOrDefault() ?? "http://localhost:5158";
+                var json = await client.GetStringAsync($"{url}/openapi/v1.json");
+                var outputPath = Path.GetFullPath(
+                    Path.Combine(app.Environment.ContentRootPath, "..", "..", "client", "swagger.json"));
+                await File.WriteAllTextAsync(outputPath, json);
+                app.Logger.LogInformation("OpenAPI spec saved to {Path}", outputPath);
+            }
+            catch (Exception ex)
+            {
+                app.Logger.LogWarning("Failed to save OpenAPI spec: {Error}", ex.Message);
+            }
+        });
+    });
+
     var devToken = app.Configuration["Development:BearerToken"];
     app.MapScalarApiReference(options =>
     {
@@ -75,6 +107,8 @@ if (app.Environment.IsProduction())
 }
 
 app.UseCors("AllowNextJsApp");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseMiddleware<UserSyncMiddleware>();

@@ -6,7 +6,7 @@ namespace Paddokk.Core.Models.DTOs.Image;
 public class UploadCarImageRequest
 {
     [Required]
-    public IFormFile File { get; set; } = null!;
+    public required IFormFile File { get; set; }
 
     [StringLength(500)]
     public string? Caption { get; set; }

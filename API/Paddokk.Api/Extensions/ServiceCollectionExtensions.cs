@@ -1,10 +1,16 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Asp.Versioning;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Paddokk.Api.OpenApi;
 using Paddokk.Api.Security;
+using Paddokk.Core.Behaviours;
+using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
+using Paddokk.Core.Features.Comments.Commands.CreateComment;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Services;
 using Paddokk.Data;
@@ -157,7 +163,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddOpenApi(options =>
         {
-            // Info is set via a document transformer in Microsoft.OpenApi v2
             options.AddDocumentTransformer((document, context, ct) =>
             {
                 document.Info = new()
@@ -171,6 +176,7 @@ public static class ServiceCollectionExtensions
 
             options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
             options.AddOperationTransformer<DefaultResponsesOperationTransformer>();
+            options.AddOperationTransformer<OperationIdTransformer>();
         });
 
         return services;
@@ -178,12 +184,12 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        // Register helper services here
+        services.AddHttpContextAccessor();
+        services.AddScoped<IActorResolver, HttpActorContext>();
+
         // Register application services here
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<ICarService, CarService>();
-        services.AddScoped<IJourneyService, JourneyService>();
         services.AddScoped<IImageService, ImageService>();
-        services.AddScoped<ICommentService, CommentService>();
 
         // Register application repositories here
         services.AddScoped<ICarRepository, CarRepository>();
@@ -197,10 +203,15 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddEmailServices(this IServiceCollection services)
+    public static IServiceCollection AddMediator(this IServiceCollection services)
     {
-        // Register the Azure Email Service implementation
-        services.AddScoped<IEmailService, AzureEmailService>();
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<CreateCommentHandler>();
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
+        });
+
         return services;
     }
 
@@ -215,6 +226,32 @@ public static class ServiceCollectionExtensions
                       .AllowAnyMethod();
             });
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddApiVersioningV1(this IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        })
+        .AddMvc()
+        .AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V";
+            options.SubstituteApiVersionInUrl = true;
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<CreateUserCarCommandValidator>();
 
         return services;
     }

@@ -1,0 +1,56 @@
+using Paddokk.Core.Models.DTOs.Car;
+using Paddokk.Core.Models.Entities;
+
+namespace Paddokk.Core.Features.Cars;
+
+internal static class CarMapping
+{
+    internal static CarMakeDto ToMakeDto(CarMake make) => new()
+    {
+        Id = make.Id,
+        Name = make.Name,
+        Country = make.Country,
+        Group = make.Group,
+        ModelCount = make.Models.Count
+    };
+
+    internal static CarModelDto ToModelDto(CarModel model) => new()
+    {
+        Id = model.Id,
+        Name = model.Name,
+        CarMakeId = model.CarMakeId,
+        CarMakeName = model.CarMake.Name,
+        GenerationCount = model.Generations.Count
+    };
+
+    internal static CarGenerationDto ToGenerationDto(CarGeneration generation) => new()
+    {
+        Id = generation.Id,
+        Name = generation.Name,
+        StartYear = generation.StartYear,
+        EndYear = generation.EndYear,
+        CarModelId = generation.CarModelId,
+        CarModelName = generation.CarModel.Name
+    };
+
+    internal static UserCarDto ToUserCarDto(UserCar car) => new()
+    {
+        Id = car.Id,
+        UserId = car.UserId,
+        CarMakeId = car.CarMakeId,
+        CarMakeName = car.CarMake.Name,
+        CarModelId = car.CarModelId,
+        CarModelName = car.CarModel.Name,
+        CarGenerationId = car.CarGenerationId,
+        CarGenerationName = car.CarGeneration?.Name,
+        Year = car.Year,
+        Nickname = car.Nickname,
+        Color = car.Color,
+        Description = car.Description,
+        PrimaryImageUrl = car.PrimaryImageUrl,
+        IsPrimary = car.IsPrimary,
+        CreatedAt = car.CreatedAt,
+        UpdatedAt = car.UpdatedAt,
+        JourneyCount = car.Journeys.Count
+    };
+}

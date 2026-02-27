@@ -1,9 +1,9 @@
-﻿namespace Paddokk.Core.Models.DTOs.Car;
+namespace Paddokk.Core.Models.DTOs.Car;
 
 public class CarLimitDto
 {
-    public bool CanAdd { get; set; }
-    public int CurrentCount { get; set; }
-    public string MaxAllowed { get; set; } = string.Empty;
-    public string SubscriptionTier { get; set; } = string.Empty;
+    public required bool CanAdd { get; set; }
+    public required int CurrentCount { get; set; }
+    public required string MaxAllowed { get; set; }
+    public required string SubscriptionTier { get; set; }
 }

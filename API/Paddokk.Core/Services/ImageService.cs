@@ -12,8 +12,8 @@ namespace Paddokk.Core.Services;
 
 public class ImageService : IImageService
 {
-    private readonly IUserService _userService;
-    private readonly ICarService _carService;
+    private readonly IUserRepository _userRepository;
+    private readonly ICarRepository _carRepository;
     private readonly IImageRepository _imageRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BlobServiceClient _blobServiceClient;
@@ -32,18 +32,18 @@ public class ImageService : IImageService
     private readonly string[] _allowedFormats = { "image/jpeg", "image/png", "image/webp" };
 
     public ImageService(
-        IUserService userService,
+        IUserRepository userRepository,
         BlobServiceClient blobServiceClient,
         ILogger<ImageService> logger,
         IImageRepository imageRepository,
-        ICarService carService,
+        ICarRepository carRepository,
         IUnitOfWork unitOfWork)
     {
-        _userService = userService;
+        _userRepository = userRepository;
         _blobServiceClient = blobServiceClient;
         _logger = logger;
         _imageRepository = imageRepository;
-        _carService = carService;
+        _carRepository = carRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -146,8 +146,8 @@ public class ImageService : IImageService
 
     public async Task<ImageLimitsDto> GetImageLimitsAsync(string userId, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
-        if (user == null)
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
             throw new ArgumentException("User not found");
 
         var (maxPerPost, maxPerCar) = user.SubscriptionTier switch
@@ -199,7 +199,9 @@ public class ImageService : IImageService
 
     public async Task<CanUploadImageResponse> GetUploadStatusAsync(string userId, int carId, CancellationToken cancellationToken)
     {
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
+        var car = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
+        if (car is null)
+            throw new InvalidOperationException("Car not found or access denied");
 
         var canUpload = await CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId);
         var limits = await GetImageLimitsAsync(userId, cancellationToken);
@@ -216,12 +218,12 @@ public class ImageService : IImageService
     }
 
     // Car Image Methods
-    public async Task<IEnumerable<CarImageDto>> GetCarImagesAsync(int carId, CancellationToken cancellationToken)
+    public async Task<CarImagesResponse> GetCarImagesAsync(int carId, CancellationToken cancellationToken)
     {
         var images = await _imageRepository.GetCarImagesAsync(carId, cancellationToken)
             ?? throw new InvalidOperationException("Failed to retrieve car images");
 
-        return images.Select(MapToCarImageDto);
+        return new CarImagesResponse { Images = [.. images.Select(MapToCarImageDto)] };
     }
 
     public async Task<CarImageDto> GetCarImageByIdAsync(int carImageId, int carId, CancellationToken cancellationToken)
@@ -233,7 +235,9 @@ public class ImageService : IImageService
     public async Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, CancellationToken cancellationToken, string? caption = null)
     {
         // Validate user owns the car
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
+        var car = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
+        if (car is null)
+            throw new InvalidOperationException("Car not found or access denied");
 
         // Check image limits
         if (!await CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId))
@@ -272,7 +276,7 @@ public class ImageService : IImageService
             if (isPrimary)
             {
                 await _imageRepository.SetPrimaryImageAsync(carId, carImage.Id, cancellationToken);
-                await _carService.UpdatePrimaryImageUrlAsync(carId, uploadResult.MediumUrl, cancellationToken);
+                await _carRepository.UpdatePrimaryImageUrlAsync(carId, uploadResult.MediumUrl, cancellationToken);
             }
         }, cancellationToken);
 
@@ -303,7 +307,7 @@ public class ImageService : IImageService
                 await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, carImageId, cancellationToken);
 
                 // Update car's primary image URL
-                await _carService.UpdatePrimaryImageUrlAsync(carImage.UserCarId, carImage.MediumUrl, cancellationToken);
+                await _carRepository.UpdatePrimaryImageUrlAsync(carImage.UserCarId, carImage.MediumUrl, cancellationToken);
             }
 
             await _imageRepository.UpdateCarImageAsync(carImage, cancellationToken);
@@ -314,7 +318,9 @@ public class ImageService : IImageService
 
     public async Task DeleteCarImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken)
     {
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
+        var car = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
+        if (car is null)
+            throw new InvalidOperationException("Car not found or access denied");
 
         var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken)
              ?? throw new InvalidOperationException("Car image not found");
@@ -333,7 +339,7 @@ public class ImageService : IImageService
                 if (nextPrimary is not null)
                     await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, nextPrimary.Id, cancellationToken);
 
-                await _carService.UpdatePrimaryImageUrlAsync(carImage.UserCarId, nextPrimary?.MediumUrl, cancellationToken);
+                await _carRepository.UpdatePrimaryImageUrlAsync(carImage.UserCarId, nextPrimary?.MediumUrl, cancellationToken);
             }
 
             await _imageRepository.DeleteCarImageAsync(carImage.Id, cancellationToken);
@@ -342,7 +348,9 @@ public class ImageService : IImageService
 
     public async Task SetCarPrimaryImageAsync(string userId, int carId, int carImageId, CancellationToken cancellationToken)
     {
-        await _carService.UserOwnsCarAsync(userId, carId, cancellationToken);
+        var car = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
+        if (car is null)
+            throw new InvalidOperationException("Car not found or access denied");
 
         var image = await _imageRepository.GetCarImageByIdAsync(carImageId, cancellationToken);
         if (image is null || image.UserCarId != carId)
@@ -351,7 +359,7 @@ public class ImageService : IImageService
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             await _imageRepository.SetPrimaryImageAsync(carId, carImageId, cancellationToken);
-            await _carService.UpdatePrimaryImageUrlAsync(carId, image.MediumUrl, cancellationToken);
+            await _carRepository.UpdatePrimaryImageUrlAsync(carId, image.MediumUrl, cancellationToken);
         }, cancellationToken);
     }
 

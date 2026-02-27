@@ -1,15 +1,15 @@
-﻿namespace Paddokk.Core.Models.DTOs.Image;
+namespace Paddokk.Core.Models.DTOs.Image;
 
 public class ImageUploadDto
 {
-    public string ImageUrl { get; set; } = string.Empty;
-    public string ThumbnailUrl { get; set; } = string.Empty;
-    public string MediumUrl { get; set; } = string.Empty;
-    public string FullUrl { get; set; } = string.Empty;
-    public string FileName { get; set; } = string.Empty;
-    public long FileSizeBytes { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
-    public string ContentType { get; set; } = string.Empty;
-    public DateTime UploadedAt { get; set; }
+    public required string ImageUrl { get; set; }
+    public required string ThumbnailUrl { get; set; }
+    public required string MediumUrl { get; set; }
+    public required string FullUrl { get; set; }
+    public required string FileName { get; set; }
+    public required long FileSizeBytes { get; set; }
+    public required int Width { get; set; }
+    public required int Height { get; set; }
+    public required string ContentType { get; set; }
+    public required DateTime UploadedAt { get; set; }
 }

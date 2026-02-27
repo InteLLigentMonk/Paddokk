@@ -1,75 +1,56 @@
-using Paddokk.Api.Extensions;
+using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Paddokk.Core.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Api.Extensions;
+using Paddokk.Core.Features.Users.Commands.UpdateUser;
+using Paddokk.Core.Features.Users.Queries.GetUserByEmail;
+using Paddokk.Core.Features.Users.Queries.GetUserById;
 using Paddokk.Core.Models.DTOs.User;
 
 namespace Paddokk.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/[controller]")]
 [Authorize]
-public class UsersController(IUserService userService) : ControllerBase
+public class UsersController(ISender sender) : ApiControllerBase
 {
-    private readonly IUserService _userService = userService;
-
-    /// <summary>
-    /// Get current authenticated user's profile
-    /// </summary>
     [HttpGet("me")]
-    public async Task<ActionResult<UserDto>> GetCurrentUser(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get current authenticated user's profile")]
+    public async Task<ActionResult<UserDto>> GetCurrentUser(CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
-
-        if (user is null)
-            return NotFound();
-
-        return Ok(user);
+        var result = await sender.Send(new GetUserByIdQuery(User.GetUserId()), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Update current authenticated user's profile
-    /// </summary>
     [HttpPut("me")]
-    public async Task<ActionResult<UserDto>> UpdateCurrentUser([FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Update current authenticated user's profile")]
+    public async Task<ActionResult<UserDto>> UpdateCurrentUser([FromBody] UpdateUserCommand command, CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var user = await _userService.UpdateUserAsync(userId, request, cancellationToken);
-
-        if (user is null)
-            return NotFound();
-
-        return Ok(user);
+        var result = await sender.Send(command, ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Get user profile by ID (public)
-    /// </summary>
     [HttpGet("{userId}")]
     [AllowAnonymous]
-    public async Task<ActionResult<UserDto>> GetUserById(string userId, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get user profile by ID")]
+    public async Task<ActionResult<UserDto>> GetUserById(string userId, CancellationToken ct)
     {
-        var user = await _userService.GetUserByIdAsync(userId, cancellationToken);
-
-        if (user is null)
-            return NotFound();
-
-        return Ok(user);
+        var result = await sender.Send(new GetUserByIdQuery(userId), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Get user profile by username (public)
-    /// </summary>
     [HttpGet("email/{email}")]
     [AllowAnonymous]
-    public async Task<ActionResult<UserDto>> GetUserByEmail(string email, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get user profile by email")]
+    public async Task<ActionResult<UserDto>> GetUserByEmail(string email, CancellationToken ct)
     {
-        var user = await _userService.GetUserByEmailAsync(email, cancellationToken);
-
-        if (user is null)
-            return NotFound();
-
-        return Ok(user);
+        var result = await sender.Send(new GetUserByEmailQuery(email), ct);
+        return OkOrError(result);
     }
 }

@@ -1,187 +1,178 @@
-﻿using Paddokk.Api.Extensions;
+using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Paddokk.Core.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Core.Features.Journeys.Commands.CreateJourneyPost;
+using Paddokk.Core.Features.Journeys.Commands.DeleteJourneyPost;
+using Paddokk.Core.Features.Journeys.Commands.LikeJourney;
+using Paddokk.Core.Features.Journeys.Commands.SubscribeToJourney;
+using Paddokk.Core.Features.Journeys.Commands.UnlikeJourney;
+using Paddokk.Core.Features.Journeys.Commands.UnsubscribeFromJourney;
+using Paddokk.Core.Features.Journeys.Commands.UpdateJourneyPost;
+using Paddokk.Core.Features.Journeys.Queries.GetFeaturedJourneys;
+using Paddokk.Core.Features.Journeys.Queries.GetJourneyById;
+using Paddokk.Core.Features.Journeys.Queries.GetJourneyPostById;
+using Paddokk.Core.Features.Journeys.Queries.GetJourneyPosts;
+using Paddokk.Core.Features.Journeys.Queries.GetTrendingJourneys;
+using Paddokk.Core.Features.Journeys.Queries.SearchJourneys;
 using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class JourneysController : ControllerBase
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/journeys")]
+public class JourneysController(ISender sender) : ApiControllerBase
 {
-    private readonly IJourneyService _journeyService;
-
-    public JourneysController(IJourneyService journeyService)
-    {
-        _journeyService = journeyService;
-    }
-
-    /// <summary>
-    /// Search and browse journeys with filtering
-    /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> SearchJourneys([FromQuery] JourneySearchRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Search and browse journeys with filtering")]
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> SearchJourneys(
+        [FromQuery] JourneySearchRequest request, CancellationToken ct)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        return Ok(await _journeyService.SearchJourneysAsync(request, cancellationToken, currentUserId));
+        var result = await sender.Send(new SearchJourneysQuery(request), ct);
+        return Ok(result);
     }
 
-    /// <summary>
-    /// Get specific journey details
-    /// </summary>
     [HttpGet("{journeyId}")]
-    public async Task<ActionResult<JourneyDto>> GetJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get specific journey details")]
+    public async Task<ActionResult<JourneyDto>> GetJourney(int journeyId, CancellationToken ct)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken, currentUserId);
-
-        if (journey is null)
-            return NotFound();
-
-        return Ok(journey);
+        var result = await sender.Send(new GetJourneyByIdQuery(journeyId), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Get featured journeys (curated/most liked)
-    /// </summary>
     [HttpGet("featured")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetFeaturedJourneys(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get featured journeys (most liked)")]
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetFeaturedJourneys(CancellationToken ct)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        return Ok(await _journeyService.GetFeaturedJourneysAsync(cancellationToken, currentUserId));
+        var result = await sender.Send(new GetFeaturedJourneysQuery(), ct);
+        return Ok(result);
     }
 
-    /// <summary>
-    /// Get trending journeys (recently active)
-    /// </summary>
     [HttpGet("trending")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetTrendingJourneys(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get trending journeys (recently active)")]
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetTrendingJourneys(CancellationToken ct)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        return Ok(await _journeyService.GetTrendingJourneysAsync(cancellationToken, currentUserId));
+        var result = await sender.Send(new GetTrendingJourneysQuery(), ct);
+        return Ok(result);
     }
 
-    /// <summary>
-    /// Subscribe to journey for updates
-    /// </summary>
     [HttpPost("{journeyId}/subscribe")]
     [Authorize]
-    public async Task<IActionResult> SubscribeToJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Subscribe to journey for updates")]
+    public async Task<IActionResult> SubscribeToJourney(int journeyId, CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken, userId);
+        var result = await sender.Send(new SubscribeToJourneyCommand(journeyId), ct);
 
-        if (journey is null)
-            return NotFound();
+        if (!result.IsSuccess)
+            return FromError(result.Error);
 
-        if (journey.UserId == userId)
-            throw new InvalidOperationException("Cannot subscribe to your own journey");
-
-        await _journeyService.SubscribeToJourneyAsync(userId, journeyId, cancellationToken);
         return NoContent();
     }
 
-    /// <summary>
-    /// Unsubscribe from journey
-    /// </summary>
     [HttpDelete("{journeyId}/subscribe")]
     [Authorize]
-    public async Task<IActionResult> UnsubscribeFromJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Unsubscribe from journey")]
+    public async Task<IActionResult> UnsubscribeFromJourney(int journeyId, CancellationToken ct)
     {
-        await _journeyService.UnsubscribeFromJourneyAsync(User.GetUserId(), journeyId, cancellationToken);
+        var result = await sender.Send(new UnsubscribeFromJourneyCommand(journeyId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
         return NoContent();
     }
 
-    /// <summary>
-    /// Like a journey
-    /// </summary>
     [HttpPost("{journeyId}/like")]
     [Authorize]
-    public async Task<IActionResult> LikeJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Like a journey")]
+    public async Task<IActionResult> LikeJourney(int journeyId, CancellationToken ct)
     {
-        await _journeyService.LikeJourneyAsync(User.GetUserId(), journeyId, cancellationToken);
+        var result = await sender.Send(new LikeJourneyCommand(journeyId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
         return NoContent();
     }
 
-    /// <summary>
-    /// Unlike a journey
-    /// </summary>
     [HttpDelete("{journeyId}/like")]
     [Authorize]
-    public async Task<IActionResult> UnlikeJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Unlike a journey")]
+    public async Task<IActionResult> UnlikeJourney(int journeyId, CancellationToken ct)
     {
-        await _journeyService.UnlikeJourneyAsync(User.GetUserId(), journeyId, cancellationToken);
+        var result = await sender.Send(new UnlikeJourneyCommand(journeyId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
         return NoContent();
     }
 
-    /// <summary>
-    /// Get journey posts (timeline)
-    /// </summary>
     [HttpGet("{journeyId}/posts")]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get journey posts (timeline)")]
     public async Task<ActionResult<IEnumerable<JourneyPostDto>>> GetJourneyPosts(
-        int journeyId, CancellationToken cancellationToken,
+        int journeyId, CancellationToken ct,
         [FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken);
-        if (journey is null)
-            return NotFound();
-
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        return Ok(await _journeyService.GetJourneyPostsAsync(journeyId, cancellationToken, skip, take, currentUserId));
+        var result = await sender.Send(new GetJourneyPostsQuery(journeyId, skip, take), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Create new post in journey
-    /// </summary>
     [HttpPost("{journeyId}/posts")]
     [Authorize]
-    public async Task<ActionResult<JourneyPostDto>> CreateJourneyPost(int journeyId, [FromBody] CreateJourneyPostRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Create new post in journey")]
+    public async Task<ActionResult<JourneyPostDto>> CreateJourneyPost(
+        int journeyId, [FromBody] CreateJourneyPostCommand command, CancellationToken ct)
     {
-        var post = await _journeyService.CreateJourneyPostAsync(User.GetUserId(), journeyId, request, cancellationToken);
-        return CreatedAtAction(nameof(GetJourneyPost), new { postId = post.Id }, post);
+        var result = await sender.Send(command with { JourneyId = journeyId }, ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return CreatedAtAction(nameof(GetJourneyPost), new { postId = result.Value!.Id }, result.Value);
     }
 
-    /// <summary>
-    /// Get specific journey post
-    /// </summary>
     [HttpGet("posts/{postId}")]
-    public async Task<ActionResult<JourneyPostDto>> GetJourneyPost(int postId, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get specific journey post")]
+    public async Task<ActionResult<JourneyPostDto>> GetJourneyPost(int postId, CancellationToken ct)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        var post = await _journeyService.GetJourneyPostByIdAsync(postId, cancellationToken, currentUserId);
-
-        if (post is null)
-            return NotFound();
-
-        return Ok(post);
+        var result = await sender.Send(new GetJourneyPostByIdQuery(postId), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Update journey post (text content only)
-    /// </summary>
     [HttpPut("posts/{postId}")]
     [Authorize]
-    public async Task<ActionResult<JourneyPostDto>> UpdateJourneyPost(int postId, [FromBody] UpdateJourneyPostRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Update journey post (text content only)")]
+    public async Task<ActionResult<JourneyPostDto>> UpdateJourneyPost(
+        int postId, [FromBody] UpdateJourneyPostCommand command, CancellationToken ct)
     {
-        var post = await _journeyService.UpdateJourneyPostAsync(User.GetUserId(), postId, request, cancellationToken);
-
-        if (post is null)
-            return NotFound();
-
-        return Ok(post);
+        var result = await sender.Send(command with { PostId = postId }, ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Delete journey post
-    /// </summary>
     [HttpDelete("posts/{postId}")]
     [Authorize]
-    public async Task<IActionResult> DeleteJourneyPost(int postId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Delete journey post")]
+    public async Task<IActionResult> DeleteJourneyPost(int postId, CancellationToken ct)
     {
-        var result = await _journeyService.DeleteJourneyPostAsync(User.GetUserId(), postId, cancellationToken);
-        if (!result)
-            return NotFound();
+        var result = await sender.Send(new DeleteJourneyPostCommand(postId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
 
         return NoContent();
     }

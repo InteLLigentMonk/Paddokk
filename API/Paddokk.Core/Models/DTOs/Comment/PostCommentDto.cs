@@ -1,16 +1,16 @@
-﻿namespace Paddokk.Core.Models.DTOs.Comment;
+namespace Paddokk.Core.Models.DTOs.Comment;
 
 public class PostCommentDto
 {
-    public int Id { get; set; }
-    public int JourneyPostId { get; set; }
-    public string UserId { get; set; } = string.Empty;
-    public string UserDisplayName { get; set; } = string.Empty;
+    public required int Id { get; set; }
+    public required int JourneyPostId { get; set; }
+    public required string UserId { get; set; }
+    public required string UserDisplayName { get; set; }
     public string? UserAvatarUrl { get; set; }
-    public string Content { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public bool IsEdited { get; set; }
-    public bool IsOwner { get; set; } // True if current user owns this comment
-    public bool IsPostOwner { get; set; } // True if commenter is the post owner
+    public required string Content { get; set; }
+    public required DateTime CreatedAt { get; set; }
+    public required DateTime UpdatedAt { get; set; }
+    public required bool IsEdited { get; set; }
+    public required bool IsOwner { get; set; }
+    public required bool IsPostOwner { get; set; }
 }

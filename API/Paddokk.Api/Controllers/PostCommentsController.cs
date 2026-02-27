@@ -1,91 +1,83 @@
-﻿using Paddokk.Api.Extensions;
+using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Paddokk.Core.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Core.Features.Comments.Commands.CreateComment;
+using Paddokk.Core.Features.Comments.Commands.DeleteComment;
+using Paddokk.Core.Features.Comments.Commands.UpdateComment;
+using Paddokk.Core.Features.Comments.Queries.GetCommentById;
+using Paddokk.Core.Features.Comments.Queries.GetPostComments;
 using Paddokk.Core.Models.DTOs.Comment;
 
 namespace Paddokk.Api.Controllers;
 
-[ApiController]
-[Route("api/posts/{postId}/comments")]
-public class PostCommentsController : ControllerBase
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/posts/{postId}/comments")]
+public class PostCommentsController(ISender sender) : ApiControllerBase
 {
-    private readonly ICommentService _commentService;
-
-    public PostCommentsController(ICommentService commentService)
-    {
-        _commentService = commentService;
-    }
-
-    /// <summary>
-    /// Get comments for a journey post
-    /// </summary>
     [HttpGet]
+    [EnableRateLimiting("reads")]
     public async Task<ActionResult<CommentsPagedResponse>> GetPostComments(
         int postId,
-        CancellationToken cancellationToken,
+        CancellationToken ct,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         if (page < 1) page = 1;
         if (pageSize is < 1 or > 100) pageSize = 20;
 
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        return Ok(await _commentService.GetPostCommentsAsync(postId, cancellationToken, page, pageSize, currentUserId));
+        var result = await sender.Send(new GetPostCommentsQuery(postId, page, pageSize), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Add comment to journey post
-    /// </summary>
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<PostCommentDto>> CreateComment(int postId, [FromBody] CreateCommentRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    public async Task<ActionResult<PostCommentDto>> CreateComment(
+        int postId, [FromBody] CreateCommentCommand command, CancellationToken ct)
     {
-        var comment = await _commentService.CreateCommentAsync(User.GetUserId(), postId, request, cancellationToken);
-        return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.Id }, comment);
+        var result = await sender.Send(command with { PostId = postId }, ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return CreatedAtAction(nameof(GetComment),
+            new { postId, commentId = result.Value!.Id }, result.Value);
     }
 
-    /// <summary>
-    /// Get specific comment
-    /// </summary>
     [HttpGet("{commentId}")]
-    public async Task<ActionResult<PostCommentDto>> GetComment(int postId, int commentId, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    public async Task<ActionResult<PostCommentDto>> GetComment(
+        int postId, int commentId, CancellationToken ct)
     {
-        var currentUserId = User.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
-        var comment = await _commentService.GetCommentByIdAsync(commentId, cancellationToken, currentUserId);
+        var result = await sender.Send(new GetCommentByIdQuery(commentId), ct);
 
-        if (comment is null || comment.JourneyPostId != postId)
+        if (result.IsSuccess && result.Value!.JourneyPostId != postId)
             return NotFound();
 
-        return Ok(comment);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Update comment (owner only)
-    /// </summary>
     [HttpPut("{commentId}")]
     [Authorize]
-    public async Task<ActionResult<PostCommentDto>> UpdateComment(int postId, int commentId, [FromBody] UpdateCommentRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    public async Task<ActionResult<PostCommentDto>> UpdateComment(
+        int postId, int commentId, [FromBody] UpdateCommentCommand command, CancellationToken ct)
     {
-        var comment = await _commentService.UpdateCommentAsync(User.GetUserId(), commentId, request, cancellationToken);
-
-        if (comment is null)
-            return NotFound();
-
-        return Ok(comment);
+        var result = await sender.Send(command with { CommentId = commentId }, ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Delete comment (owner or post owner)
-    /// </summary>
     [HttpDelete("{commentId}")]
     [Authorize]
-    public async Task<IActionResult> DeleteComment(int postId, int commentId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    public async Task<IActionResult> DeleteComment(int postId, int commentId, CancellationToken ct)
     {
-        var result = await _commentService.DeleteCommentAsync(User.GetUserId(), commentId, cancellationToken);
+        var result = await sender.Send(new DeleteCommentCommand(commentId), ct);
 
-        if (!result)
-            return NotFound();
+        if (!result.IsSuccess)
+            return FromError(result.Error);
 
         return NoContent();
     }

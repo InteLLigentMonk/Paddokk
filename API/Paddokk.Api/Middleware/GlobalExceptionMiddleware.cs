@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 
 namespace Paddokk.Api.Middleware;
 
@@ -29,6 +30,8 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
 
         var (statusCode, message) = ex switch
         {
+            ValidationException ve => (HttpStatusCode.BadRequest,
+                string.Join("; ", ve.Errors.Select(e => e.ErrorMessage))),
             UnauthorizedAccessException => (HttpStatusCode.Forbidden, ex.Message),
             KeyNotFoundException => (HttpStatusCode.NotFound, ex.Message),
             ArgumentException => (HttpStatusCode.BadRequest, ex.Message),

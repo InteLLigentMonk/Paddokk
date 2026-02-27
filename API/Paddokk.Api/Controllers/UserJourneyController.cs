@@ -1,174 +1,125 @@
-﻿using Paddokk.Api.Extensions;
+using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Paddokk.Core.Interfaces;
-using Paddokk.Core.Models.Entities;
+using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Api.Extensions;
+using Paddokk.Core.Features.Journeys.Commands.CreateJourney;
+using Paddokk.Core.Features.Journeys.Commands.DeleteJourney;
+using Paddokk.Core.Features.Journeys.Commands.SetDefaultActiveJourney;
+using Paddokk.Core.Features.Journeys.Commands.UpdateJourney;
+using Paddokk.Core.Features.Journeys.Queries.CanCreateJourney;
+using Paddokk.Core.Features.Journeys.Queries.GetDefaultActiveJourney;
+using Paddokk.Core.Features.Journeys.Queries.GetJourneyById;
+using Paddokk.Core.Features.Journeys.Queries.GetUserJourneys;
+using Paddokk.Core.Features.Journeys.Queries.GetUserJourneyStats;
 using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Api.Controllers;
 
-[ApiController]
-[Route("api/users/me/journeys")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/users/me/journeys")]
 [Authorize]
-public class UserJourneysController : ControllerBase
+public class UserJourneysController(ISender sender) : ApiControllerBase
 {
-    private readonly IJourneyService _journeyService;
-    private readonly ILogger<UserJourneysController> _logger;
-
-    public UserJourneysController(IJourneyService journeyService, ILogger<UserJourneysController> logger)
-    {
-        _journeyService = journeyService;
-        _logger = logger;
-    }
-
-    /// <summary>
-    /// Get current user's journeys
-    /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetUserJourneys(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get current user's journeys")]
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetUserJourneys(CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var journeys = await _journeyService.GetUserJourneysAsync(userId, cancellationToken, userId);
-        return Ok(journeys);
+        var result = await sender.Send(new GetUserJourneysQuery(), ct);
+        return Ok(result);
     }
 
-    /// <summary>
-    /// Get specific user journey
-    /// </summary>
     [HttpGet("{journeyId}")]
-    public async Task<ActionResult<JourneyDto>> GetUserJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get specific user journey")]
+    public async Task<ActionResult<JourneyDto>> GetUserJourney(int journeyId, CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var journey = await _journeyService.GetJourneyByIdAsync(journeyId, cancellationToken, userId);
+        var result = await sender.Send(new GetJourneyByIdQuery(journeyId), ct);
 
-        if (journey == null || journey.UserId != userId)
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        if (result.Value!.UserId != User.GetUserId())
             return NotFound(new { message = "Journey not found or you don't own it" });
 
-        return Ok(journey);
+        return Ok(result.Value);
     }
 
-    /// <summary>
-    /// Create new journey
-    /// </summary>
     [HttpPost]
-    public async Task<ActionResult<JourneyDto>> CreateJourney([FromBody] CreateJourneyRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Create new journey")]
+    public async Task<ActionResult<JourneyDto>> CreateJourney([FromBody] CreateJourneyCommand command, CancellationToken ct)
     {
-        try
-        {
-            var userId = User.GetUserId();
-            var journey = await _journeyService.CreateJourneyAsync(userId, request, cancellationToken);
-            return CreatedAtAction(nameof(GetUserJourney), new { journeyId = journey.Id }, journey);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await sender.Send(command, ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return CreatedAtAction(nameof(GetUserJourney), new { journeyId = result.Value!.Id }, result.Value);
     }
 
-    /// <summary>
-    /// Update journey details
-    /// </summary>
     [HttpPut("{journeyId}")]
-    public async Task<ActionResult<JourneyDto>> UpdateJourney(int journeyId, [FromBody] UpdateJourneyRequest request, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Update journey details")]
+    public async Task<ActionResult<JourneyDto>> UpdateJourney(
+        int journeyId, [FromBody] UpdateJourneyCommand command, CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var journey = await _journeyService.UpdateJourneyAsync(userId, journeyId, request, cancellationToken);
-
-        if (journey == null)
-            return NotFound(new { message = "Journey not found or you don't own it" });
-
-        return Ok(journey);
+        var result = await sender.Send(command with { JourneyId = journeyId }, ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Delete journey
-    /// </summary>
     [HttpDelete("{journeyId}")]
-    public async Task<IActionResult> DeleteJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Delete journey")]
+    public async Task<IActionResult> DeleteJourney(int journeyId, CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var result = await _journeyService.DeleteJourneyAsync(userId, journeyId, cancellationToken);
+        var result = await sender.Send(new DeleteJourneyCommand(journeyId), ct);
 
-        if (!result)
-            return NotFound(new { message = "Journey not found or you don't own it" });
+        if (!result.IsSuccess)
+            return FromError(result.Error);
 
         return NoContent();
     }
 
-    /// <summary>
-    /// Get user's default active journey (for smart FAB)
-    /// </summary>
     [HttpGet("default-active")]
-    public async Task<ActionResult<JourneyDto>> GetDefaultActiveJourney(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get user's default active journey")]
+    public async Task<ActionResult<JourneyDto>> GetDefaultActiveJourney(CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var journey = await _journeyService.GetUserDefaultActiveJourneyAsync(userId, cancellationToken);
-
-        if (journey == null)
-            return NotFound(new { message = "No default active journey set" });
-
-        return Ok(journey);
+        var result = await sender.Send(new GetDefaultActiveJourneyQuery(), ct);
+        return OkOrError(result);
     }
 
-    /// <summary>
-    /// Set journey as default active (for smart FAB)
-    /// </summary>
     [HttpPut("{journeyId}/set-default-active")]
-    public async Task<IActionResult> SetDefaultActiveJourney(int journeyId, CancellationToken cancellationToken)
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Set journey as default active")]
+    public async Task<IActionResult> SetDefaultActiveJourney(int journeyId, CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var result = await _journeyService.SetUserDefaultActiveJourneyAsync(userId, journeyId, cancellationToken);
+        var result = await sender.Send(new SetDefaultActiveJourneyCommand(journeyId), ct);
 
-        if (!result)
-            return BadRequest(new { message = "Failed to set default active journey. Journey not found or not owned by user." });
+        if (!result.IsSuccess)
+            return FromError(result.Error);
 
         return Ok(new { message = "Default active journey updated successfully" });
     }
 
-    /// <summary>
-    /// Get user's journey statistics
-    /// </summary>
     [HttpGet("stats")]
-    public async Task<ActionResult<JourneyStatsDto>> GetUserJourneyStats(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get user's journey statistics")]
+    public async Task<ActionResult<JourneyStatsDto>> GetUserJourneyStats(CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var stats = await _journeyService.GetUserJourneyStatsAsync(userId, cancellationToken);
-        return Ok(stats);
+        var result = await sender.Send(new GetUserJourneyStatsQuery(), ct);
+        return Ok(result);
     }
 
-    /// <summary>
-    /// Check if user can create more journeys
-    /// </summary>
     [HttpGet("can-create")]
-    public async Task<ActionResult<object>> CanCreateJourney(CancellationToken cancellationToken)
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Check if user can create more journeys")]
+    public async Task<ActionResult<CanCreateJourneyResponse>> CanCreateJourney(CancellationToken ct)
     {
-        var userId = User.GetUserId();
-        var canCreate = await _journeyService.CanUserCreateJourneyAsync(userId, cancellationToken);
-
-        // Get current journey count and limits
-        var subscriptionTier = User.GetSubscriptionTier();
-        var maxJourneys = subscriptionTier switch
-        {
-            SubscriptionTier.Free => 1,
-            SubscriptionTier.Silver => 3,
-            SubscriptionTier.Gold => 10,
-            SubscriptionTier.Platinum => 20,
-            SubscriptionTier.Diamond => int.MaxValue,
-            _ => 1
-        };
-
-        var currentCount = await _journeyService.GetUserJourneyStatsAsync(userId, cancellationToken);
-
-        return Ok(new
-        {
-            canCreate,
-            currentCount = currentCount.TotalJourneys,
-            maxJourneys = maxJourneys == int.MaxValue ? "Unlimited" : maxJourneys.ToString(),
-            subscriptionTier = subscriptionTier.ToString()
-        });
+        var result = await sender.Send(new CanCreateJourneyQuery(), ct);
+        return Ok(result);
     }
 }

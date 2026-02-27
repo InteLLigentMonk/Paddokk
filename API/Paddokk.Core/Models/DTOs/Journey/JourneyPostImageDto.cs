@@ -1,9 +1,9 @@
-﻿namespace Paddokk.Core.Models.DTOs.Journey;
+namespace Paddokk.Core.Models.DTOs.Journey;
 
 public class JourneyPostImageDto
 {
-    public int Id { get; set; }
-    public string ImageUrl { get; set; } = string.Empty;
+    public required int Id { get; set; }
+    public required string ImageUrl { get; set; }
     public string? Caption { get; set; }
-    public int SortOrder { get; set; }
+    public required int SortOrder { get; set; }
 }

@@ -1,27 +1,30 @@
-using Paddokk.Api.Extensions;
+using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Api.Extensions;
+using Paddokk.Core.Features.Cars.Queries.GetCarLimits;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.DTOs.Car;
 using Paddokk.Core.Models.DTOs.Image;
 
 namespace Paddokk.Api.Controllers;
 
-[ApiController]
-[Route("api/limits")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/limits")]
 [Authorize]
-public class LimitsController(IImageService imageService, ICarService carService) : ControllerBase
+public class LimitsController(ISender sender, IImageService imageService) : ApiControllerBase
 {
-    private readonly IImageService _imageService = imageService;
-    private readonly ICarService _carService = carService;
-
     [HttpGet("images")]
+    [EnableRateLimiting("reads")]
     [EndpointSummary("Get the current user's image upload limits across all contexts")]
-    public async Task<ImageLimitsDto> GetImageLimits(CancellationToken cancellationToken) =>
-        await _imageService.GetImageLimitsAsync(User.GetUserId(), cancellationToken);
+    public async Task<ImageLimitsDto> GetImageLimits(CancellationToken ct) =>
+        await imageService.GetImageLimitsAsync(User.GetUserId(), ct);
 
     [HttpGet("cars")]
+    [EnableRateLimiting("reads")]
     [EndpointSummary("Get the current user's car limit status")]
-    public async Task<CarLimitDto> GetCarLimits(CancellationToken cancellationToken) =>
-        await _carService.CanUserAddCarAsync(User.GetSubscriptionTier(), User.GetUserId(), cancellationToken);
+    public async Task<CarLimitDto> GetCarLimits(CancellationToken ct) =>
+        await sender.Send(new GetCarLimitsQuery(User.GetSubscriptionTier()), ct);
 }
