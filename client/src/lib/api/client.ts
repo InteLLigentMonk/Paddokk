@@ -48,9 +48,10 @@ export const apiFetcher = async <T>(
   options?: RequestInit,
 ): Promise<T> => {
   const token = await getAuthToken();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+  const isFormData = options?.body instanceof FormData;
+  const headers: Record<string, string> = isFormData
+    ? {}
+    : { "Content-Type": "application/json" };
 
   if (token) headers["Authorization"] = `Bearer ${token}`;
 

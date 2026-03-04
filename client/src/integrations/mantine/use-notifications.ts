@@ -20,6 +20,7 @@ function createNotificationUtilities(): NotificationUtilities {
       mantineNotifications.show({
         title,
         message,
+        autoClose: 3000,
         color: "green",
         ...options,
       });
@@ -29,6 +30,7 @@ function createNotificationUtilities(): NotificationUtilities {
       mantineNotifications.show({
         title,
         message,
+        autoClose: 5000,
         color: "red",
         ...options,
       });
@@ -38,6 +40,7 @@ function createNotificationUtilities(): NotificationUtilities {
       mantineNotifications.show({
         title,
         message,
+        autoClose: 4000,
         color: "yellow",
         ...options,
       });
@@ -47,6 +50,7 @@ function createNotificationUtilities(): NotificationUtilities {
       mantineNotifications.show({
         title,
         message,
+        autoClose: 3000,
         color: "blue",
         ...options,
       });

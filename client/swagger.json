@@ -138,8 +138,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "text/plain": {
                 "schema": {
@@ -217,7 +217,7 @@
           "CarImages"
         ],
         "summary": "Get a specific car image by ID",
-        "operationId": "CarImages_GetCarImage",
+        "operationId": "CarImages_GetCarImageById",
         "parameters": [
           {
             "name": "carId",
@@ -317,7 +317,7 @@
         "operationId": "CarImages_UpdateCarImage",
         "parameters": [
           {
-            "name": "imageId",
+            "name": "carId",
             "in": "path",
             "required": true,
             "schema": {
@@ -330,11 +330,16 @@
             }
           },
           {
-            "name": "carId",
+            "name": "imageId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
             }
           }
         ],
@@ -466,8 +471,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "500": {
             "description": "Internal server error - unexpected failure",
@@ -558,8 +563,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "500": {
             "description": "Internal server error - unexpected failure",
@@ -573,92 +578,6 @@
           },
           "400": {
             "description": "Bad request - validation or business rule violation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid JWT token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - valid token but insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/cars/{carId}/images/canupload": {
-      "get": {
-        "tags": [
-          "CarImages"
-        ],
-        "summary": "Check if the current user can upload more images for this car",
-        "operationId": "CarImages_CanUploadImage",
-        "parameters": [
-          {
-            "name": "carId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CanUploadImageResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CanUploadImageResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CanUploadImageResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - unexpected failure",
             "content": {
               "application/json": {
                 "schema": {
@@ -4770,39 +4689,6 @@
           },
           "subscriptionTier": {
             "type": "string"
-          }
-        }
-      },
-      "CanUploadImageResponse": {
-        "required": [
-          "canUpload",
-          "currentCount",
-          "maxAllowed",
-          "subscriptionTier"
-        ],
-        "type": "object",
-        "properties": {
-          "canUpload": {
-            "type": "boolean"
-          },
-          "currentCount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "maxAllowed": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "subscriptionTier": {
-            "$ref": "#/components/schemas/SubscriptionTier"
           }
         }
       },

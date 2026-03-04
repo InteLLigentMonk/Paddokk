@@ -8,7 +8,6 @@ namespace Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 
 public sealed class CreateUserCarHandler(
     ICarRepository carRepository,
-    IUnitOfWork unitOfWork,
     IActorResolver actor)
     : IRequestHandler<CreateUserCarCommand, Result<UserCarDto>>
 {
@@ -67,13 +66,10 @@ public sealed class CreateUserCarHandler(
             UpdatedAt = DateTime.UtcNow
         };
 
-        await unitOfWork.ExecuteInTransactionAsync(async () =>
-        {
-            if (isPrimary)
-                await carRepository.UnsetPrimaryCar(actor.UserId, cancellationToken);
+        if (isPrimary)
+            await carRepository.UnsetPrimaryCar(actor.UserId, cancellationToken);
 
-            await carRepository.CreateUserCarAsync(userCar, cancellationToken);
-        }, cancellationToken);
+        await carRepository.CreateUserCarAsync(userCar, cancellationToken);
 
         var created = await carRepository.GetUserCarByIdAsync(actor.UserId, userCar.Id, cancellationToken);
         return Result<UserCarDto>.Success(CarMapping.ToUserCarDto(created!));

@@ -29,7 +29,7 @@ public class ImageService : IImageService
 
     // File size limits (in bytes)
     private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10MB
-    private readonly string[] _allowedFormats = { "image/jpeg", "image/png", "image/webp" };
+    private readonly string[] _allowedFormats = { "image/jpg", "image/jpeg", "image/png", "image/webp" };
 
     public ImageService(
         IUserRepository userRepository,
