@@ -1,20 +1,21 @@
-import { useMediaQuery, useDisclosure } from '@mantine/hooks'
-import { DesktopSidebar } from './desktop-sidebar'
-import { MobileBottomBar } from './mobile-bottom-bar'
-import { MobileMoreDrawer } from './mobile-more-drawer'
+import { useDisclosure } from "@mantine/hooks";
+import { Box } from "@mantine/core";
+import { DesktopSidebar } from "./desktop-sidebar";
+import { MobileBottomBar } from "./mobile-bottom-bar";
+import { MobileMoreDrawer } from "./mobile-more-drawer";
 
 export function AppNavigation() {
-  const isDesktop = useMediaQuery('(min-width: 62em)')
-  const [moreDrawerOpened, { toggle, close }] = useDisclosure()
-
-  if (isDesktop) {
-    return <DesktopSidebar />
-  }
+  const [moreDrawerOpened, { toggle, close }] = useDisclosure();
 
   return (
     <>
-      <MobileBottomBar onMoreClick={toggle} />
-      <MobileMoreDrawer opened={moreDrawerOpened} onClose={close} />
+      <Box visibleFrom="md">
+        <DesktopSidebar />
+      </Box>
+      <Box hiddenFrom="md">
+        <MobileBottomBar onMoreClick={toggle} />
+        <MobileMoreDrawer opened={moreDrawerOpened} onClose={close} />
+      </Box>
     </>
-  )
+  );
 }

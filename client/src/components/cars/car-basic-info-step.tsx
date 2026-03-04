@@ -3,15 +3,13 @@ import { Button, Group, NumberInput, Select, Stack, TextInput } from "@mantine/c
 import { useForm } from "@tanstack/react-form"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { carsGetCarMakes, carsGetCarModels, carsGetCarGenerations } from "@/generated/api/cars/cars"
-import { userCarsCreateUserCar, userCarsUpdateUserCar } from "@/generated/api/user-cars/user-cars"
+import { userCarsCreateUserCar, userCarsUpdateUserCar, userCarsGetUserCar } from "@/generated/api/user-cars/user-cars"
 import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas"
 import { useNotifications } from "@/integrations/mantine"
 
-
-
 interface CarBasicInfoStepProps {
-  carId: number | null // If editing after going back from Step 2
-  onNext: (carId: number) => void // Called after successful car creation
+  carId: number | null
+  onNext: (carId: number) => void
   onCancel: () => void
 }
 
@@ -21,6 +19,14 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
 
   const [selectedMakeId, setSelectedMakeId] = useState<number | undefined>()
   const [selectedModelId, setSelectedModelId] = useState<number | undefined>()
+
+  const { data: existingCarData } = useQuery({
+    queryKey: ["user-car", carId],
+    queryFn: () => userCarsGetUserCar(carId!),
+    enabled: !!carId,
+  })
+
+  const existingCar = existingCarData?.status === 200 ? existingCarData.data : undefined
 
   const { data: makesData } = useQuery({
     queryKey: ["car-makes"],
@@ -96,6 +102,7 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
             isPrimary: false,
           })
           queryClient.invalidateQueries({ queryKey: ["user-cars"] })
+          queryClient.invalidateQueries({ queryKey: ["car-limits"] })
           notifications.success({ message: "Car created! Now add photos." })
           const car = result.data as UserCarDto
           onNext(Number(car.id))
@@ -109,18 +116,18 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
   })
 
   useEffect(() => {
-    if (selectedMakeId) {
-      form.setFieldValue("carModelId", 0)
-      form.setFieldValue("carGenerationId", undefined)
-      setSelectedModelId(undefined)
-    }
-  }, [selectedMakeId])
-
-  useEffect(() => {
-    if (selectedModelId) {
-      form.setFieldValue("carGenerationId", undefined)
-    }
-  }, [selectedModelId])
+    if (!existingCar) return
+    const makeId = Number(existingCar.carMakeId)
+    const modelId = Number(existingCar.carModelId)
+    setSelectedMakeId(makeId || undefined)
+    setSelectedModelId(modelId || undefined)
+    form.setFieldValue("carMakeId", makeId)
+    form.setFieldValue("carModelId", modelId)
+    form.setFieldValue("carGenerationId", existingCar.carGenerationId ? Number(existingCar.carGenerationId) : undefined)
+    form.setFieldValue("year", Number(existingCar.year))
+    form.setFieldValue("nickname", existingCar.nickname ?? "")
+    form.setFieldValue("color", existingCar.color ?? "")
+  }, [existingCar])
 
   const isPending = addMutation.isPending || editMutation.isPending
 
@@ -148,6 +155,9 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
                 const numValue = value ? parseInt(value) : 0
                 field.handleChange(numValue)
                 setSelectedMakeId(numValue || undefined)
+                form.setFieldValue("carModelId", 0)
+                form.setFieldValue("carGenerationId", undefined)
+                setSelectedModelId(undefined)
               }}
               error={field.state.meta.errors.join(", ")}
               searchable
@@ -172,6 +182,7 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
                 const numValue = value ? parseInt(value) : 0
                 field.handleChange(numValue)
                 setSelectedModelId(numValue || undefined)
+                form.setFieldValue("carGenerationId", undefined)
               }}
               error={field.state.meta.errors.join(", ")}
               disabled={!selectedMakeId}

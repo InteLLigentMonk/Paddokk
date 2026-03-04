@@ -27,6 +27,7 @@ export function DeleteCarConfirm() {
     onSuccess: () => {
       notifications.success({ message: 'Car deleted successfully' })
       queryClient.invalidateQueries({ queryKey: ['user-cars'] })
+      queryClient.invalidateQueries({ queryKey: ['car-limits'] })
       closeDeleteCarConfirm()
     },
   })

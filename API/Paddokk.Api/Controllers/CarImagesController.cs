@@ -1,8 +1,14 @@
 using Asp.Versioning;
-using Paddokk.Api.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Paddokk.Core.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Core.Features.CarImages.Commands.DeleteCarImage;
+using Paddokk.Core.Features.CarImages.Commands.SetPrimaryImage;
+using Paddokk.Core.Features.CarImages.Commands.UpdateCarImage;
+using Paddokk.Core.Features.CarImages.Commands.UploadCarImage;
+using Paddokk.Core.Features.CarImages.Queries.GetCarImageById;
+using Paddokk.Core.Features.CarImages.Queries.GetCarImages;
 using Paddokk.Core.Models.DTOs.Image;
 
 namespace Paddokk.Api.Controllers;
@@ -10,48 +16,78 @@ namespace Paddokk.Api.Controllers;
 [ApiVersion(1)]
 [Route("api/v{v:apiVersion}/cars/{carId}/images")]
 [Authorize]
-public class CarImagesController(IImageService imageService) : ApiControllerBase
+public class CarImagesController(ISender sender) : ApiControllerBase
 {
-    private readonly IImageService _imageService = imageService;
-
     [HttpGet]
+    [EnableRateLimiting("reads")]
     [EndpointSummary("Get all images for a car")]
-    public async Task<CarImagesResponse> GetCarImages(
-        int carId, CancellationToken cancellationToken) =>
-        await _imageService.GetCarImagesAsync(carId, cancellationToken);
+    public async Task<ActionResult<CarImagesResponse>> GetCarImages(int carId, CancellationToken ct)
+    {
+        var result = await sender.Send(new GetCarImagesQuery(carId), ct);
+        return OkOrError(result);
+    }
 
     [HttpGet("{imageId}")]
+    [EnableRateLimiting("reads")]
     [EndpointSummary("Get a specific car image by ID")]
-    public async Task<CarImageDto> GetCarImage(
-        int carId, int imageId, CancellationToken cancellationToken) =>
-        await _imageService.GetCarImageByIdAsync(imageId, carId, cancellationToken);
+    public async Task<ActionResult<CarImageDto>> GetCarImageById(int carId, int imageId, CancellationToken ct)
+    {
+        var result = await sender.Send(new GetCarImageByIdQuery(carId, imageId), ct);
+        return OkOrError(result);
+    }
 
     [HttpPost]
-    [Consumes("multipart/form-data")]  
+    [Consumes("multipart/form-data")]
+    [EnableRateLimiting("writes")]
     [EndpointSummary("Upload a new image for the car")]
-    public async Task<CarImageDto> UploadCarImage(
-        int carId, [FromForm] UploadCarImageRequest request, CancellationToken cancellationToken) =>
-        await _imageService.AddCarImageAsync(User.GetUserId(), carId, request.File, cancellationToken, request.Caption);
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult<CarImageDto>> UploadCarImage(
+        int carId, [FromForm] UploadCarImageRequest request, CancellationToken ct)
+    {
+        var result = await sender.Send(new UploadCarImageCommand(carId, request.File, request.Caption), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return CreatedAtAction(nameof(GetCarImageById), new { carId, imageId = result.Value!.Id }, result.Value);
+    }
 
     [HttpPut("{imageId}")]
+    [EnableRateLimiting("writes")]
     [EndpointSummary("Update caption or sort order of a car image")]
-    public async Task<CarImageDto> UpdateCarImage(
-        int imageId, [FromBody] UpdateCarImageRequest request, CancellationToken cancellationToken) =>
-        await _imageService.UpdateCarImageAsync(User.GetUserId(), imageId, request, cancellationToken);
+    public async Task<ActionResult<CarImageDto>> UpdateCarImage(
+        int carId, int imageId, [FromBody] UpdateCarImageRequest body, CancellationToken ct)
+    {
+        var result = await sender.Send(
+            new UpdateCarImageCommand(carId, imageId, body.Caption, body.SortOrder, body.IsPrimary), ct);
+        return OkOrError(result);
+    }
 
     [HttpDelete("{imageId}")]
+    [EnableRateLimiting("writes")]
     [EndpointSummary("Delete a car image")]
-    public async Task DeleteCarImage(
-        int carId, int imageId, CancellationToken cancellationToken) =>
-        await _imageService.DeleteCarImageAsync(User.GetUserId(), carId, imageId, cancellationToken);
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteCarImage(int carId, int imageId, CancellationToken ct)
+    {
+        var result = await sender.Send(new DeleteCarImageCommand(carId, imageId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
 
     [HttpPut("{imageId}/setprimary")]
+    [EnableRateLimiting("writes")]
     [EndpointSummary("Set an image as the primary image for the car")]
-    public async Task SetPrimaryImage(int carId, int imageId, CancellationToken cancellationToken) =>
-        await _imageService.SetCarPrimaryImageAsync(User.GetUserId(), carId, imageId, cancellationToken);
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> SetPrimaryImage(int carId, int imageId, CancellationToken ct)
+    {
+        var result = await sender.Send(new SetPrimaryImageCommand(carId, imageId), ct);
 
-    [HttpGet("canupload")] 
-    [EndpointSummary("Check if the current user can upload more images for this car")]
-    public async Task<CanUploadImageResponse> CanUploadImage(int carId, CancellationToken cancellationToken) =>
-        await _imageService.GetUploadStatusAsync(User.GetUserId(), carId, cancellationToken);
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
 }

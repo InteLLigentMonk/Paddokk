@@ -12,9 +12,11 @@ read-when: [finding-right-tool, using-context7, github-operations]
 
 Up-to-date documentation and code examples for any library.
 
+> **MANDATORY:** Always consult Context7 before writing code that uses any library, framework, or external API — including .NET BCL, ASP.NET Core, EF Core, MediatR, FluentValidation, Mantine, TanStack, etc. Never rely on training data, Stack Overflow snippets, or memory for library APIs. These go stale. Outdated usage is a bug.
+
 **When to use:**
 
-- Looking up API usage for project dependencies (Mantine v8, TanStack Router/Query/Form/Store, Tiptap v3, Better Auth, Zod v4)
+- Looking up API usage for project dependencies (Mantine v8, TanStack Router/Query/Form/Store, Tiptap v3, Better Auth, Zod v4, FluentValidation, MediatR, ASP.NET Core)
 - Unsure about a library's current API or patterns
 - Checking for breaking changes or migration guides
 - Before implementing features that depend on third-party library APIs

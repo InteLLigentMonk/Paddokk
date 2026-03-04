@@ -10,15 +10,14 @@ import {
   rem,
 } from "@mantine/core";
 import { spotlight } from "@mantine/spotlight";
-import { useMediaQuery } from "@mantine/hooks";
+import { useState, useEffect } from "react";
 import { LogOut, Search, Settings, User } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { ColorSchemeToggle } from "./color-scheme-toggle";
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const;
 
-
-function HeaderLogo({ showCarDropdown }: { showCarDropdown: boolean }) {
+function HeaderLogo() {
   return (
     <Group gap="md" wrap="nowrap">
       <Box
@@ -31,24 +30,26 @@ function HeaderLogo({ showCarDropdown }: { showCarDropdown: boolean }) {
           cursor: "pointer",
         }}
       />
-      {showCarDropdown && (
-        <Box
-          style={{
-            fontSize: rem(14),
-            color: "var(--mantine-color-dimmed)",
-          }}
-        >
-          {/* TODO: Implement car dropdown */}
-          My Car
-        </Box>
-      )}
+      <Box
+        visibleFrom="md"
+        style={{
+          fontSize: rem(14),
+          color: "var(--mantine-color-dimmed)",
+        }}
+      >
+        {/* TODO: Implement car dropdown */}
+        My Car
+      </Box>
     </Group>
   );
 }
 
-function HeaderSearch({ isLargeScreen }: { isLargeScreen: boolean }) {
-  const isMac =
-    typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
+function HeaderSearch() {
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.userAgent));
+  }, []);
 
   return (
     <Box style={{ flex: 1, maxWidth: rem(500), marginInline: "auto" }}>
@@ -56,7 +57,7 @@ function HeaderSearch({ isLargeScreen }: { isLargeScreen: boolean }) {
         onClick={() => spotlight.open()}
         style={{
           width: "100%",
-          height: isLargeScreen ? rem(36) : rem(30),
+          height: rem(36),
           paddingLeft: rem(12),
           paddingRight: rem(12),
           borderRadius: rem(1000),
@@ -68,13 +69,6 @@ function HeaderSearch({ isLargeScreen }: { isLargeScreen: boolean }) {
           gap: rem(8),
           cursor: "pointer",
           transition: "border-color 100ms ease",
-          // }}
-          // onMouseEnter={(e) => {
-          //   e.currentTarget.style.borderColor = "var(--mantine-color-gray-4)";
-          // }}
-          // onMouseLeave={(e) => {
-          //   e.currentTarget.style.borderColor =
-          //     "var(--mantine-color-default-border)";
         }}
       >
         <Search
@@ -85,7 +79,7 @@ function HeaderSearch({ isLargeScreen }: { isLargeScreen: boolean }) {
           component="span"
           style={{
             flex: 1,
-            fontSize: isLargeScreen ? rem(14) : rem(13),
+            fontSize: rem(14),
             color: "var(--mantine-color-dimmed)",
             textAlign: "left",
           }}
@@ -93,8 +87,7 @@ function HeaderSearch({ isLargeScreen }: { isLargeScreen: boolean }) {
           Search...
         </Box>
         <Group gap={4}>
-          <Kbd size={isLargeScreen ? "sm" : "xs"}>{isMac ? "⌘" : "Ctrl"}</Kbd>+
-          <Kbd size={isLargeScreen ? "sm" : "xs"}>K</Kbd>
+          <Kbd size="sm">{isMac ? "⌘" : "Ctrl"}</Kbd>+<Kbd size="sm">K</Kbd>
         </Group>
       </UnstyledButton>
     </Box>
@@ -107,76 +100,69 @@ interface UserMenuProps {
   isLoggingOut: boolean;
 }
 
-function UserMenu({
-  user,
-  onLogout,
-  isLoggingOut,
-}: UserMenuProps) {
+function UserMenu({ user, onLogout, isLoggingOut }: UserMenuProps) {
   return (
-    <>
-      <Menu position="bottom-end" offset={8} withArrow>
-        <Menu.Target>
-          <Avatar
-            size="md"
-            radius="xl"
-            style={{ cursor: "pointer" }}
-            alt={user.name}
-          >
-            {user.name.charAt(0).toUpperCase()}
-          </Avatar>
-        </Menu.Target>
+    <Menu position="bottom-end" offset={8} withArrow>
+      <Menu.Target>
+        <Avatar
+          size="md"
+          radius="xl"
+          style={{ cursor: "pointer" }}
+          alt={user.name}
+        >
+          {user.name.charAt(0).toUpperCase()}
+        </Avatar>
+      </Menu.Target>
 
-        <Menu.Dropdown>
-          <Menu.Label>
-            <Box>
-              <Box fw={500} fz="sm">
-                {user.name}
-              </Box>
-              <Box fz="xs" c="dimmed">
-                {user.email}
-              </Box>
+      <Menu.Dropdown>
+        <Menu.Label>
+          <Box>
+            <Box fw={500} fz="sm">
+              {user.name}
             </Box>
-          </Menu.Label>
+            <Box fz="xs" c="dimmed">
+              {user.email}
+            </Box>
+          </Box>
+        </Menu.Label>
 
-          <Menu.Divider />
+        <Menu.Divider />
 
-          <Menu.Item
-            leftSection={<User {...iconProps} />}
-            onClick={() => {
-              // TODO: Navigate to profile
-            }}
-          >
-            Profile
-          </Menu.Item>
+        <Menu.Item
+          leftSection={<User {...iconProps} />}
+          onClick={() => {
+            // TODO: Navigate to profile
+          }}
+        >
+          Profile
+        </Menu.Item>
 
-          <Menu.Item
-            leftSection={<Settings {...iconProps} />}
-            onClick={() => {
-              // TODO: Navigate to settings
-            }}
-          >
-            Settings
-          </Menu.Item>
+        <Menu.Item
+          leftSection={<Settings {...iconProps} />}
+          onClick={() => {
+            // TODO: Navigate to settings
+          }}
+        >
+          Settings
+        </Menu.Item>
 
-          <Menu.Divider />
+        <Menu.Divider />
 
-          <Menu.Item
-            leftSection={<LogOut {...iconProps} />}
-            color="red"
-            onClick={onLogout}
-            disabled={isLoggingOut}
-          >
-            Sign out
-          </Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
-    </>
+        <Menu.Item
+          leftSection={<LogOut {...iconProps} />}
+          color="red"
+          onClick={onLogout}
+          disabled={isLoggingOut}
+        >
+          Sign out
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }
 
 export function AppHeader() {
   const { user, logout, isLoggingOut } = useAuth();
-  const isLargeScreen = useMediaQuery("(min-width: 62em)");
 
   if (!user) return null;
 
@@ -190,12 +176,14 @@ export function AppHeader() {
     >
       <Container size="xl" py="sm">
         <Group justify="space-between" wrap="nowrap">
-          <HeaderLogo showCarDropdown={isLargeScreen} />
+          <HeaderLogo />
 
-          {isLargeScreen && <HeaderSearch isLargeScreen={isLargeScreen} />}
+          <Box visibleFrom="md" style={{ flex: 1 }}>
+            <HeaderSearch />
+          </Box>
 
           <Group gap="sm" wrap="nowrap">
-            {!isLargeScreen && (
+            <Box hiddenFrom="md">
               <ActionIcon
                 variant="default"
                 size="lg"
@@ -204,7 +192,7 @@ export function AppHeader() {
               >
                 <Search {...iconProps} />
               </ActionIcon>
-            )}
+            </Box>
 
             <ColorSchemeToggle />
 

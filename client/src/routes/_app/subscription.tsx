@@ -1,17 +1,45 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Container, Title, Text, Stack, Button, Card, SimpleGrid, Badge, List } from '@mantine/core'
-import { ArrowLeft } from 'lucide-react'
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import {
+  Container,
+  Title,
+  Text,
+  Stack,
+  Button,
+  Card,
+  SimpleGrid,
+  Badge,
+  List,
+} from "@mantine/core";
+import { ArrowLeft } from "lucide-react";
+import { useEffect } from "react";
+import { notify } from "@/integrations/mantine";
 
-export const Route = createFileRoute('/_app/subscription')({
+export const Route = createFileRoute("/_app/subscription")({
+  validateSearch: (search?): { reason?: string; from?: string } => ({
+    reason: (search?.reason as string) ?? undefined,
+    from: (search?.from as string) ?? undefined,
+  }),
   component: SubscriptionPage,
-})
+});
 
 function SubscriptionPage() {
+  const navigate = useNavigate();
+  const { reason, from } = Route.useSearch();
+
+  useEffect(() => {
+    if (reason === "car_limit_reached") {
+      notify.warning({
+        title: "Car Limit Reached",
+        message:
+          "You've reached the maximum number of cars allowed on your current plan. Please upgrade your subscription to add more cars.",
+      });
+    }
+  }, []);
   return (
     <Container size="lg" py="xl">
       <Button
         component={Link}
-        to="/cars"
+        onClick={() => navigate({ to: from ?? "/dashboard" })}
         variant="subtle"
         leftSection={<ArrowLeft size={16} />}
         mb="xl"
@@ -36,7 +64,10 @@ function SubscriptionPage() {
                 </Badge>
                 <Title order={2}>Starter</Title>
                 <Text size="xl" fw={700} mt="sm">
-                  $0<Text component="span" size="sm" c="dimmed">/month</Text>
+                  $0
+                  <Text component="span" size="sm" c="dimmed">
+                    /month
+                  </Text>
                 </Text>
               </div>
 
@@ -61,7 +92,10 @@ function SubscriptionPage() {
                 </Badge>
                 <Title order={2}>Enthusiast</Title>
                 <Text size="xl" fw={700} mt="sm">
-                  $9.99<Text component="span" size="sm" c="dimmed">/month</Text>
+                  $9.99
+                  <Text component="span" size="sm" c="dimmed">
+                    /month
+                  </Text>
                 </Text>
               </div>
 
@@ -74,9 +108,7 @@ function SubscriptionPage() {
                 <List.Item>Custom badges</List.Item>
               </List>
 
-              <Button>
-                Coming Soon
-              </Button>
+              <Button>Coming Soon</Button>
             </Stack>
           </Card>
         </SimpleGrid>
@@ -86,5 +118,5 @@ function SubscriptionPage() {
         </Text>
       </Stack>
     </Container>
-  )
+  );
 }

@@ -9,7 +9,6 @@ namespace Paddokk.Core.Features.Journeys.Commands.CreateJourneyPost;
 public sealed class CreateJourneyPostHandler(
     IJourneyRepository journeyRepository,
     IImageService imageService,
-    IUnitOfWork unitOfWork,
     IActorResolver actor)
     : IRequestHandler<CreateJourneyPostCommand, Result<JourneyPostDto>>
 {
@@ -32,26 +31,23 @@ public sealed class CreateJourneyPostHandler(
             UpdatedAt = DateTime.UtcNow
         };
 
-        await unitOfWork.ExecuteInTransactionAsync(async () =>
+        await journeyRepository.CreateJourneyPostAsync(post, cancellationToken);
+
+        if (request.Images.Count > 0)
         {
-            await journeyRepository.CreateJourneyPostAsync(post, cancellationToken);
-
-            if (request.Images.Count > 0)
+            var images = request.Images.Select(img => new JourneyPostImage
             {
-                var images = request.Images.Select(img => new JourneyPostImage
-                {
-                    JourneyPostId = post.Id,
-                    ImageUrl = img.ImageUrl,
-                    Caption = img.Caption,
-                    SortOrder = img.SortOrder,
-                    CreatedAt = DateTime.UtcNow
-                }).ToList();
+                JourneyPostId = post.Id,
+                ImageUrl = img.ImageUrl,
+                Caption = img.Caption,
+                SortOrder = img.SortOrder,
+                CreatedAt = DateTime.UtcNow
+            }).ToList();
 
-                await journeyRepository.AddPostImagesAsync(images, cancellationToken);
-            }
+            await journeyRepository.AddPostImagesAsync(images, cancellationToken);
+        }
 
-            await journeyRepository.TouchJourneyAsync(request.JourneyId, cancellationToken);
-        }, cancellationToken);
+        await journeyRepository.TouchJourneyAsync(request.JourneyId, cancellationToken);
 
         var created = await journeyRepository.GetJourneyPostByIdAsync(post.Id, cancellationToken);
         return created is null

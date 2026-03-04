@@ -1,16 +1,16 @@
-import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core"
-import { Trash2, GripVertical } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import type { CarImageDto } from "@/generated/api/schemas"
+import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core";
+import { Trash2, GripVertical } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { CarImageDto } from "@/generated/api/schemas";
 
 interface CarImagePreviewProps {
-  image: CarImageDto
-  isPrimary: boolean
-  onDelete: () => void
-  onSetPrimary: () => void
-  id: number
-  index: number
+  image: CarImageDto;
+  isPrimary: boolean;
+  onDelete: () => void;
+  onSetPrimary: () => void;
+  id: number;
+  index: number;
 }
 
 export function CarImagePreview({
@@ -27,7 +27,7 @@ export function CarImagePreview({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id })
+  } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -35,7 +35,7 @@ export function CarImagePreview({
     opacity: isDragging ? 0.5 : 1,
     cursor: "pointer",
     position: "relative" as const,
-  }
+  };
 
   return (
     <Card
@@ -47,12 +47,22 @@ export function CarImagePreview({
       onClick={onSetPrimary}
       style={{
         ...style,
-        borderColor: isPrimary ? "var(--mantine-primary-color-filled)" : undefined,
+        borderColor: isPrimary
+          ? "var(--mantine-primary-color-filled)"
+          : undefined,
         borderWidth: isPrimary ? "2px" : "1px",
       }}
       // Responsive sizing via inline styles based on isPrimary
-      w={isPrimary ? { base: 160, sm: 180, md: 200 } : { base: 150, sm: 150, md: 150 }}
-      h={isPrimary ? { base: 160, sm: 180, md: 200 } : { base: 150, sm: 150, md: 150 }}
+      w={
+        isPrimary
+          ? { base: 160, sm: 180, md: 200 }
+          : { base: 150, sm: 150, md: 150 }
+      }
+      h={
+        isPrimary
+          ? { base: 160, sm: 180, md: 200 }
+          : { base: 150, sm: 150, md: 150 }
+      }
     >
       {/* Drag handle */}
       <Box
@@ -96,12 +106,14 @@ export function CarImagePreview({
         }}
       >
         <Image
-          src={image.thumbnailUrl || image.imageUrl}
+          src={image.mediumUrl || image.imageUrl}
           alt={`Car image ${image.id}`}
           fit="cover"
           w="100%"
           h="100%"
           radius="sm"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
         />
       </Box>
 
@@ -117,12 +129,12 @@ export function CarImagePreview({
           zIndex: 10,
         }}
         onClick={(e) => {
-          e.stopPropagation() // Prevent triggering onSetPrimary
-          onDelete()
+          e.stopPropagation(); // Prevent triggering onSetPrimary
+          onDelete();
         }}
       >
         <Trash2 size={16} />
       </ActionIcon>
     </Card>
-  )
+  );
 }

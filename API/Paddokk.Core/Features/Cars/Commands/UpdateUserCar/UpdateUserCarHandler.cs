@@ -7,7 +7,6 @@ namespace Paddokk.Core.Features.Cars.Commands.UpdateUserCar;
 
 public sealed class UpdateUserCarHandler(
     ICarRepository carRepository,
-    IUnitOfWork unitOfWork,
     IActorResolver actor)
     : IRequestHandler<UpdateUserCarCommand, Result<UserCarDto>>
 {
@@ -31,13 +30,10 @@ public sealed class UpdateUserCarHandler(
 
         userCar.UpdatedAt = DateTime.UtcNow;
 
-        await unitOfWork.ExecuteInTransactionAsync(async () =>
-        {
-            if (request.IsPrimary == true)
-                await carRepository.UnsetPrimaryCar(actor.UserId, cancellationToken);
+        if (request.IsPrimary == true)
+            await carRepository.UnsetPrimaryCar(actor.UserId, cancellationToken);
 
-            await carRepository.UpdateUserCarAsync(userCar, cancellationToken);
-        }, cancellationToken);
+        await carRepository.UpdateUserCarAsync(userCar, cancellationToken);
 
         var updated = await carRepository.GetUserCarByIdAsync(actor.UserId, request.CarId, cancellationToken);
         return Result<UserCarDto>.Success(CarMapping.ToUserCarDto(updated!));
