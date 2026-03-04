@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run api:generate && vite dev --port 3000",
-    "build": "npm run api:generate && vite build",
+    "dev": "pnpm run api:generate && vite dev --port 3000",
+    "build": "pnpm run api:generate && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
