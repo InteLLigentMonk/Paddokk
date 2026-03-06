@@ -2,6 +2,10 @@
 name: new-api-feature
 description: Use when creating a new feature, endpoint, or CQRS handler in the .NET backend. Covers the full flow from entity to endpoint following Clean Architecture with MediatR.
 model: sonnet
+triggers:
+  - TRIGGER AUTOMATICALLY when adding any new .NET endpoint, command, query, or handler
+  - TRIGGER AUTOMATICALLY when the user asks to add backend functionality
+  - Must be used alongside tdd — follow red-green-refactor for each layer
 ---
 
 # New API Feature

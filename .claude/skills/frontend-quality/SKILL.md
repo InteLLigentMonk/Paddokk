@@ -2,6 +2,10 @@
 name: frontend-quality
 description: Use when building, reviewing, or refactoring any frontend UI component or page. Enforces Mantine conventions, responsive design, theme support, accessibility, and visual verification via Playwright screenshots.
 model: opus
+triggers:
+  - TRIGGER AUTOMATICALLY when building or changing any frontend component, page, or UI element
+  - TRIGGER AUTOMATICALLY after implementing UI — take Playwright screenshots to verify visually
+  - DO NOT ship UI changes without running the visual verification checklist
 ---
 
 # Frontend Quality

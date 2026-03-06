@@ -2,6 +2,11 @@
 name: git-workflow
 description: Use when creating branches, writing commit messages, preparing PRs, or doing any git operations. Covers branching strategy, conventional commits, and versioning.
 model: haiku
+triggers:
+  - TRIGGER AUTOMATICALLY before starting any new feature, fix, or task — always checkout main and pull before branching
+  - TRIGGER AUTOMATICALLY before any commit or push operation
+  - TRIGGER AUTOMATICALLY before opening a PR
+  - DO NOT skip this skill and begin implementation directly — branch setup always comes first
 ---
 
 # Git Workflow

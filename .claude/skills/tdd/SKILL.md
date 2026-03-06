@@ -2,6 +2,11 @@
 name: tdd
 description: Use when implementing any new feature, fixing a bug, or refactoring code. Enforces the red-green-refactor cycle — always write a failing test before writing implementation code.
 model: sonnet
+triggers:
+  - TRIGGER AUTOMATICALLY before writing any implementation code — no exceptions
+  - TRIGGER AUTOMATICALLY when the user asks to implement, add, fix, or refactor anything
+  - DO NOT write implementation code first — always start with a failing test (RED step)
+  - This skill must run AFTER git-workflow (branch must exist before writing tests)
 ---
 
 # Test-Driven Development
