@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.3.0...v0.3.1) (2026-03-06)
+
+
+### Maintenance
+
+* add trigger definitions to skill files ([#27](https://github.com/InteLLigentMonk/Paddokk/issues/27)) ([d092035](https://github.com/InteLLigentMonk/Paddokk/commit/d09203550d497ec8f1d1352d59bb394fbe675919))
+
 ## [0.3.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.3...v0.3.0) (2026-03-06)
 
 
