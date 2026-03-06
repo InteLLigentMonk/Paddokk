@@ -2,6 +2,10 @@
 name: new-bff-route
 description: Use when creating a new BFF server function in TanStack Start that connects the frontend to the .NET API via Orval-generated clients.
 model: sonnet
+triggers:
+  - TRIGGER AUTOMATICALLY when connecting frontend to any .NET endpoint via a server function
+  - TRIGGER AUTOMATICALLY when the user asks to add a server function, BFF route, or hook that calls the API
+  - DO NOT call the .NET API directly from components — always go through a server function first
 ---
 
 # New BFF Route
