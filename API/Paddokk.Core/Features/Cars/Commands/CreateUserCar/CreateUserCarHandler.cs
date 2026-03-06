@@ -8,12 +8,16 @@ namespace Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 
 public sealed class CreateUserCarHandler(
     ICarRepository carRepository,
+    IUserRepository userRepository,
     IActorResolver actor)
     : IRequestHandler<CreateUserCarCommand, Result<UserCarDto>>
 {
     public async Task<Result<UserCarDto>> Handle(CreateUserCarCommand request, CancellationToken cancellationToken)
     {
-        var maxCars = request.SubscriptionTier switch
+        var user = await userRepository.GetByIdAsync(actor.UserId, cancellationToken)
+            ?? throw new UnauthorizedAccessException("User not found");
+
+        var maxCars = user.SubscriptionTier switch
         {
             SubscriptionTier.Free => 1,
             SubscriptionTier.Silver => 3,

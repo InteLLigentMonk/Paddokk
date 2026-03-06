@@ -5133,7 +5133,6 @@
       },
       "CreateUserCarCommand": {
         "required": [
-          "subscriptionTier",
           "carMakeId",
           "carModelId",
           "carGenerationId",
@@ -5144,9 +5143,6 @@
         ],
         "type": "object",
         "properties": {
-          "subscriptionTier": {
-            "$ref": "#/components/schemas/SubscriptionTier"
-          },
           "carMakeId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
