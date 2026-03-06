@@ -14,7 +14,10 @@ export function AddCarModal() {
       size="xl"
       centered
     >
-      <CarFormStepper onSuccess={closeAddCarModal} onCancel={closeAddCarModal} />
+      <CarFormStepper
+        onSuccess={closeAddCarModal}
+        onCancel={closeAddCarModal}
+      />
     </Modal>
   )
 }

@@ -1,16 +1,16 @@
-import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core";
-import { Trash2, GripVertical } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import type { CarImageDto } from "@/generated/api/schemas";
+import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core"
+import { Trash2 } from "lucide-react"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import type { PendingImage } from "./car-form-stepper"
 
 interface CarImagePreviewProps {
-  image: CarImageDto;
-  isPrimary: boolean;
-  onDelete: () => void;
-  onSetPrimary: () => void;
-  id: number;
-  index: number;
+  image: PendingImage
+  isPrimary: boolean
+  onDelete: () => void
+  onSetPrimary: () => void
+  id: string
+  index: number
 }
 
 export function CarImagePreview({
@@ -20,94 +20,53 @@ export function CarImagePreview({
   onSetPrimary,
   id,
 }: CarImagePreviewProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: transition || "transform 0.2s, box-shadow 0.2s",
     opacity: isDragging ? 0.5 : 1,
-    cursor: "pointer",
+    cursor: isDragging ? "grabbing" : "grab",
     position: "relative" as const,
-  };
+  }
 
   return (
     <Card
       ref={setNodeRef}
+      {...attributes}
       shadow={isDragging ? "xl" : "sm"}
-      padding="xs"
+      padding={0}
       radius="md"
       withBorder
       onClick={onSetPrimary}
       style={{
         ...style,
-        borderColor: isPrimary
-          ? "var(--mantine-primary-color-filled)"
-          : undefined,
+        borderColor: isPrimary ? "var(--mantine-primary-color-filled)" : undefined,
         borderWidth: isPrimary ? "2px" : "1px",
       }}
-      // Responsive sizing via inline styles based on isPrimary
-      w={
-        isPrimary
-          ? { base: 160, sm: 180, md: 200 }
-          : { base: 150, sm: 150, md: 150 }
-      }
-      h={
-        isPrimary
-          ? { base: 160, sm: 180, md: 200 }
-          : { base: 150, sm: 150, md: 150 }
-      }
+      w={isPrimary ? { base: 160, sm: 180, md: 200 } : { base: 150, sm: 150, md: 150 }}
+      h={isPrimary ? { base: 160, sm: 180, md: 200 } : { base: 150, sm: 150, md: 150 }}
     >
-      {/* Drag handle */}
-      <Box
-        {...attributes}
-        {...listeners}
-        style={{
-          position: "absolute",
-          top: 8,
-          left: 8,
-          zIndex: 10,
-          cursor: isDragging ? "grabbing" : "grab",
-        }}
-        onClick={(e) => e.stopPropagation()} // Prevent triggering onSetPrimary
-      >
-        <GripVertical size={20} opacity={0.5} />
-      </Box>
-
-      {/* Primary badge */}
       {isPrimary && (
         <Badge
           variant="filled"
           color="blue"
           size="sm"
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            zIndex: 10,
-          }}
+          style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}
         >
           Primary
         </Badge>
       )}
 
-      {/* Image thumbnail */}
       <Box
-        style={{
-          position: "absolute",
-          inset: 0,
-          padding: "var(--mantine-spacing-xs)",
-        }}
+        {...listeners}
+        style={{ position: "absolute", inset: 0, padding: "4px" }}
       >
         <Image
-          src={image.mediumUrl || image.imageUrl}
-          alt={`Car image ${image.id}`}
+          src={image.previewUrl}
+          alt={image.file.name}
           fit="cover"
           w="100%"
           h="100%"
@@ -117,24 +76,19 @@ export function CarImagePreview({
         />
       </Box>
 
-      {/* Delete button */}
       <ActionIcon
         color="red"
         variant="filled"
         size="sm"
-        style={{
-          position: "absolute",
-          bottom: 8,
-          right: 8,
-          zIndex: 10,
-        }}
+        style={{ position: "absolute", bottom: 8, right: 8, zIndex: 10 }}
+        onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => {
-          e.stopPropagation(); // Prevent triggering onSetPrimary
-          onDelete();
+          e.stopPropagation()
+          onDelete()
         }}
       >
         <Trash2 size={16} />
       </ActionIcon>
     </Card>
-  );
+  )
 }

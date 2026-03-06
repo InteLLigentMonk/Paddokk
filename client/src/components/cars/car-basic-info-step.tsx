@@ -1,32 +1,26 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Button, Group, NumberInput, Select, Stack, TextInput } from "@mantine/core"
 import { useForm } from "@tanstack/react-form"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { carsGetCarMakes, carsGetCarModels, carsGetCarGenerations } from "@/generated/api/cars/cars"
-import { userCarsCreateUserCar, userCarsUpdateUserCar, userCarsGetUserCar } from "@/generated/api/user-cars/user-cars"
-import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas"
-import { useNotifications } from "@/integrations/mantine"
+import type { CarBasicFormData } from "./car-form-stepper"
 
 interface CarBasicInfoStepProps {
-  carId: number | null
-  onNext: (carId: number) => void
+  initialData: CarBasicFormData | null
+  onNext: (data: CarBasicFormData) => void
   onCancel: () => void
 }
 
-export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepProps) {
-  const notifications = useNotifications()
-  const queryClient = useQueryClient()
-
-  const [selectedMakeId, setSelectedMakeId] = useState<number | undefined>()
-  const [selectedModelId, setSelectedModelId] = useState<number | undefined>()
-
-  const { data: existingCarData } = useQuery({
-    queryKey: ["user-car", carId],
-    queryFn: () => userCarsGetUserCar(carId!),
-    enabled: !!carId,
-  })
-
-  const existingCar = existingCarData?.status === 200 ? existingCarData.data : undefined
+export function CarBasicInfoStep({ initialData, onNext, onCancel }: CarBasicInfoStepProps) {
+  const [selectedMakeId, setSelectedMakeId] = useState<number | undefined>(
+    initialData?.carMakeId || undefined,
+  )
+  const [selectedModelId, setSelectedModelId] = useState<number | undefined>(
+    initialData?.carModelId || undefined,
+  )
+  const [selectedGenerationId, setSelectedGenerationId] = useState<number | undefined>(
+    initialData?.carGenerationId ?? undefined,
+  )
 
   const { data: makesData } = useQuery({
     queryKey: ["car-makes"],
@@ -60,76 +54,39 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
     [generations],
   )
 
-  const addMutation = useMutation({
-    mutationFn: (payload: Omit<CreateUserCarCommand, "subscriptionTier">) =>
-      userCarsCreateUserCar(payload as CreateUserCarCommand),
-  })
-
-  const editMutation = useMutation({
-    mutationFn: ({ id, nickname, color }: { id: number; nickname: string | null; color: string | null }) =>
-      userCarsUpdateUserCar(id, { carId: id, nickname, color, description: null, isPrimary: null }),
-  })
-
   const form = useForm({
     defaultValues: {
-      carMakeId: 0,
-      carModelId: 0,
-      carGenerationId: undefined as number | null | undefined,
-      year: new Date().getFullYear(),
-      nickname: "",
-      color: "",
+      carMakeId: initialData?.carMakeId ?? 0,
+      carModelId: initialData?.carModelId ?? 0,
+      carGenerationId: initialData?.carGenerationId ?? (undefined as number | null | undefined),
+      year: initialData?.year ?? new Date().getFullYear(),
+      nickname: initialData?.nickname ?? "",
+      color: initialData?.color ?? "",
     },
-    onSubmit: async ({ value }) => {
-      try {
-        if (carId) {
-          await editMutation.mutateAsync({
-            id: carId,
-            nickname: value.nickname || null,
-            color: value.color || null,
-          })
-          notifications.success({ message: "Car updated!" })
-          queryClient.invalidateQueries({ queryKey: ["user-cars"] })
-          onNext(carId)
-        } else {
-          const result = await addMutation.mutateAsync({
-            carMakeId: value.carMakeId,
-            carModelId: value.carModelId,
-            carGenerationId: value.carGenerationId || null,
-            year: value.year,
-            nickname: value.nickname || null,
-            color: value.color || null,
-            description: null,
-            isPrimary: false,
-          })
-          queryClient.invalidateQueries({ queryKey: ["user-cars"] })
-          queryClient.invalidateQueries({ queryKey: ["car-limits"] })
-          notifications.success({ message: "Car created! Now add photos." })
-          const car = result.data as UserCarDto
-          onNext(Number(car.id))
-        }
-      } catch {
-        notifications.error({
-          message: carId ? "Failed to update car" : "Failed to create car",
-        })
-      }
+    onSubmit: ({ value }) => {
+      onNext({
+        carMakeId: value.carMakeId,
+        carModelId: value.carModelId,
+        carGenerationId: value.carGenerationId ?? null,
+        year: value.year,
+        nickname: value.nickname || null,
+        color: value.color || null,
+      })
     },
   })
 
-  useEffect(() => {
-    if (!existingCar) return
-    const makeId = Number(existingCar.carMakeId)
-    const modelId = Number(existingCar.carModelId)
-    setSelectedMakeId(makeId || undefined)
-    setSelectedModelId(modelId || undefined)
-    form.setFieldValue("carMakeId", makeId)
-    form.setFieldValue("carModelId", modelId)
-    form.setFieldValue("carGenerationId", existingCar.carGenerationId ? Number(existingCar.carGenerationId) : undefined)
-    form.setFieldValue("year", Number(existingCar.year))
-    form.setFieldValue("nickname", existingCar.nickname ?? "")
-    form.setFieldValue("color", existingCar.color ?? "")
-  }, [existingCar])
-
-  const isPending = addMutation.isPending || editMutation.isPending
+  const yearSelectData = useMemo(() => {
+    const gen = selectedGenerationId
+      ? generations.find((g) => g.id.toString() === selectedGenerationId.toString())
+      : undefined
+    if (!gen) return []
+    const start = Number(gen.startYear)
+    const end = Number(gen.endYear ?? new Date().getFullYear())
+    return Array.from({ length: end - start + 1 }, (_, i) => end - i).map((y) => ({
+      value: y.toString(),
+      label: y.toString(),
+    }))
+  }, [generations, selectedGenerationId])
 
   return (
     <form
@@ -158,6 +115,7 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
                 form.setFieldValue("carModelId", 0)
                 form.setFieldValue("carGenerationId", undefined)
                 setSelectedModelId(undefined)
+                setSelectedGenerationId(undefined)
               }}
               error={field.state.meta.errors.join(", ")}
               searchable
@@ -183,6 +141,7 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
                 field.handleChange(numValue)
                 setSelectedModelId(numValue || undefined)
                 form.setFieldValue("carGenerationId", undefined)
+                setSelectedGenerationId(undefined)
               }}
               error={field.state.meta.errors.join(", ")}
               disabled={!selectedMakeId}
@@ -200,7 +159,14 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
               data={generationsSelectData}
               value={field.state.value ? field.state.value.toString() : null}
               onChange={(value) => {
-                field.handleChange(value ? parseInt(value) : undefined)
+                const numValue = value ? parseInt(value) : undefined
+                field.handleChange(numValue)
+                setSelectedGenerationId(numValue)
+                const gen = value ? generations.find((g) => g.id.toString() === value) : undefined
+                if (gen) {
+                  const defaultYear = Number(gen.endYear ?? new Date().getFullYear())
+                  form.setFieldValue("year", defaultYear)
+                }
               }}
               disabled={!selectedModelId}
               searchable
@@ -214,23 +180,35 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
           validators={{
             onChange: ({ value }) => {
               if (value < 1900) return "Year must be 1900 or later"
-              if (value > 2030) return "Year must be 2030 or earlier"
+              if (value > new Date().getFullYear() + 1) return "Invalid year"
               return undefined
             },
           }}
         >
-          {(field) => (
-            <NumberInput
-              label="Year"
-              placeholder="Enter year"
-              value={field.state.value}
-              onChange={(value) => field.handleChange(Number(value))}
-              error={field.state.meta.errors.join(", ")}
-              min={1900}
-              max={2030}
-              required
-            />
-          )}
+          {(field) =>
+            yearSelectData.length > 0 ? (
+              <Select
+                label="Year"
+                placeholder="Select year"
+                data={yearSelectData}
+                value={field.state.value ? field.state.value.toString() : null}
+                onChange={(value) => field.handleChange(Number(value))}
+                error={field.state.meta.errors.join(", ")}
+                required
+              />
+            ) : (
+              <NumberInput
+                label="Year"
+                placeholder="Enter year"
+                value={field.state.value}
+                onChange={(value) => field.handleChange(Number(value))}
+                error={field.state.meta.errors.join(", ")}
+                min={1900}
+                max={new Date().getFullYear() + 1}
+                required
+              />
+            )
+          }
         </form.Field>
 
         <form.Field name="nickname">
@@ -256,15 +234,14 @@ export function CarBasicInfoStep({ carId, onNext, onCancel }: CarBasicInfoStepPr
         </form.Field>
 
         <Group justify="flex-end" mt="md">
-          <Button variant="subtle" onClick={onCancel} disabled={isPending}>
+          <Button variant="subtle" onClick={onCancel}>
             Cancel
           </Button>
           <Button
             type="submit"
-            loading={isPending}
             disabled={form.state.values.carMakeId < 1 || form.state.values.carModelId < 1}
           >
-            {carId ? "Update & Continue" : "Next"}
+            Next
           </Button>
         </Group>
       </Stack>
