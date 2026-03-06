@@ -7,12 +7,11 @@ import {
   userCarsUpdateUserCar,
   userCarsDeleteUserCar,
 } from "@/generated/api/user-cars/user-cars";
-import type { UserCarsResponse, UserCarDto } from "@/generated/api/schemas";
+import type { UserCarsResponse, UserCarDto, CreateUserCarCommand } from "@/generated/api/schemas";
 
 const carIdSchema = z.object({ carId: z.coerce.number() });
 
 const createUserCarSchema = z.object({
-  subscriptionTier: z.number(),
   carMakeId: z.coerce.number(),
   carModelId: z.coerce.number(),
   carGenerationId: z.coerce.number().nullable(),
@@ -48,7 +47,7 @@ export const getUserCarFn = createServerFn({ method: "GET" })
 export const createUserCarFn = createServerFn({ method: "POST" })
   .inputValidator(createUserCarSchema)
   .handler(async ({ data }) => {
-    const result = await userCarsCreateUserCar(data);
+    const result = await userCarsCreateUserCar(data as CreateUserCarCommand);
     return result.data as UserCarDto;
   });
 
