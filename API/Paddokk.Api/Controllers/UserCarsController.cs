@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Paddokk.Api.Extensions;
 using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 using Paddokk.Core.Features.Cars.Commands.DeleteUserCar;
 using Paddokk.Core.Features.Cars.Commands.UpdateUserCar;
@@ -39,7 +38,7 @@ public class UserCarsController(ISender sender) : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<UserCarDto>> CreateUserCar([FromBody] CreateUserCarCommand command, CancellationToken ct)
     {
-        var result = await sender.Send(command with { SubscriptionTier = User.GetSubscriptionTier() }, ct);
+        var result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)
             return FromError(result.Error);

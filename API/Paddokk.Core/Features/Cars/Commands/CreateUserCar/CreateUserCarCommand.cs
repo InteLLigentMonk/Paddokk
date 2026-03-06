@@ -6,7 +6,6 @@ using Paddokk.Core.Models.Entities;
 namespace Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 
 public record CreateUserCarCommand(
-    SubscriptionTier SubscriptionTier,
     int CarMakeId,
     int CarModelId,
     int? CarGenerationId,

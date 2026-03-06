@@ -5,14 +5,17 @@ using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Cars.Queries.GetCarLimits;
 
-public sealed class GetCarLimitsHandler(ICarRepository carRepository, IActorResolver actor)
+public sealed class GetCarLimitsHandler(ICarRepository carRepository, IUserRepository userRepository, IActorResolver actor)
     : IRequestHandler<GetCarLimitsQuery, CarLimitDto>
 {
     public async Task<CarLimitDto> Handle(GetCarLimitsQuery request, CancellationToken cancellationToken)
     {
+        var user = await userRepository.GetByIdAsync(actor.UserId, cancellationToken)
+            ?? throw new UnauthorizedAccessException("User not found");
+
         var currentCount = await carRepository.GetUserCarCountAsync(actor.UserId, cancellationToken);
 
-        var maxCars = request.SubscriptionTier switch
+        var maxCars = user.SubscriptionTier switch
         {
             SubscriptionTier.Free => 1,
             SubscriptionTier.Silver => 3,
@@ -27,7 +30,7 @@ public sealed class GetCarLimitsHandler(ICarRepository carRepository, IActorReso
             CanAdd = currentCount < maxCars,
             CurrentCount = currentCount,
             MaxAllowed = maxCars == int.MaxValue ? "Unlimited" : maxCars.ToString(),
-            SubscriptionTier = request.SubscriptionTier.ToString()
+            SubscriptionTier = user.SubscriptionTier.ToString()
         };
     }
 }

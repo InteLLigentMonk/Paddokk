@@ -26,5 +26,5 @@ public class LimitsController(ISender sender, IImageService imageService) : ApiC
     [EnableRateLimiting("reads")]
     [EndpointSummary("Get the current user's car limit status")]
     public async Task<CarLimitDto> GetCarLimits(CancellationToken ct) =>
-        await sender.Send(new GetCarLimitsQuery(User.GetSubscriptionTier()), ct);
+        await sender.Send(new GetCarLimitsQuery(), ct);
 }
