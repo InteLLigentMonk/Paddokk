@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.0...v0.2.1) (2026-03-06)
+
+
+### Maintenance
+
+* **claude:** update skills, rules, and CLAUDE.md configuration ([#17](https://github.com/InteLLigentMonk/Paddokk/issues/17)) ([270dc64](https://github.com/InteLLigentMonk/Paddokk/commit/270dc6498e5477e8fe4feef60563bdafc3ed751e))
+* **db:** migrate from SQL Server to PostgreSQL and refactor data layer ([#19](https://github.com/InteLLigentMonk/Paddokk/issues/19)) ([b1972c2](https://github.com/InteLLigentMonk/Paddokk/commit/b1972c2a4e1b4add4ca423300acd366f930d334d))
+
 ## [0.2.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.1.0...v0.2.0) (2026-03-04)
 
 
