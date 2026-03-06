@@ -245,10 +245,4 @@ Please review and update documentation manually, or provide more context about t
 
 Don't attempt automatic updates for major changes - flag for manual review.
 
-## Related Documentation
 
-- [../rules/common/git-workflow.md](../rules/common/git-workflow.md) - Commit workflow
-- [../rules/common/agents.md](../rules/common/agents.md) - Agent orchestration
-- [../commands/update-docs.md](../commands/update-docs.md) - `/update-docs` skill
-- [../rules/common/settings-hooks.md](../rules/common/settings-hooks.md) - Pre-commit hook configuration
-- [../INDEX.md](../INDEX.md) - Complete documentation map
