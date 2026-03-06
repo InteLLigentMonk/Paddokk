@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.3...v0.3.0) (2026-03-06)
+
+
+### Features
+
+* **cars:** add car detail page with inline editing, WYSIWYG specs, and deferred API calls ([#25](https://github.com/InteLLigentMonk/Paddokk/issues/25)) ([e939f14](https://github.com/InteLLigentMonk/Paddokk/commit/e939f147b432808560f3790dfeb87fe1dd407717))
+
 ## [0.2.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.2...v0.2.3) (2026-03-06)
 
 
