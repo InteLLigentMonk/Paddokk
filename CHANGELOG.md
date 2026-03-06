@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.2...v0.2.3) (2026-03-06)
+
+
+### Refactoring
+
+* **cars:** defer all API calls in add-car flow to Finish button ([#22](https://github.com/InteLLigentMonk/Paddokk/issues/22)) ([8257fa3](https://github.com/InteLLigentMonk/Paddokk/commit/8257fa30415532e5e5ff3973a093aa0600326de7))
+
 ## [0.2.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.1...v0.2.2) (2026-03-06)
 
 
