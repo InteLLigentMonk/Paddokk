@@ -34,7 +34,7 @@ builder.Services.AddRateLimiter(options =>
 
 // Database
 builder.Services.AddDbContext<PaddokkDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Azure Blob Storage
 builder.Services.AddSingleton(x =>
