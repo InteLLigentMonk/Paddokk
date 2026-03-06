@@ -1,0 +1,21 @@
+import { createFileRoute } from "@tanstack/react-router"
+import { CarDetailPage } from "@/components/cars/car-detail-page"
+import { getUserCarFn } from "@/lib/api/user-cars.server"
+import { getCarImagesFn } from "@/lib/api/car-images.server"
+
+export const Route = createFileRoute("/_app/cars/$carId/")({
+  loader: async ({ params }) => {
+    const carId = Number(params.carId)
+    const [car, imagesResponse] = await Promise.all([
+      getUserCarFn({ data: { carId } }),
+      getCarImagesFn({ data: { carId } }),
+    ])
+    return { car, images: imagesResponse?.images ?? [] }
+  },
+  component: CarDetailRoute,
+})
+
+function CarDetailRoute() {
+  const { car, images } = Route.useLoaderData()
+  return <CarDetailPage car={car} images={images} />
+}
