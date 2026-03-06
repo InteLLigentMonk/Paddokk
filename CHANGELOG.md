@@ -1,0 +1,61 @@
+# Changelog
+
+## [0.2.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.1.0...v0.2.0) (2026-03-04)
+
+
+### Features
+
+* **auth:** add EdDSA JWKS async key loader for JWT validation ([5b702ed](https://github.com/InteLLigentMonk/Paddokk/commit/5b702ed47fc4a514cfdb1bbd7931cfc9fe8ef231))
+* **auth:** add password reset and email verification flows ([441008b](https://github.com/InteLLigentMonk/Paddokk/commit/441008bf40ab21c0a5227385719f4b4a5ace2e61))
+* **auth:** add password reset and email verification flows ([f5706b1](https://github.com/InteLLigentMonk/Paddokk/commit/f5706b13601016c4526b0e1555e82fa2ad36c5fd))
+* **car:** add car images feature with CQRS handlers and UI improvements ([#13](https://github.com/InteLLigentMonk/Paddokk/issues/13)) ([8b4082c](https://github.com/InteLLigentMonk/Paddokk/commit/8b4082c4a3ea9984cf563a7a98b8e4d0e51ff3a9))
+* **cars:** implement comprehensive car management system ([eedc018](https://github.com/InteLLigentMonk/Paddokk/commit/eedc0180b5096964bacbec51d2b23213c4ca0a09))
+* **docs:** add documentation agent and git workflow guide ([2dfe26a](https://github.com/InteLLigentMonk/Paddokk/commit/2dfe26a0cd32b07ad1cc6d579dd62a663fc7bdc6))
+* **docs:** add documentation agent and git workflow guide ([44487e2](https://github.com/InteLLigentMonk/Paddokk/commit/44487e236c86b165905cc41c0ddaf89a33d7ef87))
+* **ui:** add mobile-first app header with spotlight search ([60dd1c7](https://github.com/InteLLigentMonk/Paddokk/commit/60dd1c7e466da1110fd7f2b5b4e81d465127312d))
+* **ui:** add mobile-first app header with spotlight search ([25b321a](https://github.com/InteLLigentMonk/Paddokk/commit/25b321a73f34296e33387ecb75cae0270238985b))
+* **ui:** implement comprehensive navigation system ([#10](https://github.com/InteLLigentMonk/Paddokk/issues/10)) ([0372482](https://github.com/InteLLigentMonk/Paddokk/commit/0372482dce7f101eaf96bafaf4a4cfc46059c26b))
+
+
+### Bug Fixes
+
+* **ui:** resolve all pre-existing TypeScript errors ([0e256b2](https://github.com/InteLLigentMonk/Paddokk/commit/0e256b2aaac44f9d245fcf00a19b9f40bef8d018))
+
+
+### Refactoring
+
+* **api:** break out comments to repository ([df54357](https://github.com/InteLLigentMonk/Paddokk/commit/df54357abb9a0c923377eaa0dfe2bc2e54c76498))
+* **api:** break out data layer and start repository pattern on cars ([c47b79a](https://github.com/InteLLigentMonk/Paddokk/commit/c47b79a4bec5783f720268ec0eae98920cea72a4))
+* **api:** break out repositorys (images) from service-layer, ongoing ([3f522d2](https://github.com/InteLLigentMonk/Paddokk/commit/3f522d2439304f33872b129c07d7dc9b815d2e89))
+* **api:** break out repositorys (journeys) from service-layer, ongoing ([017e978](https://github.com/InteLLigentMonk/Paddokk/commit/017e978d0ae9932bd7355e488ba828412fac1a83))
+* **api:** break out repositorys from service layer, ongoing ([f13c022](https://github.com/InteLLigentMonk/Paddokk/commit/f13c022428a6b95d73a10c9de1e7ff9b39d7d18a))
+* **api:** break out repositorys from service-layer, finished ([2f1e554](https://github.com/InteLLigentMonk/Paddokk/commit/2f1e554800fef27acd1129819afd2bf827be49ea))
+* **api:** clean up image controllers ([dec794b](https://github.com/InteLLigentMonk/Paddokk/commit/dec794b975312de0c54df145d3ee954771d24878))
+* **api:** create ImageRepository, ongoing ([00b5cab](https://github.com/InteLLigentMonk/Paddokk/commit/00b5cab68066793e176a08f1e2cb5c05717654a5))
+* **api:** fix method calls on EmailService ([b297de4](https://github.com/InteLLigentMonk/Paddokk/commit/b297de44a490e09b5f3ec7d608f27b19f677103c))
+* **api:** make cleaner controllers ([3c306ab](https://github.com/InteLLigentMonk/Paddokk/commit/3c306ab7c20494bda0ed62328478fd8659e0ace9))
+* **api:** migrate to CQRS with MediatR, add required to all DTOs ([f56c7b7](https://github.com/InteLLigentMonk/Paddokk/commit/f56c7b7f305483f065555fbefaa9360f50d3d019))
+* **api:** migrate to OpenAPI transformer pattern with Scalar UI ([dec794b](https://github.com/InteLLigentMonk/Paddokk/commit/dec794b975312de0c54df145d3ee954771d24878))
+* **api:** move logic from CarImagesController to service ([e3bfc9a](https://github.com/InteLLigentMonk/Paddokk/commit/e3bfc9ad72c7a698cb363858f019e21e2aca4556))
+* **api:** move logic from CarImagesController to service, finished ([dd732c6](https://github.com/InteLLigentMonk/Paddokk/commit/dd732c6954610ac756657686cf6aae4e96fb03ab))
+* **api:** rename project from API to Paddokk.Api ([def0408](https://github.com/InteLLigentMonk/Paddokk/commit/def0408d1ce758fcd00b6942adb5c7c68a62def0))
+* **api:** reorganize API folder structure ([a25ec8f](https://github.com/InteLLigentMonk/Paddokk/commit/a25ec8f53eae2f508b70da444d14e08c84b77054))
+* **api:** replace axios with plain fetch mutator ([71ab86d](https://github.com/InteLLigentMonk/Paddokk/commit/71ab86ddea74420bba481cb68007ff7548de8dbd))
+* **api:** replace axios with plain fetch mutator ([13c53b4](https://github.com/InteLLigentMonk/Paddokk/commit/13c53b40d3ab4b7841fc1436b90bc66280405514))
+* **api:** split api into class librarys, added core ([8e0959f](https://github.com/InteLLigentMonk/Paddokk/commit/8e0959f1b6aa53f50f224485aa25aa9a249e1175))
+* **api:** standardize controllers to consistent pattern ([166780a](https://github.com/InteLLigentMonk/Paddokk/commit/166780affbd8c9c318eb10ea914c7e342e3ac5b8))
+* **client:** migrate from Orval hooks to plain fetch functions ([2aa530a](https://github.com/InteLLigentMonk/Paddokk/commit/2aa530a8fd971e9797e06efcaf3f17dfadd197b7))
+* **controllers:** ditch ActionResult in controllers and use throw instead, ongoing ([e03999c](https://github.com/InteLLigentMonk/Paddokk/commit/e03999cd7525cb2cd269cb8b968c9f9c03f056b2))
+
+
+### Maintenance
+
+* add root-level node_modules to gitignore ([15e0f8c](https://github.com/InteLLigentMonk/Paddokk/commit/15e0f8c3756ae62f2e8742b0433c0cda7c9194d8))
+* **api:** migrate to net10 ([a706460](https://github.com/InteLLigentMonk/Paddokk/commit/a7064604872b280be63b7600ce00b98a63a23c1b))
+* **deps:** clean up csproj files ([8e8976c](https://github.com/InteLLigentMonk/Paddokk/commit/8e8976cc8594ac9f99472b6bb598b8056a808d4e))
+* **deps:** migrate from npm to pnpm ([#14](https://github.com/InteLLigentMonk/Paddokk/issues/14)) ([ffa33ad](https://github.com/InteLLigentMonk/Paddokk/commit/ffa33add49d9358f3c92884164354a9cd554db07))
+* **deps:** remove Swashbuckle.AspNetCore from Paddokk.Core ([dc18a35](https://github.com/InteLLigentMonk/Paddokk/commit/dc18a35efac5f6ff0e1308c1e67fee68b1caff83))
+* **docs:** reorganize Claude config to root for monorepo support ([dda647a](https://github.com/InteLLigentMonk/Paddokk/commit/dda647ae074517099de1699dba760f208c4a5f1e))
+* **docs:** reorganize Claude config to root for monorepo support ([6c73ae9](https://github.com/InteLLigentMonk/Paddokk/commit/6c73ae9dec18fd861e7c669378e9a1e0b279ecca))
+* **release:** migrate from commit-and-tag-version to release-please ([#15](https://github.com/InteLLigentMonk/Paddokk/issues/15)) ([59d77c7](https://github.com/InteLLigentMonk/Paddokk/commit/59d77c78b9359b502f433ca9a43ea457dc4b60da))
+* remove accidentally committed .Backup.tmp, add to gitignore ([3f15cc7](https://github.com/InteLLigentMonk/Paddokk/commit/3f15cc7beca5c92d6b9484dcfed56e7cf2cb3286))
