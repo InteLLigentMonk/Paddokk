@@ -4,7 +4,7 @@ import { CarFormStepper } from "@/components/cars/car-form-stepper";
 import { getCarLimitFn } from "@/lib/api/limits.server";
 
 export const Route = createFileRoute("/_app/cars/new")({
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async () => {
     const carLimits = await getCarLimitFn();
     if (!carLimits.canAdd) {
       throw redirect({

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Container,
   Title,
@@ -12,57 +12,74 @@ import {
   Divider,
   Paper,
   SimpleGrid,
-} from "@mantine/core"
-import { Carousel } from "@mantine/carousel"
-import { Image } from "@mantine/core"
-import { Link } from "@tanstack/react-router"
-import { useQueryClient } from "@tanstack/react-query"
-import { ArrowLeft, Edit, X, Check } from "lucide-react"
-import { useNotifications } from "@/integrations/mantine"
-import type { UserCarDto, CarImageDto } from "@/generated/api/schemas"
-import { updateUserCarFn } from "@/lib/api/user-cars.server"
-import { deleteCarImageFn, uploadCarImageFn, updateCarImageFn } from "@/lib/api/car-images.server"
-import { EditCarImagesSection } from "./edit-car-images-section"
-import { CarSpecsEditor } from "./car-specs-editor"
-import type { PendingImage } from "./car-form-stepper"
+  Typography,
+} from "@mantine/core";
+import { Carousel } from "@mantine/carousel";
+import { Image } from "@mantine/core";
+import { Link, useRouter } from "@tanstack/react-router";
+import { ArrowLeft, Edit, X, Check } from "lucide-react";
+import { useNotifications } from "@/integrations/mantine";
+import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
+import { updateUserCarFn } from "@/lib/api/user-cars.server";
+import {
+  deleteCarImageFn,
+  updateCarImageFn,
+} from "@/lib/api/car-images.server";
+import {
+  carImagesUploadCarImage,
+  carImagesSetPrimaryImage,
+} from "@/generated/api/car-images/car-images";
+import type { EditCarImagesSectionProps } from "./edit-car-images-section";
+import { EditCarImagesSection } from "./edit-car-images-section";
+import { CarSpecsEditor } from "./car-specs-editor";
+import type { PendingImage } from "./car-form-stepper";
+
+type PrimaryId = EditCarImagesSectionProps["primaryId"];
 
 interface CarDetailPageProps {
-  car: UserCarDto
-  images: CarImageDto[]
+  car: UserCarDto;
+  images: CarImageDto[];
 }
 
 export function CarDetailPage({ car, images }: CarDetailPageProps) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [nickname, setNickname] = useState(car.nickname ?? "")
-  const [color, setColor] = useState(car.color ?? "")
-  const [specs, setSpecs] = useState(car.description ?? "")
+  const [nickname, setNickname] = useState(car.nickname ?? "");
+  const [color, setColor] = useState(car.color ?? "");
+  const [specs, setSpecs] = useState(car.description ?? "");
 
-  const [existingImages, setExistingImages] = useState<CarImageDto[]>(images)
-  const [pendingImages, setPendingImages] = useState<PendingImage[]>([])
-  const [deletedImageIds, setDeletedImageIds] = useState<number[]>([])
-  const [reorderedIds, setReorderedIds] = useState<number[] | null>(null)
+  const [existingImages, setExistingImages] = useState<CarImageDto[]>(images);
+  const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
+  const [reorderedIds, setReorderedIds] = useState<number[] | null>(null);
 
-  const queryClient = useQueryClient()
-  const notifications = useNotifications()
+  const initialPrimaryId: PrimaryId = (() => {
+    const primary = images.find((img) => img.isPrimary);
+    return primary ? { type: "existing", id: Number(primary.id) } : null;
+  })();
+  const [primaryId, setPrimaryId] = useState<PrimaryId>(initialPrimaryId);
 
-  const carId = Number(car.id)
-  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`
+  const router = useRouter();
+  const notifications = useNotifications();
+
+  const carId = Number(car.id);
+  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`;
 
   const handleCancelEdit = () => {
-    setNickname(car.nickname ?? "")
-    setColor(car.color ?? "")
-    setSpecs(car.description ?? "")
-    setExistingImages(images)
-    setPendingImages([])
-    setDeletedImageIds([])
-    setReorderedIds(null)
-    setIsEditing(false)
-  }
+    setNickname(car.nickname ?? "");
+    setColor(car.color ?? "");
+    setSpecs(car.description ?? "");
+    setExistingImages(images);
+    setPendingImages([]);
+    setDeletedImageIds([]);
+    setReorderedIds(null);
+    setPrimaryId(initialPrimaryId);
+    setIsEditing(false);
+  };
 
   const handleSave = async () => {
-    setIsSaving(true)
+    setIsSaving(true);
     try {
       await updateUserCarFn({
         data: {
@@ -72,48 +89,59 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
           description: specs || null,
           isPrimary: car.isPrimary,
         },
-      })
+      });
 
       for (const id of deletedImageIds) {
-        await deleteCarImageFn({ data: { carId, imageId: id } })
+        await deleteCarImageFn({ data: { carId, imageId: id } });
       }
 
       for (const img of pendingImages) {
-        await uploadCarImageFn({ data: { carId, file: img.file } })
+        await carImagesUploadCarImage(carId, { File: img.file });
       }
 
       if (reorderedIds) {
         for (let i = 0; i < reorderedIds.length; i++) {
           await updateCarImageFn({
             data: { carId, imageId: reorderedIds[i], sortOrder: i },
-          })
+          });
         }
       }
 
-      queryClient.invalidateQueries({ queryKey: ["car", carId] })
-      queryClient.invalidateQueries({ queryKey: ["car-images", carId] })
-      notifications.success({ message: "Car updated successfully" })
-      setIsEditing(false)
+      if (primaryId?.type === "existing") {
+        const originalPrimary = images.find((img) => img.isPrimary);
+        if (!originalPrimary || Number(originalPrimary.id) !== primaryId.id) {
+          await carImagesSetPrimaryImage(carId, primaryId.id);
+        }
+      }
+
+      await router.invalidate();
+      notifications.success({ message: "Car updated successfully" });
+      setIsEditing(false);
     } catch {
-      notifications.error({ message: "Failed to save changes" })
+      notifications.error({ message: "Failed to save changes" });
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleDeleteExisting = (id: number) => {
-    setDeletedImageIds((prev) => [...prev, id])
-  }
+    setDeletedImageIds((prev) => [...prev, id]);
+    if (primaryId?.type === "existing" && primaryId.id === id) {
+      setPrimaryId(null);
+    }
+  };
 
   const handleReorderExisting = (ids: number[]) => {
-    setReorderedIds(ids)
+    setReorderedIds(ids);
     setExistingImages((prev) => {
-      const byId = Object.fromEntries(prev.map((img) => [Number(img.id), img]))
-      return ids.map((id) => byId[id]).filter(Boolean)
-    })
-  }
+      const byId = Object.fromEntries(prev.map((img) => [Number(img.id), img]));
+      return ids.map((id) => byId[id]).filter(Boolean);
+    });
+  };
 
-  const visibleImages = existingImages.filter((img) => !deletedImageIds.includes(Number(img.id)))
+  const visibleImages = existingImages.filter(
+    (img) => !deletedImageIds.includes(Number(img.id)),
+  );
 
   return (
     <Container size="md" py="xl">
@@ -147,10 +175,19 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
           </Button>
         ) : (
           <Group>
-            <Button variant="subtle" leftSection={<X size={16} />} onClick={handleCancelEdit} disabled={isSaving}>
+            <Button
+              variant="subtle"
+              leftSection={<X size={16} />}
+              onClick={handleCancelEdit}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
-            <Button leftSection={<Check size={16} />} onClick={handleSave} loading={isSaving}>
+            <Button
+              leftSection={<Check size={16} />}
+              onClick={handleSave}
+              loading={isSaving}
+            >
               Save
             </Button>
           </Group>
@@ -162,9 +199,11 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
           existingImages={existingImages}
           pendingImages={pendingImages}
           deletedImageIds={deletedImageIds}
+          primaryId={primaryId}
           onPendingChange={setPendingImages}
           onDeleteExisting={handleDeleteExisting}
           onReorderExisting={handleReorderExisting}
+          onSetPrimary={setPrimaryId}
           isSubmitting={isSaving}
         />
       ) : (
@@ -252,7 +291,9 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
           <CarSpecsEditor content={specs} onChange={setSpecs} />
         ) : car.description ? (
           <Paper withBorder p="md" radius="md">
-            <div dangerouslySetInnerHTML={{ __html: car.description }} />
+            <Typography>
+              <div dangerouslySetInnerHTML={{ __html: car.description }} />
+            </Typography>
           </Paper>
         ) : (
           <Text c="dimmed" size="sm">
@@ -261,12 +302,12 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
         )}
       </Stack>
     </Container>
-  )
+  );
 }
 
 interface CarImageCarouselProps {
-  images: CarImageDto[]
-  displayName: string
+  images: CarImageDto[];
+  displayName: string;
 }
 
 function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
@@ -280,7 +321,7 @@ function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
         fit="cover"
         mb="xl"
       />
-    )
+    );
   }
 
   if (images.length === 1) {
@@ -293,7 +334,7 @@ function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
         fit="cover"
         mb="xl"
       />
-    )
+    );
   }
 
   return (
@@ -310,5 +351,5 @@ function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
         </Carousel.Slide>
       ))}
     </Carousel>
-  )
+  );
 }

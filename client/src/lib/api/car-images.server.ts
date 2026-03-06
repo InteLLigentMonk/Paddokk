@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
   carImagesGetCarImages,
-  carImagesUploadCarImage,
   carImagesDeleteCarImage,
   carImagesUpdateCarImage,
 } from "@/generated/api/car-images/car-images";
@@ -27,18 +26,6 @@ export const getCarImagesFn = createServerFn({ method: "GET" })
   .handler(async ({ data: { carId } }) => {
     const result = await carImagesGetCarImages(carId);
     return result.data as CarImagesResponse;
-  });
-
-export const uploadCarImageFn = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      carId: z.coerce.number(),
-      file: z.instanceof(File),
-    }),
-  )
-  .handler(async ({ data: { carId, file } }) => {
-    const result = await carImagesUploadCarImage(carId, { File: file });
-    return result.data as CarImageDto;
   });
 
 export const deleteCarImageFn = createServerFn({ method: "POST" })

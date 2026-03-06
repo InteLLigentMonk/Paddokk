@@ -32,6 +32,7 @@ import { Route as AppCarsRouteImport } from './routes/_app/cars'
 import { Route as AppCarsIndexRouteImport } from './routes/_app/cars/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppCarsNewRouteImport } from './routes/_app/cars/new'
+import { Route as AppCarsCarIdIndexRouteImport } from './routes/_app/cars/$carId/index'
 import { Route as AppCarsCarIdEditRouteImport } from './routes/_app/cars/$carId/edit'
 
 const MarketingRoute = MarketingRouteImport.update({
@@ -146,6 +147,11 @@ const AppCarsNewRoute = AppCarsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AppCarsRoute,
 } as any)
+const AppCarsCarIdIndexRoute = AppCarsCarIdIndexRouteImport.update({
+  id: '/$carId/',
+  path: '/$carId/',
+  getParentRoute: () => AppCarsRoute,
+} as any)
 const AppCarsCarIdEditRoute = AppCarsCarIdEditRouteImport.update({
   id: '/$carId/edit',
   path: '/$carId/edit',
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/cars/': typeof AppCarsIndexRoute
   '/cars/$carId/edit': typeof AppCarsCarIdEditRoute
+  '/cars/$carId/': typeof AppCarsCarIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
@@ -196,6 +203,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/cars': typeof AppCarsIndexRoute
   '/cars/$carId/edit': typeof AppCarsCarIdEditRoute
+  '/cars/$carId': typeof AppCarsCarIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -223,6 +231,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/cars/': typeof AppCarsIndexRoute
   '/_app/cars/$carId/edit': typeof AppCarsCarIdEditRoute
+  '/_app/cars/$carId/': typeof AppCarsCarIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/cars/'
     | '/cars/$carId/edit'
+    | '/cars/$carId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/cars'
     | '/cars/$carId/edit'
+    | '/cars/$carId'
   id:
     | '__root__'
     | '/_app'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/_app/cars/'
     | '/_app/cars/$carId/edit'
+    | '/_app/cars/$carId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -468,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCarsNewRouteImport
       parentRoute: typeof AppCarsRoute
     }
+    '/_app/cars/$carId/': {
+      id: '/_app/cars/$carId/'
+      path: '/$carId'
+      fullPath: '/cars/$carId/'
+      preLoaderRoute: typeof AppCarsCarIdIndexRouteImport
+      parentRoute: typeof AppCarsRoute
+    }
     '/_app/cars/$carId/edit': {
       id: '/_app/cars/$carId/edit'
       path: '/$carId/edit'
@@ -482,12 +501,14 @@ interface AppCarsRouteChildren {
   AppCarsNewRoute: typeof AppCarsNewRoute
   AppCarsIndexRoute: typeof AppCarsIndexRoute
   AppCarsCarIdEditRoute: typeof AppCarsCarIdEditRoute
+  AppCarsCarIdIndexRoute: typeof AppCarsCarIdIndexRoute
 }
 
 const AppCarsRouteChildren: AppCarsRouteChildren = {
   AppCarsNewRoute: AppCarsNewRoute,
   AppCarsIndexRoute: AppCarsIndexRoute,
   AppCarsCarIdEditRoute: AppCarsCarIdEditRoute,
+  AppCarsCarIdIndexRoute: AppCarsCarIdIndexRoute,
 }
 
 const AppCarsRouteWithChildren =
