@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.1...v0.2.2) (2026-03-06)
+
+
+### Refactoring
+
+* resolve subscription tier from user entity in handlers ([#20](https://github.com/InteLLigentMonk/Paddokk/issues/20)) ([a9318b7](https://github.com/InteLLigentMonk/Paddokk/commit/a9318b7fbb343087f740cc761916f269c3e3ddb0))
+
 ## [0.2.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.2.0...v0.2.1) (2026-03-06)
 
 
