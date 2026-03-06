@@ -74,6 +74,7 @@ Marketplace, Stores, Harness-designer and more.
 - Prefer `record` types for DTOs in C#
 - Tests: xUnit + FluentAssertions for backend, Vitest + Playwright for frontend
 - Always follow TDD (red-green-refactor). See the tdd skill for the full workflow
+- Always use the latest docs for reference material, get it with context7.
 
 ## Plan Mode
 - Make the plan extremely concise. Sacrifice grammar for the sake of concision.
