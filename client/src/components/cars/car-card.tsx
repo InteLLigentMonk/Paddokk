@@ -1,5 +1,6 @@
 import { Card, Image, Stack, Group, Text, ActionIcon, Menu, Badge, Box } from '@mantine/core'
 import { MoreVertical, Edit, Trash } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import type { UserCarDto } from '@/generated/api/schemas'
 import { openEditCarModal, openDeleteCarConfirm } from '@/lib/stores/cars-page-store'
 
@@ -8,10 +9,18 @@ interface CarCardProps {
 }
 
 export function CarCard({ car }: CarCardProps) {
+  const navigate = useNavigate()
   const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
+    <Card
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+      style={{ cursor: 'pointer' }}
+      onClick={() => navigate({ to: '/cars/$carId', params: { carId: String(car.id) } })}
+    >
       <Card.Section>
         <Image
           src={car.primaryImageUrl || 'https://placehold.co/600x400/e9ecef/495057?text=No+Image'}
@@ -45,6 +54,7 @@ export function CarCard({ car }: CarCardProps) {
                 size={44}
                 aria-label="Car actions"
                 style={{ flexShrink: 0 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 <MoreVertical size={18} />
               </ActionIcon>
@@ -54,7 +64,7 @@ export function CarCard({ car }: CarCardProps) {
               <Menu.Item
                 leftSection={<Edit size={16} />}
                 onClick={(e) => {
-                  e.preventDefault()
+                  e.stopPropagation()
                   openEditCarModal(Number(car.id))
                 }}
               >
@@ -64,7 +74,7 @@ export function CarCard({ car }: CarCardProps) {
                 leftSection={<Trash size={16} />}
                 c="red"
                 onClick={(e) => {
-                  e.preventDefault()
+                  e.stopPropagation()
                   openDeleteCarConfirm(Number(car.id))
                 }}
               >

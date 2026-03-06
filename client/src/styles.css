@@ -1,6 +1,12 @@
-@import "@mantine/core/styles.css";
-@import "@mantine/notifications/styles.css";
-@import "tailwindcss";
+@layer theme, base, mantine, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@import "@mantine/core/styles.layer.css";
+@import "@mantine/notifications/styles.layer.css";
+@import "@mantine/carousel/styles.layer.css";
+@import "@mantine/tiptap/styles.layer.css";
 
 @custom-variant dark (&:where([data-mantine-color-scheme="dark"] *));
 
