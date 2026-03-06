@@ -11,7 +11,7 @@ public class UserCarConfiguration : IEntityTypeConfiguration<UserCar>
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Nickname).HasMaxLength(100);
         builder.Property(e => e.Color).HasMaxLength(50);
-        builder.Property(e => e.Description).HasMaxLength(1000);
+        builder.Property(e => e.Description).HasMaxLength(10000);
 
         builder.HasOne(e => e.User)
             .WithMany(e => e.Cars)

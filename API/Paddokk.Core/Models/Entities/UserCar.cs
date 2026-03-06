@@ -24,7 +24,7 @@ public class UserCar
     [StringLength(50)]
     public string? Color { get; set; }
 
-    [StringLength(1000)]
+    [StringLength(10000)]
     public string? Description { get; set; }
 
     public string? PrimaryImageUrl { get; set; }
