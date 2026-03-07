@@ -1,36 +1,54 @@
-import { Card, Image, Stack, Group, Text, ActionIcon, Menu, Badge, Box } from '@mantine/core'
-import { MoreVertical, Edit, Trash } from 'lucide-react'
-import { useNavigate } from '@tanstack/react-router'
-import type { UserCarDto } from '@/generated/api/schemas'
-import { openEditCarModal, openDeleteCarConfirm } from '@/lib/stores/cars-page-store'
+import {
+  Card,
+  Image,
+  Stack,
+  Group,
+  Text,
+  ActionIcon,
+  Menu,
+  Badge,
+  Box,
+} from "@mantine/core";
+import { MoreVertical, Edit, Trash } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import type { UserCarDto } from "@/generated/api/schemas";
+import {
+  openEditCarModal,
+  openDeleteCarConfirm,
+} from "@/lib/stores/cars-page-store";
 
 interface CarCardProps {
-  car: UserCarDto
+  car: UserCarDto;
 }
 
 export function CarCard({ car }: CarCardProps) {
-  const navigate = useNavigate()
-  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`
+  const navigate = useNavigate();
+  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`;
 
   return (
     <Card
       shadow="sm"
-      padding="lg"
+      padding="sm"
       radius="md"
       withBorder
-      style={{ cursor: 'pointer' }}
-      onClick={() => navigate({ to: '/cars/$carId', params: { carId: String(car.id) } })}
+      style={{ cursor: "pointer" }}
+      onClick={() =>
+        navigate({ to: "/cars/$carId", params: { carId: String(car.id) } })
+      }
     >
       <Card.Section>
         <Image
-          src={car.primaryImageUrl || 'https://placehold.co/600x400/e9ecef/495057?text=No+Image'}
-          h={180}
+          src={
+            car.primaryImageUrl ||
+            "https://placehold.co/600x400/e9ecef/495057?text=No+Image"
+          }
+          h={250}
           alt={displayName}
           fit="cover"
         />
       </Card.Section>
 
-      <Stack gap="sm" mt="md">
+      <Stack gap="sm" mt="sm">
         <Group justify="space-between" align="flex-start" wrap="nowrap">
           <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
             <Text fw={600} lineClamp={1}>
@@ -64,8 +82,8 @@ export function CarCard({ car }: CarCardProps) {
               <Menu.Item
                 leftSection={<Edit size={16} />}
                 onClick={(e) => {
-                  e.stopPropagation()
-                  openEditCarModal(Number(car.id))
+                  e.stopPropagation();
+                  openEditCarModal(Number(car.id));
                 }}
               >
                 Edit
@@ -74,8 +92,8 @@ export function CarCard({ car }: CarCardProps) {
                 leftSection={<Trash size={16} />}
                 c="red"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  openDeleteCarConfirm(Number(car.id))
+                  e.stopPropagation();
+                  openDeleteCarConfirm(Number(car.id));
                 }}
               >
                 Delete
@@ -87,11 +105,12 @@ export function CarCard({ car }: CarCardProps) {
         {Number(car.journeyCount) > 0 && (
           <Box>
             <Badge variant="light" size="sm">
-              {car.journeyCount} {car.journeyCount === 1 ? 'Journey' : 'Journeys'}
+              {car.journeyCount}{" "}
+              {car.journeyCount === 1 ? "Journey" : "Journeys"}
             </Badge>
           </Box>
         )}
       </Stack>
     </Card>
-  )
+  );
 }

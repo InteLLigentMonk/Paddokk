@@ -170,6 +170,9 @@ export function AppHeader() {
     <Box
       component="header"
       style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 101,
         borderBottom: "1px solid var(--mantine-color-default-border)",
         backgroundColor: "var(--mantine-color-body)",
       }}

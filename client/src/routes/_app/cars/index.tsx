@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { Container, Stack, Group, Pagination, Alert } from "@mantine/core"
-import { useMediaQuery } from "@mantine/hooks"
 import { useMemo, useState, useEffect } from "react"
 import { useStore } from "@tanstack/react-store"
 import { AlertCircle } from "lucide-react"
@@ -30,7 +29,6 @@ export const Route = createFileRoute("/_app/cars/")({
 const PAGE_SIZE = 12
 
 function CarsPage() {
-  const isDesktop = useMediaQuery("(min-width: 62em)")
   const [page, setPage] = useState(1)
 
   const { data, isLoading, error } = useQuery({
@@ -58,11 +56,6 @@ function CarsPage() {
     <Container
       size="lg"
       py="xl"
-      style={{
-        paddingLeft: isDesktop ? 72 : undefined,
-        paddingBottom: isDesktop ? undefined : 64,
-        minHeight: "calc(100vh - 65px)",
-      }}
     >
       <Stack gap="xl">
         <CarsHeader />
