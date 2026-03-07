@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Title,
@@ -62,6 +62,17 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
 
   const router = useRouter();
   const notifications = useNotifications();
+
+  useEffect(() => {
+    if (!isEditing) {
+      setExistingImages(images);
+      setPendingImages([]);
+      setDeletedImageIds([]);
+      setReorderedIds(null);
+      const primary = images.find((img) => img.isPrimary);
+      setPrimaryId(primary ? { type: "existing", id: Number(primary.id) } : null);
+    }
+  }, [images]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const carId = Number(car.id);
   const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`;
@@ -139,10 +150,6 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
     });
   };
 
-  const visibleImages = existingImages.filter(
-    (img) => !deletedImageIds.includes(Number(img.id)),
-  );
-
   return (
     <Container size="md" py="xl">
       <Group mb="lg">
@@ -207,7 +214,7 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
           isSubmitting={isSaving}
         />
       ) : (
-        <CarImageCarousel images={visibleImages} displayName={displayName} />
+        <CarImageCarousel images={images} displayName={displayName} />
       )}
 
       <Divider my="xl" />
