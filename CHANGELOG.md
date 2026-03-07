@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.4.0...v0.5.0) (2026-03-07)
+
+
+### Features
+
+* **layout:** sticky header and constrain scroll above mobile bottom nav ([#31](https://github.com/InteLLigentMonk/Paddokk/issues/31)) ([cb72709](https://github.com/InteLLigentMonk/Paddokk/commit/cb72709360d2e0c04a71a196ff65a6d59737e9fc))
+
 ## [0.4.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.3.1...v0.4.0) (2026-03-07)
 
 
