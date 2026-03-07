@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.3.1...v0.4.0) (2026-03-07)
+
+
+### Features
+
+* **car:** open add car modal from FAB menu ([#29](https://github.com/InteLLigentMonk/Paddokk/issues/29)) ([8eca04e](https://github.com/InteLLigentMonk/Paddokk/commit/8eca04eecf4ce8697288a267f96da6055fab864c))
+
 ## [0.3.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.3.0...v0.3.1) (2026-03-06)
 
 
