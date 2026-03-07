@@ -25,6 +25,8 @@ function AppLayout() {
         display: "flex",
         flexDirection: "column",
         height: "100dvh",
+        overflow: "hidden",
+        paddingBottom: isDesktop ? 0 : 64,
       }}
     >
       <AppSpotlight />
@@ -34,9 +36,9 @@ function AppLayout() {
         component="main"
         style={{
           flex: 1,
+          minHeight: 0,
           overflowY: "auto",
           paddingLeft: isDesktop ? 72 : 0,
-          paddingBottom: isDesktop ? 0 : 64,
         }}
       >
         <Outlet />
