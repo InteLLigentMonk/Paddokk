@@ -1,6 +1,7 @@
 import { ActionIcon, Menu } from '@mantine/core'
 import { Plus } from 'lucide-react'
 import { navigationConfig } from '@/data/navigation/app-navigation'
+import { openAddCarModal } from '@/lib/stores/cars-page-store'
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const
 const fabIconProps = { size: 24, strokeWidth: 2 } as const
@@ -11,8 +12,9 @@ interface FABMenuProps {
 
 export function FABMenu({ onActionClick }: FABMenuProps) {
   const handleAction = (actionId: string) => {
-    // TODO: Implement actual actions based on actionId
-    console.log('FAB action:', actionId)
+    if (actionId === 'add-car') {
+      openAddCarModal()
+    }
     onActionClick?.(actionId)
   }
 
