@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.5.0...v0.5.1) (2026-03-07)
+
+
+### Bug Fixes
+
+* **car:** sync image state after edit to show updated photos immediately ([#33](https://github.com/InteLLigentMonk/Paddokk/issues/33)) ([903a10b](https://github.com/InteLLigentMonk/Paddokk/commit/903a10b534f492913e28d8396f0fb5380aba6e41))
+
 ## [0.5.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.4.0...v0.5.0) (2026-03-07)
 
 
