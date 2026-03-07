@@ -20,16 +20,23 @@ function AppLayout() {
   const isDesktop = useMediaQuery("(min-width: 62em)");
 
   return (
-    <Box>
+    <Box
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100dvh",
+      }}
+    >
       <AppSpotlight />
       <AppHeader />
       <AppNavigation />
       <Box
         component="main"
         style={{
+          flex: 1,
+          overflowY: "auto",
           paddingLeft: isDesktop ? 72 : 0,
           paddingBottom: isDesktop ? 0 : 64,
-          minHeight: "calc(100vh - 65px)",
         }}
       >
         <Outlet />
