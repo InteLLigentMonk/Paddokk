@@ -4,6 +4,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { AppHeader } from "@/components/common/app-header";
 import { AppSpotlight } from "@/components/common/app-spotlight";
 import { AppNavigation } from "@/components/navigation/app-navigation";
+import { AddCarModal } from "@/components/cars/add-car-modal";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: ({ context }) => {
@@ -33,6 +34,7 @@ function AppLayout() {
       >
         <Outlet />
       </Box>
+      <AddCarModal />
     </Box>
   );
 }
