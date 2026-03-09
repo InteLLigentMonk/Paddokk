@@ -27,4 +27,9 @@ public class UserCarDto
 
     // Computed
     public required int JourneyCount { get; set; }
+    public required int LikeCount { get; set; }
+    public required int SubscriberCount { get; set; }
+    public required bool IsLiked { get; set; }
+    public required bool IsSubscribed { get; set; }
+    public required bool IsOwner { get; set; }
 }

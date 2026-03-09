@@ -33,7 +33,7 @@ internal static class CarMapping
         CarModelName = generation.CarModel.Name
     };
 
-    internal static UserCarDto ToUserCarDto(UserCar car) => new()
+    internal static UserCarDto ToUserCarDto(UserCar car, string? currentUserId = null) => new()
     {
         Id = car.Id,
         UserId = car.UserId,
@@ -51,6 +51,11 @@ internal static class CarMapping
         IsPrimary = car.IsPrimary,
         CreatedAt = car.CreatedAt,
         UpdatedAt = car.UpdatedAt,
-        JourneyCount = car.Journeys.Count
+        JourneyCount = car.Journeys.Count,
+        LikeCount = car.Likes.Count,
+        SubscriberCount = car.Subscriptions.Count(s => s.IsActive),
+        IsLiked = currentUserId is not null && car.Likes.Any(l => l.UserId == currentUserId),
+        IsSubscribed = currentUserId is not null && car.Subscriptions.Any(s => s.UserId == currentUserId && s.IsActive),
+        IsOwner = currentUserId is not null && car.UserId == currentUserId
     };
 }

@@ -19,7 +19,8 @@
       "Bash(taskkill:*)",
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
-      "mcp__plugin_github_github__*"
+      "mcp__plugin_github_github__*",
+      "Bash(curl:*)"
     ]
   },
   "hooks": {

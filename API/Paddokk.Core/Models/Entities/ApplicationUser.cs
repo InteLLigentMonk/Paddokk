@@ -36,6 +36,8 @@ public class ApplicationUser
     public ICollection<Journey> Journeys { get; set; } = [];
     public ICollection<JourneySubscription> JourneySubscriptions { get; set; } = [];
     public ICollection<JourneyLike> JourneyLikes { get; set; } = [];
+    public ICollection<UserCarLike> UserCarLikes { get; set; } = [];
+    public ICollection<UserCarSubscription> UserCarSubscriptions { get; set; } = [];
     public ICollection<PostComment> Comments { get; set; } = [];
     public Journey? DefaultActiveJourney { get; set; }
 }

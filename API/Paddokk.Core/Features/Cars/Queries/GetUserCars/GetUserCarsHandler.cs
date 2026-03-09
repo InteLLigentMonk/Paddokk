@@ -10,6 +10,6 @@ public sealed class GetUserCarsHandler(ICarRepository carRepository, IActorResol
     public async Task<UserCarsResponse> Handle(GetUserCarsQuery request, CancellationToken cancellationToken)
     {
         var cars = await carRepository.GetUserCarsAsync(actor.UserId, cancellationToken);
-        return new UserCarsResponse { Cars = [.. cars.Select(CarMapping.ToUserCarDto)] };
+        return new UserCarsResponse { Cars = [.. cars.Select(c => CarMapping.ToUserCarDto(c, actor.UserId))] };
     }
 }

@@ -75,6 +75,7 @@ Marketplace, Stores, Harness-designer and more.
 - Tests: xUnit + FluentAssertions for backend, Vitest + Playwright for frontend
 - Always follow TDD (red-green-refactor). See the tdd skill for the full workflow
 - Always use the latest docs for reference material, get it with context7.
+- Make shure to conform to OWASP top 10 for security.
 
 ## Plan Mode
 - Make the plan extremely concise. Sacrifice grammar for the sake of concision.

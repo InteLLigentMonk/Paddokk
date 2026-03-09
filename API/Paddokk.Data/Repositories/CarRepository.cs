@@ -69,6 +69,8 @@ public class CarRepository : ICarRepository
             .Include(c => c.CarModel)
             .Include(c => c.CarGeneration)
             .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
             .Where(c => c.UserId == userId && c.IsActive)
             .OrderByDescending(c => c.IsPrimary)
             .ThenByDescending(c => c.CreatedAt)
@@ -82,6 +84,8 @@ public class CarRepository : ICarRepository
             .Include(c => c.CarModel)
             .Include(c => c.CarGeneration)
             .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
             .Where(c => c.UserId == userId && c.Id == carId && c.IsActive)
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -129,5 +133,48 @@ public class CarRepository : ICarRepository
             .ExecuteUpdateAsync(c => c
                 .SetProperty(p => p.PrimaryImageUrl, imageUrl)
                 .SetProperty(p => p.UpdatedAt, DateTime.UtcNow), cancellationToken);
+    }
+
+    public async Task<UserCar?> GetCarByIdAsync(int carId, CancellationToken cancellationToken)
+    {
+        return await _db.UserCars
+            .FirstOrDefaultAsync(c => c.Id == carId && c.IsActive, cancellationToken);
+    }
+
+    public async Task<UserCarLike?> GetCarLikeAsync(string userId, int carId, CancellationToken cancellationToken)
+    {
+        return await _db.UserCarLikes
+            .FirstOrDefaultAsync(l => l.UserId == userId && l.UserCarId == carId, cancellationToken);
+    }
+
+    public async Task CreateCarLikeAsync(UserCarLike like, CancellationToken cancellationToken)
+    {
+        _db.UserCarLikes.Add(like);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteCarLikeAsync(string userId, int carId, CancellationToken cancellationToken)
+    {
+        await _db.UserCarLikes
+            .Where(l => l.UserId == userId && l.UserCarId == carId)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+
+    public async Task<UserCarSubscription?> GetCarSubscriptionAsync(string userId, int carId, CancellationToken cancellationToken)
+    {
+        return await _db.UserCarSubscriptions
+            .FirstOrDefaultAsync(s => s.UserId == userId && s.UserCarId == carId, cancellationToken);
+    }
+
+    public async Task CreateCarSubscriptionAsync(UserCarSubscription subscription, CancellationToken cancellationToken)
+    {
+        _db.UserCarSubscriptions.Add(subscription);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateCarSubscriptionAsync(UserCarSubscription subscription, CancellationToken cancellationToken)
+    {
+        _db.UserCarSubscriptions.Update(subscription);
+        await _db.SaveChangesAsync(cancellationToken);
     }
 }

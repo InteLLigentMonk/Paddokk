@@ -31,4 +31,14 @@ public interface ICarRepository
     Task<int> GetUserCarCountAsync(string userId, CancellationToken cancellationToken);
 
     Task UpdatePrimaryImageUrlAsync(int carId, string? imageUrl, CancellationToken cancellationToken);
+
+    Task<UserCar?> GetCarByIdAsync(int carId, CancellationToken cancellationToken);
+
+    Task<UserCarLike?> GetCarLikeAsync(string userId, int carId, CancellationToken cancellationToken);
+    Task CreateCarLikeAsync(UserCarLike like, CancellationToken cancellationToken);
+    Task DeleteCarLikeAsync(string userId, int carId, CancellationToken cancellationToken);
+
+    Task<UserCarSubscription?> GetCarSubscriptionAsync(string userId, int carId, CancellationToken cancellationToken);
+    Task CreateCarSubscriptionAsync(UserCarSubscription subscription, CancellationToken cancellationToken);
+    Task UpdateCarSubscriptionAsync(UserCarSubscription subscription, CancellationToken cancellationToken);
 }

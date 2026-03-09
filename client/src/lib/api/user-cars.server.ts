@@ -6,6 +6,10 @@ import {
   userCarsCreateUserCar,
   userCarsUpdateUserCar,
   userCarsDeleteUserCar,
+  userCarsLikeUserCar,
+  userCarsUnlikeUserCar,
+  userCarsSubscribeToUserCar,
+  userCarsUnsubscribeFromUserCar,
 } from "@/generated/api/user-cars/user-cars";
 import type { UserCarsResponse, UserCarDto, CreateUserCarCommand } from "@/generated/api/schemas";
 
@@ -62,4 +66,28 @@ export const deleteUserCarFn = createServerFn({ method: "POST" })
   .inputValidator(carIdSchema)
   .handler(async ({ data: { carId } }) => {
     await userCarsDeleteUserCar(carId);
+  });
+
+export const likeUserCarFn = createServerFn({ method: "POST" })
+  .inputValidator(carIdSchema)
+  .handler(async ({ data: { carId } }) => {
+    await userCarsLikeUserCar(carId);
+  });
+
+export const unlikeUserCarFn = createServerFn({ method: "POST" })
+  .inputValidator(carIdSchema)
+  .handler(async ({ data: { carId } }) => {
+    await userCarsUnlikeUserCar(carId);
+  });
+
+export const subscribeToUserCarFn = createServerFn({ method: "POST" })
+  .inputValidator(carIdSchema)
+  .handler(async ({ data: { carId } }) => {
+    await userCarsSubscribeToUserCar(carId);
+  });
+
+export const unsubscribeFromUserCarFn = createServerFn({ method: "POST" })
+  .inputValidator(carIdSchema)
+  .handler(async ({ data: { carId } }) => {
+    await userCarsUnsubscribeFromUserCar(carId);
   });
