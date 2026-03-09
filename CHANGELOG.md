@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.5.1...v0.6.0) (2026-03-09)
+
+
+### Features
+
+* **cars:** navigate to detail page with edit mode from car card ([#36](https://github.com/InteLLigentMonk/Paddokk/issues/36)) ([8518373](https://github.com/InteLLigentMonk/Paddokk/commit/851837339c7b0f97135e6e57769608346d6b4fa0))
+
 ## [0.5.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.5.0...v0.5.1) (2026-03-07)
 
 
