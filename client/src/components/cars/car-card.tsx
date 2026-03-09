@@ -83,7 +83,11 @@ export function CarCard({ car }: CarCardProps) {
                 leftSection={<Edit size={16} />}
                 onClick={(e) => {
                   e.stopPropagation();
-                  openEditCarModal(Number(car.id));
+                  navigate({
+                    to: "/cars/$carId",
+                    params: { carId: String(car.id) },
+                    search: { edit: true },
+                  });
                 }}
               >
                 Edit

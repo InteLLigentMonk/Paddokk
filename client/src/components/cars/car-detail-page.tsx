@@ -39,10 +39,15 @@ type PrimaryId = EditCarImagesSectionProps["primaryId"];
 interface CarDetailPageProps {
   car: UserCarDto;
   images: CarImageDto[];
+  startInEditMode?: boolean;
 }
 
-export function CarDetailPage({ car, images }: CarDetailPageProps) {
-  const [isEditing, setIsEditing] = useState(false);
+export function CarDetailPage({
+  car,
+  images,
+  startInEditMode,
+}: CarDetailPageProps) {
+  const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [nickname, setNickname] = useState(car.nickname ?? "");
@@ -70,7 +75,9 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
       setDeletedImageIds([]);
       setReorderedIds(null);
       const primary = images.find((img) => img.isPrimary);
-      setPrimaryId(primary ? { type: "existing", id: Number(primary.id) } : null);
+      setPrimaryId(
+        primary ? { type: "existing", id: Number(primary.id) } : null,
+      );
     }
   }, [images]); // eslint-disable-line react-hooks/exhaustive-deps
 
