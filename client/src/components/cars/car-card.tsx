@@ -9,7 +9,7 @@ import {
   Badge,
 } from "@mantine/core";
 import { MoreVertical, Edit, Trash, Heart, Bell } from "lucide-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { openDeleteCarConfirm } from "@/lib/stores/cars-page-store";

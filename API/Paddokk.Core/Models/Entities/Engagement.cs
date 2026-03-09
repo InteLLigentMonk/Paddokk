@@ -23,6 +23,27 @@ public class JourneyLike
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
+public class UserCarLike
+{
+    public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public ApplicationUser User { get; set; } = null!;
+    public int UserCarId { get; set; }
+    public UserCar UserCar { get; set; } = null!;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+
+public class UserCarSubscription
+{
+    public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public ApplicationUser User { get; set; } = null!;
+    public int UserCarId { get; set; }
+    public UserCar UserCar { get; set; } = null!;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public bool IsActive { get; set; } = true;
+}
+
 public class PostComment
 {
     public int Id { get; set; }

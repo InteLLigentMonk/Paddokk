@@ -38,6 +38,8 @@ public class UserCar
     // Navigation properties
     public ICollection<Journey> Journeys { get; set; } = [];
     public ICollection<UserCarImage> Images { get; set; } = [];
+    public ICollection<UserCarLike> Likes { get; set; } = [];
+    public ICollection<UserCarSubscription> Subscriptions { get; set; } = [];
 }
 
 public class UserCarImage

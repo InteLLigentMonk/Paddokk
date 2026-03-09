@@ -14,6 +14,6 @@ public sealed class GetUserCarByIdHandler(ICarRepository carRepository, IActorRe
 
         return car is null
             ? Result<UserCarDto>.Failure(Error.NotFound($"Car {request.CarId} not found"))
-            : Result<UserCarDto>.Success(CarMapping.ToUserCarDto(car));
+            : Result<UserCarDto>.Success(CarMapping.ToUserCarDto(car, actor.UserId));
     }
 }

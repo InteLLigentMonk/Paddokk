@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 using Paddokk.Core.Features.Cars.Commands.DeleteUserCar;
+using Paddokk.Core.Features.Cars.Commands.LikeUserCar;
+using Paddokk.Core.Features.Cars.Commands.SubscribeToUserCar;
+using Paddokk.Core.Features.Cars.Commands.UnlikeUserCar;
+using Paddokk.Core.Features.Cars.Commands.UnsubscribeFromUserCar;
 using Paddokk.Core.Features.Cars.Commands.UpdateUserCar;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarById;
 using Paddokk.Core.Features.Cars.Queries.GetUserCars;
@@ -62,6 +66,58 @@ public class UserCarsController(ISender sender) : ApiControllerBase
     public async Task<IActionResult> DeleteUserCar(int carId, CancellationToken ct)
     {
         var result = await sender.Send(new DeleteUserCarCommand(carId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
+
+    [HttpPost("{carId}/like")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Like a car")]
+    public async Task<IActionResult> LikeUserCar(int carId, CancellationToken ct)
+    {
+        var result = await sender.Send(new LikeUserCarCommand(carId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{carId}/like")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Unlike a car")]
+    public async Task<IActionResult> UnlikeUserCar(int carId, CancellationToken ct)
+    {
+        var result = await sender.Send(new UnlikeUserCarCommand(carId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
+
+    [HttpPost("{carId}/subscribe")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Subscribe to a car for updates")]
+    public async Task<IActionResult> SubscribeToUserCar(int carId, CancellationToken ct)
+    {
+        var result = await sender.Send(new SubscribeToUserCarCommand(carId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{carId}/subscribe")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Unsubscribe from a car")]
+    public async Task<IActionResult> UnsubscribeFromUserCar(int carId, CancellationToken ct)
+    {
+        var result = await sender.Send(new UnsubscribeFromUserCarCommand(carId), ct);
 
         if (!result.IsSuccess)
             return FromError(result.Error);
