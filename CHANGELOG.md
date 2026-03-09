@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.6.0...v0.7.0) (2026-03-09)
+
+
+### Features
+
+* **cars:** add like and subscribe engagement to cars ([#38](https://github.com/InteLLigentMonk/Paddokk/issues/38)) ([210d655](https://github.com/InteLLigentMonk/Paddokk/commit/210d655f485b4b5ca27615fe160349c5e1a8564b))
+
+
+### Bug Fixes
+
+* **ci:** use pr_number output from release-please action ([#40](https://github.com/InteLLigentMonk/Paddokk/issues/40)) ([b0f14fb](https://github.com/InteLLigentMonk/Paddokk/commit/b0f14fbd8a6e2b649bd8fb61ea0bd646afc062df))
+
 ## [0.6.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.5.1...v0.6.0) (2026-03-09)
 
 
