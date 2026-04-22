@@ -138,6 +138,12 @@ public class CarRepository : ICarRepository
     public async Task<UserCar?> GetCarByIdAsync(int carId, CancellationToken cancellationToken)
     {
         return await _db.UserCars
+            .Include(c => c.CarMake)
+            .Include(c => c.CarModel)
+            .Include(c => c.CarGeneration)
+            .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
             .FirstOrDefaultAsync(c => c.Id == carId && c.IsActive, cancellationToken);
     }
 

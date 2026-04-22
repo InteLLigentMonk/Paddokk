@@ -17,7 +17,7 @@ import { DeleteCarConfirm } from "@/components/cars/delete-car-confirm"
 import { getUserCarsFn } from "@/lib/api/user-cars.server"
 import { useQuery } from "@tanstack/react-query"
 
-export const Route = createFileRoute("/_app/cars/")({
+export const Route = createFileRoute("/_app/me/cars/")({
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData({
       queryKey: ["user-cars"],
@@ -53,10 +53,7 @@ function CarsPage() {
   }, [sortBy, cars.length])
 
   return (
-    <Container
-      size="lg"
-      py="xl"
-    >
+    <Container size="lg" py="xl">
       <Stack gap="xl">
         <CarsHeader />
 

@@ -3,13 +3,13 @@ import { Container, Title } from "@mantine/core";
 import { CarFormStepper } from "@/components/cars/car-form-stepper";
 import { getCarLimitFn } from "@/lib/api/limits.server";
 
-export const Route = createFileRoute("/_app/cars/new")({
+export const Route = createFileRoute("/_app/me/cars/new")({
   beforeLoad: async () => {
     const carLimits = await getCarLimitFn();
     if (!carLimits.canAdd) {
       throw redirect({
         to: "/subscription",
-        search: { reason: "car_limit_reached", from: "/cars" },
+        search: { reason: "car_limit_reached", from: "/me/cars" },
       });
     }
   },
@@ -25,8 +25,8 @@ function AddCarPage() {
         Add New Car
       </Title>
       <CarFormStepper
-        onSuccess={() => navigate({ to: "/cars" })}
-        onCancel={() => navigate({ to: "/cars" })}
+        onSuccess={() => navigate({ to: "/me/cars" })}
+        onCancel={() => navigate({ to: "/me/cars" })}
       />
     </Container>
   );

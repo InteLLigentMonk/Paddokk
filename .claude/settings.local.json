@@ -20,7 +20,9 @@
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
       "mcp__plugin_github_github__*",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(dotnet build:*)",
+      "Bash(pnpm tsc:*)"
     ]
   },
   "hooks": {
@@ -29,8 +31,8 @@
         "matcher": "Bash",
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Look at this Bash command: $ARGUMENTS\n\nIf the command contains 'git commit', output exactly this message:\n💡 Consider running /update-docs to sync documentation with your changes (or skip if already up-to-date).\n\nIf the command does NOT contain 'git commit', output: SKIP\n\nBe very brief.",
+            "type": "command",
+            "command": "input=$(cat); cmd=$(echo \"$input\" | jq -r '.command // empty'); echo \"$cmd\" | grep -q 'git commit' && echo '💡 Consider running /update-docs to sync documentation with your changes (or skip if already up-to-date).' || true",
             "timeout": 5
           }
         ]
