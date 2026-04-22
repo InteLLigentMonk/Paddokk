@@ -16,22 +16,25 @@ import type { UserCarsResponse, UserCarDto, CreateUserCarCommand } from "@/gener
 const carIdSchema = z.object({ carId: z.coerce.number() });
 
 const createUserCarSchema = z.object({
-  carMakeId: z.coerce.number(),
-  carModelId: z.coerce.number(),
-  carGenerationId: z.coerce.number().nullable(),
-  year: z.coerce.number(),
-  nickname: z.string().nullable(),
-  color: z.string().nullable(),
-  description: z.string().nullable(),
+  isCustomBuild: z.boolean().default(false),
+  customBuildName: z.string().nullable().optional(),
+  carMakeId: z.coerce.number().nullable().optional(),
+  carModelId: z.coerce.number().nullable().optional(),
+  carGenerationId: z.coerce.number().nullable().optional(),
+  year: z.coerce.number().nullable().optional(),
+  nickname: z.string().nullable().optional(),
+  color: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
   isPrimary: z.boolean().optional(),
 });
 
 const updateUserCarSchema = z.object({
   carId: z.coerce.number(),
-  nickname: z.string().nullable(),
-  color: z.string().nullable(),
-  description: z.string().nullable(),
-  isPrimary: z.boolean().nullable(),
+  customBuildName: z.string().nullable().optional(),
+  nickname: z.string().nullable().optional(),
+  color: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  isPrimary: z.boolean().nullable().optional(),
 });
 
 export const getUserCarsFn = createServerFn({ method: "GET" }).handler(
@@ -57,8 +60,15 @@ export const createUserCarFn = createServerFn({ method: "POST" })
 
 export const updateUserCarFn = createServerFn({ method: "POST" })
   .inputValidator(updateUserCarSchema)
-  .handler(async ({ data: { carId, ...body } }) => {
-    const result = await userCarsUpdateUserCar(carId, { carId, ...body });
+  .handler(async ({ data: { carId, customBuildName, nickname, color, description, isPrimary } }) => {
+    const result = await userCarsUpdateUserCar(carId, {
+      carId,
+      customBuildName: customBuildName ?? null,
+      nickname: nickname ?? null,
+      color: color ?? null,
+      description: description ?? null,
+      isPrimary: isPrimary ?? null,
+    } as import("@/generated/api/schemas").UpdateUserCarCommand);
     return result.data as UserCarDto;
   });
 

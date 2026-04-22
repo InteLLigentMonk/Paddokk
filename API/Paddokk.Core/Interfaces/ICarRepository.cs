@@ -34,6 +34,8 @@ public interface ICarRepository
 
     Task<UserCar?> GetCarByIdAsync(int carId, CancellationToken cancellationToken);
 
+    Task<List<UserCar>> SearchCarsAsync(string query, int page, int pageSize, CancellationToken cancellationToken);
+
     Task<UserCarLike?> GetCarLikeAsync(string userId, int carId, CancellationToken cancellationToken);
     Task CreateCarLikeAsync(UserCarLike like, CancellationToken cancellationToken);
     Task DeleteCarLikeAsync(string userId, int carId, CancellationToken cancellationToken);

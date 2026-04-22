@@ -1,6 +1,6 @@
 ---
 name: new-bff-route
-description: Use when creating a new BFF server function in TanStack Start that connects the frontend to the .NET API via Orval-generated clients.
+description: Backend For Frontend expert. Always invoke when creating a new BFF server function in TanStack Start that connects the frontend to the .NET API via Orval-generated clients. Do not attempt to implement server functions directly - use this skill first.
 model: sonnet
 triggers:
   - TRIGGER AUTOMATICALLY when connecting frontend to any .NET endpoint via a server function

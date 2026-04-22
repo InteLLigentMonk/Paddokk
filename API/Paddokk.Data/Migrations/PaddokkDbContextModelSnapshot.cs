@@ -643,10 +643,10 @@ namespace Paddokk.Data.Migrations
                     b.Property<int?>("CarGenerationId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CarMakeId")
+                    b.Property<int?>("CarMakeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CarModelId")
+                    b.Property<int?>("CarModelId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Color")
@@ -656,11 +656,18 @@ namespace Paddokk.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CustomBuildName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(10000)
                         .HasColumnType("character varying(10000)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsCustomBuild")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsPrimary")
@@ -673,6 +680,9 @@ namespace Paddokk.Data.Migrations
                     b.Property<string>("PrimaryImageUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("SearchText")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -680,7 +690,7 @@ namespace Paddokk.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("Year")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -690,6 +700,8 @@ namespace Paddokk.Data.Migrations
                     b.HasIndex("CarMakeId");
 
                     b.HasIndex("CarModelId");
+
+                    b.HasIndex("SearchText");
 
                     b.HasIndex("UserId");
 
@@ -965,14 +977,12 @@ namespace Paddokk.Data.Migrations
                     b.HasOne("Paddokk.Core.Models.Entities.CarMake", "CarMake")
                         .WithMany()
                         .HasForeignKey("CarMakeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Paddokk.Core.Models.Entities.CarModel", "CarModel")
                         .WithMany()
                         .HasForeignKey("CarModelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Paddokk.Core.Models.Entities.ApplicationUser", "User")
                         .WithMany("Cars")

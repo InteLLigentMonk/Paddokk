@@ -8,14 +8,20 @@ public class UserCar
     public string UserId { get; set; } = string.Empty;
     public ApplicationUser User { get; set; } = null!;
 
-    // Car Details
-    public int CarMakeId { get; set; }
-    public CarMake CarMake { get; set; } = null!;
-    public int CarModelId { get; set; }
-    public CarModel CarModel { get; set; } = null!;
+    // Car Details — null when IsCustomBuild = true
+    public int? CarMakeId { get; set; }
+    public CarMake? CarMake { get; set; }
+    public int? CarModelId { get; set; }
+    public CarModel? CarModel { get; set; }
     public int? CarGenerationId { get; set; }
     public CarGeneration? CarGeneration { get; set; }
-    public int Year { get; set; }
+    public int? Year { get; set; }
+
+    // Custom build
+    public bool IsCustomBuild { get; set; }
+
+    [StringLength(200)]
+    public string? CustomBuildName { get; set; }
 
     // User Customization
     [StringLength(100)]
@@ -29,6 +35,9 @@ public class UserCar
 
     public string? PrimaryImageUrl { get; set; }
     public bool IsPrimary { get; set; }
+
+    // Full-text search (SearchVector is a shadow property managed by EF/Npgsql in the Data layer)
+    public string? SearchText { get; set; }
 
     // Metadata
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

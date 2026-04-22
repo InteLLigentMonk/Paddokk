@@ -17,10 +17,10 @@ public class JourneyDto
 
     // Car Info
     public required int UserCarId { get; set; }
-    public required string CarMakeName { get; set; }
-    public required string CarModelName { get; set; }
+    public string? CarMakeName { get; set; }
+    public string? CarModelName { get; set; }
     public string? CarGenerationName { get; set; }
-    public required int CarYear { get; set; }
+    public int? CarYear { get; set; }
     public string? CarNickname { get; set; }
     public string? CarPrimaryImageUrl { get; set; }
 

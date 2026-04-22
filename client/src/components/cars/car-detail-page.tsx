@@ -47,12 +47,15 @@ export function CarDetailPage({
   images,
   startInEditMode,
 }: CarDetailPageProps) {
+  const carAny = car as typeof car & { isCustomBuild?: boolean; customBuildName?: string | null };
+
   const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [nickname, setNickname] = useState(car.nickname ?? "");
   const [color, setColor] = useState(car.color ?? "");
   const [specs, setSpecs] = useState(car.description ?? "");
+  const [customBuildName, setCustomBuildName] = useState(carAny.customBuildName ?? "");
 
   const [existingImages, setExistingImages] = useState<CarImageDto[]>(images);
   const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
@@ -82,12 +85,17 @@ export function CarDetailPage({
   }, [images]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const carId = Number(car.id);
-  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`;
+  const displayName =
+    car.nickname ||
+    (carAny.isCustomBuild
+      ? (carAny.customBuildName ?? "Custom Build")
+      : `${car.carMakeName} ${car.carModelName}`);
 
   const handleCancelEdit = () => {
     setNickname(car.nickname ?? "");
     setColor(car.color ?? "");
     setSpecs(car.description ?? "");
+    setCustomBuildName(carAny.customBuildName ?? "");
     setExistingImages(images);
     setPendingImages([]);
     setDeletedImageIds([]);
@@ -102,9 +110,10 @@ export function CarDetailPage({
       await updateUserCarFn({
         data: {
           carId,
-          nickname: nickname || null,
-          color: color || null,
-          description: specs || null,
+          customBuildName: carAny.isCustomBuild ? customBuildName : undefined,
+          nickname,
+          color,
+          description: specs,
           isPrimary: car.isPrimary,
         },
       });
@@ -172,10 +181,11 @@ export function CarDetailPage({
         <Stack gap={4}>
           <Title order={1}>{displayName}</Title>
           <Text c="dimmed">
-            {car.carMakeName} {car.carModelName}
-            {car.carGenerationName && ` · ${car.carGenerationName}`}
-            {" · "}
-            {car.year}
+            {carAny.isCustomBuild
+              ? "Custom Build"
+              : [car.carMakeName, car.carModelName, car.carGenerationName, String(car.year ?? "")]
+                  .filter(Boolean)
+                  .join(" · ")}
           </Text>
         </Stack>
 
@@ -227,32 +237,53 @@ export function CarDetailPage({
       <Divider my="xl" />
 
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mb="xl">
-        <Paper withBorder p="md" radius="md">
-          <Text size="xs" c="dimmed" fw={500} mb={4}>
-            Make
-          </Text>
-          <Text>{car.carMakeName}</Text>
-        </Paper>
-        <Paper withBorder p="md" radius="md">
-          <Text size="xs" c="dimmed" fw={500} mb={4}>
-            Model
-          </Text>
-          <Text>{car.carModelName}</Text>
-        </Paper>
-        {car.carGenerationName && (
+        {carAny.isCustomBuild ? (
           <Paper withBorder p="md" radius="md">
             <Text size="xs" c="dimmed" fw={500} mb={4}>
-              Generation
+              Build name
             </Text>
-            <Text>{car.carGenerationName}</Text>
+            {isEditing ? (
+              <TextInput
+                value={customBuildName}
+                onChange={(e) => setCustomBuildName(e.currentTarget.value)}
+                placeholder="e.g. SR20DET S13 kouki"
+                size="sm"
+                variant="unstyled"
+              />
+            ) : (
+              <Text>{carAny.customBuildName || "Custom Build"}</Text>
+            )}
           </Paper>
+        ) : (
+          <>
+            <Paper withBorder p="md" radius="md">
+              <Text size="xs" c="dimmed" fw={500} mb={4}>
+                Make
+              </Text>
+              <Text>{car.carMakeName}</Text>
+            </Paper>
+            <Paper withBorder p="md" radius="md">
+              <Text size="xs" c="dimmed" fw={500} mb={4}>
+                Model
+              </Text>
+              <Text>{car.carModelName}</Text>
+            </Paper>
+            {car.carGenerationName && (
+              <Paper withBorder p="md" radius="md">
+                <Text size="xs" c="dimmed" fw={500} mb={4}>
+                  Generation
+                </Text>
+                <Text>{car.carGenerationName}</Text>
+              </Paper>
+            )}
+            <Paper withBorder p="md" radius="md">
+              <Text size="xs" c="dimmed" fw={500} mb={4}>
+                Year
+              </Text>
+              <Text>{String(car.year)}</Text>
+            </Paper>
+          </>
         )}
-        <Paper withBorder p="md" radius="md">
-          <Text size="xs" c="dimmed" fw={500} mb={4}>
-            Year
-          </Text>
-          <Text>{String(car.year)}</Text>
-        </Paper>
         <Paper withBorder p="md" radius="md">
           <Text size="xs" c="dimmed" fw={500} mb={4}>
             Nickname

@@ -31,33 +31,44 @@ public sealed class CreateUserCarHandler(
         if (currentCount >= maxCars)
             return Result<UserCarDto>.Failure(Error.Conflict("Car limit reached for current subscription tier"));
 
-        // Validate make exists
-        var make = await carRepository.GetCarMakeByIdAsync(request.CarMakeId, cancellationToken);
-        if (make is null)
-            return Result<UserCarDto>.Failure(Error.NotFound($"Car make {request.CarMakeId} not found"));
+        string? makeName = null;
+        string? modelName = null;
+        string? generationName = null;
 
-        // Validate model belongs to make
-        var model = await carRepository.GetCarModelByIdAsync(request.CarModelId, cancellationToken);
-        if (model is null || model.CarMakeId != request.CarMakeId)
-            return Result<UserCarDto>.Failure(Error.NotFound("Car model not found for the specified make"));
-
-        // Validate generation belongs to model (if specified)
-        if (request.CarGenerationId.HasValue)
+        if (!request.IsCustomBuild)
         {
-            var generation = await carRepository.GetCarGenerationByIdAsync(request.CarGenerationId.Value, cancellationToken);
-            if (generation is null || generation.CarModelId != request.CarModelId)
-                return Result<UserCarDto>.Failure(Error.NotFound("Car generation not found for the specified model"));
+            var make = await carRepository.GetCarMakeByIdAsync(request.CarMakeId!.Value, cancellationToken);
+            if (make is null)
+                return Result<UserCarDto>.Failure(Error.NotFound($"Car make {request.CarMakeId} not found"));
+            makeName = make.Name;
 
-            if (request.Year < generation.StartYear ||
-                generation.EndYear.HasValue && request.Year > generation.EndYear)
-                return Result<UserCarDto>.Failure(Error.Validation("Car year does not fall within the specified generation range"));
+            var model = await carRepository.GetCarModelByIdAsync(request.CarModelId!.Value, cancellationToken);
+            if (model is null || model.CarMakeId != request.CarMakeId)
+                return Result<UserCarDto>.Failure(Error.NotFound("Car model not found for the specified make"));
+            modelName = model.Name;
+
+            if (request.CarGenerationId.HasValue)
+            {
+                var generation = await carRepository.GetCarGenerationByIdAsync(request.CarGenerationId.Value, cancellationToken);
+                if (generation is null || generation.CarModelId != request.CarModelId)
+                    return Result<UserCarDto>.Failure(Error.NotFound("Car generation not found for the specified model"));
+
+                if (request.Year < generation.StartYear ||
+                    generation.EndYear.HasValue && request.Year > generation.EndYear)
+                    return Result<UserCarDto>.Failure(Error.Validation("Car year does not fall within the specified generation range"));
+
+                generationName = generation.Name;
+            }
         }
 
+        var searchText = BuildSearchText(makeName, modelName, generationName, request.CustomBuildName, request.Nickname);
         var isPrimary = request.IsPrimary || currentCount == 0;
 
         var userCar = new UserCar
         {
             UserId = actor.UserId,
+            IsCustomBuild = request.IsCustomBuild,
+            CustomBuildName = request.CustomBuildName,
             CarMakeId = request.CarMakeId,
             CarModelId = request.CarModelId,
             CarGenerationId = request.CarGenerationId,
@@ -65,6 +76,7 @@ public sealed class CreateUserCarHandler(
             Nickname = request.Nickname,
             Color = request.Color,
             Description = request.Description,
+            SearchText = searchText,
             IsPrimary = isPrimary,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -77,5 +89,17 @@ public sealed class CreateUserCarHandler(
 
         var created = await carRepository.GetUserCarByIdAsync(actor.UserId, userCar.Id, cancellationToken);
         return Result<UserCarDto>.Success(CarMapping.ToUserCarDto(created!));
+    }
+
+    private static string BuildSearchText(
+        string? makeName,
+        string? modelName,
+        string? generationName,
+        string? customBuildName,
+        string? nickname)
+    {
+        var parts = new[] { makeName, modelName, generationName, customBuildName, nickname }
+            .Where(p => !string.IsNullOrWhiteSpace(p));
+        return string.Join(" ", parts);
     }
 }

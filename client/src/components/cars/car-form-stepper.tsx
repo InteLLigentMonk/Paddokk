@@ -17,10 +17,12 @@ export interface PendingImage {
 }
 
 export interface CarBasicFormData {
-  carMakeId: number
-  carModelId: number
+  isCustomBuild: boolean
+  customBuildName: string | null
+  carMakeId: number | null
+  carModelId: number | null
   carGenerationId: number | null
-  year: number
+  year: number | null
   nickname: string | null
   color: string | null
 }
@@ -63,6 +65,8 @@ export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
     setIsSubmitting(true)
     try {
       const result = await userCarsCreateUserCar({
+        isCustomBuild: carFormData.isCustomBuild,
+        customBuildName: carFormData.customBuildName,
         carMakeId: carFormData.carMakeId,
         carModelId: carFormData.carModelId,
         carGenerationId: carFormData.carGenerationId,

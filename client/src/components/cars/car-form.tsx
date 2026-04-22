@@ -1,5 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import { z } from "zod";
 import {
   Stack,
   TextInput,
@@ -9,6 +8,7 @@ import {
   Group,
   Select,
   Checkbox,
+  Switch,
   type ComboboxItem,
 } from "@mantine/core";
 import { useState, useEffect, useMemo } from "react";
@@ -25,23 +25,6 @@ import {
 import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas";
 import { useNotifications } from "@/integrations/mantine";
 import { CarImageUpload } from "./car-image-upload";
-
-const carFormSchema = z.object({
-  carMakeId: z.number().min(1, "Please select a make"),
-  carModelId: z.number().min(1, "Please select a model"),
-  carGenerationId: z.number().optional(),
-  year: z
-    .number()
-    .min(1900, "Year must be 1900 or later")
-    .max(new Date().getFullYear() + 1, "Invalid year"),
-  nickname: z.string().optional(),
-  color: z.string().optional(),
-  description: z.string().optional(),
-  isPrimary: z.boolean().optional(),
-  primaryImage: z.instanceof(File).optional().or(z.string().optional()),
-});
-
-type CarFormValues = z.infer<typeof carFormSchema>;
 
 interface CarFormProps {
   initialValues?: UserCarDto;
@@ -60,6 +43,9 @@ export function CarForm({
   const queryClient = useQueryClient();
   const notifications = useNotifications();
 
+  const [isCustomBuild, setIsCustomBuild] = useState(
+    initialValues?.isCustomBuild ?? false,
+  );
   const [selectedMakeId, setSelectedMakeId] = useState<number | null>(
     initialValues?.carMakeId ? Number(initialValues.carMakeId) : null,
   );
@@ -70,16 +56,17 @@ export function CarForm({
   const { data: makesData } = useQuery({
     queryKey: ["car-makes"],
     queryFn: () => carsGetCarMakes(),
+    enabled: !isCustomBuild,
   });
   const { data: modelsData } = useQuery({
     queryKey: ["car-models", selectedMakeId],
     queryFn: () => carsGetCarModels(selectedMakeId!),
-    enabled: !!selectedMakeId,
+    enabled: !isCustomBuild && !!selectedMakeId,
   });
   const { data: generationsData } = useQuery({
     queryKey: ["car-generations", selectedModelId],
     queryFn: () => carsGetCarGenerations(selectedModelId!),
-    enabled: !!selectedModelId,
+    enabled: !isCustomBuild && !!selectedModelId,
   });
 
   const makes = makesData?.status === 200 ? makesData.data.makes : [];
@@ -107,8 +94,8 @@ export function CarForm({
   );
 
   const addMutation = useMutation({
-    mutationFn: (payload: Omit<CreateUserCarCommand, "subscriptionTier">) =>
-      userCarsCreateUserCar(payload as CreateUserCarCommand),
+    mutationFn: (payload: CreateUserCarCommand) =>
+      userCarsCreateUserCar(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-cars"] });
       queryClient.invalidateQueries({ queryKey: ["car-limits"] });
@@ -120,24 +107,27 @@ export function CarForm({
   const editMutation = useMutation({
     mutationFn: ({
       id,
+      customBuildName,
       nickname,
       color,
       description,
       isPrimary,
     }: {
       id: number;
-      nickname: string | null;
-      color: string | null;
-      description: string | null;
+      customBuildName: string;
+      nickname: string;
+      color: string;
+      description: string;
       isPrimary: boolean | null;
     }) =>
       userCarsUpdateUserCar(id, {
         carId: id,
+        customBuildName,
         nickname,
         color,
         description,
         isPrimary,
-      }),
+      } as import("@/generated/api/schemas").UpdateUserCarCommand),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-cars"] });
       queryClient.invalidateQueries({ queryKey: ["car-limits"] });
@@ -148,6 +138,7 @@ export function CarForm({
 
   const form = useForm({
     defaultValues: {
+      customBuildName: initialValues?.customBuildName ?? "",
       carMakeId: initialValues?.carMakeId ? Number(initialValues.carMakeId) : 0,
       carModelId: initialValues?.carModelId
         ? Number(initialValues.carModelId)
@@ -165,27 +156,30 @@ export function CarForm({
       primaryImage:
         (initialValues?.primaryImageUrl as File | string | undefined) ??
         undefined,
-    } as CarFormValues,
+    },
     onSubmit: async ({ value }) => {
       if (isEditing) {
         await editMutation.mutateAsync({
           id: carId!,
-          nickname: value.nickname || null,
-          color: value.color || null,
-          description: value.description || null,
+          customBuildName: value.customBuildName,
+          nickname: value.nickname,
+          color: value.color,
+          description: value.description,
           isPrimary: value.isPrimary ?? null,
         });
       } else {
         await addMutation.mutateAsync({
-          carMakeId: value.carMakeId,
-          carModelId: value.carModelId,
-          carGenerationId: value.carGenerationId ?? null,
-          year: value.year,
+          isCustomBuild,
+          customBuildName: isCustomBuild ? (value.customBuildName || null) : null,
+          carMakeId: isCustomBuild ? null : value.carMakeId,
+          carModelId: isCustomBuild ? null : value.carModelId,
+          carGenerationId: isCustomBuild ? null : (value.carGenerationId ?? null),
+          year: isCustomBuild ? null : value.year,
           nickname: value.nickname || null,
           color: value.color || null,
           description: value.description || null,
           isPrimary: value.isPrimary,
-        });
+        } as CreateUserCarCommand);
       }
     },
   });
@@ -232,90 +226,134 @@ export function CarForm({
           )}
         </form.Field>
 
-        <form.Field name="carMakeId">
-          {(field) => (
-            <Select
-              label="Make"
-              placeholder="Select make"
-              value={
-                field.state.value && field.state.value !== 0
-                  ? field.state.value.toString()
-                  : null
-              }
-              onChange={(value) => {
-                const makeId = value ? Number(value) : 0;
-                field.handleChange(makeId);
-                setSelectedMakeId(makeId || null);
-              }}
-              onBlur={field.handleBlur}
-              data={makesSelectData}
-              searchable
-              required
-              error={field.state.meta.errors.join(", ")}
-              disabled={isLoading}
-            />
-          )}
-        </form.Field>
+        {!isEditing && (
+          <Switch
+            label="Custom build"
+            description="Enable if your car doesn't fit a standard make/model"
+            checked={isCustomBuild}
+            onChange={(e) => setIsCustomBuild(e.currentTarget.checked)}
+            disabled={isLoading}
+          />
+        )}
 
-        <form.Field name="carModelId">
-          {(field) => (
-            <Select
-              label="Model"
-              placeholder="Select model"
-              value={
-                field.state.value && field.state.value !== 0
-                  ? field.state.value.toString()
-                  : null
-              }
-              onChange={(value) => {
-                const modelId = value ? Number(value) : 0;
-                field.handleChange(modelId);
-                setSelectedModelId(modelId || null);
-              }}
-              onBlur={field.handleBlur}
-              data={modelsSelectData}
-              searchable
-              required
-              disabled={!selectedMakeId || isLoading}
-              error={field.state.meta.errors.join(", ")}
-            />
-          )}
-        </form.Field>
+        {isCustomBuild && !isEditing ? (
+          <form.Field name="customBuildName">
+            {(field) => (
+              <TextInput
+                label="Build name"
+                placeholder="e.g. SR20DET S13, AE86 with 4AGE, custom turbo build"
+                value={field.state.value ?? ""}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                required
+                disabled={isLoading}
+              />
+            )}
+          </form.Field>
+        ) : (
+          !isEditing && (
+            <>
+              <form.Field name="carMakeId">
+                {(field) => (
+                  <Select
+                    label="Make"
+                    placeholder="Select make"
+                    value={
+                      field.state.value && field.state.value !== 0
+                        ? field.state.value.toString()
+                        : null
+                    }
+                    onChange={(value) => {
+                      const makeId = value ? Number(value) : 0;
+                      field.handleChange(makeId);
+                      setSelectedMakeId(makeId || null);
+                    }}
+                    onBlur={field.handleBlur}
+                    data={makesSelectData}
+                    searchable
+                    required
+                    error={field.state.meta.errors.join(", ")}
+                    disabled={isLoading}
+                  />
+                )}
+              </form.Field>
 
-        <form.Field name="carGenerationId">
-          {(field) => (
-            <Select
-              label="Generation"
-              placeholder="Select generation (optional)"
-              value={field.state.value ? field.state.value.toString() : null}
-              onChange={(value) => {
-                field.handleChange(value ? Number(value) : undefined);
-              }}
-              onBlur={field.handleBlur}
-              data={generationsSelectData}
-              searchable
-              clearable
-              disabled={!selectedModelId || isLoading}
-            />
-          )}
-        </form.Field>
+              <form.Field name="carModelId">
+                {(field) => (
+                  <Select
+                    label="Model"
+                    placeholder="Select model"
+                    value={
+                      field.state.value && field.state.value !== 0
+                        ? field.state.value.toString()
+                        : null
+                    }
+                    onChange={(value) => {
+                      const modelId = value ? Number(value) : 0;
+                      field.handleChange(modelId);
+                      setSelectedModelId(modelId || null);
+                    }}
+                    onBlur={field.handleBlur}
+                    data={modelsSelectData}
+                    searchable
+                    required
+                    disabled={!selectedMakeId || isLoading}
+                    error={field.state.meta.errors.join(", ")}
+                  />
+                )}
+              </form.Field>
 
-        <form.Field name="year">
-          {(field) => (
-            <NumberInput
-              label="Year"
-              placeholder="e.g., 2020"
-              value={field.state.value}
-              onChange={(value) => field.handleChange(Number(value))}
-              onBlur={field.handleBlur}
-              min={1900}
-              max={new Date().getFullYear() + 1}
-              required
-              error={field.state.meta.errors.join(", ")}
-              disabled={isLoading}
-            />
-          )}
-        </form.Field>
+              <form.Field name="carGenerationId">
+                {(field) => (
+                  <Select
+                    label="Generation"
+                    placeholder="Select generation (optional)"
+                    value={field.state.value ? field.state.value.toString() : null}
+                    onChange={(value) => {
+                      field.handleChange(value ? Number(value) : undefined);
+                    }}
+                    onBlur={field.handleBlur}
+                    data={generationsSelectData}
+                    searchable
+                    clearable
+                    disabled={!selectedModelId || isLoading}
+                  />
+                )}
+              </form.Field>
+
+              <form.Field name="year">
+                {(field) => (
+                  <NumberInput
+                    label="Year"
+                    placeholder="e.g., 2020"
+                    value={field.state.value}
+                    onChange={(value) => field.handleChange(Number(value))}
+                    onBlur={field.handleBlur}
+                    min={1900}
+                    max={new Date().getFullYear() + 1}
+                    required
+                    error={field.state.meta.errors.join(", ")}
+                    disabled={isLoading}
+                  />
+                )}
+              </form.Field>
+            </>
+          )
+        )}
+
+        {isEditing && initialValues?.isCustomBuild && (
+          <form.Field name="customBuildName">
+            {(field) => (
+              <TextInput
+                label="Build name"
+                value={field.state.value ?? ""}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                disabled={isLoading}
+              />
+            )}
+          </form.Field>
+        )}
 
         <form.Field name="nickname">
           {(field) => (

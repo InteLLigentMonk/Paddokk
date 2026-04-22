@@ -6,11 +6,28 @@ public sealed class CreateUserCarCommandValidator : AbstractValidator<CreateUser
 {
     public CreateUserCarCommandValidator()
     {
-        RuleFor(x => x.CarMakeId).GreaterThan(0).WithMessage("Car make is required");
-        RuleFor(x => x.CarModelId).GreaterThan(0).WithMessage("Car model is required");
-        RuleFor(x => x.Year)
-            .GreaterThanOrEqualTo(1900).WithMessage("Year must be 1900 or later")
-            .LessThanOrEqualTo(DateTime.UtcNow.Year + 1).WithMessage("Year cannot be in the future");
+        When(x => !x.IsCustomBuild, () =>
+        {
+            RuleFor(x => x.CarMakeId)
+                .NotNull().WithMessage("Car make is required")
+                .GreaterThan(0).WithMessage("Car make is required");
+
+            RuleFor(x => x.CarModelId)
+                .NotNull().WithMessage("Car model is required")
+                .GreaterThan(0).WithMessage("Car model is required");
+
+            RuleFor(x => x.Year)
+                .NotNull().WithMessage("Year is required")
+                .GreaterThanOrEqualTo(1900).WithMessage("Year must be 1900 or later")
+                .LessThanOrEqualTo(DateTime.UtcNow.Year + 1).WithMessage("Year cannot be in the future");
+        });
+
+        When(x => x.IsCustomBuild, () =>
+        {
+            RuleFor(x => x.CustomBuildName)
+                .NotEmpty().WithMessage("Custom build name is required")
+                .MaximumLength(200).WithMessage("Custom build name cannot exceed 200 characters");
+        });
 
         RuleFor(x => x.Nickname)
             .MaximumLength(100).When(x => x.Nickname is not null)
@@ -21,7 +38,7 @@ public sealed class CreateUserCarCommandValidator : AbstractValidator<CreateUser
             .WithMessage("Color cannot exceed 50 characters");
 
         RuleFor(x => x.Description)
-            .MaximumLength(500).When(x => x.Description is not null)
-            .WithMessage("Description cannot exceed 500 characters");
+            .MaximumLength(10000).When(x => x.Description is not null)
+            .WithMessage("Description cannot exceed 10000 characters");
     }
 }

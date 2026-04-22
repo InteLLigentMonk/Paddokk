@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use when creating branches, writing commit messages, preparing PRs, or doing any git operations. Covers branching strategy, conventional commits, and versioning.
+description: Git workflow Skill. ALWAYS invoke this skill before starting any new feature, fix, chore, documentation work, refactor or task. Do not attempt to implement anything directly - use this skill first.
 model: haiku
 triggers:
   - TRIGGER AUTOMATICALLY before starting any new feature, fix, or task — always checkout main and pull before branching

@@ -177,4 +177,24 @@ public class CarRepository : ICarRepository
         _db.UserCarSubscriptions.Update(subscription);
         await _db.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<List<UserCar>> SearchCarsAsync(string query, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var pattern = $"%{query.Trim()}%";
+
+        return await _db.UserCars
+            .Include(c => c.CarMake)
+            .Include(c => c.CarModel)
+            .Include(c => c.CarGeneration)
+            .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
+            .Where(c => c.IsActive &&
+                c.SearchText != null &&
+                EF.Functions.ILike(c.SearchText, pattern))
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
 }

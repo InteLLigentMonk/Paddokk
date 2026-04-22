@@ -1,6 +1,7 @@
 ---
 name: frontend-quality
-description: Use when building, reviewing, or refactoring any frontend UI component or page. Enforces Mantine conventions, responsive design, theme support, accessibility, and visual verification via Playwright screenshots.
+#prettier-ignore
+description: UI/UX Expert. Use when building, reviewing, or refactoring any frontend UI component or page. Enforces Mantine conventions, responsive design, theme support, accessibility, and visual verification via Playwright screenshots. Never attempt to implement or ship UI changes without invoking this skill first.
 model: opus
 triggers:
   - TRIGGER AUTOMATICALLY when building or changing any frontend component, page, or UI element
