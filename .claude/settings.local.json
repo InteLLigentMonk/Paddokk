@@ -22,7 +22,10 @@
       "mcp__plugin_github_github__*",
       "Bash(curl:*)",
       "Bash(dotnet build:*)",
-      "Bash(pnpm tsc:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(gh pr create --title 'refactor\\(routing\\): move /cars to /me/cars, add public /cars/:id view' --body ':*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ]
   },
   "hooks": {
