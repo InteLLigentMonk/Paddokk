@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.8.1...v0.8.2) (2026-04-22)
+
+
+### Bug Fixes
+
+* **release:** add checkout step before auto-merge ([#46](https://github.com/InteLLigentMonk/Paddokk/issues/46)) ([0ee01d1](https://github.com/InteLLigentMonk/Paddokk/commit/0ee01d1df435e31a16e3a28b007e4b8b8335253c))
+
 ## [0.8.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.8.0...v0.8.1) (2026-04-22)
 
 
