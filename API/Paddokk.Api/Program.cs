@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Data;
+using Paddokk.Data.Seeding;
 using Paddokk.Api.Extensions;
 using Paddokk.Api.Middleware;
 using Azure.Storage.Blobs;
@@ -122,6 +123,12 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<PaddokkDbContext>();
     await context.Database.MigrateAsync();
+
+    if (app.Environment.IsDevelopment())
+    {
+        var seederLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        await DatabaseSeeder.SeedAsync(context, seederLogger);
+    }
 }
 
 app.Run();
