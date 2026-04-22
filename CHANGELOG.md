@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.7.0...v0.8.0) (2026-04-22)
+
+
+### Features
+
+* **dev:** add Bogus seed data for development ([#42](https://github.com/InteLLigentMonk/Paddokk/issues/42)) ([fd2fee0](https://github.com/InteLLigentMonk/Paddokk/commit/fd2fee043e2cf5734650cfce46a1178219a6f19a))
+
+
+### Bug Fixes
+
+* **ci:** release-please fixes and cars custom build feature ([#41](https://github.com/InteLLigentMonk/Paddokk/issues/41)) ([fd5d3c9](https://github.com/InteLLigentMonk/Paddokk/commit/fd5d3c93ad09c2807fab1d55c62df61e4b92eb45))
+
 ## [0.7.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.6.0...v0.7.0) (2026-03-09)
 
 
