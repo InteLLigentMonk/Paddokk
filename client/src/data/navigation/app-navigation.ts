@@ -31,7 +31,7 @@ export const navigationConfig: NavConfig = {
     {
       id: "cars",
       label: "My Cars",
-      href: "/cars",
+      href: "/me/cars",
       icon: Car,
       group: "primary",
     },

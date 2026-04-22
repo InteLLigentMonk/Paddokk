@@ -8,6 +8,7 @@ using Paddokk.Core.Features.Cars.Queries.GetCarMakeById;
 using Paddokk.Core.Features.Cars.Queries.GetCarMakes;
 using Paddokk.Core.Features.Cars.Queries.GetCarModelById;
 using Paddokk.Core.Features.Cars.Queries.GetCarModelsByMake;
+using Paddokk.Core.Features.Cars.Queries.GetPublicCarById;
 using Paddokk.Core.Features.Cars.Queries.SearchCars;
 using Paddokk.Core.Models.DTOs.Car;
 
@@ -59,6 +60,15 @@ public class CarsController(ISender sender) : ApiControllerBase
     public async Task<ActionResult<CarGenerationDto>> GetCarGeneration(int generationId, CancellationToken ct)
     {
         var result = await sender.Send(new GetCarGenerationByIdQuery(generationId), ct);
+        return OkOrError(result);
+    }
+
+    [HttpGet("{carId:int}")]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Returns a specific car by ID — publicly accessible")]
+    public async Task<ActionResult<UserCarDto>> GetCar(int carId, CancellationToken ct)
+    {
+        var result = await sender.Send(new GetPublicCarByIdQuery(carId), ct);
         return OkOrError(result);
     }
 

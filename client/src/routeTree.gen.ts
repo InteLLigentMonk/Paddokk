@@ -22,6 +22,7 @@ import { Route as AppSubscriptionRouteImport } from './routes/_app/subscription'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
+import { Route as AppMeRouteImport } from './routes/_app/me'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
 import { Route as AppJourneysRouteImport } from './routes/_app/journeys'
 import { Route as AppGalleryRouteImport } from './routes/_app/gallery'
@@ -29,11 +30,11 @@ import { Route as AppExploreRouteImport } from './routes/_app/explore'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCommunityRouteImport } from './routes/_app/community'
 import { Route as AppCarsRouteImport } from './routes/_app/cars'
-import { Route as AppCarsIndexRouteImport } from './routes/_app/cars/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AppCarsNewRouteImport } from './routes/_app/cars/new'
+import { Route as AppMeCarsRouteImport } from './routes/_app/me/cars'
+import { Route as AppMeCarsIndexRouteImport } from './routes/_app/me/cars/index'
 import { Route as AppCarsCarIdIndexRouteImport } from './routes/_app/cars/$carId/index'
-import { Route as AppCarsCarIdEditRouteImport } from './routes/_app/cars/$carId/edit'
+import { Route as AppMeCarsNewRouteImport } from './routes/_app/me/cars/new'
 
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
@@ -97,6 +98,11 @@ const AppNotificationsRoute = AppNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMeRoute = AppMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
@@ -132,30 +138,30 @@ const AppCarsRoute = AppCarsRouteImport.update({
   path: '/cars',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCarsIndexRoute = AppCarsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppCarsRoute,
-} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppCarsNewRoute = AppCarsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AppCarsRoute,
+const AppMeCarsRoute = AppMeCarsRouteImport.update({
+  id: '/cars',
+  path: '/cars',
+  getParentRoute: () => AppMeRoute,
+} as any)
+const AppMeCarsIndexRoute = AppMeCarsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMeCarsRoute,
 } as any)
 const AppCarsCarIdIndexRoute = AppCarsCarIdIndexRouteImport.update({
   id: '/$carId/',
   path: '/$carId/',
   getParentRoute: () => AppCarsRoute,
 } as any)
-const AppCarsCarIdEditRoute = AppCarsCarIdEditRouteImport.update({
-  id: '/$carId/edit',
-  path: '/$carId/edit',
-  getParentRoute: () => AppCarsRoute,
+const AppMeCarsNewRoute = AppMeCarsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppMeCarsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof AppGalleryRoute
   '/journeys': typeof AppJourneysRoute
   '/knowledge': typeof AppKnowledgeRoute
+  '/me': typeof AppMeRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
@@ -176,20 +183,22 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
-  '/cars/new': typeof AppCarsNewRoute
+  '/me/cars': typeof AppMeCarsRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/cars/': typeof AppCarsIndexRoute
-  '/cars/$carId/edit': typeof AppCarsCarIdEditRoute
+  '/me/cars/new': typeof AppMeCarsNewRoute
   '/cars/$carId/': typeof AppCarsCarIdIndexRoute
+  '/me/cars/': typeof AppMeCarsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
+  '/cars': typeof AppCarsRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/dashboard': typeof AppDashboardRoute
   '/explore': typeof AppExploreRoute
   '/gallery': typeof AppGalleryRoute
   '/journeys': typeof AppJourneysRoute
   '/knowledge': typeof AppKnowledgeRoute
+  '/me': typeof AppMeRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
@@ -199,11 +208,10 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
-  '/cars/new': typeof AppCarsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/cars': typeof AppCarsIndexRoute
-  '/cars/$carId/edit': typeof AppCarsCarIdEditRoute
+  '/me/cars/new': typeof AppMeCarsNewRoute
   '/cars/$carId': typeof AppCarsCarIdIndexRoute
+  '/me/cars': typeof AppMeCarsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/_app/gallery': typeof AppGalleryRoute
   '/_app/journeys': typeof AppJourneysRoute
   '/_app/knowledge': typeof AppKnowledgeRoute
+  '/_app/me': typeof AppMeRouteWithChildren
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/settings': typeof AppSettingsRoute
@@ -227,11 +236,11 @@ export interface FileRoutesById {
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_marketing/': typeof MarketingIndexRoute
-  '/_app/cars/new': typeof AppCarsNewRoute
+  '/_app/me/cars': typeof AppMeCarsRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/_app/cars/': typeof AppCarsIndexRoute
-  '/_app/cars/$carId/edit': typeof AppCarsCarIdEditRoute
+  '/_app/me/cars/new': typeof AppMeCarsNewRoute
   '/_app/cars/$carId/': typeof AppCarsCarIdIndexRoute
+  '/_app/me/cars/': typeof AppMeCarsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -244,6 +253,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/journeys'
     | '/knowledge'
+    | '/me'
     | '/notifications'
     | '/profile'
     | '/settings'
@@ -253,20 +263,22 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/verify-email'
-    | '/cars/new'
+    | '/me/cars'
     | '/api/auth/$'
-    | '/cars/'
-    | '/cars/$carId/edit'
+    | '/me/cars/new'
     | '/cars/$carId/'
+    | '/me/cars/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cars'
     | '/community'
     | '/dashboard'
     | '/explore'
     | '/gallery'
     | '/journeys'
     | '/knowledge'
+    | '/me'
     | '/notifications'
     | '/profile'
     | '/settings'
@@ -276,11 +288,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/verify-email'
-    | '/cars/new'
     | '/api/auth/$'
-    | '/cars'
-    | '/cars/$carId/edit'
+    | '/me/cars/new'
     | '/cars/$carId'
+    | '/me/cars'
   id:
     | '__root__'
     | '/_app'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/_app/gallery'
     | '/_app/journeys'
     | '/_app/knowledge'
+    | '/_app/me'
     | '/_app/notifications'
     | '/_app/profile'
     | '/_app/settings'
@@ -303,11 +315,11 @@ export interface FileRouteTypes {
     | '/_auth/signup'
     | '/_auth/verify-email'
     | '/_marketing/'
-    | '/_app/cars/new'
+    | '/_app/me/cars'
     | '/api/auth/$'
-    | '/_app/cars/'
-    | '/_app/cars/$carId/edit'
+    | '/_app/me/cars/new'
     | '/_app/cars/$carId/'
+    | '/_app/me/cars/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -410,6 +422,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/me': {
+      id: '/_app/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof AppMeRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/knowledge': {
       id: '/_app/knowledge'
       path: '/knowledge'
@@ -459,13 +478,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCarsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/cars/': {
-      id: '/_app/cars/'
-      path: '/'
-      fullPath: '/cars/'
-      preLoaderRoute: typeof AppCarsIndexRouteImport
-      parentRoute: typeof AppCarsRoute
-    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -473,12 +485,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/cars/new': {
-      id: '/_app/cars/new'
-      path: '/new'
-      fullPath: '/cars/new'
-      preLoaderRoute: typeof AppCarsNewRouteImport
-      parentRoute: typeof AppCarsRoute
+    '/_app/me/cars': {
+      id: '/_app/me/cars'
+      path: '/cars'
+      fullPath: '/me/cars'
+      preLoaderRoute: typeof AppMeCarsRouteImport
+      parentRoute: typeof AppMeRoute
+    }
+    '/_app/me/cars/': {
+      id: '/_app/me/cars/'
+      path: '/'
+      fullPath: '/me/cars/'
+      preLoaderRoute: typeof AppMeCarsIndexRouteImport
+      parentRoute: typeof AppMeCarsRoute
     }
     '/_app/cars/$carId/': {
       id: '/_app/cars/$carId/'
@@ -487,32 +506,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCarsCarIdIndexRouteImport
       parentRoute: typeof AppCarsRoute
     }
-    '/_app/cars/$carId/edit': {
-      id: '/_app/cars/$carId/edit'
-      path: '/$carId/edit'
-      fullPath: '/cars/$carId/edit'
-      preLoaderRoute: typeof AppCarsCarIdEditRouteImport
-      parentRoute: typeof AppCarsRoute
+    '/_app/me/cars/new': {
+      id: '/_app/me/cars/new'
+      path: '/new'
+      fullPath: '/me/cars/new'
+      preLoaderRoute: typeof AppMeCarsNewRouteImport
+      parentRoute: typeof AppMeCarsRoute
     }
   }
 }
 
 interface AppCarsRouteChildren {
-  AppCarsNewRoute: typeof AppCarsNewRoute
-  AppCarsIndexRoute: typeof AppCarsIndexRoute
-  AppCarsCarIdEditRoute: typeof AppCarsCarIdEditRoute
   AppCarsCarIdIndexRoute: typeof AppCarsCarIdIndexRoute
 }
 
 const AppCarsRouteChildren: AppCarsRouteChildren = {
-  AppCarsNewRoute: AppCarsNewRoute,
-  AppCarsIndexRoute: AppCarsIndexRoute,
-  AppCarsCarIdEditRoute: AppCarsCarIdEditRoute,
   AppCarsCarIdIndexRoute: AppCarsCarIdIndexRoute,
 }
 
 const AppCarsRouteWithChildren =
   AppCarsRoute._addFileChildren(AppCarsRouteChildren)
+
+interface AppMeCarsRouteChildren {
+  AppMeCarsNewRoute: typeof AppMeCarsNewRoute
+  AppMeCarsIndexRoute: typeof AppMeCarsIndexRoute
+}
+
+const AppMeCarsRouteChildren: AppMeCarsRouteChildren = {
+  AppMeCarsNewRoute: AppMeCarsNewRoute,
+  AppMeCarsIndexRoute: AppMeCarsIndexRoute,
+}
+
+const AppMeCarsRouteWithChildren = AppMeCarsRoute._addFileChildren(
+  AppMeCarsRouteChildren,
+)
+
+interface AppMeRouteChildren {
+  AppMeCarsRoute: typeof AppMeCarsRouteWithChildren
+}
+
+const AppMeRouteChildren: AppMeRouteChildren = {
+  AppMeCarsRoute: AppMeCarsRouteWithChildren,
+}
+
+const AppMeRouteWithChildren = AppMeRoute._addFileChildren(AppMeRouteChildren)
 
 interface AppRouteChildren {
   AppCarsRoute: typeof AppCarsRouteWithChildren
@@ -522,6 +559,7 @@ interface AppRouteChildren {
   AppGalleryRoute: typeof AppGalleryRoute
   AppJourneysRoute: typeof AppJourneysRoute
   AppKnowledgeRoute: typeof AppKnowledgeRoute
+  AppMeRoute: typeof AppMeRouteWithChildren
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -536,6 +574,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppGalleryRoute: AppGalleryRoute,
   AppJourneysRoute: AppJourneysRoute,
   AppKnowledgeRoute: AppKnowledgeRoute,
+  AppMeRoute: AppMeRouteWithChildren,
   AppNotificationsRoute: AppNotificationsRoute,
   AppProfileRoute: AppProfileRoute,
   AppSettingsRoute: AppSettingsRoute,

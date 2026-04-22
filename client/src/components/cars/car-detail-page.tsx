@@ -169,10 +169,10 @@ export function CarDetailPage({
   return (
     <Container size="md" py="xl">
       <Group mb="lg">
-        <Anchor component={Link} to="/cars" c="dimmed" size="sm">
+        <Anchor component={Link} to="/me/cars" c="dimmed" size="sm">
           <Group gap={4}>
             <ArrowLeft size={14} />
-            <span>Back to garage</span>
+            <span>{car.isOwner ? "Back to garage" : "Back"}</span>
           </Group>
         </Anchor>
       </Group>
@@ -189,32 +189,36 @@ export function CarDetailPage({
           </Text>
         </Stack>
 
-        {!isEditing ? (
-          <Button
-            leftSection={<Edit size={16} />}
-            variant="subtle"
-            onClick={() => setIsEditing(true)}
-          >
-            Edit
-          </Button>
-        ) : (
-          <Group>
-            <Button
-              variant="subtle"
-              leftSection={<X size={16} />}
-              onClick={handleCancelEdit}
-              disabled={isSaving}
-            >
-              Cancel
-            </Button>
-            <Button
-              leftSection={<Check size={16} />}
-              onClick={handleSave}
-              loading={isSaving}
-            >
-              Save
-            </Button>
-          </Group>
+        {car.isOwner && (
+          <>
+            {!isEditing ? (
+              <Button
+                leftSection={<Edit size={16} />}
+                variant="subtle"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit
+              </Button>
+            ) : (
+              <Group>
+                <Button
+                  variant="subtle"
+                  leftSection={<X size={16} />}
+                  onClick={handleCancelEdit}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  leftSection={<Check size={16} />}
+                  onClick={handleSave}
+                  loading={isSaving}
+                >
+                  Save
+                </Button>
+              </Group>
+            )}
+          </>
         )}
       </Group>
 
