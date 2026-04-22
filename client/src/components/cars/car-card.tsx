@@ -27,7 +27,15 @@ interface CarCardProps {
 export function CarCard({ car }: CarCardProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const displayName = car.nickname || `${car.carMakeName} ${car.carModelName}`;
+  const carAny = car as typeof car & {
+    isCustomBuild?: boolean;
+    customBuildName?: string | null;
+  };
+  const displayName =
+    car.nickname ||
+    (carAny.isCustomBuild
+      ? (carAny.customBuildName ?? "Custom Build")
+      : `${car.carMakeName} ${car.carModelName}`);
 
   const likeMutation = useMutation({
     mutationFn: () =>
@@ -72,11 +80,14 @@ export function CarCard({ car }: CarCardProps) {
         <Group justify="space-between" align="flex-start" wrap="nowrap">
           <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
             <Text fw={600} lineClamp={1}>
-              {car.carMakeName} {car.carModelName}
+              {carAny.isCustomBuild
+                ? (carAny.customBuildName ?? "Custom Build")
+                : `${car.carMakeName} ${car.carModelName}`}
             </Text>
             <Text size="sm" c="dimmed">
-              {car.year}
-              {car.carGenerationName && ` • ${car.carGenerationName}`}
+              {carAny.isCustomBuild
+                ? "Custom Build"
+                : `${car.year}${car.carGenerationName ? ` • ${car.carGenerationName}` : ""}`}
             </Text>
             {car.nickname && (
               <Text size="sm" c="dimmed" lineClamp={1}>

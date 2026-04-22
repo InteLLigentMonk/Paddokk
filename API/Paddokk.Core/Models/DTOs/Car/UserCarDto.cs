@@ -1,4 +1,4 @@
-﻿namespace Paddokk.Core.Models.DTOs.Car;
+namespace Paddokk.Core.Models.DTOs.Car;
 
 public class UserCarDto
 {
@@ -6,13 +6,17 @@ public class UserCarDto
     public required string UserId { get; set; }
 
     // Car Details
-    public required int CarMakeId { get; set; }
-    public required string CarMakeName { get; set; }
-    public required int CarModelId { get; set; }
-    public required string CarModelName { get; set; }
+    public int? CarMakeId { get; set; }
+    public string? CarMakeName { get; set; }
+    public int? CarModelId { get; set; }
+    public string? CarModelName { get; set; }
     public int? CarGenerationId { get; set; }
     public string? CarGenerationName { get; set; }
-    public required int Year { get; set; }
+    public int? Year { get; set; }
+
+    // Custom build
+    public required bool IsCustomBuild { get; set; }
+    public string? CustomBuildName { get; set; }
 
     // User Customization
     public string? Nickname { get; set; }

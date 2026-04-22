@@ -6,6 +6,7 @@ namespace Paddokk.Core.Features.Cars.Commands.UpdateUserCar;
 
 public record UpdateUserCarCommand(
     int CarId,
+    string? CustomBuildName,
     string? Nickname,
     string? Color,
     string? Description,

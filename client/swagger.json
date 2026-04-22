@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5037/"
+      "url": "https://localhost:7015/"
     }
   ],
   "paths": {
@@ -984,6 +984,83 @@
           },
           "404": {
             "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
+    "/api/v1/Cars/search": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Full-text search across all cars on the platform",
+        "operationId": "Cars_SearchCars",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarsResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarsResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
             "content": {
               "application/json": {
                 "schema": {
@@ -5445,6 +5522,8 @@
       },
       "CreateUserCarCommand": {
         "required": [
+          "isCustomBuild",
+          "customBuildName",
           "carMakeId",
           "carModelId",
           "carGenerationId",
@@ -5455,9 +5534,19 @@
         ],
         "type": "object",
         "properties": {
+          "isCustomBuild": {
+            "type": "boolean"
+          },
+          "customBuildName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "carMakeId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -5466,6 +5555,7 @@
           "carModelId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -5483,6 +5573,7 @@
           "year": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -5679,9 +5770,6 @@
           "userId",
           "userDisplayName",
           "userCarId",
-          "carMakeName",
-          "carModelName",
-          "carYear",
           "postCount",
           "subscriberCount",
           "likeCount",
@@ -5737,10 +5825,16 @@
             "format": "int32"
           },
           "carMakeName": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carModelName": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carGenerationName": {
             "type": [
@@ -5751,6 +5845,7 @@
           "carYear": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -6214,6 +6309,7 @@
       "UpdateUserCarCommand": {
         "required": [
           "carId",
+          "customBuildName",
           "nickname",
           "color",
           "description",
@@ -6228,6 +6324,12 @@
               "string"
             ],
             "format": "int32"
+          },
+          "customBuildName": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "nickname": {
             "type": [
@@ -6287,11 +6389,7 @@
         "required": [
           "id",
           "userId",
-          "carMakeId",
-          "carMakeName",
-          "carModelId",
-          "carModelName",
-          "year",
+          "isCustomBuild",
           "isPrimary",
           "createdAt",
           "updatedAt",
@@ -6318,24 +6416,32 @@
           "carMakeId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
             "format": "int32"
           },
           "carMakeName": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carModelId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
             "format": "int32"
           },
           "carModelName": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carGenerationId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -6355,10 +6461,20 @@
           "year": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
             "format": "int32"
+          },
+          "isCustomBuild": {
+            "type": "boolean"
+          },
+          "customBuildName": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "nickname": {
             "type": [

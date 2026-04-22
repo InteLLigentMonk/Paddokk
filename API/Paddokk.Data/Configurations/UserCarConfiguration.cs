@@ -12,6 +12,7 @@ public class UserCarConfiguration : IEntityTypeConfiguration<UserCar>
         builder.Property(e => e.Nickname).HasMaxLength(100);
         builder.Property(e => e.Color).HasMaxLength(50);
         builder.Property(e => e.Description).HasMaxLength(10000);
+        builder.Property(e => e.CustomBuildName).HasMaxLength(200);
 
         builder.HasOne(e => e.User)
             .WithMany(e => e.Cars)
@@ -21,16 +22,22 @@ public class UserCarConfiguration : IEntityTypeConfiguration<UserCar>
         builder.HasOne(e => e.CarMake)
             .WithMany()
             .HasForeignKey(e => e.CarMakeId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.CarModel)
             .WithMany()
             .HasForeignKey(e => e.CarModelId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.CarGeneration)
             .WithMany()
             .HasForeignKey(e => e.CarGenerationId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // SearchText is indexed for ILIKE-based full-text search
+        builder.HasIndex(e => e.SearchText);
     }
 }

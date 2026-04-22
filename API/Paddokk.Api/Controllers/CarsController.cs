@@ -8,6 +8,7 @@ using Paddokk.Core.Features.Cars.Queries.GetCarMakeById;
 using Paddokk.Core.Features.Cars.Queries.GetCarMakes;
 using Paddokk.Core.Features.Cars.Queries.GetCarModelById;
 using Paddokk.Core.Features.Cars.Queries.GetCarModelsByMake;
+using Paddokk.Core.Features.Cars.Queries.SearchCars;
 using Paddokk.Core.Models.DTOs.Car;
 
 namespace Paddokk.Api.Controllers;
@@ -58,6 +59,19 @@ public class CarsController(ISender sender) : ApiControllerBase
     public async Task<ActionResult<CarGenerationDto>> GetCarGeneration(int generationId, CancellationToken ct)
     {
         var result = await sender.Send(new GetCarGenerationByIdQuery(generationId), ct);
+        return OkOrError(result);
+    }
+
+    [HttpGet("search")]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Full-text search across all cars on the platform")]
+    public async Task<ActionResult<UserCarsResponse>> SearchCars(
+        [FromQuery] string q,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken ct = default)
+    {
+        var result = await sender.Send(new SearchCarsQuery(q, page, pageSize), ct);
         return OkOrError(result);
     }
 }

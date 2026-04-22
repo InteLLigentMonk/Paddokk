@@ -1,15 +1,16 @@
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.DTOs.Car;
-using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 
 public record CreateUserCarCommand(
-    int CarMakeId,
-    int CarModelId,
+    bool IsCustomBuild,
+    string? CustomBuildName,
+    int? CarMakeId,
+    int? CarModelId,
     int? CarGenerationId,
-    int Year,
+    int? Year,
     string? Nickname,
     string? Color,
     string? Description,
