@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Use when implementing any new feature, fixing a bug, or refactoring code. Enforces the red-green-refactor cycle — always write a failing test before writing implementation code.
+description: Test driven development expert. ALWAYS invoke this skill when implementing any new feature, fixing a bug, or refactoring code. Do not attempt to write implementation code without first writing a failing test. Follow the red-green-refactor cycle strictly.
 model: sonnet
 triggers:
   - TRIGGER AUTOMATICALLY before writing any implementation code — no exceptions

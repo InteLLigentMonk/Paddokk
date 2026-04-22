@@ -22,8 +22,8 @@ internal static class JourneyMapping
             UserAvatarUrl = journey.User.AvatarUrl,
 
             UserCarId = journey.UserCarId,
-            CarMakeName = journey.UserCar.CarMake.Name,
-            CarModelName = journey.UserCar.CarModel.Name,
+            CarMakeName = journey.UserCar.CarMake?.Name,
+            CarModelName = journey.UserCar.CarModel?.Name,
             CarGenerationName = journey.UserCar.CarGeneration?.Name,
             CarYear = journey.UserCar.Year,
             CarNickname = journey.UserCar.Nickname,

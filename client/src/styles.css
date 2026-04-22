@@ -10,6 +10,90 @@
 
 @custom-variant dark (&:where([data-mantine-color-scheme="dark"] *));
 
+@font-face {
+  font-family: "Rajdhani";
+  src: url("/fonts/rajdhani/Rajdhani-Light.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("/fonts/rajdhani/Rajdhani-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("/fonts/rajdhani/Rajdhani-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("/fonts/rajdhani/Rajdhani-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("/fonts/rajdhani/Rajdhani-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-Thin-BF63d645f6d268b.ttf") format("truetype");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-ExtraLight-BF63d645e348136.ttf") format("truetype");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-Light-BF63d645dbe710a.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-Regular-BF63d645e769f10.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-Medium-BF63d645fc6ba32.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-SemiBold-BF63d645fc02da2.ttf") format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-Bold-BF63d645e77951b.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-ExtraBold-BF63d645e090cab.ttf") format("truetype");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "BaseNeue";
+  src: url("/fonts/base-neue/BaseNeueTrial-Black-BF63d645de45c8a.ttf") format("truetype");
+  font-weight: 900;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -17,8 +101,18 @@ html {
 body {
   @apply m-0;
   font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    "Rajdhani",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
