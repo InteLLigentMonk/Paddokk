@@ -24,7 +24,7 @@ export const navigationConfig: NavConfig = {
     {
       id: "journeys",
       label: "My Journeys",
-      href: "/journeys",
+      href: "/me/journeys",
       icon: BookOpen,
       group: "primary",
     },

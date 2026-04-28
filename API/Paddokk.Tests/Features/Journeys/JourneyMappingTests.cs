@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Paddokk.Core.Features.Journeys;
-using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Tests.Features.Journeys;
 

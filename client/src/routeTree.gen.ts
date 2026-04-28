@@ -31,10 +31,13 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCommunityRouteImport } from './routes/_app/community'
 import { Route as AppCarsRouteImport } from './routes/_app/cars'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppMeJourneysRouteImport } from './routes/_app/me/journeys'
 import { Route as AppMeCarsRouteImport } from './routes/_app/me/cars'
+import { Route as AppMeJourneysIndexRouteImport } from './routes/_app/me/journeys/index'
 import { Route as AppMeCarsIndexRouteImport } from './routes/_app/me/cars/index'
 import { Route as AppCarsCarIdIndexRouteImport } from './routes/_app/cars/$carId/index'
 import { Route as AppMeCarsNewRouteImport } from './routes/_app/me/cars/new'
+import { Route as AppMeJourneysJourneyIdIndexRouteImport } from './routes/_app/me/journeys/$journeyId/index'
 
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
@@ -143,10 +146,20 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppMeJourneysRoute = AppMeJourneysRouteImport.update({
+  id: '/journeys',
+  path: '/journeys',
+  getParentRoute: () => AppMeRoute,
+} as any)
 const AppMeCarsRoute = AppMeCarsRouteImport.update({
   id: '/cars',
   path: '/cars',
   getParentRoute: () => AppMeRoute,
+} as any)
+const AppMeJourneysIndexRoute = AppMeJourneysIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMeJourneysRoute,
 } as any)
 const AppMeCarsIndexRoute = AppMeCarsIndexRouteImport.update({
   id: '/',
@@ -163,6 +176,12 @@ const AppMeCarsNewRoute = AppMeCarsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AppMeCarsRoute,
 } as any)
+const AppMeJourneysJourneyIdIndexRoute =
+  AppMeJourneysJourneyIdIndexRouteImport.update({
+    id: '/$journeyId/',
+    path: '/$journeyId/',
+    getParentRoute: () => AppMeJourneysRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
@@ -184,10 +203,13 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
   '/me/cars': typeof AppMeCarsRouteWithChildren
+  '/me/journeys': typeof AppMeJourneysRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/me/cars/new': typeof AppMeCarsNewRoute
   '/cars/$carId/': typeof AppCarsCarIdIndexRoute
   '/me/cars/': typeof AppMeCarsIndexRoute
+  '/me/journeys/': typeof AppMeJourneysIndexRoute
+  '/me/journeys/$journeyId/': typeof AppMeJourneysJourneyIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
@@ -212,6 +234,8 @@ export interface FileRoutesByTo {
   '/me/cars/new': typeof AppMeCarsNewRoute
   '/cars/$carId': typeof AppCarsCarIdIndexRoute
   '/me/cars': typeof AppMeCarsIndexRoute
+  '/me/journeys': typeof AppMeJourneysIndexRoute
+  '/me/journeys/$journeyId': typeof AppMeJourneysJourneyIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -237,10 +261,13 @@ export interface FileRoutesById {
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/_app/me/cars': typeof AppMeCarsRouteWithChildren
+  '/_app/me/journeys': typeof AppMeJourneysRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/me/cars/new': typeof AppMeCarsNewRoute
   '/_app/cars/$carId/': typeof AppCarsCarIdIndexRoute
   '/_app/me/cars/': typeof AppMeCarsIndexRoute
+  '/_app/me/journeys/': typeof AppMeJourneysIndexRoute
+  '/_app/me/journeys/$journeyId/': typeof AppMeJourneysJourneyIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -264,10 +291,13 @@ export interface FileRouteTypes {
     | '/signup'
     | '/verify-email'
     | '/me/cars'
+    | '/me/journeys'
     | '/api/auth/$'
     | '/me/cars/new'
     | '/cars/$carId/'
     | '/me/cars/'
+    | '/me/journeys/'
+    | '/me/journeys/$journeyId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -292,6 +322,8 @@ export interface FileRouteTypes {
     | '/me/cars/new'
     | '/cars/$carId'
     | '/me/cars'
+    | '/me/journeys'
+    | '/me/journeys/$journeyId'
   id:
     | '__root__'
     | '/_app'
@@ -316,10 +348,13 @@ export interface FileRouteTypes {
     | '/_auth/verify-email'
     | '/_marketing/'
     | '/_app/me/cars'
+    | '/_app/me/journeys'
     | '/api/auth/$'
     | '/_app/me/cars/new'
     | '/_app/cars/$carId/'
     | '/_app/me/cars/'
+    | '/_app/me/journeys/'
+    | '/_app/me/journeys/$journeyId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -485,12 +520,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/me/journeys': {
+      id: '/_app/me/journeys'
+      path: '/journeys'
+      fullPath: '/me/journeys'
+      preLoaderRoute: typeof AppMeJourneysRouteImport
+      parentRoute: typeof AppMeRoute
+    }
     '/_app/me/cars': {
       id: '/_app/me/cars'
       path: '/cars'
       fullPath: '/me/cars'
       preLoaderRoute: typeof AppMeCarsRouteImport
       parentRoute: typeof AppMeRoute
+    }
+    '/_app/me/journeys/': {
+      id: '/_app/me/journeys/'
+      path: '/'
+      fullPath: '/me/journeys/'
+      preLoaderRoute: typeof AppMeJourneysIndexRouteImport
+      parentRoute: typeof AppMeJourneysRoute
     }
     '/_app/me/cars/': {
       id: '/_app/me/cars/'
@@ -512,6 +561,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/me/cars/new'
       preLoaderRoute: typeof AppMeCarsNewRouteImport
       parentRoute: typeof AppMeCarsRoute
+    }
+    '/_app/me/journeys/$journeyId/': {
+      id: '/_app/me/journeys/$journeyId/'
+      path: '/$journeyId'
+      fullPath: '/me/journeys/$journeyId/'
+      preLoaderRoute: typeof AppMeJourneysJourneyIdIndexRouteImport
+      parentRoute: typeof AppMeJourneysRoute
     }
   }
 }
@@ -541,12 +597,28 @@ const AppMeCarsRouteWithChildren = AppMeCarsRoute._addFileChildren(
   AppMeCarsRouteChildren,
 )
 
+interface AppMeJourneysRouteChildren {
+  AppMeJourneysIndexRoute: typeof AppMeJourneysIndexRoute
+  AppMeJourneysJourneyIdIndexRoute: typeof AppMeJourneysJourneyIdIndexRoute
+}
+
+const AppMeJourneysRouteChildren: AppMeJourneysRouteChildren = {
+  AppMeJourneysIndexRoute: AppMeJourneysIndexRoute,
+  AppMeJourneysJourneyIdIndexRoute: AppMeJourneysJourneyIdIndexRoute,
+}
+
+const AppMeJourneysRouteWithChildren = AppMeJourneysRoute._addFileChildren(
+  AppMeJourneysRouteChildren,
+)
+
 interface AppMeRouteChildren {
   AppMeCarsRoute: typeof AppMeCarsRouteWithChildren
+  AppMeJourneysRoute: typeof AppMeJourneysRouteWithChildren
 }
 
 const AppMeRouteChildren: AppMeRouteChildren = {
   AppMeCarsRoute: AppMeCarsRouteWithChildren,
+  AppMeJourneysRoute: AppMeJourneysRouteWithChildren,
 }
 
 const AppMeRouteWithChildren = AppMeRoute._addFileChildren(AppMeRouteChildren)
