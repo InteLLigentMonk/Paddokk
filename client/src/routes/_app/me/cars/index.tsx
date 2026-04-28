@@ -1,21 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { Container, Stack, Group, Pagination, Alert } from "@mantine/core"
-import { useMemo, useState, useEffect } from "react"
-import { useStore } from "@tanstack/react-store"
-import { AlertCircle } from "lucide-react"
+import { createFileRoute } from "@tanstack/react-router";
+import { Container, Stack, Group, Pagination, Alert } from "@mantine/core";
+import { useMemo, useState, useEffect } from "react";
+import { useStore } from "@tanstack/react-store";
+import { AlertCircle } from "lucide-react";
 import {
   carsPageStore,
   setSortBy,
   openAddCarModal,
-} from "@/lib/stores/cars-page-store"
-import { sortCars } from "@/lib/utils/sort-cars"
-import { CarsHeader } from "@/components/cars/cars-header"
-import { CarsSortControl } from "@/components/cars/cars-sort-control"
-import { CarsGrid } from "@/components/cars/cars-grid"
-import { EditCarModal } from "@/components/cars/edit-car-modal"
-import { DeleteCarConfirm } from "@/components/cars/delete-car-confirm"
-import { getUserCarsFn } from "@/lib/api/user-cars.server"
-import { useQuery } from "@tanstack/react-query"
+} from "@/lib/stores/cars-page-store";
+import { sortCars } from "@/lib/utils/sort-cars";
+import { CarsHeader } from "@/components/cars/cars-header";
+import { CarsSortControl } from "@/components/cars/cars-sort-control";
+import { CarsGrid } from "@/components/cars/cars-grid";
+import { EditCarModal } from "@/components/cars/edit-car-modal";
+import { DeleteCarConfirm } from "@/components/cars/delete-car-confirm";
+import { getUserCarsFn } from "@/lib/api/user-cars.server";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_app/me/cars/")({
   loader: ({ context: { queryClient } }) =>
@@ -24,37 +24,37 @@ export const Route = createFileRoute("/_app/me/cars/")({
       queryFn: () => getUserCarsFn(),
     }),
   component: CarsPage,
-})
+});
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 12;
 
 function CarsPage() {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["user-cars"],
     queryFn: () => getUserCarsFn(),
-  })
+  });
 
-  const cars = data?.cars ?? []
-  const sortBy = useStore(carsPageStore, (state) => state.sortBy)
+  const cars = data?.cars ?? [];
+  const sortBy = useStore(carsPageStore, (state) => state.sortBy);
 
-  const sortedCars = useMemo(() => sortCars(cars, sortBy), [cars, sortBy])
+  const sortedCars = useMemo(() => sortCars(cars, sortBy), [cars, sortBy]);
 
   const paginatedCars = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE
-    return sortedCars.slice(start, start + PAGE_SIZE)
-  }, [sortedCars, page])
+    const start = (page - 1) * PAGE_SIZE;
+    return sortedCars.slice(start, start + PAGE_SIZE);
+  }, [sortedCars, page]);
 
-  const totalPages = Math.ceil(sortedCars.length / PAGE_SIZE)
+  const totalPages = Math.ceil(sortedCars.length / PAGE_SIZE);
 
   useEffect(() => {
-    setPage(1)
-  }, [sortBy, cars.length])
+    setPage(1);
+  }, [sortBy, cars.length]);
 
   return (
     <Container size="lg" py="xl">
-      <Stack gap="xl">
+      <Stack gap="sm">
         <CarsHeader />
 
         {error ? (
@@ -91,5 +91,5 @@ function CarsPage() {
       <EditCarModal />
       <DeleteCarConfirm />
     </Container>
-  )
+  );
 }
