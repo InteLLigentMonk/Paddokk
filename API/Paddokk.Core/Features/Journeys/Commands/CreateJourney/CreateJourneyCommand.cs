@@ -11,4 +11,8 @@ public record CreateJourneyCommand(
     JourneyCategory Category,
     int UserCarId,
     bool SetAsDefaultActive = true
-) : ICommand<Result<JourneyDto>>;
+) : ICommand<Result<JourneyDto>>
+{
+    public DateTime? TargetCompletedAt { get; init; }
+    public string? CoverImageUrl { get; init; }
+}

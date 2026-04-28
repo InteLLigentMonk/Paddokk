@@ -996,6 +996,70 @@
         "security": [ ]
       }
     },
+    "/api/v1/Cars/{carId}": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Returns a specific car by ID — publicly accessible",
+        "operationId": "Cars_GetCar",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
     "/api/v1/Cars/search": {
       "get": {
         "tags": [
@@ -5460,6 +5524,19 @@
           "setAsDefaultActive": {
             "type": "boolean",
             "default": true
+          },
+          "targetCompletedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "coverImageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -5911,6 +5988,19 @@
             ],
             "format": "date-time"
           },
+          "targetCompletedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "primaryImageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "lastPostAt": {
             "type": [
               "null",
@@ -6280,6 +6370,19 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "targetCompletedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "coverImageUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

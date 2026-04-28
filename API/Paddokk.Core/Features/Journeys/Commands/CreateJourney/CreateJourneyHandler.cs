@@ -37,6 +37,8 @@ public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, I
             Status = JourneyStatus.Active,
             UserId = actor.UserId,
             UserCarId = request.UserCarId,
+            TargetCompletedAt = request.TargetCompletedAt,
+            CoverImageUrl = request.CoverImageUrl,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

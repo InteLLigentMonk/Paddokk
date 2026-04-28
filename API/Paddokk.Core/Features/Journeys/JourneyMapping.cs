@@ -38,9 +38,12 @@ internal static class JourneyMapping
                 journey.Likes.Any(l => l.UserId == currentUserId),
             IsOwner = !string.IsNullOrEmpty(currentUserId) && journey.UserId == currentUserId,
 
+            PrimaryImageUrl = journey.CoverImageUrl,
+
             CreatedAt = journey.CreatedAt,
             UpdatedAt = journey.UpdatedAt,
             CompletedAt = journey.CompletedAt,
+            TargetCompletedAt = journey.TargetCompletedAt,
 
             LastPostAt = lastPost?.CreatedAt,
             LastPostPreview = lastPost?.TextContent?.Length > 100

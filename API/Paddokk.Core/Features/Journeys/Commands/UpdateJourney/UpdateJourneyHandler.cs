@@ -32,6 +32,12 @@ public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, I
                 journey.CompletedAt = request.CompletedAt ?? DateTime.UtcNow;
         }
 
+        if (request.TargetCompletedAt.HasValue)
+            journey.TargetCompletedAt = request.TargetCompletedAt;
+
+        if (request.CoverImageUrl is not null)
+            journey.CoverImageUrl = request.CoverImageUrl;
+
         journey.UpdatedAt = DateTime.UtcNow;
 
         await journeyRepository.UpdateJourneyAsync(journey, cancellationToken);
