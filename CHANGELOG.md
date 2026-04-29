@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.0...v0.11.1) (2026-04-29)
+
+
+### Bug Fixes
+
+* ui tweaks for dark mode, nav active state, and theme ([#54](https://github.com/InteLLigentMonk/Paddokk/issues/54)) ([afab34d](https://github.com/InteLLigentMonk/Paddokk/commit/afab34d31efd64f52efd8f38b45ced1158e50b6a))
+
 ## [0.11.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.10.0...v0.11.0) (2026-04-29)
 
 
