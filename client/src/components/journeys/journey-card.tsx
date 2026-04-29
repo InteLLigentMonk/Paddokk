@@ -137,7 +137,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       style={{ cursor: "pointer" }}
       onClick={() =>
         navigate({
-          to: "/me/journeys/$journeyId",
+          to: "/journeys/$journeyId",
           params: { journeyId: String(journey.id) },
         })
       }
