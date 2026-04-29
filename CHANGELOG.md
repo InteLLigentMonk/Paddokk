@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.8.2...v0.9.0) (2026-04-29)
+
+
+### Features
+
+* **journey:** add /me/journeys summary page ([#48](https://github.com/InteLLigentMonk/Paddokk/issues/48)) ([f0b3018](https://github.com/InteLLigentMonk/Paddokk/commit/f0b3018575a5059dd8864bcb1ead34fd522a6a85))
+
 ## [0.8.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.8.1...v0.8.2) (2026-04-22)
 
 
