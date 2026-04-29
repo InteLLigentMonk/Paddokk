@@ -5,6 +5,9 @@ Thumbs.db
 # IDE
 .vs/
 .vscode/
+
+# Playwright MCP snapshots
+.playwright-mcp/
 *.user
 *.suo
 
