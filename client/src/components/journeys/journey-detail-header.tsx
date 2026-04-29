@@ -52,7 +52,13 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
     "Okänd bil";
 
   return (
-    <Paper withBorder radius="md" p={0} style={{ overflow: "hidden" }}>
+    <Paper
+      withBorder
+      radius="md"
+      p={0}
+      bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))"
+      style={{ overflow: "hidden" }}
+    >
       {journey.primaryImageUrl && (
         <Box pos="relative">
           <Image
@@ -77,12 +83,7 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
         <Title order={2}>{journey.title}</Title>
 
         {journey.description && (
-          <ExpandableText
-            text={journey.description}
-            maxLines={5}
-            size="sm"
-            c="dimmed"
-          />
+          <ExpandableText text={journey.description} maxLines={5} c="dimmed" />
         )}
 
         <Divider />

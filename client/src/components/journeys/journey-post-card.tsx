@@ -115,10 +115,7 @@ function PostText({ text }: PostTextProps) {
 
   return (
     <Stack gap="xs">
-      <Text
-        size="sm"
-        style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-      >
+      <Text style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
         {expanded ? text : preview}
         {!expanded && showToggle && "…"}
       </Text>
@@ -160,7 +157,7 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
       <Group hiddenFrom="md">
         <Button
           variant="subtle"
-          size="xs"
+          size="sm"
           leftSection={<MessageSquare size={14} />}
           onClick={() => setCommentModalOpen(true)}
         >
@@ -180,7 +177,13 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
       </Card>
 
       {/* Desktop layout */}
-      <Paper withBorder radius="md" p="md" visibleFrom="md">
+      <Paper
+        withBorder
+        radius="md"
+        p="md"
+        visibleFrom="md"
+        bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))"
+      >
         <Grid gutter="md">
           <Grid.Col span={7}>{postContent}</Grid.Col>
           <Grid.Col span={5}>

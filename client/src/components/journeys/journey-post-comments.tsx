@@ -61,12 +61,7 @@ function CommentItem({ comment }: CommentItemProps) {
             </Text>
           )}
         </Group>
-        <ExpandableText
-          text={comment.content}
-          maxLines={2}
-          charsPerLine={50}
-          size="sm"
-        />
+        <ExpandableText text={comment.content} maxLines={2} charsPerLine={50} />
       </Stack>
       {comment.isOwner && (
         <ActionIcon
