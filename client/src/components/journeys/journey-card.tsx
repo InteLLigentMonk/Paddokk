@@ -191,7 +191,8 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
           <Menu shadow="md" width={220} position="bottom-end">
             <Menu.Target>
               <ActionIcon
-                variant="subtle"
+                variant="default"
+                bd={0}
                 size={44}
                 aria-label="Resans alternativ"
                 style={{ flexShrink: 0 }}
