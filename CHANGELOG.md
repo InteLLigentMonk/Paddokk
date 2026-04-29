@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.1...v0.11.2) (2026-04-29)
+
+
+### Refactoring
+
+* **routes:** move public detail pages under /journeys and /cars ([#56](https://github.com/InteLLigentMonk/Paddokk/issues/56)) ([b902453](https://github.com/InteLLigentMonk/Paddokk/commit/b902453dd8cdce147f7bf05e82e1c426f0565e14))
+
 ## [0.11.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.0...v0.11.1) (2026-04-29)
 
 
