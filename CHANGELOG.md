@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.9.0...v0.10.0) (2026-04-29)
+
+
+### Features
+
+* **journey:** add journey detail view with posts, comments, and image lightbox ([#50](https://github.com/InteLLigentMonk/Paddokk/issues/50)) ([a5e08ab](https://github.com/InteLLigentMonk/Paddokk/commit/a5e08ab1147ee9f0388fbc1ad8c3918c32b32f96))
+
 ## [0.9.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.8.2...v0.9.0) (2026-04-29)
 
 
