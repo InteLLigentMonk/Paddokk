@@ -74,9 +74,7 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
           </Badge>
         </Group>
 
-        <Title order={1} size="h2">
-          {journey.title}
-        </Title>
+        <Title order={2}>{journey.title}</Title>
 
         {journey.description && (
           <ExpandableText
