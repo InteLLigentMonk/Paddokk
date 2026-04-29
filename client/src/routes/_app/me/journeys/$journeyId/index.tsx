@@ -77,7 +77,7 @@ function JourneyDetailPage() {
           <Button
             component={Link}
             to="/me/journeys"
-            variant="subtle"
+            variant="outline"
             leftSection={<ArrowLeft size={16} />}
           >
             Tillbaka till mina resor
