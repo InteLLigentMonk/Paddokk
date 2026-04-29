@@ -17,13 +17,7 @@ export function CarsHeader() {
   };
 
   return (
-    <Group
-      justify="space-between"
-      align="flex-start"
-      mb="xl"
-      wrap="wrap"
-      gap="md"
-    >
+    <Group justify="space-between" align="flex-start" wrap="wrap" gap="md">
       <Stack gap={4}>
         <Title order={2}>My Cars</Title>
         <Text c="dimmed" size="sm">

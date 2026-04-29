@@ -13,18 +13,18 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=Paddokk.Tests
+AssemblyName=Paddokk.Core
 CommandLineArgsForDesignTimeEvaluation=-langversion:14.0 -define:TRACE
 CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=14.0
 ProjectAssetsFile=<PATH>obj/project.assets.json
-RootNamespace=Paddokk.Tests
+RootNamespace=Paddokk.Core
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
 SolutionPath=*Undefined*
 TargetFrameworkIdentifier=.NETCoreApp
-TargetPath=<PATH>bin/Debug/net10.0/Paddokk.Tests.dll
-TargetRefPath=<PATH>obj/Debug/net10.0/ref/Paddokk.Tests.dll
+TargetPath=<PATH>bin/Debug/net10.0/Paddokk.Core.dll
+TargetRefPath=<PATH>obj/Debug/net10.0/ref/Paddokk.Core.dll
 TemporaryDependencyNodeTargetIdentifier=net10.0
 
 [commandLineArguments]
@@ -44,9 +44,9 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /debug:portable
 /filealign:512
 /optimize-
-/out:obj\Debug\net10.0\Paddokk.Tests.dll
-/refout:obj\Debug\net10.0\refint\Paddokk.Tests.dll
-/target:exe
+/out:obj\Debug\net10.0\Paddokk.Core.dll
+/refout:obj\Debug\net10.0\refint\Paddokk.Core.dll
+/target:library
 /warnaserror-
 /utf8output
 /deterministic+
@@ -54,17 +54,249 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /warnaserror+:NU1605,SYSLIB0011
 
 [sourceFiles]
-<NUGET>/microsoft.net.test.sdk/17.14.1/build/net8.0/Microsoft.NET.Test.Sdk.Program.cs
-Features/Journeys/Commands/
- CreateJourneyHandlerTests.cs
- UpdateJourneyHandlerTests.cs
+AssemblyInfo.cs
+Behaviours/
+ TransactionBehaviour.cs
+ ValidationBehaviour.cs
+Features/CarImages/
+ CarImageMapping.cs
+ Commands/DeleteCarImage/
+  DeleteCarImageCommand.cs
+  DeleteCarImageHandler.cs
+ Commands/SetPrimaryImage/
+  SetPrimaryImageCommand.cs
+  SetPrimaryImageHandler.cs
+ Commands/UpdateCarImage/
+  UpdateCarImageCommand.cs
+  UpdateCarImageHandler.cs
+ Commands/UploadCarImage/
+  UploadCarImageCommand.cs
+  UploadCarImageHandler.cs
+ Queries/GetCarImageById/
+  GetCarImageByIdHandler.cs
+  GetCarImageByIdQuery.cs
+ Queries/GetCarImages/
+  GetCarImagesHandler.cs
+  GetCarImagesQuery.cs
+Features/Cars/
+ CarMapping.cs
+ Commands/CreateUserCar/
+  CreateUserCarCommand.cs
+  CreateUserCarCommandValidator.cs
+  CreateUserCarHandler.cs
+ Commands/DeleteUserCar/
+  DeleteUserCarCommand.cs
+  DeleteUserCarHandler.cs
+ Commands/LikeUserCar/
+  LikeUserCarCommand.cs
+  LikeUserCarHandler.cs
+ Commands/SubscribeToUserCar/
+  SubscribeToUserCarCommand.cs
+  SubscribeToUserCarHandler.cs
+ Commands/UnlikeUserCar/
+  UnlikeUserCarCommand.cs
+  UnlikeUserCarHandler.cs
+ Commands/UnsubscribeFromUserCar/
+  UnsubscribeFromUserCarCommand.cs
+  UnsubscribeFromUserCarHandler.cs
+ Commands/UpdateUserCar/
+  UpdateUserCarCommand.cs
+  UpdateUserCarCommandValidator.cs
+  UpdateUserCarHandler.cs
+ Queries/GetCarGenerationById/
+  GetCarGenerationByIdHandler.cs
+  GetCarGenerationByIdQuery.cs
+ Queries/GetCarGenerationsByModel/
+  GetCarGenerationsByModelHandler.cs
+  GetCarGenerationsByModelQuery.cs
+ Queries/GetCarLimits/
+  GetCarLimitsHandler.cs
+  GetCarLimitsQuery.cs
+ Queries/GetCarMakeById/
+  GetCarMakeByIdHandler.cs
+  GetCarMakeByIdQuery.cs
+ Queries/GetCarMakes/
+  GetCarMakesHandler.cs
+  GetCarMakesQuery.cs
+ Queries/GetCarModelById/
+  GetCarModelByIdHandler.cs
+  GetCarModelByIdQuery.cs
+ Queries/GetCarModelsByMake/
+  GetCarModelsByMakeHandler.cs
+  GetCarModelsByMakeQuery.cs
+ Queries/GetPublicCarById/
+  GetPublicCarByIdHandler.cs
+  GetPublicCarByIdQuery.cs
+ Queries/GetUserCarById/
+  GetUserCarByIdHandler.cs
+  GetUserCarByIdQuery.cs
+ Queries/GetUserCars/
+  GetUserCarsHandler.cs
+  GetUserCarsQuery.cs
+ Queries/SearchCars/
+  SearchCarsHandler.cs
+  SearchCarsQuery.cs
+Features/Comments/Commands/CreateComment/
+ CreateCommentCommand.cs
+ CreateCommentCommandValidator.cs
+ CreateCommentHandler.cs
+Features/Comments/Commands/DeleteComment/
+ DeleteCommentCommand.cs
+ DeleteCommentHandler.cs
+Features/Comments/Commands/UpdateComment/
+ UpdateCommentCommand.cs
+ UpdateCommentCommandValidator.cs
+ UpdateCommentHandler.cs
+Features/Comments/
+ CommentMapping.cs
+ Queries/GetCommentById/
+  GetCommentByIdHandler.cs
+  GetCommentByIdQuery.cs
+ Queries/GetPostComments/
+  GetPostCommentsHandler.cs
+  GetPostCommentsQuery.cs
+Features/Dashboard/
+ DashboardResponse.cs
+ GetDashboardHandler.cs
+ GetDashboardQuery.cs
+Features/Journeys/Commands/CreateJourney/
+ CreateJourneyCommand.cs
+ CreateJourneyCommandValidator.cs
+ CreateJourneyHandler.cs
+Features/Journeys/Commands/CreateJourneyPost/
+ CreateJourneyPostCommand.cs
+ CreateJourneyPostCommandValidator.cs
+ CreateJourneyPostHandler.cs
+Features/Journeys/Commands/DeleteJourney/
+ DeleteJourneyCommand.cs
+ DeleteJourneyHandler.cs
+Features/Journeys/Commands/DeleteJourneyPost/
+ DeleteJourneyPostCommand.cs
+ DeleteJourneyPostHandler.cs
+Features/Journeys/Commands/LikeJourney/
+ LikeJourneyCommand.cs
+ LikeJourneyHandler.cs
+Features/Journeys/Commands/SetDefaultActiveJourney/
+ SetDefaultActiveJourneyCommand.cs
+ SetDefaultActiveJourneyHandler.cs
+Features/Journeys/Commands/SubscribeToJourney/
+ SubscribeToJourneyCommand.cs
+ SubscribeToJourneyHandler.cs
+Features/Journeys/Commands/UnlikeJourney/
+ UnlikeJourneyCommand.cs
+ UnlikeJourneyHandler.cs
+Features/Journeys/Commands/UnsubscribeFromJourney/
+ UnsubscribeFromJourneyCommand.cs
+ UnsubscribeFromJourneyHandler.cs
+Features/Journeys/Commands/UpdateJourney/
+ UpdateJourneyCommand.cs
+ UpdateJourneyCommandValidator.cs
+ UpdateJourneyHandler.cs
+Features/Journeys/Commands/UpdateJourneyPost/
+ UpdateJourneyPostCommand.cs
+ UpdateJourneyPostHandler.cs
 Features/Journeys/
- JourneyMappingTests.cs
- JourneyTestHelpers.cs
+ JourneyMapping.cs
+ Queries/CanCreateJourney/
+  CanCreateJourneyHandler.cs
+  CanCreateJourneyQuery.cs
+  CanCreateJourneyResponse.cs
+ Queries/GetDefaultActiveJourney/
+  GetDefaultActiveJourneyHandler.cs
+  GetDefaultActiveJourneyQuery.cs
+ Queries/GetFeaturedJourneys/
+  GetFeaturedJourneysHandler.cs
+  GetFeaturedJourneysQuery.cs
+ Queries/GetJourneyById/
+  GetJourneyByIdHandler.cs
+  GetJourneyByIdQuery.cs
+ Queries/GetJourneyPostById/
+  GetJourneyPostByIdHandler.cs
+  GetJourneyPostByIdQuery.cs
+ Queries/GetJourneyPosts/
+  GetJourneyPostsHandler.cs
+  GetJourneyPostsQuery.cs
+ Queries/GetTrendingJourneys/
+  GetTrendingJourneysHandler.cs
+  GetTrendingJourneysQuery.cs
+ Queries/GetUserJourneys/
+  GetUserJourneysHandler.cs
+  GetUserJourneysQuery.cs
+ Queries/GetUserJourneyStats/
+  GetUserJourneyStatsHandler.cs
+  GetUserJourneyStatsQuery.cs
+ Queries/SearchJourneys/
+  SearchJourneysHandler.cs
+  SearchJourneysQuery.cs
+Features/Users/Commands/UpdateUser/
+ UpdateUserCommand.cs
+ UpdateUserCommandValidator.cs
+ UpdateUserHandler.cs
+Features/Users/Queries/GetUserByEmail/
+ GetUserByEmailHandler.cs
+ GetUserByEmailQuery.cs
+Features/Users/Queries/GetUserById/
+ GetUserByIdHandler.cs
+ GetUserByIdQuery.cs
+Features/Users/UserMapping.cs
+Interfaces/
+ IActorResolver.cs
+ ICarRepository.cs
+ ICommand.cs
+ ICommentRepository.cs
+ IImageRepository.cs
+ IImageService.cs
+ IJourneyRepository.cs
+ IQuery.cs
+ IUnitOfWork.cs
+ IUserRepository.cs
+Models/DTOs/Car/
+ CarGenerationDto.cs
+ CarGenerationsResponse.cs
+ CarLimitDto.cs
+ CarMakeDto.cs
+ CarMakesResponse.cs
+ CarModelDto.cs
+ CarModelsResponse.cs
+ UserCarDto.cs
+ UserCarsResponse.cs
+Models/DTOs/Comment/
+ CommentsPagedResponse.cs
+ PostCommentDto.cs
+Models/DTOs/Image/
+ CanUploadImageResponse.cs
+ CarImageDto.cs
+ CarImagesResponse.cs
+ ImageContext.cs
+ ImageLimitsDto.cs
+ ImageUploadDto.cs
+ ImageUploadRequest.cs
+ UpdateCarImageRequest.cs
+ UploadCarImageRequest.cs
+Models/DTOs/Journey/
+ CreateJourneyPostImageRequest.cs
+ JourneyDTOs.cs
+ JourneyPostDto.cs
+ JourneyPostImageDto.cs
+ JourneySearchRequest.cs
+ JourneySortBy.cs
+ JourneyStatsDto.cs
+Models/
+ DTOs/User/UserDto.cs
+ Entities/
+  ApplicationUser.cs
+  CarDatabase.cs
+  Engagement.cs
+  Journey.cs
+  JourneyPost.cs
+  UserCar.cs
+ Error.cs
+ Result.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
- Paddokk.Tests.AssemblyInfo.cs
- Paddokk.Tests.GlobalUsings.g.cs
+ Paddokk.Core.AssemblyInfo.cs
+ Paddokk.Core.GlobalUsings.g.cs
+Services/ImageService.cs
 
 [metadataReferences]
 ../../../../Program Files/dotnet/packs/Microsoft.AspNetCore.App.Ref/10.0.4/ref/net10.0/
@@ -376,37 +608,18 @@ obj/Debug/net10.0/
  System.Xml.XPath.dll
  System.Xml.XPath.XDocument.dll
  WindowsBase.dll
-../Paddokk.Core/obj/Debug/net10.0/ref/Paddokk.Core.dll
 <NUGET>/
  azure.core/1.50.0/lib/net8.0/Azure.Core.dll
  azure.storage.blobs/12.27.0/lib/net10.0/Azure.Storage.Blobs.dll
  azure.storage.common/12.26.0/lib/net10.0/Azure.Storage.Common.dll
- castle.core/5.1.1/lib/net6.0/Castle.Core.dll
- fluentassertions/8.9.0/lib/net6.0/FluentAssertions.dll
  fluentvalidation/11.11.0/lib/net8.0/FluentValidation.dll
  mediatr.contracts/2.0.1/lib/netstandard2.0/MediatR.Contracts.dll
  mediatr/12.4.1/lib/net6.0/MediatR.dll
  microsoft.bcl.asyncinterfaces/8.0.0/lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll
- microsoft.codecoverage/17.14.1/lib/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll
- microsoft.testplatform.testhost/17.14.1/lib/net8.0/
-  Microsoft.TestPlatform.CommunicationUtilities.dll
-  Microsoft.TestPlatform.CoreUtilities.dll
-  Microsoft.TestPlatform.CrossPlatEngine.dll
-  Microsoft.TestPlatform.PlatformAbstractions.dll
-  Microsoft.TestPlatform.Utilities.dll
-  Microsoft.VisualStudio.TestPlatform.Common.dll
-  Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
-  testhost.dll
- newtonsoft.json/13.0.3/lib/net6.0/Newtonsoft.Json.dll
- nsubstitute/5.3.0/lib/net6.0/NSubstitute.dll
  skiasharp/3.119.2/ref/net8.0/SkiaSharp.dll
  system.clientmodel/1.8.0/lib/net9.0/System.ClientModel.dll
  system.io.hashing/10.0.1/lib/net10.0/System.IO.Hashing.dll
  system.memory.data/8.0.1/lib/net8.0/System.Memory.Data.dll
- xunit.abstractions/2.0.3/lib/netstandard2.0/xunit.abstractions.dll
- xunit.assert/2.9.3/lib/net6.0/xunit.assert.dll
- xunit.extensibility.core/2.9.3/lib/netstandard1.1/xunit.core.dll
- xunit.extensibility.execution/2.9.3/lib/netstandard1.1/xunit.execution.dotnet.dll
 
 [analyzerReferences]
 ../../../../Program Files/dotnet/packs/Microsoft.AspNetCore.App.Ref/10.0.4/analyzers/dotnet/cs/
@@ -427,12 +640,8 @@ obj/Debug/net10.0/
 ../../../../Program Files/dotnet/sdk/10.0.104/Sdks/Microsoft.NET.Sdk/analyzers/
  Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
  Microsoft.CodeAnalysis.NetAnalyzers.dll
-<NUGET>/
- system.clientmodel/1.8.0/analyzers/dotnet/cs/System.ClientModel.SourceGeneration.dll
- xunit.analyzers/1.18.0/analyzers/dotnet/cs/
-  xunit.analyzers.dll
-  xunit.analyzers.fixes.dll
+<NUGET>/system.clientmodel/1.8.0/analyzers/dotnet/cs/System.ClientModel.SourceGeneration.dll
 
 [analyzerConfigFiles]
 ../../../../Program Files/dotnet/sdk/10.0.104/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
-obj/Debug/net10.0/Paddokk.Tests.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net10.0/Paddokk.Core.GeneratedMSBuildEditorConfig.editorconfig

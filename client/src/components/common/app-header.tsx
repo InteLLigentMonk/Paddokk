@@ -2,7 +2,7 @@ import {
   ActionIcon,
   Avatar,
   Box,
-  Container,
+  Divider,
   Group,
   Kbd,
   Menu,
@@ -31,17 +31,9 @@ function HeaderLogo() {
           cursor: "pointer",
         }}
       />
-      <Title order={1}>Paddokk</Title>
-      <Box
-        visibleFrom="md"
-        style={{
-          fontSize: rem(14),
-          color: "var(--mantine-color-dimmed)",
-        }}
-      >
-        {/* TODO: Implement car dropdown */}
-        My Car
-      </Box>
+      <Title order={1} fz={{ base: "1rem", sm: "1.25rem" }}>
+        Paddokk
+      </Title>
     </Group>
   );
 }
