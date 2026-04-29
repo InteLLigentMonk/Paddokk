@@ -1,0 +1,69 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e79]:
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - img "Paddokk" [ref=e83] [cursor=pointer]
+          - generic [ref=e84]: My Car
+        - button "Search... Ctrl + K" [ref=e87] [cursor=pointer]:
+          - img [ref=e88]
+          - generic [ref=e91]: Search...
+          - generic [ref=e92]:
+            - generic [ref=e93]: Ctrl
+            - text: +
+            - generic [ref=e94]: K
+        - generic [ref=e95]:
+          - button "Toggle color scheme" [ref=e96] [cursor=pointer]:
+            - img [ref=e119]
+          - generic "Tobias Vinther" [ref=e106] [cursor=pointer]: T
+    - navigation "Main navigation" [ref=e3]:
+      - generic [ref=e4]:
+        - link "Dashboard" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e8]
+        - link "My Journeys" [ref=e14] [cursor=pointer]:
+          - /url: /me/journeys
+          - img [ref=e16]
+        - link "My Cars" [ref=e19] [cursor=pointer]:
+          - /url: /me/cars
+          - img [ref=e21]
+        - link "Explore" [ref=e26] [cursor=pointer]:
+          - /url: /explore
+          - img [ref=e28]
+        - link "Community" [ref=e32] [cursor=pointer]:
+          - /url: /community
+          - img [ref=e34]
+        - separator [ref=e39]
+        - link "Photo Gallery" [ref=e41] [cursor=pointer]:
+          - /url: /gallery
+          - img [ref=e43]
+        - link "Knowledge Base" [ref=e47] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e49]
+      - button "Sign out" [ref=e52] [cursor=pointer]:
+        - img [ref=e54]
+    - main [ref=e57]:
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - heading "Mina Resor" [level=1] [ref=e62]
+            - paragraph [ref=e63]: Dokumentera och dela dina bilbyggar-resor
+          - button "Ny resa" [ref=e64] [cursor=pointer]:
+            - generic [ref=e65]:
+              - img [ref=e67]
+              - generic [ref=e68]: Ny resa
+        - generic [ref=e69]:
+          - img [ref=e122]
+          - generic [ref=e73]:
+            - paragraph [ref=e74]: Inga resor ännu
+            - paragraph [ref=e75]: Skapa din första resa för att dokumentera din bilbyggar-resa
+          - button "Skapa din första resa" [ref=e76] [cursor=pointer]:
+            - generic [ref=e78]: Skapa din första resa
+  - dialog "Ny resa" [ref=e125]:
+    - banner [ref=e126]:
+      - heading "Ny resa" [level=2] [ref=e127]
+      - button [active] [ref=e128] [cursor=pointer]:
+        - img [ref=e129]
+    - paragraph [ref=e133]: Formulär för att skapa en ny resa kommer snart. Här kommer du kunna välja bil, kategori, måldatum och skriva ditt första inlägg med bilder.
+  - button "Open TanStack Devtools" [ref=e116] [cursor=pointer]:
+    - img "TanStack Devtools" [ref=e117]

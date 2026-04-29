@@ -69,6 +69,7 @@ Marketplace, Stores, Harness-designer and more.
 - Orval regeneration: `pnpm orval` (reads from orval.config.ts)
 
 ### General
+- The overall language of the app is english until i18n is implemeted and supported
 - Swedish comments/docs are OK, code and variable names always in English
 - Prefer explicit types over `any` in TypeScript
 - Prefer `record` types for DTOs in C#

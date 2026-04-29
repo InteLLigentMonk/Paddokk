@@ -32,10 +32,14 @@ public class JourneyDto
     public required bool IsLiked { get; set; }
     public required bool IsOwner { get; set; }
 
+    // Cover
+    public string? PrimaryImageUrl { get; set; }
+
     // Metadata
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
+    public DateTime? TargetCompletedAt { get; set; }
 
     // Latest Post Preview
     public DateTime? LastPostAt { get; set; }

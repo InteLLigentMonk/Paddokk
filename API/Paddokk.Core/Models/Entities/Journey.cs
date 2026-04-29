@@ -31,6 +31,10 @@ public class Journey
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? CompletedAt { get; set; }
+    public DateTime? TargetCompletedAt { get; set; }
+
+    [StringLength(500)]
+    public string? CoverImageUrl { get; set; }
 
     // Computed Properties (not mapped to database)
     public int PostCount => Posts?.Count ?? 0;

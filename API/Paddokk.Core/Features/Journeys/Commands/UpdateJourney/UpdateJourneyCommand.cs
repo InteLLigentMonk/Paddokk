@@ -12,4 +12,8 @@ public record UpdateJourneyCommand(
     JourneyCategory? Category,
     JourneyStatus? Status,
     DateTime? CompletedAt
-) : ICommand<Result<JourneyDto>>;
+) : ICommand<Result<JourneyDto>>
+{
+    public DateTime? TargetCompletedAt { get; init; }
+    public string? CoverImageUrl { get; init; }
+}

@@ -23,5 +23,8 @@ export const theme = createTheme({
   fontFamily: "Rajdhani, sans-serif",
   headings: {
     fontFamily: "BaseNeue, sans-serif",
+    sizes: {
+      h1: { fontSize: "1.5rem" },
+    },
   },
 });

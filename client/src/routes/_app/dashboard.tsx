@@ -14,7 +14,7 @@ function AppDashboard() {
       <Stack gap="xl">
         {/* Welcome Header */}
         <Stack gap="xs">
-          <Title order={1}>Welcome back, {auth.user?.name}!</Title>
+          <Title order={2}>Welcome back, {auth.user?.name}!</Title>
           <Text c="dimmed">
             Ready to document your latest journey or connect with fellow
             enthusiasts?

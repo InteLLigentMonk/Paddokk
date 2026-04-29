@@ -1,0 +1,224 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - link "Paddokk" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - paragraph [ref=e7]: Paddokk
+      - generic [ref=e8]:
+        - link "Features" [ref=e9] [cursor=pointer]:
+          - /url: "#features"
+        - link "Pricing" [ref=e10] [cursor=pointer]:
+          - /url: "#pricing"
+        - link "Roadmap" [ref=e11] [cursor=pointer]:
+          - /url: "#roadmap"
+      - generic [ref=e12]:
+        - button "Toggle color scheme" [ref=e13] [cursor=pointer]:
+          - img [ref=e16]
+        - button "Sign In" [ref=e22] [cursor=pointer]:
+          - generic [ref=e24]: Sign In
+        - button "Get Started" [ref=e25] [cursor=pointer]:
+          - generic [ref=e27]: Get Started
+  - main [ref=e28]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "The Social Platform for Car Enthusiasts" [level=1] [ref=e34]
+        - paragraph [ref=e35]: Document your car journeys, share your builds, and connect with fellow car enthusiasts. Paddokk bridges the gap between forums and modern social platforms.
+      - generic [ref=e36]:
+        - button "Get Started" [ref=e37] [cursor=pointer]:
+          - generic [ref=e39]: Get Started
+        - button "Sign In" [ref=e40] [cursor=pointer]:
+          - generic [ref=e42]: Sign In
+      - paragraph [ref=e43]: Free to join • No credit card required
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - heading "Everything You Need" [level=2] [ref=e49]
+        - paragraph [ref=e50]: Built for car enthusiasts, by car enthusiasts. All the tools you need to document and share your automotive journey.
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - img [ref=e54]
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Journey Tracking
+            - paragraph [ref=e60]: Document your car builds, modifications, and road trips. Track progress with photos, notes, and timeline views.
+        - generic [ref=e61]:
+          - img [ref=e63]
+          - generic [ref=e68]:
+            - paragraph [ref=e69]: Community Driven
+            - paragraph [ref=e70]: Connect with fellow enthusiasts, join groups, and participate in discussions. Forums meet modern social.
+        - generic [ref=e71]:
+          - img [ref=e73]
+          - generic [ref=e76]:
+            - paragraph [ref=e77]: Rich Media Sharing
+            - paragraph [ref=e78]: Share high-quality photos and videos of your rides. Showcase your builds with stunning visuals.
+        - generic [ref=e79]:
+          - img [ref=e81]
+          - generic [ref=e83]:
+            - paragraph [ref=e84]: Knowledge Base
+            - paragraph [ref=e85]: Learn from experienced builders. Access guides, tutorials, and community wisdom in one place.
+    - generic [ref=e89]:
+      - generic [ref=e90]:
+        - heading "Simple, Transparent Pricing" [level=2] [ref=e91]
+        - paragraph [ref=e92]: Choose the plan that fits your needs. All plans include core features with no hidden fees.
+      - generic [ref=e93]:
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - paragraph [ref=e97]: Free
+            - generic [ref=e98]:
+              - paragraph [ref=e99]: $0
+              - paragraph [ref=e100]: /month
+            - paragraph [ref=e101]: Perfect for getting started
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - generic [ref=e104]:
+                - img [ref=e106]
+                - generic [ref=e108]: Up to 3 active journeys
+            - listitem [ref=e109]:
+              - generic [ref=e110]:
+                - img [ref=e112]
+                - generic [ref=e114]: Basic photo uploads
+            - listitem [ref=e115]:
+              - generic [ref=e116]:
+                - img [ref=e118]
+                - generic [ref=e120]: Community access
+            - listitem [ref=e121]:
+              - generic [ref=e122]:
+                - img [ref=e124]
+                - generic [ref=e126]: Public profile
+          - link "Get Started" [ref=e127] [cursor=pointer]:
+            - /url: /signup
+            - generic [ref=e129]: Get Started
+        - generic [ref=e130]:
+          - generic [ref=e132]: Most Popular
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - paragraph [ref=e135]: Pro
+              - generic [ref=e136]:
+                - paragraph [ref=e137]: $9
+                - paragraph [ref=e138]: /month
+              - paragraph [ref=e139]: For serious enthusiasts
+            - list [ref=e140]:
+              - listitem [ref=e141]:
+                - generic [ref=e142]:
+                  - img [ref=e144]
+                  - generic [ref=e146]: Unlimited journeys
+              - listitem [ref=e147]:
+                - generic [ref=e148]:
+                  - img [ref=e150]
+                  - generic [ref=e152]: High-res photo & video uploads
+              - listitem [ref=e153]:
+                - generic [ref=e154]:
+                  - img [ref=e156]
+                  - generic [ref=e158]: Advanced analytics
+              - listitem [ref=e159]:
+                - generic [ref=e160]:
+                  - img [ref=e162]
+                  - generic [ref=e164]: Priority support
+              - listitem [ref=e165]:
+                - generic [ref=e166]:
+                  - img [ref=e168]
+                  - generic [ref=e170]: Custom profile themes
+              - listitem [ref=e171]:
+                - generic [ref=e172]:
+                  - img [ref=e174]
+                  - generic [ref=e176]: Ad-free experience
+            - link "Start Free Trial" [ref=e177] [cursor=pointer]:
+              - /url: /signup
+              - generic [ref=e179]: Start Free Trial
+        - generic [ref=e181]:
+          - generic [ref=e182]:
+            - paragraph [ref=e183]: Club
+            - generic [ref=e184]:
+              - paragraph [ref=e185]: $29
+              - paragraph [ref=e186]: /month
+            - paragraph [ref=e187]: For car clubs & teams
+          - list [ref=e188]:
+            - listitem [ref=e189]:
+              - generic [ref=e190]:
+                - img [ref=e192]
+                - generic [ref=e194]: Everything in Pro
+            - listitem [ref=e195]:
+              - generic [ref=e196]:
+                - img [ref=e198]
+                - generic [ref=e200]: Up to 50 members
+            - listitem [ref=e201]:
+              - generic [ref=e202]:
+                - img [ref=e204]
+                - generic [ref=e206]: Club branding
+            - listitem [ref=e207]:
+              - generic [ref=e208]:
+                - img [ref=e210]
+                - generic [ref=e212]: Event management
+            - listitem [ref=e213]:
+              - generic [ref=e214]:
+                - img [ref=e216]
+                - generic [ref=e218]: Private forums
+            - listitem [ref=e219]:
+              - generic [ref=e220]:
+                - img [ref=e222]
+                - generic [ref=e224]: Dedicated support
+          - link "Contact Sales" [ref=e225] [cursor=pointer]:
+            - /url: /signup
+            - generic [ref=e227]: Contact Sales
+    - generic [ref=e231]:
+      - generic [ref=e232]:
+        - heading "Product Roadmap" [level=2] [ref=e233]
+        - paragraph [ref=e234]: We're building the future of automotive social networking. Here's what's coming next.
+      - generic [ref=e235]:
+        - generic [ref=e238]:
+          - generic [ref=e240]:
+            - paragraph [ref=e241]: Platform Launch
+            - generic [ref=e243]: In Progress
+          - generic [ref=e244]:
+            - paragraph [ref=e245]: Q1 2026
+            - paragraph [ref=e246]: Core features including journey tracking, photo uploads, and community forums.
+        - generic [ref=e249]:
+          - generic [ref=e251]:
+            - paragraph [ref=e252]: Mobile Apps
+            - generic [ref=e254]: Planned
+          - generic [ref=e255]:
+            - paragraph [ref=e256]: Q2 2026
+            - paragraph [ref=e257]: Native iOS and Android apps for on-the-go journey updates and community engagement.
+        - generic [ref=e260]:
+          - generic [ref=e262]:
+            - paragraph [ref=e263]: Marketplace
+            - generic [ref=e265]: Planned
+          - generic [ref=e266]:
+            - paragraph [ref=e267]: Q3 2026
+            - paragraph [ref=e268]: Buy and sell parts, find services, and connect with local shops and mechanics.
+        - generic [ref=e271]:
+          - generic [ref=e273]:
+            - paragraph [ref=e274]: Events Platform
+            - generic [ref=e276]: Planned
+          - generic [ref=e277]:
+            - paragraph [ref=e278]: Q4 2026
+            - paragraph [ref=e279]: Discover and organize car meets, track days, and road trips with integrated RSVP.
+    - generic [ref=e283]:
+      - generic [ref=e284]:
+        - heading "Ready to Start Your Journey?" [level=2] [ref=e285]
+        - paragraph [ref=e286]: Join thousands of car enthusiasts already documenting their builds and connecting with the community.
+      - generic [ref=e287]:
+        - button "Get Started Free" [ref=e288] [cursor=pointer]:
+          - generic [ref=e290]: Get Started Free
+        - button "Sign In" [ref=e291] [cursor=pointer]:
+          - generic [ref=e293]: Sign In
+  - contentinfo [ref=e294]:
+    - generic [ref=e295]:
+      - generic [ref=e296]:
+        - generic [ref=e297]:
+          - paragraph [ref=e298]: Paddokk
+          - paragraph [ref=e299]: The social platform for car enthusiasts. Document your journey, share your builds.
+        - generic [ref=e300]:
+          - paragraph [ref=e301]: Navigation
+          - link "Features" [ref=e302] [cursor=pointer]:
+            - /url: "#features"
+          - link "Pricing" [ref=e303] [cursor=pointer]:
+            - /url: "#pricing"
+          - link "Roadmap" [ref=e304] [cursor=pointer]:
+            - /url: "#roadmap"
+        - generic [ref=e305]:
+          - paragraph [ref=e306]: Legal
+          - link "Privacy Policy" [ref=e307] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms of Service" [ref=e308] [cursor=pointer]:
+            - /url: /terms
+      - separator [ref=e309]
+      - paragraph [ref=e310]: 2026 Paddokk. All rights reserved.

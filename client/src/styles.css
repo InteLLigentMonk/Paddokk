@@ -42,56 +42,82 @@
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-Thin-BF63d645f6d268b.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-Thin-BF63d645f6d268b.ttf")
+    format("truetype");
   font-weight: 100;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-ExtraLight-BF63d645e348136.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-ExtraLight-BF63d645e348136.ttf")
+    format("truetype");
   font-weight: 200;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-Light-BF63d645dbe710a.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-Light-BF63d645dbe710a.ttf")
+    format("truetype");
   font-weight: 300;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-Regular-BF63d645e769f10.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-Regular-BF63d645e769f10.ttf")
+    format("truetype");
   font-weight: 400;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-Medium-BF63d645fc6ba32.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-Medium-BF63d645fc6ba32.ttf")
+    format("truetype");
   font-weight: 500;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-SemiBold-BF63d645fc02da2.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-SemiBold-BF63d645fc02da2.ttf")
+    format("truetype");
   font-weight: 600;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-Bold-BF63d645e77951b.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-Bold-BF63d645e77951b.ttf")
+    format("truetype");
   font-weight: 700;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-ExtraBold-BF63d645e090cab.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-ExtraBold-BF63d645e090cab.ttf")
+    format("truetype");
   font-weight: 800;
 }
 
 @font-face {
   font-family: "BaseNeue";
-  src: url("/fonts/base-neue/BaseNeueTrial-Black-BF63d645de45c8a.ttf") format("truetype");
+  src: url("/fonts/base-neue/BaseNeueTrial-Black-BF63d645de45c8a.ttf")
+    format("truetype");
   font-weight: 900;
+}
+
+@font-face {
+  font-family: "Yapari";
+  src: url("/fonts/Yapari/YapariTrial-Wide.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Yapari";
+  src: url("/fonts/Yapari/YapariTrial-MediumWide.ttf") format("truetype");
+  font-weight: 500;
+}
+
+h1 {
+  font-family: "Yapari", sans-serif;
+  font-weight: 400;
 }
 
 html {

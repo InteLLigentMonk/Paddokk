@@ -2,10 +2,11 @@ import {
   ActionIcon,
   Avatar,
   Box,
-  Container,
+  Divider,
   Group,
   Kbd,
   Menu,
+  Title,
   UnstyledButton,
   rem,
 } from "@mantine/core";
@@ -30,16 +31,9 @@ function HeaderLogo() {
           cursor: "pointer",
         }}
       />
-      <Box
-        visibleFrom="md"
-        style={{
-          fontSize: rem(14),
-          color: "var(--mantine-color-dimmed)",
-        }}
-      >
-        {/* TODO: Implement car dropdown */}
-        My Car
-      </Box>
+      <Title order={1} fz={{ base: "1rem", sm: "1.25rem" }}>
+        Paddokk
+      </Title>
     </Group>
   );
 }
@@ -169,6 +163,7 @@ export function AppHeader() {
   return (
     <Box
       component="header"
+      p="sm"
       style={{
         position: "sticky",
         top: 0,
@@ -177,36 +172,32 @@ export function AppHeader() {
         backgroundColor: "var(--mantine-color-body)",
       }}
     >
-      <Container size="xl" py="sm">
-        <Group justify="space-between" wrap="nowrap">
-          <HeaderLogo />
+      {/* <Container size="xl" py="sm"> */}
+      <Group justify="space-between" wrap="nowrap">
+        <HeaderLogo />
 
-          <Box visibleFrom="md" style={{ flex: 1 }}>
-            <HeaderSearch />
+        <Box visibleFrom="md" style={{ flex: 1 }}>
+          <HeaderSearch />
+        </Box>
+
+        <Group gap="sm" wrap="nowrap">
+          <Box hiddenFrom="md">
+            <ActionIcon
+              variant="default"
+              size="lg"
+              aria-label="Search"
+              onClick={() => spotlight.open()}
+            >
+              <Search {...iconProps} />
+            </ActionIcon>
           </Box>
 
-          <Group gap="sm" wrap="nowrap">
-            <Box hiddenFrom="md">
-              <ActionIcon
-                variant="default"
-                size="lg"
-                aria-label="Search"
-                onClick={() => spotlight.open()}
-              >
-                <Search {...iconProps} />
-              </ActionIcon>
-            </Box>
+          <ColorSchemeToggle />
 
-            <ColorSchemeToggle />
-
-            <UserMenu
-              user={user}
-              onLogout={logout}
-              isLoggingOut={isLoggingOut}
-            />
-          </Group>
+          <UserMenu user={user} onLogout={logout} isLoggingOut={isLoggingOut} />
         </Group>
-      </Container>
+      </Group>
+      {/* </Container> */}
     </Box>
   );
 }
