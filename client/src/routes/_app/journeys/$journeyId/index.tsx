@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import {
   Container,
   Stack,
@@ -35,7 +35,7 @@ function PostsLoadingSkeleton() {
   );
 }
 
-export const Route = createFileRoute("/_app/me/journeys/$journeyId/")({
+export const Route = createFileRoute("/_app/journeys/$journeyId/")({
   loader: ({ params, context: { queryClient } }) =>
     queryClient.ensureQueryData(
       journeyDetailQueryOptions(Number(params.journeyId)),
@@ -46,6 +46,7 @@ export const Route = createFileRoute("/_app/me/journeys/$journeyId/")({
 function JourneyDetailPage() {
   const { journeyId } = Route.useParams();
   const id = Number(journeyId);
+  const router = useRouter();
 
   const { data: journey, error: journeyError } = useQuery(
     journeyDetailQueryOptions(id),
@@ -75,12 +76,11 @@ function JourneyDetailPage() {
       <Stack gap="xl">
         <Group>
           <Button
-            component={Link}
-            to="/me/journeys"
             variant="outline"
             leftSection={<ArrowLeft size={16} />}
+            onClick={() => router.history.back()}
           >
-            Tillbaka till mina resor
+            Tillbaka
           </Button>
         </Group>
 

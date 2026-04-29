@@ -1,17 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Container, Title, Text, Stack } from '@mantine/core'
+import { createFileRoute, Outlet } from "@tanstack/react-router"
 
-export const Route = createFileRoute('/_app/journeys')({
-  component: JourneysPage,
+export const Route = createFileRoute("/_app/journeys")({
+  component: () => <Outlet />,
 })
-
-function JourneysPage() {
-  return (
-    <Container size="lg" py="xl">
-      <Stack gap="md">
-        <Title order={1}>My Journeys</Title>
-        <Text c="dimmed">Manage your car journeys and build logs</Text>
-      </Stack>
-    </Container>
-  )
-}

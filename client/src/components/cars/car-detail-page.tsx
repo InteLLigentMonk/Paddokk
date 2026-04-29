@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { Image } from "@mantine/core";
-import { Link, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Edit, X, Check } from "lucide-react";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
@@ -169,7 +169,12 @@ export function CarDetailPage({
   return (
     <Container size="md" py="xl">
       <Group mb="lg">
-        <Anchor component={Link} to="/me/cars" c="dimmed" size="sm">
+        <Anchor
+          component="button"
+          c="dimmed"
+          size="sm"
+          onClick={() => router.history.back()}
+        >
           <Group gap={4}>
             <ArrowLeft size={14} />
             <span>{car.isOwner ? "Back to garage" : "Back"}</span>
