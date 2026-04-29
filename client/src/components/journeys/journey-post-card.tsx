@@ -180,7 +180,13 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
       </Card>
 
       {/* Desktop layout */}
-      <Paper withBorder radius="md" p="md" visibleFrom="md">
+      <Paper
+        withBorder
+        radius="md"
+        p="md"
+        visibleFrom="md"
+        bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))"
+      >
         <Grid gutter="md">
           <Grid.Col span={7}>{postContent}</Grid.Col>
           <Grid.Col span={5}>
