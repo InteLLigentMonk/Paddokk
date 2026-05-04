@@ -49,7 +49,7 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
     [journey.carMakeName, journey.carModelName, journey.carYear]
       .filter(Boolean)
       .join(" ") ||
-    "Okänd bil";
+    "Unknown Car";
 
   return (
     <Paper
@@ -73,10 +73,10 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
       <Stack gap="md" p="lg">
         <Group gap="xs" wrap="wrap">
           <Badge variant="light" color={STATUS_COLORS[status] ?? "gray"}>
-            {STATUS_LABELS[status] ?? "Okänd"}
+            {STATUS_LABELS[status] ?? "Unknown"}
           </Badge>
           <Badge variant="outline">
-            {CATEGORY_LABELS[category] ?? "Övrigt"}
+            {CATEGORY_LABELS[category] ?? "Other"}
           </Badge>
         </Group>
 
@@ -117,19 +117,19 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
             <Group gap={4}>
               <MessageSquare size={16} color="var(--mantine-color-dimmed)" />
               <Text size="sm" c="dimmed">
-                {Number(journey.postCount)} inlägg
+                {Number(journey.postCount)} posts
               </Text>
             </Group>
             <Group gap={4}>
               <Heart size={16} color="var(--mantine-color-dimmed)" />
               <Text size="sm" c="dimmed">
-                {Number(journey.likeCount)} gillningar
+                {Number(journey.likeCount)} likes
               </Text>
             </Group>
             <Group gap={4}>
               <Bell size={16} color="var(--mantine-color-dimmed)" />
               <Text size="sm" c="dimmed">
-                {Number(journey.subscriberCount)} följare
+                {Number(journey.subscriberCount)} subscribers
               </Text>
             </Group>
           </Group>

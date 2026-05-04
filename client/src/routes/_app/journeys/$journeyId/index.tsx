@@ -1,18 +1,17 @@
 import { useEffect } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Container,
   Stack,
-  Button,
-  Group,
   Text,
   Center,
   Alert,
   Skeleton,
+  Group,
   Box,
 } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import {
   journeyDetailQueryOptions,
@@ -20,6 +19,7 @@ import {
 } from "@/hooks/use-journey-detail";
 import { JourneyDetailHeader } from "@/components/journeys/journey-detail-header";
 import { JourneyPostCard } from "@/components/journeys/journey-post-card";
+import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 
 function PostsLoadingSkeleton() {
   return (
@@ -46,7 +46,6 @@ export const Route = createFileRoute("/_app/journeys/$journeyId/")({
 function JourneyDetailPage() {
   const { journeyId } = Route.useParams();
   const id = Number(journeyId);
-  const router = useRouter();
 
   const { data: journey, error: journeyError } = useQuery(
     journeyDetailQueryOptions(id),
@@ -74,15 +73,7 @@ function JourneyDetailPage() {
   return (
     <Container size="lg" py="xl">
       <Stack gap="xl">
-        <Group>
-          <Button
-            variant="outline"
-            leftSection={<ArrowLeft size={16} />}
-            onClick={() => router.history.back()}
-          >
-            Tillbaka
-          </Button>
-        </Group>
+        <PageBreadcrumbs current={journey?.title ?? "Journey"} />
 
         {journeyError && (
           <Alert icon={<AlertCircle size={16} />} title="Fel" color="red">
