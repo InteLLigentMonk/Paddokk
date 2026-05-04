@@ -1,18 +1,27 @@
 import { Box, Group } from '@mantine/core'
+import { Menu } from 'lucide-react'
 import { NavItem } from './nav-item'
 import { FABMenu } from './fab-menu'
 import { navigationConfig } from '@/data/navigation/app-navigation'
+import type { NavItem as NavItemType } from '@/data/navigation/types'
+
+const MORE_ITEM: NavItemType = {
+  id: 'more',
+  label: 'More',
+  icon: Menu,
+  group: 'me',
+}
 
 interface MobileBottomBarProps {
   onMoreClick: () => void
 }
 
 export function MobileBottomBar({ onMoreClick }: MobileBottomBarProps) {
-  // Get first 3 primary items (Dashboard, Journeys, Explore)
-  const leftItems = navigationConfig.primary.slice(0, 3)
+  // Me: exclude desktopOnly items → [Feed, My Journeys, My Cars]
+  const leftItems = navigationConfig.me.filter((item) => !item.desktopOnly)
 
-  // Get last 3 primary items (Cars, Community, More)
-  const rightItems = navigationConfig.primary.slice(3)
+  // Discover: first 2 items → [Explore, Journeys], then More
+  const rightItems = [...navigationConfig.discover.slice(0, 2), MORE_ITEM]
 
   return (
     <Box
@@ -40,27 +49,17 @@ export function MobileBottomBar({ onMoreClick }: MobileBottomBarProps) {
         wrap="nowrap"
         style={{ position: 'relative' }}
       >
-        {/* Left section - 3 items */}
         {leftItems.map((item) => (
           <NavItem key={item.id} item={item} />
         ))}
 
-        {/* Center FAB */}
         <Box style={{ flexShrink: 0 }}>
           <FABMenu />
         </Box>
 
-        {/* Right section - 3 items */}
         {rightItems.map((item) => {
-          // Special handling for "More" button
           if (item.id === 'more') {
-            return (
-              <NavItem
-                key={item.id}
-                item={item}
-                onClick={onMoreClick}
-              />
-            )
+            return <NavItem key={item.id} item={item} onClick={onMoreClick} />
           }
           return <NavItem key={item.id} item={item} />
         })}

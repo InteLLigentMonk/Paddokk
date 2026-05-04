@@ -18,15 +18,20 @@ import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AppWiringHarnessRouteImport } from './routes/_app/wiring-harness'
 import { Route as AppSubscriptionRouteImport } from './routes/_app/subscription'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
 import { Route as AppMeRouteImport } from './routes/_app/me'
+import { Route as AppMarketplaceRouteImport } from './routes/_app/marketplace'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
 import { Route as AppJourneysRouteImport } from './routes/_app/journeys'
+import { Route as AppInventoryRouteImport } from './routes/_app/inventory'
 import { Route as AppGalleryRouteImport } from './routes/_app/gallery'
+import { Route as AppFeedRouteImport } from './routes/_app/feed'
 import { Route as AppExploreRouteImport } from './routes/_app/explore'
+import { Route as AppEventsRouteImport } from './routes/_app/events'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCommunityRouteImport } from './routes/_app/community'
 import { Route as AppCarsRouteImport } from './routes/_app/cars'
@@ -83,6 +88,11 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const AppWiringHarnessRoute = AppWiringHarnessRouteImport.update({
+  id: '/wiring-harness',
+  path: '/wiring-harness',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSubscriptionRoute = AppSubscriptionRouteImport.update({
   id: '/subscription',
   path: '/subscription',
@@ -108,6 +118,11 @@ const AppMeRoute = AppMeRouteImport.update({
   path: '/me',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMarketplaceRoute = AppMarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
@@ -118,14 +133,29 @@ const AppJourneysRoute = AppJourneysRouteImport.update({
   path: '/journeys',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppGalleryRoute = AppGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFeedRoute = AppFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppExploreRoute = AppExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEventsRoute = AppEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -200,15 +230,20 @@ export interface FileRoutesByFullPath {
   '/cars': typeof AppCarsRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/dashboard': typeof AppDashboardRoute
+  '/events': typeof AppEventsRoute
   '/explore': typeof AppExploreRoute
+  '/feed': typeof AppFeedRoute
   '/gallery': typeof AppGalleryRoute
+  '/inventory': typeof AppInventoryRoute
   '/journeys': typeof AppJourneysRouteWithChildren
   '/knowledge': typeof AppKnowledgeRoute
+  '/marketplace': typeof AppMarketplaceRoute
   '/me': typeof AppMeRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
   '/subscription': typeof AppSubscriptionRoute
+  '/wiring-harness': typeof AppWiringHarnessRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
@@ -229,14 +264,19 @@ export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
   '/community': typeof AppCommunityRoute
   '/dashboard': typeof AppDashboardRoute
+  '/events': typeof AppEventsRoute
   '/explore': typeof AppExploreRoute
+  '/feed': typeof AppFeedRoute
   '/gallery': typeof AppGalleryRoute
+  '/inventory': typeof AppInventoryRoute
   '/knowledge': typeof AppKnowledgeRoute
+  '/marketplace': typeof AppMarketplaceRoute
   '/me': typeof AppMeRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
   '/subscription': typeof AppSubscriptionRoute
+  '/wiring-harness': typeof AppWiringHarnessRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
@@ -259,15 +299,20 @@ export interface FileRoutesById {
   '/_app/cars': typeof AppCarsRouteWithChildren
   '/_app/community': typeof AppCommunityRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/events': typeof AppEventsRoute
   '/_app/explore': typeof AppExploreRoute
+  '/_app/feed': typeof AppFeedRoute
   '/_app/gallery': typeof AppGalleryRoute
+  '/_app/inventory': typeof AppInventoryRoute
   '/_app/journeys': typeof AppJourneysRouteWithChildren
   '/_app/knowledge': typeof AppKnowledgeRoute
+  '/_app/marketplace': typeof AppMarketplaceRoute
   '/_app/me': typeof AppMeRouteWithChildren
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/subscription': typeof AppSubscriptionRoute
+  '/_app/wiring-harness': typeof AppWiringHarnessRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
@@ -292,15 +337,20 @@ export interface FileRouteTypes {
     | '/cars'
     | '/community'
     | '/dashboard'
+    | '/events'
     | '/explore'
+    | '/feed'
     | '/gallery'
+    | '/inventory'
     | '/journeys'
     | '/knowledge'
+    | '/marketplace'
     | '/me'
     | '/notifications'
     | '/profile'
     | '/settings'
     | '/subscription'
+    | '/wiring-harness'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
@@ -321,14 +371,19 @@ export interface FileRouteTypes {
     | '/'
     | '/community'
     | '/dashboard'
+    | '/events'
     | '/explore'
+    | '/feed'
     | '/gallery'
+    | '/inventory'
     | '/knowledge'
+    | '/marketplace'
     | '/me'
     | '/notifications'
     | '/profile'
     | '/settings'
     | '/subscription'
+    | '/wiring-harness'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
@@ -350,15 +405,20 @@ export interface FileRouteTypes {
     | '/_app/cars'
     | '/_app/community'
     | '/_app/dashboard'
+    | '/_app/events'
     | '/_app/explore'
+    | '/_app/feed'
     | '/_app/gallery'
+    | '/_app/inventory'
     | '/_app/journeys'
     | '/_app/knowledge'
+    | '/_app/marketplace'
     | '/_app/me'
     | '/_app/notifications'
     | '/_app/profile'
     | '/_app/settings'
     | '/_app/subscription'
+    | '/_app/wiring-harness'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/reset-password'
@@ -449,6 +509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_app/wiring-harness': {
+      id: '/_app/wiring-harness'
+      path: '/wiring-harness'
+      fullPath: '/wiring-harness'
+      preLoaderRoute: typeof AppWiringHarnessRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/subscription': {
       id: '/_app/subscription'
       path: '/subscription'
@@ -484,6 +551,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/marketplace': {
+      id: '/_app/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof AppMarketplaceRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/knowledge': {
       id: '/_app/knowledge'
       path: '/knowledge'
@@ -498,6 +572,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppJourneysRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/inventory': {
+      id: '/_app/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/gallery': {
       id: '/_app/gallery'
       path: '/gallery'
@@ -505,11 +586,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGalleryRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/feed': {
+      id: '/_app/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof AppFeedRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/explore': {
       id: '/_app/explore'
       path: '/explore'
       fullPath: '/explore'
       preLoaderRoute: typeof AppExploreRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/events': {
+      id: '/_app/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof AppEventsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/dashboard': {
@@ -675,30 +770,40 @@ interface AppRouteChildren {
   AppCarsRoute: typeof AppCarsRouteWithChildren
   AppCommunityRoute: typeof AppCommunityRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppEventsRoute: typeof AppEventsRoute
   AppExploreRoute: typeof AppExploreRoute
+  AppFeedRoute: typeof AppFeedRoute
   AppGalleryRoute: typeof AppGalleryRoute
+  AppInventoryRoute: typeof AppInventoryRoute
   AppJourneysRoute: typeof AppJourneysRouteWithChildren
   AppKnowledgeRoute: typeof AppKnowledgeRoute
+  AppMarketplaceRoute: typeof AppMarketplaceRoute
   AppMeRoute: typeof AppMeRouteWithChildren
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSubscriptionRoute: typeof AppSubscriptionRoute
+  AppWiringHarnessRoute: typeof AppWiringHarnessRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppCarsRoute: AppCarsRouteWithChildren,
   AppCommunityRoute: AppCommunityRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppEventsRoute: AppEventsRoute,
   AppExploreRoute: AppExploreRoute,
+  AppFeedRoute: AppFeedRoute,
   AppGalleryRoute: AppGalleryRoute,
+  AppInventoryRoute: AppInventoryRoute,
   AppJourneysRoute: AppJourneysRouteWithChildren,
   AppKnowledgeRoute: AppKnowledgeRoute,
+  AppMarketplaceRoute: AppMarketplaceRoute,
   AppMeRoute: AppMeRouteWithChildren,
   AppNotificationsRoute: AppNotificationsRoute,
   AppProfileRoute: AppProfileRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSubscriptionRoute: AppSubscriptionRoute,
+  AppWiringHarnessRoute: AppWiringHarnessRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
