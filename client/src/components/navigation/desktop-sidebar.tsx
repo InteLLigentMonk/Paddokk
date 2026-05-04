@@ -8,8 +8,10 @@ const iconProps = { size: 18, strokeWidth: 1.5 } as const
 
 export function DesktopSidebar() {
   const { logout, isLoggingOut } = useAuth()
-  // Filter out "More" from primary since we show all secondary items on desktop
-  const primaryItems = navigationConfig.primary.filter((item) => item.id !== 'more')
+
+  const meItems = navigationConfig.me.filter((item) => !item.mobileOnly)
+  const discoverItems = navigationConfig.discover
+  const toolItems = navigationConfig.tools
 
   return (
     <Box
@@ -29,13 +31,19 @@ export function DesktopSidebar() {
       }}
     >
       <Stack gap="sm" p="md" align="center" style={{ flex: 1 }}>
-        {primaryItems.map((item) => (
+        {meItems.map((item) => (
           <NavItem key={item.id} item={item} showTooltip />
         ))}
 
         <Divider style={{ width: '100%' }} my="xs" />
 
-        {navigationConfig.secondary.map((item) => (
+        {discoverItems.map((item) => (
+          <NavItem key={item.id} item={item} showTooltip />
+        ))}
+
+        <Divider style={{ width: '100%' }} my="xs" />
+
+        {toolItems.map((item) => (
           <NavItem key={item.id} item={item} showTooltip />
         ))}
       </Stack>

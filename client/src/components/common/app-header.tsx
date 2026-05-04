@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Avatar,
   Box,
-  Divider,
   Group,
   Kbd,
   Menu,

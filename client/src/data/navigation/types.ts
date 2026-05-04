@@ -1,17 +1,20 @@
-import type { LucideIcon } from 'lucide-react'
+import type { LucideIcon } from "lucide-react";
 
 export interface NavItem {
-  id: string
-  label: string
-  href?: string // Optional for action items
-  icon: LucideIcon
-  badge?: number // For notification counts
-  action?: () => void // For FAB menu items
-  group: 'primary' | 'secondary'
+  id: string;
+  label: string;
+  href?: string;
+  icon: LucideIcon;
+  badge?: number;
+  action?: () => void;
+  desktopOnly?: boolean;
+  mobileOnly?: boolean;
+  group: "me" | "discover" | "tools";
 }
 
 export interface NavConfig {
-  primary: NavItem[]
-  secondary: NavItem[]
-  fabActions: NavItem[]
+  me: NavItem[];
+  discover: NavItem[];
+  tools: NavItem[];
+  fabActions: NavItem[];
 }
