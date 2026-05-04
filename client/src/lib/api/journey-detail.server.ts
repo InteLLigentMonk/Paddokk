@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { userJourneysGetUserJourney } from "@/generated/api/user-journeys/user-journeys";
-import { journeysGetJourneyPosts } from "@/generated/api/journeys/journeys";
+import { journeysGetJourney, journeysGetJourneyPosts } from "@/generated/api/journeys/journeys";
 import {
   postCommentsGetPostComments,
   postCommentsCreateComment,
@@ -30,7 +29,7 @@ const createCommentSchema = z.object({
 export const getJourneyDetailFn = createServerFn({ method: "GET" })
   .inputValidator(journeyIdSchema)
   .handler(async ({ data: { journeyId } }) => {
-    const result = await userJourneysGetUserJourney(journeyId);
+    const result = await journeysGetJourney(journeyId);
     return result.data as JourneyDto;
   });
 
