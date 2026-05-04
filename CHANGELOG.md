@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.12.0...v0.13.0) (2026-05-04)
+
+
+### Features
+
+* **routing:** replace back buttons with automatic breadcrumbs ([#62](https://github.com/InteLLigentMonk/Paddokk/issues/62)) ([c760b60](https://github.com/InteLLigentMonk/Paddokk/commit/c760b60a0c2be007b85f9936c76aa5f915c9966b))
+
 ## [0.12.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.3...v0.12.0) (2026-05-04)
 
 
