@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.3...v0.12.0) (2026-05-04)
+
+
+### Features
+
+* **journey:** mount create journey modal globally and navigate to detail on creation ([#60](https://github.com/InteLLigentMonk/Paddokk/issues/60)) ([73034c3](https://github.com/InteLLigentMonk/Paddokk/commit/73034c318879d3122ea510dca6a02d34f6a8b5c3))
+
 ## [0.11.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.2...v0.11.3) (2026-05-04)
 
 
