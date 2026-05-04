@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  Box,
   Container,
   Title,
   Text,
@@ -8,7 +9,6 @@ import {
   Button,
   TextInput,
   Badge,
-  Anchor,
   Divider,
   Paper,
   SimpleGrid,
@@ -16,8 +16,9 @@ import {
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { Image } from "@mantine/core";
+import { Edit, X, Check } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Edit, X, Check } from "lucide-react";
+import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
 import { updateUserCarFn } from "@/lib/api/user-cars.server";
@@ -172,20 +173,10 @@ export function CarDetailPage({
   };
 
   return (
-    <Container size="md" py="xl">
-      <Group mb="lg">
-        <Anchor
-          component="button"
-          c="dimmed"
-          size="sm"
-          onClick={() => router.history.back()}
-        >
-          <Group gap={4}>
-            <ArrowLeft size={14} />
-            <span>{car.isOwner ? "Back to garage" : "Back"}</span>
-          </Group>
-        </Anchor>
-      </Group>
+    <Container size="lg" py="xl">
+      <Box mb="lg">
+        <PageBreadcrumbs current={displayName} />
+      </Box>
 
       <Group justify="space-between" mb="lg" align="flex-start">
         <Stack gap={4}>

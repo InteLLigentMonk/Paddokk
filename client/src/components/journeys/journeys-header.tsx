@@ -40,7 +40,7 @@ export function JourneysHeader() {
         style={{ minWidth: 140 }}
         visibleFrom="md"
       >
-        {canAdd || isLoading ? "Ny resa" : "Upgrade"}
+        {canAdd || isLoading ? "New Journey" : "Upgrade"}
       </Button>
     </Group>
   );

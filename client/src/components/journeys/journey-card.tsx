@@ -45,10 +45,10 @@ const STATUS_ON_HOLD: JourneyStatus = 3;
 const STATUS_ARCHIVED: JourneyStatus = 4;
 
 const STATUS_LABELS: Record<number, string> = {
-  1: "Aktiv",
-  2: "Slutförd",
-  3: "Parkerad",
-  4: "Arkiverad",
+  1: "Active",
+  2: "Finished",
+  3: "Parked",
+  4: "Archived",
 };
 
 const STATUS_COLORS: Record<number, string> = {
@@ -163,10 +163,10 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                 color={STATUS_COLORS[status] ?? "gray"}
                 size="sm"
               >
-                {STATUS_LABELS[status] ?? "Okänd"}
+                {STATUS_LABELS[status] ?? "Unknown"}
               </Badge>
               <Badge variant="outline" size="sm">
-                {CATEGORY_LABELS[Number(journey.category)] ?? "Övrigt"}
+                {CATEGORY_LABELS[Number(journey.category)] ?? "Other"}
               </Badge>
               {isDefault && (
                 <Badge
@@ -175,7 +175,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                   size="sm"
                   leftSection={<Star size={10} />}
                 >
-                  Aktiv resa
+                  Active Journey
                 </Badge>
               )}
             </Group>
@@ -210,7 +210,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                   openEditJourneyModal(journeyId);
                 }}
               >
-                Redigera
+                Edit
               </Menu.Item>
 
               {status !== STATUS_ARCHIVED && <Menu.Divider />}
@@ -223,7 +223,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                     transitionTo(STATUS_ON_HOLD);
                   }}
                 >
-                  Parkera resa
+                  Park
                 </Menu.Item>
               )}
               {status === STATUS_ON_HOLD && (
@@ -234,7 +234,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                     transitionTo(STATUS_ACTIVE);
                   }}
                 >
-                  Publicera resa
+                  Make public
                 </Menu.Item>
               )}
               {(status === STATUS_ACTIVE || status === STATUS_ON_HOLD) && (
@@ -245,7 +245,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                     transitionTo(STATUS_COMPLETED, new Date().toISOString());
                   }}
                 >
-                  Slutför resa
+                  Complete Journey
                 </Menu.Item>
               )}
               {status !== STATUS_ARCHIVED && (
@@ -256,7 +256,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                     transitionTo(STATUS_ARCHIVED);
                   }}
                 >
-                  Arkivera
+                  Archive
                 </Menu.Item>
               )}
 
@@ -270,7 +270,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                       setDefaultMutation.mutate();
                     }}
                   >
-                    Sätt som aktiv resa
+                    Set as Active Journey
                   </Menu.Item>
                 </>
               )}
@@ -284,7 +284,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                   openDeleteJourneyConfirm(journeyId);
                 }}
               >
-                Ta bort
+                Delete
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -314,11 +314,11 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
 
           <Stack gap={2} align="flex-end">
             <Text size="xs" c="dimmed">
-              Start: {formatDate(journey.createdAt)}
+              Started: {formatDate(journey.createdAt)}
             </Text>
             {journey.targetCompletedAt && (
               <Text size="xs" c="dimmed">
-                Mål: {formatDate(journey.targetCompletedAt)}
+                Finished: {formatDate(journey.targetCompletedAt)}
               </Text>
             )}
           </Stack>
