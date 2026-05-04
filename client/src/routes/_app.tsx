@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/common/app-header";
 import { AppSpotlight } from "@/components/common/app-spotlight";
 import { AppNavigation } from "@/components/navigation/app-navigation";
 import { AddCarModal } from "@/components/cars/add-car-modal";
+import { CreateJourneyModal } from "@/components/journeys/create-journey-modal";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: ({ context }) => {
@@ -44,6 +45,7 @@ function AppLayout() {
         <Outlet />
       </Box>
       <AddCarModal />
+      <CreateJourneyModal />
     </Box>
   );
 }

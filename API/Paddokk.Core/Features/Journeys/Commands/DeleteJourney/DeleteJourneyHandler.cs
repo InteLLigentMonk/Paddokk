@@ -1,6 +1,7 @@
 using MediatR;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
+using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Journeys.Commands.DeleteJourney;
 
@@ -16,7 +17,12 @@ public sealed class DeleteJourneyHandler(IJourneyRepository journeyRepository, I
 
         var user = await journeyRepository.GetUserAsync(actor.UserId, cancellationToken);
         if (user?.DefaultActiveJourneyId == request.JourneyId)
-            await journeyRepository.UpdateUserDefaultJourneyAsync(actor.UserId, null, cancellationToken);
+        {
+            var allJourneys = await journeyRepository.GetUserJourneysAsync(actor.UserId, cancellationToken);
+            var nextDefault = allJourneys
+                .FirstOrDefault(j => j.Id != request.JourneyId && j.Status == JourneyStatus.Active);
+            await journeyRepository.UpdateUserDefaultJourneyAsync(actor.UserId, nextDefault?.Id, cancellationToken);
+        }
 
         await journeyRepository.DeleteJourneyAsync(request.JourneyId, cancellationToken);
         return Result.Success();

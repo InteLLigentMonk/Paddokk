@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react"
-import { Button, Checkbox, Group, Modal, Select, Stack, Text, TextInput } from "@mantine/core"
+import { useNavigate } from "@tanstack/react-router"
+import { Badge, Button, Checkbox, Group, Modal, Select, Stack, Text, TextInput } from "@mantine/core"
 import { useStore } from "@tanstack/react-store"
 import { useForm } from "@tanstack/react-form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -7,6 +8,7 @@ import {
   journeysPageStore,
   closeCreateJourneyModal,
 } from "@/lib/stores/journeys-page-store"
+import { useCanAddJourney } from "@/hooks/use-can-add-journey"
 import { createJourneyFn } from "@/lib/api/user-journeys.server"
 import { getUserCarsFn } from "@/lib/api/user-cars.server"
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys"
@@ -38,7 +40,20 @@ function getCarLabel(car: {
 export function CreateJourneyModal() {
   const isOpen = useStore(journeysPageStore, (state) => state.modals.createJourney)
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const notifications = useNotifications()
+  const { currentCount, maxJourneys } = useCanAddJourney()
+
+  const modalTitle = (
+    <Group gap="xs" align="center">
+      <Text fw={600}>New journey</Text>
+      {maxJourneys != null && currentCount != null && (
+        <Badge variant="light" size="sm">
+          {currentCount}/{maxJourneys}
+        </Badge>
+      )}
+    </Group>
+  )
 
   const [description, setDescription] = useState("")
   const [coverFile, setCoverFile] = useState<File | null>(null)
@@ -94,8 +109,13 @@ export function CreateJourneyModal() {
         }
 
         queryClient.invalidateQueries({ queryKey: ["user-journeys"] })
+        queryClient.invalidateQueries({ queryKey: ["journey-limits"] })
+        if (value.setAsDefaultActive) {
+          queryClient.invalidateQueries({ queryKey: ["default-active-journey"] })
+        }
         notifications.success({ message: "Journey created!" })
         handleClose()
+        navigate({ to: "/journeys/$journeyId", params: { journeyId: String(journey.id) } })
       } catch {
         notifications.error({ message: "Failed to create journey" })
         setIsSubmitting(false)
@@ -119,7 +139,7 @@ export function CreateJourneyModal() {
   }
 
   return (
-    <Modal opened={isOpen} onClose={handleClose} title="New journey" centered size="lg">
+    <Modal opened={isOpen} onClose={handleClose} title={modalTitle} centered size="lg">
       <form
         onSubmit={(e) => {
           e.preventDefault()

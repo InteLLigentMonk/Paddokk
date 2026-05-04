@@ -1,8 +1,21 @@
 import { Group, Title, Text, Button, Stack } from "@mantine/core";
-import { Plus } from "lucide-react";
+import { Plus, TrendingUp } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { openCreateJourneyModal } from "@/lib/stores/journeys-page-store";
+import { useCanAddJourney } from "@/hooks/use-can-add-journey";
 
 export function JourneysHeader() {
+  const navigate = useNavigate();
+  const { canAdd, isLoading } = useCanAddJourney();
+
+  const handleNewJourney = () => {
+    if (canAdd) {
+      openCreateJourneyModal();
+    } else {
+      navigate({ to: "/subscription", search: {} });
+    }
+  };
+
   return (
     <Group
       justify="space-between"
@@ -19,11 +32,15 @@ export function JourneysHeader() {
       </Stack>
 
       <Button
-        leftSection={<Plus size={18} />}
-        onClick={openCreateJourneyModal}
+        leftSection={
+          canAdd || isLoading ? <Plus size={18} /> : <TrendingUp size={18} />
+        }
+        onClick={handleNewJourney}
+        loading={isLoading}
         style={{ minWidth: 140 }}
+        visibleFrom="md"
       >
-        Ny resa
+        {canAdd || isLoading ? "Ny resa" : "Upgrade"}
       </Button>
     </Group>
   );
