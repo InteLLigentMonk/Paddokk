@@ -83,7 +83,12 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
         <Title order={2}>{journey.title}</Title>
 
         {journey.description && (
-          <ExpandableText text={journey.description} maxLines={5} c="dimmed" />
+          <ExpandableText
+            text={journey.description}
+            maxLines={2}
+            c="dimmed"
+            isHtml
+          />
         )}
 
         <Divider />

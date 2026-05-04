@@ -119,8 +119,8 @@ export const navigationConfig: NavConfig = {
   ],
   fabActions: [
     {
-      id: "create-journey",
-      label: "Create Journey",
+      id: "new-journey",
+      label: "New Journey",
       icon: MapPinned,
       group: "me",
     },

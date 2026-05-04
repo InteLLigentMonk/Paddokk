@@ -47,7 +47,10 @@ export function CarDetailPage({
   images,
   startInEditMode,
 }: CarDetailPageProps) {
-  const carAny = car as typeof car & { isCustomBuild?: boolean; customBuildName?: string | null };
+  const carAny = car as typeof car & {
+    isCustomBuild?: boolean;
+    customBuildName?: string | null;
+  };
 
   const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
   const [isSaving, setIsSaving] = useState(false);
@@ -55,7 +58,9 @@ export function CarDetailPage({
   const [nickname, setNickname] = useState(car.nickname ?? "");
   const [color, setColor] = useState(car.color ?? "");
   const [specs, setSpecs] = useState(car.description ?? "");
-  const [customBuildName, setCustomBuildName] = useState(carAny.customBuildName ?? "");
+  const [customBuildName, setCustomBuildName] = useState(
+    carAny.customBuildName ?? "",
+  );
 
   const [existingImages, setExistingImages] = useState<CarImageDto[]>(images);
   const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
@@ -184,11 +189,16 @@ export function CarDetailPage({
 
       <Group justify="space-between" mb="lg" align="flex-start">
         <Stack gap={4}>
-          <Title order={1}>{displayName}</Title>
+          <Title order={2}>{displayName}</Title>
           <Text c="dimmed">
             {carAny.isCustomBuild
               ? "Custom Build"
-              : [car.carMakeName, car.carModelName, car.carGenerationName, String(car.year ?? "")]
+              : [
+                  car.carMakeName,
+                  car.carModelName,
+                  car.carGenerationName,
+                  String(car.year ?? ""),
+                ]
                   .filter(Boolean)
                   .join(" · ")}
           </Text>

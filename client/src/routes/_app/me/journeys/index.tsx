@@ -8,7 +8,6 @@ import {
 } from "@/lib/api/user-journeys.server";
 import { JourneysHeader } from "@/components/journeys/journeys-header";
 import { JourneysGrid } from "@/components/journeys/journeys-grid";
-import { CreateJourneyModal } from "@/components/journeys/create-journey-modal";
 import { EditJourneyModal } from "@/components/journeys/edit-journey-modal";
 import { DeleteJourneyConfirm } from "@/components/journeys/delete-journey-confirm";
 import { openCreateJourneyModal } from "@/lib/stores/journeys-page-store";
@@ -55,7 +54,6 @@ function JourneysPage() {
         )}
       </Stack>
 
-      <CreateJourneyModal />
       <EditJourneyModal />
       <DeleteJourneyConfirm />
     </Container>

@@ -37,6 +37,7 @@ export function DeleteJourneyConfirm() {
       notifications.success({ message: "Resan borttagen" });
       queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
       queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
+      queryClient.invalidateQueries({ queryKey: ["journey-limits"] });
       closeDeleteJourneyConfirm();
     },
   });
