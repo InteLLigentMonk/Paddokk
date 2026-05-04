@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.2...v0.11.3) (2026-05-04)
+
+
+### Refactoring
+
+* **ui:** restructure navigation into Me / Discover / Tools groups ([#58](https://github.com/InteLLigentMonk/Paddokk/issues/58)) ([98a8d1a](https://github.com/InteLLigentMonk/Paddokk/commit/98a8d1adb625f71fb41179425bd776b2c8d45325))
+
 ## [0.11.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.11.1...v0.11.2) (2026-04-29)
 
 
