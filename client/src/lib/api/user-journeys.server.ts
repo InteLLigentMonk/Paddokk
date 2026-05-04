@@ -6,10 +6,27 @@ import {
   userJourneysDeleteJourney,
   userJourneysUpdateJourney,
   userJourneysSetDefaultActiveJourney,
+  userJourneysCreateJourney,
 } from "@/generated/api/user-journeys/user-journeys";
-import type { JourneyDto } from "@/generated/api/schemas";
+import type { JourneyDto, CreateJourneyCommand } from "@/generated/api/schemas";
 
 const journeyIdSchema = z.object({ journeyId: z.coerce.number() });
+
+const createJourneySchema = z.object({
+  title: z.string().min(3).max(200),
+  description: z.string().nullable().optional(),
+  category: z.number(),
+  userCarId: z.coerce.number(),
+  setAsDefaultActive: z.boolean().optional(),
+  targetCompletedAt: z.string().nullable().optional(),
+});
+
+export const createJourneyFn = createServerFn({ method: "POST" })
+  .inputValidator(createJourneySchema)
+  .handler(async ({ data }) => {
+    const result = await userJourneysCreateJourney(data as CreateJourneyCommand);
+    return result.data as JourneyDto;
+  });
 
 const updateJourneySchema = z.object({
   journeyId: z.coerce.number(),

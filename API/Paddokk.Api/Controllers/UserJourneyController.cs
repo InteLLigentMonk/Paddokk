@@ -8,6 +8,7 @@ using Paddokk.Core.Features.Journeys.Commands.CreateJourney;
 using Paddokk.Core.Features.Journeys.Commands.DeleteJourney;
 using Paddokk.Core.Features.Journeys.Commands.SetDefaultActiveJourney;
 using Paddokk.Core.Features.Journeys.Commands.UpdateJourney;
+using Paddokk.Core.Features.Journeys.Commands.UploadJourneyCoverImage;
 using Paddokk.Core.Features.Journeys.Queries.CanCreateJourney;
 using Paddokk.Core.Features.Journeys.Queries.GetDefaultActiveJourney;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyById;
@@ -121,5 +122,14 @@ public class UserJourneysController(ISender sender) : ApiControllerBase
     {
         var result = await sender.Send(new CanCreateJourneyQuery(), ct);
         return Ok(result);
+    }
+
+    [HttpPost("{journeyId}/cover-image")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Upload journey cover image")]
+    public async Task<ActionResult<JourneyDto>> UploadJourneyCoverImage(int journeyId, IFormFile file, CancellationToken ct)
+    {
+        var result = await sender.Send(new UploadJourneyCoverImageCommand(journeyId, file), ct);
+        return OkOrError(result);
     }
 }

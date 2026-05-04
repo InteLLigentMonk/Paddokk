@@ -1,31 +1,236 @@
-import { Modal, Stack, Text } from "@mantine/core";
-import { useStore } from "@tanstack/react-store";
+import { useState, useMemo } from "react"
+import { Button, Checkbox, Group, Modal, Select, Stack, Text, TextInput } from "@mantine/core"
+import { useStore } from "@tanstack/react-store"
+import { useForm } from "@tanstack/react-form"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   journeysPageStore,
   closeCreateJourneyModal,
-} from "@/lib/stores/journeys-page-store";
+} from "@/lib/stores/journeys-page-store"
+import { createJourneyFn } from "@/lib/api/user-journeys.server"
+import { getUserCarsFn } from "@/lib/api/user-cars.server"
+import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys"
+import { RichTextEditor } from "@/components/shared/rich-text-editor"
+import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone"
+import { useNotifications } from "@/integrations/mantine"
+
+const JOURNEY_CATEGORIES = [
+  { value: "1", label: "Build & Mods" },
+  { value: "2", label: "Restoration" },
+  { value: "3", label: "Racing" },
+  { value: "4", label: "Adventures" },
+  { value: "5", label: "Ownership" },
+]
+
+function getCarLabel(car: {
+  isCustomBuild: boolean
+  customBuildName?: string | null
+  carMakeName?: string | null
+  carModelName?: string | null
+  carYear?: number | string | null
+  carNickname?: string | null
+}): string {
+  if (car.isCustomBuild) return car.customBuildName || "Custom Build"
+  const parts = [car.carMakeName, car.carModelName, car.carYear].filter(Boolean).join(" ")
+  return car.carNickname ? `${parts} (${car.carNickname})` : parts
+}
 
 export function CreateJourneyModal() {
-  const isOpen = useStore(
-    journeysPageStore,
-    (state) => state.modals.createJourney,
-  );
+  const isOpen = useStore(journeysPageStore, (state) => state.modals.createJourney)
+  const queryClient = useQueryClient()
+  const notifications = useNotifications()
+
+  const [description, setDescription] = useState("")
+  const [coverFile, setCoverFile] = useState<File | null>(null)
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { data: carsData } = useQuery({
+    queryKey: ["user-cars"],
+    queryFn: () => getUserCarsFn(),
+    enabled: isOpen,
+  })
+
+  const cars = carsData?.cars ?? []
+
+  const carsSelectData = useMemo(
+    () =>
+      cars.map((car) => ({
+        value: String(car.id),
+        label: getCarLabel(car),
+      })),
+    [cars],
+  )
+
+  const primaryCarId = useMemo(
+    () => cars.find((c) => c.isPrimary)?.id ?? cars[0]?.id ?? null,
+    [cars],
+  )
+
+  const form = useForm({
+    defaultValues: {
+      title: "",
+      category: "" as string,
+      userCarId: "" as string,
+      setAsDefaultActive: true,
+    },
+    onSubmit: async ({ value }) => {
+      const effectiveCarId = Number(value.userCarId) || Number(primaryCarId)
+      if (!effectiveCarId || !value.category) return
+      setIsSubmitting(true)
+      try {
+        const journey = await createJourneyFn({
+          data: {
+            title: value.title,
+            description: description || null,
+            category: Number(value.category),
+            userCarId: effectiveCarId,
+            setAsDefaultActive: value.setAsDefaultActive,
+          },
+        })
+
+        if (coverFile) {
+          await userJourneysUploadJourneyCoverImage(journey.id, { file: coverFile })
+        }
+
+        queryClient.invalidateQueries({ queryKey: ["user-journeys"] })
+        notifications.success({ message: "Journey created!" })
+        handleClose()
+      } catch {
+        notifications.error({ message: "Failed to create journey" })
+        setIsSubmitting(false)
+      }
+    },
+  })
+
+  const handleClose = () => {
+    form.reset()
+    setDescription("")
+    if (coverPreviewUrl) URL.revokeObjectURL(coverPreviewUrl)
+    setCoverFile(null)
+    setCoverPreviewUrl(null)
+    setIsSubmitting(false)
+    closeCreateJourneyModal()
+  }
+
+  const handleCoverChange = (file: File | null, previewUrl: string | null) => {
+    setCoverFile(file)
+    setCoverPreviewUrl(previewUrl)
+  }
 
   return (
-    <Modal
-      opened={isOpen}
-      onClose={closeCreateJourneyModal}
-      title="Ny resa"
-      centered
-      size="lg"
-    >
-      <Stack gap="md">
-        <Text c="dimmed">
-          Formulär för att skapa en ny resa kommer snart. Här kommer du kunna
-          välja bil, kategori, måldatum och skriva ditt första inlägg med
-          bilder.
-        </Text>
-      </Stack>
+    <Modal opened={isOpen} onClose={handleClose} title="New journey" centered size="lg">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}
+      >
+        <Stack gap="md">
+          <CoverImageDropzone
+            previewUrl={coverPreviewUrl}
+            onChange={handleCoverChange}
+          />
+
+          <form.Field
+            name="title"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value?.trim()) return "Title is required"
+                if (value.trim().length < 3) return "Title must be at least 3 characters"
+                return undefined
+              },
+            }}
+          >
+            {(field) => (
+              <TextInput
+                label="Title"
+                placeholder="Give your journey a name"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+                required
+              />
+            )}
+          </form.Field>
+
+          <form.Field
+            name="category"
+            validators={{
+              onChange: ({ value }) => (!value ? "Category is required" : undefined),
+            }}
+          >
+            {(field) => (
+              <Select
+                label="Category"
+                placeholder="Select category"
+                data={JOURNEY_CATEGORIES}
+                value={field.state.value || null}
+                onChange={(value) => field.handleChange(value ?? "")}
+                error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+                required
+              />
+            )}
+          </form.Field>
+
+          <form.Field
+            name="userCarId"
+            validators={{
+              onChange: ({ value }) =>
+                !value && !primaryCarId ? "Select a car" : undefined,
+            }}
+          >
+            {(field) => (
+              <Select
+                label="Car"
+                placeholder="Select car"
+                data={carsSelectData}
+                value={field.state.value || (primaryCarId ? String(primaryCarId) : null)}
+                onChange={(value) => field.handleChange(value ?? "")}
+                error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+                disabled={cars.length === 0}
+                required
+              />
+            )}
+          </form.Field>
+
+          {cars.length === 0 && (
+            <Text size="sm" c="dimmed">
+              You need to add a car before creating a journey.
+            </Text>
+          )}
+
+          <form.Field name="setAsDefaultActive">
+            {(field) => (
+              <Checkbox
+                label="Set as default active journey"
+                checked={field.state.value}
+                onChange={(e) => field.handleChange(e.currentTarget.checked)}
+              />
+            )}
+          </form.Field>
+
+          <div>
+            <Text size="sm" fw={500} mb={4}>
+              Description (optional)
+            </Text>
+            <RichTextEditor content={description} onChange={setDescription} />
+          </div>
+
+          <Group justify="flex-end" mt="sm">
+            <Button variant="subtle" onClick={handleClose} disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              loading={isSubmitting}
+              disabled={cars.length === 0}
+            >
+              Create journey
+            </Button>
+          </Group>
+        </Stack>
+      </form>
     </Modal>
-  );
+  )
 }
