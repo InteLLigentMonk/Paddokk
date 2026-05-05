@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.13.0...v0.14.0) (2026-05-05)
+
+
+### Features
+
+* **car:** add active car badge and set as active action ([#64](https://github.com/InteLLigentMonk/Paddokk/issues/64)) ([a37afc3](https://github.com/InteLLigentMonk/Paddokk/commit/a37afc323a4574951d750b2bc69e993846ae780e))
+
 ## [0.13.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.12.0...v0.13.0) (2026-05-04)
 
 
