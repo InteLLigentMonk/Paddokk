@@ -57,18 +57,18 @@ function CommentItem({ comment }: CommentItemProps) {
           </Text>
           {comment.isEdited && (
             <Text size="xs" c="dimmed" fs="italic">
-              (redigerad)
+              (edited)
             </Text>
           )}
         </Group>
-        <ExpandableText text={comment.content} maxLines={2} charsPerLine={50} />
+        <ExpandableText text={comment.content} maxLines={2} />
       </Stack>
       {comment.isOwner && (
         <ActionIcon
           variant="subtle"
           size="sm"
           color="red"
-          aria-label="Ta bort kommentar"
+          aria-label="Delete comment"
         >
           <Trash2 size={14} />
         </ActionIcon>
@@ -110,7 +110,7 @@ export function JourneyPostComments({
   const commentList =
     comments.length === 0 ? (
       <Text size="sm" c="dimmed" ta="center" py="md">
-        Inga kommentarer än — var först!
+        No comments yet — be the first!
       </Text>
     ) : (
       <Stack gap="sm" pr="xs">
@@ -126,7 +126,7 @@ export function JourneyPostComments({
   const input = (
     <Stack gap="xs">
       <Textarea
-        placeholder="Skriv en kommentar... (Ctrl+Enter för att skicka)"
+        placeholder="Write a comment... (Ctrl+Enter to send)"
         value={text}
         onChange={(e) => setText(e.currentTarget.value)}
         onKeyDown={handleKeyDown}
@@ -143,7 +143,7 @@ export function JourneyPostComments({
           disabled={!text.trim()}
           loading={isPending}
         >
-          Skicka
+          Send
         </Button>
       </Group>
     </Stack>

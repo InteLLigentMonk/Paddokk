@@ -195,7 +195,7 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
               }}
             >
               <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm">
-                Kommentarer
+                Comments
               </Text>
               <JourneyPostComments postId={postId} />
             </Box>
