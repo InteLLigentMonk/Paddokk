@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.14.1...v0.14.2) (2026-05-05)
+
+
+### Bug Fixes
+
+* **ui:** rewrite ExpandableText with CSS line-clamp and ResizeObserver ([#68](https://github.com/InteLLigentMonk/Paddokk/issues/68)) ([92b0080](https://github.com/InteLLigentMonk/Paddokk/commit/92b0080daeacf875ef898b5c45a51bf13a74b591))
+
 ## [0.14.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.14.0...v0.14.1) (2026-05-05)
 
 
