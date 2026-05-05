@@ -44,7 +44,7 @@ interface JourneyDetailHeaderProps {
 }
 
 export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
-  const [descExpanded, setDescExpanded] = useState(false);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const status = Number(journey.status);
   const category = Number(journey.category);
 
@@ -88,14 +88,14 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
           <Button
             visibleFrom="sm"
             variant="subtle"
-            onClick={() => setDescExpanded((v) => !v)}
+            onClick={() => setDescriptionExpanded((v) => !v)}
           >
-            {descExpanded ? "Show less" : "Read more"}
+            {descriptionExpanded ? "Show less" : "Read more"}
           </Button>
         </Group>
         {journey.description && (
           <Stack gap={4}>
-            <Collapse in={descExpanded}>
+            <Collapse in={descriptionExpanded}>
               <Box
                 c="dimmed"
                 fz="sm"
@@ -106,9 +106,9 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
             <Anchor
               hiddenFrom="sm"
               size="xs"
-              onClick={() => setDescExpanded((v) => !v)}
+              onClick={() => setDescriptionExpanded((v) => !v)}
             >
-              {descExpanded ? "Show less" : "Read more"}
+              {descriptionExpanded ? "Show less" : "Read more"}
             </Anchor>
           </Stack>
         )}
