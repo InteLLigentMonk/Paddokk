@@ -8,7 +8,7 @@ import {
   Menu,
   Badge,
 } from "@mantine/core";
-import { MoreVertical, Edit, Trash, Heart, Bell } from "lucide-react";
+import { MoreVertical, Edit, Trash, Heart, Bell, Star } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { UserCarDto } from "@/generated/api/schemas";
@@ -18,7 +18,9 @@ import {
   unlikeUserCarFn,
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
+  updateUserCarFn,
 } from "@/lib/api/user-cars.server";
+import { useNotifications } from "@/integrations/mantine";
 
 interface CarCardProps {
   car: UserCarDto;
@@ -27,6 +29,7 @@ interface CarCardProps {
 export function CarCard({ car }: CarCardProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const notifications = useNotifications();
   const carAny = car as typeof car & {
     isCustomBuild?: boolean;
     customBuildName?: string | null;
@@ -53,6 +56,18 @@ export function CarCard({ car }: CarCardProps) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["user-cars"] }),
   });
 
+  const setPrimaryMutation = useMutation({
+    mutationFn: () =>
+      updateUserCarFn({ data: { carId: Number(car.id), isPrimary: true } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-cars"] });
+      notifications.success({ message: "Active car updated" });
+    },
+    onError: () => {
+      notifications.error({ message: "Could not set as active car" });
+    },
+  });
+
   return (
     <Card
       shadow="sm"
@@ -61,7 +76,7 @@ export function CarCard({ car }: CarCardProps) {
       withBorder
       style={{ cursor: "pointer" }}
       onClick={() =>
-        navigate({ to: "/cars/$carId", params: { carId: String(car.id) } })
+        navigate({ to: "/me/cars/$carId", params: { carId: String(car.id) } })
       }
     >
       <Card.Section>
@@ -79,6 +94,18 @@ export function CarCard({ car }: CarCardProps) {
       <Stack gap="sm" mt="sm" justify="space-between" style={{ flex: 1 }}>
         <Group justify="space-between" align="flex-start" wrap="nowrap">
           <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+            {car.isPrimary && (
+              <Group gap={6}>
+                <Badge
+                  variant="filled"
+                  color="violet"
+                  size="sm"
+                  leftSection={<Star size={10} />}
+                >
+                  Active Car
+                </Badge>
+              </Group>
+            )}
             <Text fw={600} lineClamp={1}>
               {carAny.isCustomBuild
                 ? (carAny.customBuildName ?? "Custom Build")
@@ -115,7 +142,7 @@ export function CarCard({ car }: CarCardProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate({
-                    to: "/cars/$carId",
+                    to: "/me/cars/$carId",
                     params: { carId: String(car.id) },
                     search: { edit: true },
                   });
@@ -123,6 +150,23 @@ export function CarCard({ car }: CarCardProps) {
               >
                 Edit
               </Menu.Item>
+
+              {car.isOwner && !car.isPrimary && (
+                <>
+                  <Menu.Divider />
+                  <Menu.Item
+                    leftSection={<Star size={16} />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPrimaryMutation.mutate();
+                    }}
+                  >
+                    Set as Active Car
+                  </Menu.Item>
+                </>
+              )}
+
+              <Menu.Divider />
               <Menu.Item
                 leftSection={<Trash size={16} />}
                 c="red"
