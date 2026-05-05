@@ -1,6 +1,6 @@
 # Paddokk
 
-JDM automotive community platform. Combining old school forums with modern social media.
+Automotive community platform. Combining old school forums with modern social media.
 Allows users to create cars, make journeys with said cars, follow other journeys and cars and comment.
 Also gives user other nice to have functions related to the automotive hobby like a inventory list,
 Marketplace, Stores, Harness-designer and more.
@@ -69,8 +69,9 @@ Marketplace, Stores, Harness-designer and more.
 - Orval regeneration: `pnpm orval` (reads from orval.config.ts)
 
 ### General
-- The overall language of the app is english until i18n is implemeted and supported
+- The overall default language of the app is english until i18n is implemeted and supported
 - Swedish comments/docs are OK, code and variable names always in English
+- Don't trunkate words in variables and functions, allways use whole words. e.g: descExpanded should be descriptionExpanded.
 - Prefer explicit types over `any` in TypeScript
 - Prefer `record` types for DTOs in C#
 - Tests: xUnit + FluentAssertions for backend, Vitest + Playwright for frontend

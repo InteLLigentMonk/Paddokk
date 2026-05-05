@@ -12,6 +12,7 @@ import {
   Divider,
   Collapse,
   Anchor,
+  Button,
 } from "@mantine/core";
 import { MessageSquare, Heart, Bell } from "lucide-react";
 import type { JourneyDto } from "@/generated/api/schemas";
@@ -84,9 +85,13 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
         </Group>
         <Group justify="space-between">
           <Title order={2}>{journey.title}</Title>
-          <Anchor size="sm" onClick={() => setDescExpanded((v) => !v)}>
-            {descExpanded ? "Hide synopsis" : "Read journey synopsis"}
-          </Anchor>
+          <Button
+            visibleFrom="sm"
+            variant="subtle"
+            onClick={() => setDescExpanded((v) => !v)}
+          >
+            {descExpanded ? "Show less" : "Read more"}
+          </Button>
         </Group>
         {journey.description && (
           <Stack gap={4}>
@@ -98,6 +103,13 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
                 style={{ lineHeight: 1.6 }}
               />
             </Collapse>
+            <Anchor
+              hiddenFrom="sm"
+              size="xs"
+              onClick={() => setDescExpanded((v) => !v)}
+            >
+              {descExpanded ? "Show less" : "Read more"}
+            </Anchor>
           </Stack>
         )}
 
