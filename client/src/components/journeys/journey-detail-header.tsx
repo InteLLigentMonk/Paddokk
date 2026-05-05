@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Group,
@@ -9,10 +10,12 @@ import {
   Image,
   Paper,
   Divider,
+  Collapse,
+  Anchor,
+  Button,
 } from "@mantine/core";
 import { MessageSquare, Heart, Bell } from "lucide-react";
 import type { JourneyDto } from "@/generated/api/schemas";
-import { ExpandableText } from "@/components/common/expandable-text";
 
 const STATUS_LABELS: Record<number, string> = {
   1: "Aktiv",
@@ -41,6 +44,7 @@ interface JourneyDetailHeaderProps {
 }
 
 export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const status = Number(journey.status);
   const category = Number(journey.category);
 
@@ -79,16 +83,34 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
             {CATEGORY_LABELS[category] ?? "Other"}
           </Badge>
         </Group>
-
-        <Title order={2}>{journey.title}</Title>
-
+        <Group justify="space-between">
+          <Title order={2}>{journey.title}</Title>
+          <Button
+            visibleFrom="sm"
+            variant="subtle"
+            onClick={() => setDescriptionExpanded((v) => !v)}
+          >
+            {descriptionExpanded ? "Show less" : "Read more"}
+          </Button>
+        </Group>
         {journey.description && (
-          <ExpandableText
-            text={journey.description}
-            maxLines={2}
-            c="dimmed"
-            isHtml
-          />
+          <Stack gap={4}>
+            <Collapse in={descriptionExpanded}>
+              <Box
+                c="dimmed"
+                fz="sm"
+                dangerouslySetInnerHTML={{ __html: journey.description }}
+                style={{ lineHeight: 1.6 }}
+              />
+            </Collapse>
+            <Anchor
+              hiddenFrom="sm"
+              size="xs"
+              onClick={() => setDescriptionExpanded((v) => !v)}
+            >
+              {descriptionExpanded ? "Show less" : "Read more"}
+            </Anchor>
+          </Stack>
         )}
 
         <Divider />
