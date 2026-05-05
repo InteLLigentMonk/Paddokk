@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
+  ActionIcon,
   Card,
-  Grid,
   Group,
   Stack,
   Text,
@@ -12,9 +12,18 @@ import {
   Box,
   Paper,
   Divider,
+  ScrollArea,
+  Collapse,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
-import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  MessageSquare,
+  ChevronDown,
+  ChevronUp,
+  PanelRightClose,
+  PanelRightOpen,
+} from "lucide-react";
 import type { JourneyPostDto } from "@/generated/api/schemas";
 import { JourneyPostComments } from "./journey-post-comments";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
@@ -142,6 +151,7 @@ interface JourneyPostCardProps {
 export function JourneyPostCard({ post }: JourneyPostCardProps) {
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [commentsOpened, { toggle: toggleComments }] = useDisclosure(true);
   const postId = Number(post.id);
 
   const sortedImages = [...post.images].sort(
@@ -182,25 +192,74 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
         radius="md"
         p="md"
         visibleFrom="md"
+        mah="70dvh"
         bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
       >
-        <Grid gutter="md">
-          <Grid.Col span={7}>{postContent}</Grid.Col>
-          <Grid.Col span={5}>
+        <Group justify="flex-end" mb="xs">
+          <ActionIcon
+            variant="subtle"
+            size="sm"
+            onClick={toggleComments}
+            aria-label={commentsOpened ? "Hide comments" : "Show comments"}
+          >
+            {commentsOpened ? (
+              <PanelRightClose size={16} />
+            ) : (
+              <PanelRightOpen size={16} />
+            )}
+          </ActionIcon>
+        </Group>
+        <Box
+          style={{
+            display: "flex",
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
+          <Box
+            style={{
+              flex: "7 1 0",
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+              minWidth: 0,
+            }}
+          >
+            <ScrollArea flex={1} mih={0} offsetScrollbars>
+              {postContent}
+            </ScrollArea>
+          </Box>
+          <Collapse
+            orientation="horizontal"
+            expanded={commentsOpened}
+            transitionDuration={250}
+          >
             <Box
               pl="md"
-              h="100%"
               style={{
                 borderLeft: "1px solid var(--mantine-color-default-border)",
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                minWidth: 0,
               }}
             >
               <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm">
                 Comments
               </Text>
-              <JourneyPostComments postId={postId} />
+              <JourneyPostComments
+                postId={postId}
+                isPostOwner={post.isOwner}
+                stretch
+              />
             </Box>
-          </Grid.Col>
-        </Grid>
+          </Collapse>
+        </Box>
       </Paper>
 
       {/* Mobile comments modal */}
