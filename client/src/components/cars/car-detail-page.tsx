@@ -174,7 +174,7 @@ export function CarDetailPage({
 
   return (
     <Container size="lg" py="xl">
-      <Box mb="lg">
+      <Box mb="sm">
         <PageBreadcrumbs current={displayName} />
       </Box>
 

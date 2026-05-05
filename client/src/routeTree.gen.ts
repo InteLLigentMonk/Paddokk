@@ -43,8 +43,8 @@ import { Route as AppMeCarsRouteImport } from './routes/_app/me/cars'
 import { Route as AppMeJourneysIndexRouteImport } from './routes/_app/me/journeys/index'
 import { Route as AppMeCarsIndexRouteImport } from './routes/_app/me/cars/index'
 import { Route as AppJourneysJourneyIdIndexRouteImport } from './routes/_app/journeys/$journeyId/index'
-import { Route as AppCarsCarIdIndexRouteImport } from './routes/_app/cars/$carId/index'
 import { Route as AppMeCarsNewRouteImport } from './routes/_app/me/cars/new'
+import { Route as AppMeCarsCarIdIndexRouteImport } from './routes/_app/me/cars/$carId/index'
 
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
@@ -214,14 +214,14 @@ const AppJourneysJourneyIdIndexRoute =
     path: '/$journeyId/',
     getParentRoute: () => AppJourneysRoute,
   } as any)
-const AppCarsCarIdIndexRoute = AppCarsCarIdIndexRouteImport.update({
-  id: '/$carId/',
-  path: '/$carId/',
-  getParentRoute: () => AppCarsRoute,
-} as any)
 const AppMeCarsNewRoute = AppMeCarsNewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => AppMeCarsRoute,
+} as any)
+const AppMeCarsCarIdIndexRoute = AppMeCarsCarIdIndexRouteImport.update({
+  id: '/$carId/',
+  path: '/$carId/',
   getParentRoute: () => AppMeCarsRoute,
 } as any)
 
@@ -255,10 +255,10 @@ export interface FileRoutesByFullPath {
   '/cars/': typeof AppCarsIndexRoute
   '/journeys/': typeof AppJourneysIndexRoute
   '/me/cars/new': typeof AppMeCarsNewRoute
-  '/cars/$carId/': typeof AppCarsCarIdIndexRoute
   '/journeys/$journeyId/': typeof AppJourneysJourneyIdIndexRoute
   '/me/cars/': typeof AppMeCarsIndexRoute
   '/me/journeys/': typeof AppMeJourneysIndexRoute
+  '/me/cars/$carId/': typeof AppMeCarsCarIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
@@ -286,10 +286,10 @@ export interface FileRoutesByTo {
   '/cars': typeof AppCarsIndexRoute
   '/journeys': typeof AppJourneysIndexRoute
   '/me/cars/new': typeof AppMeCarsNewRoute
-  '/cars/$carId': typeof AppCarsCarIdIndexRoute
   '/journeys/$journeyId': typeof AppJourneysJourneyIdIndexRoute
   '/me/cars': typeof AppMeCarsIndexRoute
   '/me/journeys': typeof AppMeJourneysIndexRoute
+  '/me/cars/$carId': typeof AppMeCarsCarIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -325,10 +325,10 @@ export interface FileRoutesById {
   '/_app/cars/': typeof AppCarsIndexRoute
   '/_app/journeys/': typeof AppJourneysIndexRoute
   '/_app/me/cars/new': typeof AppMeCarsNewRoute
-  '/_app/cars/$carId/': typeof AppCarsCarIdIndexRoute
   '/_app/journeys/$journeyId/': typeof AppJourneysJourneyIdIndexRoute
   '/_app/me/cars/': typeof AppMeCarsIndexRoute
   '/_app/me/journeys/': typeof AppMeJourneysIndexRoute
+  '/_app/me/cars/$carId/': typeof AppMeCarsCarIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -362,10 +362,10 @@ export interface FileRouteTypes {
     | '/cars/'
     | '/journeys/'
     | '/me/cars/new'
-    | '/cars/$carId/'
     | '/journeys/$journeyId/'
     | '/me/cars/'
     | '/me/journeys/'
+    | '/me/cars/$carId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -393,10 +393,10 @@ export interface FileRouteTypes {
     | '/cars'
     | '/journeys'
     | '/me/cars/new'
-    | '/cars/$carId'
     | '/journeys/$journeyId'
     | '/me/cars'
     | '/me/journeys'
+    | '/me/cars/$carId'
   id:
     | '__root__'
     | '/_app'
@@ -431,10 +431,10 @@ export interface FileRouteTypes {
     | '/_app/cars/'
     | '/_app/journeys/'
     | '/_app/me/cars/new'
-    | '/_app/cars/$carId/'
     | '/_app/journeys/$journeyId/'
     | '/_app/me/cars/'
     | '/_app/me/journeys/'
+    | '/_app/me/cars/$carId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -684,13 +684,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppJourneysJourneyIdIndexRouteImport
       parentRoute: typeof AppJourneysRoute
     }
-    '/_app/cars/$carId/': {
-      id: '/_app/cars/$carId/'
-      path: '/$carId'
-      fullPath: '/cars/$carId/'
-      preLoaderRoute: typeof AppCarsCarIdIndexRouteImport
-      parentRoute: typeof AppCarsRoute
-    }
     '/_app/me/cars/new': {
       id: '/_app/me/cars/new'
       path: '/new'
@@ -698,17 +691,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMeCarsNewRouteImport
       parentRoute: typeof AppMeCarsRoute
     }
+    '/_app/me/cars/$carId/': {
+      id: '/_app/me/cars/$carId/'
+      path: '/$carId'
+      fullPath: '/me/cars/$carId/'
+      preLoaderRoute: typeof AppMeCarsCarIdIndexRouteImport
+      parentRoute: typeof AppMeCarsRoute
+    }
   }
 }
 
 interface AppCarsRouteChildren {
   AppCarsIndexRoute: typeof AppCarsIndexRoute
-  AppCarsCarIdIndexRoute: typeof AppCarsCarIdIndexRoute
 }
 
 const AppCarsRouteChildren: AppCarsRouteChildren = {
   AppCarsIndexRoute: AppCarsIndexRoute,
-  AppCarsCarIdIndexRoute: AppCarsCarIdIndexRoute,
 }
 
 const AppCarsRouteWithChildren =
@@ -731,11 +729,13 @@ const AppJourneysRouteWithChildren = AppJourneysRoute._addFileChildren(
 interface AppMeCarsRouteChildren {
   AppMeCarsNewRoute: typeof AppMeCarsNewRoute
   AppMeCarsIndexRoute: typeof AppMeCarsIndexRoute
+  AppMeCarsCarIdIndexRoute: typeof AppMeCarsCarIdIndexRoute
 }
 
 const AppMeCarsRouteChildren: AppMeCarsRouteChildren = {
   AppMeCarsNewRoute: AppMeCarsNewRoute,
   AppMeCarsIndexRoute: AppMeCarsIndexRoute,
+  AppMeCarsCarIdIndexRoute: AppMeCarsCarIdIndexRoute,
 }
 
 const AppMeCarsRouteWithChildren = AppMeCarsRoute._addFileChildren(

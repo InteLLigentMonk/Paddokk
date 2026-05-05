@@ -1,5 +1,6 @@
 import { Anchor, Breadcrumbs, Text } from "@mantine/core";
 import { Link, useMatches } from "@tanstack/react-router";
+import { ChevronRight } from "lucide-react";
 
 interface PageBreadcrumbsProps {
   current?: string;
@@ -21,7 +22,7 @@ export function PageBreadcrumbs({ current }: PageBreadcrumbsProps) {
   if (crumbs.length < 1) return null;
 
   return (
-    <Breadcrumbs>
+    <Breadcrumbs separator={<ChevronRight size={14} />}>
       {crumbs.map((crumb, i) =>
         i < crumbs.length - 1 ? (
           <Anchor
