@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.14.0...v0.14.1) (2026-05-05)
+
+
+### Bug Fixes
+
+* **car:** reassign active car when primary car is deleted ([#66](https://github.com/InteLLigentMonk/Paddokk/issues/66)) ([29e6da1](https://github.com/InteLLigentMonk/Paddokk/commit/29e6da1a0fd6f5a0b48b649941b2b9cbf876b37d))
+
 ## [0.14.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.13.0...v0.14.0) (2026-05-05)
 
 
