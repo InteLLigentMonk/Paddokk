@@ -42,6 +42,7 @@ API/Paddokk.Core/obj/
 *.dll
 *.exe
 *.cache
+*.lscache
 *.nupkg
 *.snupkg
 *.dgspec.json

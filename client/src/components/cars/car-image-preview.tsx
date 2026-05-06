@@ -1,5 +1,5 @@
 import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core"
-import { Trash2 } from "lucide-react"
+import { Trash2, GripVertical } from "lucide-react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import type { PendingImage } from "./car-form-stepper"
@@ -60,10 +60,7 @@ export function CarImagePreview({
         </Badge>
       )}
 
-      <Box
-        {...listeners}
-        style={{ position: "absolute", inset: 0, padding: "4px" }}
-      >
+      <Box style={{ position: "absolute", inset: 0, padding: "4px" }}>
         <Image
           src={image.previewUrl}
           alt={image.file.name}
@@ -75,6 +72,24 @@ export function CarImagePreview({
           onDragStart={(e) => e.preventDefault()}
         />
       </Box>
+
+      <ActionIcon
+        {...listeners}
+        variant="filled"
+        color="dark"
+        size="sm"
+        style={{
+          position: "absolute",
+          top: 8,
+          left: 8,
+          zIndex: 10,
+          touchAction: "none",
+          cursor: isDragging ? "grabbing" : "grab",
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
+        <GripVertical size={14} />
+      </ActionIcon>
 
       <ActionIcon
         color="red"
