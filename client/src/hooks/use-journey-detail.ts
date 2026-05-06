@@ -6,6 +6,7 @@ import {
   createCommentFn,
   deleteCommentFn,
   replyToCommentFn,
+  createJourneyPostFn,
 } from "@/lib/api/journey-detail.server";
 
 const POSTS_PAGE_SIZE = 20;
@@ -65,6 +66,24 @@ export function useReplyToComment(postId: number) {
       replyToCommentFn({ data: { postId, content, parentCommentId } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+    },
+  });
+}
+
+interface PostImagePayload {
+  imageUrl: string;
+  caption?: string | null;
+  sortOrder?: number;
+}
+
+export function useCreateJourneyPost(journeyId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: { textContent: string | null; images: PostImagePayload[] }) =>
+      createJourneyPostFn({ data: { journeyId, ...payload } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["journey-posts", journeyId] });
     },
   });
 }

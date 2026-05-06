@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Core.Features.Journeys.Commands.CreateJourneyPost;
 using Paddokk.Core.Features.Journeys.Commands.DeleteJourneyPost;
+using Paddokk.Core.Features.Journeys.Commands.DeleteJourneyPostImage;
+using Paddokk.Core.Features.Journeys.Commands.UploadJourneyPostImage;
 using Paddokk.Core.Features.Journeys.Commands.LikeJourney;
 using Paddokk.Core.Features.Journeys.Commands.SubscribeToJourney;
 using Paddokk.Core.Features.Journeys.Commands.UnlikeJourney;
@@ -16,6 +18,7 @@ using Paddokk.Core.Features.Journeys.Queries.GetJourneyPostById;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyPosts;
 using Paddokk.Core.Features.Journeys.Queries.GetTrendingJourneys;
 using Paddokk.Core.Features.Journeys.Queries.SearchJourneys;
+using Paddokk.Core.Models.DTOs.Image;
 using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Api.Controllers;
@@ -170,6 +173,33 @@ public class JourneysController(ISender sender) : ApiControllerBase
     public async Task<IActionResult> DeleteJourneyPost(int postId, CancellationToken ct)
     {
         var result = await sender.Send(new DeleteJourneyPostCommand(postId), ct);
+
+        if (!result.IsSuccess)
+            return FromError(result.Error);
+
+        return NoContent();
+    }
+
+    [HttpPost("{journeyId}/posts/upload-image")]
+    [Authorize]
+    [Consumes("multipart/form-data")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Upload an image for a journey post (pre-upload before post creation)")]
+    public async Task<ActionResult<ImageUploadDto>> UploadJourneyPostImage(
+        int journeyId, IFormFile file, CancellationToken ct)
+    {
+        var result = await sender.Send(new UploadJourneyPostImageCommand(journeyId, file), ct);
+        return OkOrError(result);
+    }
+
+    [HttpDelete("{journeyId}/posts/upload-image")]
+    [Authorize]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Delete a pre-uploaded journey post image (cleanup orphaned images)")]
+    public async Task<IActionResult> DeleteJourneyPostImage(
+        int journeyId, [FromBody] DeleteJourneyPostImageCommand command, CancellationToken ct)
+    {
+        var result = await sender.Send(command with { JourneyId = journeyId }, ct);
 
         if (!result.IsSuccess)
             return FromError(result.Error);
