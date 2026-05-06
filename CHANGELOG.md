@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.0...v0.17.1) (2026-05-06)
+
+
+### Maintenance
+
+* **ui:** remove unused imports and variables to clear TypeScript warnings ([#81](https://github.com/InteLLigentMonk/Paddokk/issues/81)) ([6c17d5d](https://github.com/InteLLigentMonk/Paddokk/commit/6c17d5d65755a90ea82fe9ac501314f2bdadd3f9))
+
 ## [0.17.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.16.0...v0.17.0) (2026-05-06)
 
 
