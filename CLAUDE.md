@@ -69,7 +69,7 @@ Marketplace, Stores, Harness-designer and more.
 - Orval regeneration: `pnpm orval` (reads from orval.config.ts)
 
 ### General
-- The overall default language of the app is english until i18n is implemeted and supported
+- Hardcoded text should be in english until i18n is implemeted and supported
 - Swedish comments/docs are OK, code and variable names always in English
 - Don't trunkate words in variables and functions, allways use whole words. e.g: descExpanded should be descriptionExpanded.
 - Prefer explicit types over `any` in TypeScript

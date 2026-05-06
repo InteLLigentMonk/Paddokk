@@ -94,7 +94,7 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
   }
 
   return (
-    <Carousel withIndicators height="100%" slideSize="90%" slideGap="xs">
+    <Carousel height="100%" slideSize="100%" slideGap="xs">
       {sorted.map((img, i) => (
         <Carousel.Slide key={String(img.id)}>
           <Image
@@ -102,7 +102,7 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
             alt={img.caption ?? ""}
             fit="cover"
             h="100%"
-            radius="sm"
+            // radius="sm"
             onClick={() => onImageClick(i)}
             style={imgStyle}
           />
@@ -172,8 +172,8 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
           onClick={() => setCommentModalOpen(true)}
         >
           {Number(post.commentCount) > 0
-            ? `${Number(post.commentCount)} kommentarer`
-            : "Kommentera"}
+            ? `${Number(post.commentCount)}`
+            : "Comment"}
         </Button>
       </Group>
     </Stack>
@@ -181,86 +181,41 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
 
   return (
     <>
-      {/* Mobile layout */}
-      <Card withBorder radius="md" padding="md" hiddenFrom="md">
-        {postContent}
-      </Card>
-
-      {/* Desktop layout */}
-      <Paper
+      <Card
         withBorder
         radius="md"
-        p="md"
-        visibleFrom="md"
-        mah="70dvh"
+        padding="sm"
         bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
       >
-        <Group justify="flex-end" mb="xs">
-          <ActionIcon
+        <Card.Section withBorder inheritPadding py="sm">
+          <PostHeader post={post} />
+        </Card.Section>
+        {post.images && (
+          <Card.Section>
+            <PostImages images={post.images} onImageClick={setLightboxIndex} />
+          </Card.Section>
+        )}
+        <Card.Section
+          withBorder
+          inheritPadding
+          py="sm"
+          bg="light-dark(var(--mantine-color-white), var(--mantine-color-dark-8))"
+        >
+          {post.textContent && <PostText text={post.textContent} />}
+        </Card.Section>
+        <Card.Section withBorder inheritPadding py="xs">
+          <Button
             variant="subtle"
             size="sm"
-            onClick={toggleComments}
-            aria-label={commentsOpened ? "Hide comments" : "Show comments"}
+            leftSection={<MessageSquare size={14} />}
+            onClick={() => setCommentModalOpen(true)}
           >
-            {commentsOpened ? (
-              <PanelRightClose size={16} />
-            ) : (
-              <PanelRightOpen size={16} />
-            )}
-          </ActionIcon>
-        </Group>
-        <Box
-          style={{
-            display: "flex",
-            flex: 1,
-            minHeight: 0,
-          }}
-        >
-          <Box
-            style={{
-              flex: "7 1 0",
-              display: "flex",
-              flexDirection: "column",
-              minHeight: 0,
-              minWidth: 0,
-            }}
-          >
-            <ScrollArea flex={1} mih={0} offsetScrollbars>
-              {postContent}
-            </ScrollArea>
-          </Box>
-          <Collapse
-            orientation="horizontal"
-            expanded={commentsOpened}
-            transitionDuration={250}
-          >
-            <Box
-              pl="md"
-              style={{
-                borderLeft: "1px solid var(--mantine-color-default-border)",
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                minWidth: 0,
-              }}
-            >
-              <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm">
-                Comments
-              </Text>
-              <JourneyPostComments
-                postId={postId}
-                isPostOwner={post.isOwner}
-                stretch
-              />
-            </Box>
-          </Collapse>
-        </Box>
-      </Paper>
+            {Number(post.commentCount) > 0
+              ? `${Number(post.commentCount)}`
+              : "Comment"}
+          </Button>
+        </Card.Section>
+      </Card>
 
       {/* Mobile comments modal */}
       <JourneyPostCommentsModal

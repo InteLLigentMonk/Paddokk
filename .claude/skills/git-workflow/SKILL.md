@@ -70,6 +70,7 @@ ci: add PostgreSQL service to GitHub Actions workflow
 - Scope is optional but encouraged — use the feature name (cars, auth, users, etc.)
 - Keep description under 72 characters
 - Use the body for "what and why" if the description isn't enough
+- Dont append Generated with Claude Code or similar to the commit message — the commit history should be clean and focused on the changes, not the tooling
 
 ## Pull Requests
 
