@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.2...v0.17.3) (2026-05-06)
+
+
+### Bug Fixes
+
+* **security:** sanitize HTML fields in command handlers to prevent XSS ([#85](https://github.com/InteLLigentMonk/Paddokk/issues/85)) ([cd146d6](https://github.com/InteLLigentMonk/Paddokk/commit/cd146d6cb9c7a44fe39ff9b02240d6f4c420da23))
+
 ## [0.17.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.1...v0.17.2) (2026-05-06)
 
 
