@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { journeysGetJourney, journeysGetJourneyPosts } from "@/generated/api/journeys/journeys";
+import { journeysGetJourney, journeysGetJourneyPosts, journeysCreateJourneyPost } from "@/generated/api/journeys/journeys";
 import {
   postCommentsGetPostComments,
   postCommentsCreateComment,
@@ -79,4 +79,27 @@ export const replyToCommentFn = createServerFn({ method: "POST" })
       parentCommentId: parentCommentId ?? null,
     });
     return result.data;
+  });
+
+const createPostSchema = z.object({
+  journeyId: z.coerce.number(),
+  textContent: z.string().nullable(),
+  images: z.array(
+    z.object({
+      imageUrl: z.string(),
+      caption: z.string().nullable().optional(),
+      sortOrder: z.number().optional(),
+    }),
+  ),
+});
+
+export const createJourneyPostFn = createServerFn({ method: "POST" })
+  .inputValidator(createPostSchema)
+  .handler(async ({ data: { journeyId, textContent, images } }) => {
+    const result = await journeysCreateJourneyPost(journeyId, {
+      journeyId,
+      textContent,
+      images,
+    });
+    return result.data as JourneyPostDto;
   });

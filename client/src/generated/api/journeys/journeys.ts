@@ -8,10 +8,13 @@
 import type {
   ApiErrorResponse,
   CreateJourneyPostCommand,
+  DeleteJourneyPostImageCommand,
+  ImageUploadDto,
   JourneyDto,
   JourneyPostDto,
   JourneysGetJourneyPostsParams,
   JourneysSearchJourneysParams,
+  JourneysUploadJourneyPostImageBody,
   UpdateJourneyPostCommand
 } from '.././schemas';
 
@@ -734,6 +737,138 @@ export const journeysDeleteJourneyPost = async (postId: number | string, options
     method: 'DELETE'
     
     
+  }
+);}
+
+
+/**
+ * @summary Upload an image for a journey post (pre-upload before post creation)
+ */
+export type journeysUploadJourneyPostImageResponse200 = {
+  data: ImageUploadDto
+  status: 200
+}
+
+export type journeysUploadJourneyPostImageResponse400 = {
+  data: ApiErrorResponse
+  status: 400
+}
+
+export type journeysUploadJourneyPostImageResponse401 = {
+  data: ApiErrorResponse
+  status: 401
+}
+
+export type journeysUploadJourneyPostImageResponse403 = {
+  data: ApiErrorResponse
+  status: 403
+}
+
+export type journeysUploadJourneyPostImageResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type journeysUploadJourneyPostImageResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type journeysUploadJourneyPostImageResponseSuccess = (journeysUploadJourneyPostImageResponse200) & {
+  headers: Headers;
+};
+export type journeysUploadJourneyPostImageResponseError = (journeysUploadJourneyPostImageResponse400 | journeysUploadJourneyPostImageResponse401 | journeysUploadJourneyPostImageResponse403 | journeysUploadJourneyPostImageResponse404 | journeysUploadJourneyPostImageResponse500) & {
+  headers: Headers;
+};
+
+export type journeysUploadJourneyPostImageResponse = (journeysUploadJourneyPostImageResponseSuccess | journeysUploadJourneyPostImageResponseError)
+
+export const getJourneysUploadJourneyPostImageUrl = (journeyId: number | string,) => {
+
+
+  
+
+  return `/api/v1/journeys/${journeyId}/posts/upload-image`
+}
+
+export const journeysUploadJourneyPostImage = async (journeyId: number | string,
+    journeysUploadJourneyPostImageBody: JourneysUploadJourneyPostImageBody, options?: RequestInit): Promise<journeysUploadJourneyPostImageResponse> => {
+    const formData = new FormData();
+if(journeysUploadJourneyPostImageBody.file !== undefined) {
+ formData.append(`file`, journeysUploadJourneyPostImageBody.file);
+ }
+
+  return apiFetcher<journeysUploadJourneyPostImageResponse>(getJourneysUploadJourneyPostImageUrl(journeyId),
+  {      
+    ...options,
+    method: 'POST'
+    ,
+    body: 
+      formData,
+  }
+);}
+
+
+/**
+ * @summary Delete a pre-uploaded journey post image (cleanup orphaned images)
+ */
+export type journeysDeleteJourneyPostImageResponse200 = {
+  data: void
+  status: 200
+}
+
+export type journeysDeleteJourneyPostImageResponse400 = {
+  data: ApiErrorResponse
+  status: 400
+}
+
+export type journeysDeleteJourneyPostImageResponse401 = {
+  data: ApiErrorResponse
+  status: 401
+}
+
+export type journeysDeleteJourneyPostImageResponse403 = {
+  data: ApiErrorResponse
+  status: 403
+}
+
+export type journeysDeleteJourneyPostImageResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type journeysDeleteJourneyPostImageResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type journeysDeleteJourneyPostImageResponseSuccess = (journeysDeleteJourneyPostImageResponse200) & {
+  headers: Headers;
+};
+export type journeysDeleteJourneyPostImageResponseError = (journeysDeleteJourneyPostImageResponse400 | journeysDeleteJourneyPostImageResponse401 | journeysDeleteJourneyPostImageResponse403 | journeysDeleteJourneyPostImageResponse404 | journeysDeleteJourneyPostImageResponse500) & {
+  headers: Headers;
+};
+
+export type journeysDeleteJourneyPostImageResponse = (journeysDeleteJourneyPostImageResponseSuccess | journeysDeleteJourneyPostImageResponseError)
+
+export const getJourneysDeleteJourneyPostImageUrl = (journeyId: number | string,) => {
+
+
+  
+
+  return `/api/v1/journeys/${journeyId}/posts/upload-image`
+}
+
+export const journeysDeleteJourneyPostImage = async (journeyId: number | string,
+    deleteJourneyPostImageCommand: DeleteJourneyPostImageCommand, options?: RequestInit): Promise<journeysDeleteJourneyPostImageResponse> => {
+  
+  return apiFetcher<journeysDeleteJourneyPostImageResponse>(getJourneysDeleteJourneyPostImageUrl(journeyId),
+  {      
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      deleteJourneyPostImageCommand,)
   }
 );}
 
