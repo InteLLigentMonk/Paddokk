@@ -17,13 +17,7 @@ export function JourneysHeader() {
   };
 
   return (
-    <Group
-      justify="space-between"
-      align="flex-start"
-      mb="xl"
-      wrap="wrap"
-      gap="md"
-    >
+    <Group justify="space-between" align="flex-start" wrap="wrap">
       <Stack gap={4}>
         <Title order={2}>My Journeys</Title>
         <Text c="dimmed" size="sm">
@@ -38,7 +32,7 @@ export function JourneysHeader() {
         onClick={handleNewJourney}
         loading={isLoading}
         style={{ minWidth: 140 }}
-        visibleFrom="md"
+        visibleFrom="sm"
       >
         {canAdd || isLoading ? "New Journey" : "Upgrade"}
       </Button>

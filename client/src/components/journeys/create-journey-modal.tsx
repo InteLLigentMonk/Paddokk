@@ -1,20 +1,31 @@
-import { useState, useMemo } from "react"
-import { useNavigate } from "@tanstack/react-router"
-import { Badge, Button, Checkbox, Group, Modal, Select, Stack, Text, TextInput } from "@mantine/core"
-import { useStore } from "@tanstack/react-store"
-import { useForm } from "@tanstack/react-form"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState, useMemo } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Group,
+  Modal,
+  ScrollArea,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
+import { useStore } from "@tanstack/react-store";
+import { useForm } from "@tanstack/react-form";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   journeysPageStore,
   closeCreateJourneyModal,
-} from "@/lib/stores/journeys-page-store"
-import { useCanAddJourney } from "@/hooks/use-can-add-journey"
-import { createJourneyFn } from "@/lib/api/user-journeys.server"
-import { getUserCarsFn } from "@/lib/api/user-cars.server"
-import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys"
-import { RichTextEditor } from "@/components/shared/rich-text-editor"
-import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone"
-import { useNotifications } from "@/integrations/mantine"
+} from "@/lib/stores/journeys-page-store";
+import { useCanAddJourney } from "@/hooks/use-can-add-journey";
+import { createJourneyFn } from "@/lib/api/user-journeys.server";
+import { getUserCarsFn } from "@/lib/api/user-cars.server";
+import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
+import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
+import { useNotifications } from "@/integrations/mantine";
 
 const JOURNEY_CATEGORIES = [
   { value: "1", label: "Build & Mods" },
@@ -22,27 +33,32 @@ const JOURNEY_CATEGORIES = [
   { value: "3", label: "Racing" },
   { value: "4", label: "Adventures" },
   { value: "5", label: "Ownership" },
-]
+];
 
 function getCarLabel(car: {
-  isCustomBuild: boolean
-  customBuildName?: string | null
-  carMakeName?: string | null
-  carModelName?: string | null
-  carYear?: number | string | null
-  carNickname?: string | null
+  isCustomBuild: boolean;
+  customBuildName?: string | null;
+  carMakeName?: string | null;
+  carModelName?: string | null;
+  carYear?: number | string | null;
+  carNickname?: string | null;
 }): string {
-  if (car.isCustomBuild) return car.customBuildName || "Custom Build"
-  const parts = [car.carMakeName, car.carModelName, car.carYear].filter(Boolean).join(" ")
-  return car.carNickname ? `${parts} (${car.carNickname})` : parts
+  if (car.isCustomBuild) return car.customBuildName || "Custom Build";
+  const parts = [car.carMakeName, car.carModelName, car.carYear]
+    .filter(Boolean)
+    .join(" ");
+  return car.carNickname ? `${parts} (${car.carNickname})` : parts;
 }
 
 export function CreateJourneyModal() {
-  const isOpen = useStore(journeysPageStore, (state) => state.modals.createJourney)
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
-  const notifications = useNotifications()
-  const { currentCount, maxJourneys } = useCanAddJourney()
+  const isOpen = useStore(
+    journeysPageStore,
+    (state) => state.modals.createJourney,
+  );
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const notifications = useNotifications();
+  const { currentCount, maxJourneys } = useCanAddJourney();
 
   const modalTitle = (
     <Group gap="xs" align="center">
@@ -53,20 +69,20 @@ export function CreateJourneyModal() {
         </Badge>
       )}
     </Group>
-  )
+  );
 
-  const [description, setDescription] = useState("")
-  const [coverFile, setCoverFile] = useState<File | null>(null)
-  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [description, setDescription] = useState("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: carsData } = useQuery({
     queryKey: ["user-cars"],
     queryFn: () => getUserCarsFn(),
     enabled: isOpen,
-  })
+  });
 
-  const cars = carsData?.cars ?? []
+  const cars = carsData?.cars ?? [];
 
   const carsSelectData = useMemo(
     () =>
@@ -75,12 +91,12 @@ export function CreateJourneyModal() {
         label: getCarLabel(car),
       })),
     [cars],
-  )
+  );
 
   const primaryCarId = useMemo(
     () => cars.find((c) => c.isPrimary)?.id ?? cars[0]?.id ?? null,
     [cars],
-  )
+  );
 
   const form = useForm({
     defaultValues: {
@@ -90,9 +106,9 @@ export function CreateJourneyModal() {
       setAsDefaultActive: true,
     },
     onSubmit: async ({ value }) => {
-      const effectiveCarId = Number(value.userCarId) || Number(primaryCarId)
-      if (!effectiveCarId || !value.category) return
-      setIsSubmitting(true)
+      const effectiveCarId = Number(value.userCarId) || Number(primaryCarId);
+      if (!effectiveCarId || !value.category) return;
+      setIsSubmitting(true);
       try {
         const journey = await createJourneyFn({
           data: {
@@ -102,48 +118,62 @@ export function CreateJourneyModal() {
             userCarId: effectiveCarId,
             setAsDefaultActive: value.setAsDefaultActive,
           },
-        })
+        });
 
         if (coverFile) {
-          await userJourneysUploadJourneyCoverImage(journey.id, { file: coverFile })
+          await userJourneysUploadJourneyCoverImage(journey.id, {
+            file: coverFile,
+          });
         }
 
-        queryClient.invalidateQueries({ queryKey: ["user-journeys"] })
-        queryClient.invalidateQueries({ queryKey: ["journey-limits"] })
+        queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
+        queryClient.invalidateQueries({ queryKey: ["journey-limits"] });
         if (value.setAsDefaultActive) {
-          queryClient.invalidateQueries({ queryKey: ["default-active-journey"] })
+          queryClient.invalidateQueries({
+            queryKey: ["default-active-journey"],
+          });
         }
-        notifications.success({ message: "Journey created!" })
-        handleClose()
-        navigate({ to: "/journeys/$journeyId", params: { journeyId: String(journey.id) } })
+        notifications.success({ message: "Journey created!" });
+        handleClose();
+        navigate({
+          to: "/journeys/$journeyId",
+          params: { journeyId: String(journey.id) },
+        });
       } catch {
-        notifications.error({ message: "Failed to create journey" })
-        setIsSubmitting(false)
+        notifications.error({ message: "Failed to create journey" });
+        setIsSubmitting(false);
       }
     },
-  })
+  });
 
   const handleClose = () => {
-    form.reset()
-    setDescription("")
-    if (coverPreviewUrl) URL.revokeObjectURL(coverPreviewUrl)
-    setCoverFile(null)
-    setCoverPreviewUrl(null)
-    setIsSubmitting(false)
-    closeCreateJourneyModal()
-  }
+    form.reset();
+    setDescription("");
+    if (coverPreviewUrl) URL.revokeObjectURL(coverPreviewUrl);
+    setCoverFile(null);
+    setCoverPreviewUrl(null);
+    setIsSubmitting(false);
+    closeCreateJourneyModal();
+  };
 
   const handleCoverChange = (file: File | null, previewUrl: string | null) => {
-    setCoverFile(file)
-    setCoverPreviewUrl(previewUrl)
-  }
+    setCoverFile(file);
+    setCoverPreviewUrl(previewUrl);
+  };
 
   return (
-    <Modal opened={isOpen} onClose={handleClose} title={modalTitle} centered size="lg">
+    <Modal
+      opened={isOpen}
+      onClose={handleClose}
+      title={modalTitle}
+      centered
+      size="lg"
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
       <form
         onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
+          e.preventDefault();
+          form.handleSubmit();
         }}
       >
         <Stack gap="md">
@@ -156,9 +186,10 @@ export function CreateJourneyModal() {
             name="title"
             validators={{
               onChange: ({ value }) => {
-                if (!value?.trim()) return "Title is required"
-                if (value.trim().length < 3) return "Title must be at least 3 characters"
-                return undefined
+                if (!value?.trim()) return "Title is required";
+                if (value.trim().length < 3)
+                  return "Title must be at least 3 characters";
+                return undefined;
               },
             }}
           >
@@ -168,7 +199,11 @@ export function CreateJourneyModal() {
                 placeholder="Give your journey a name"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+                error={
+                  field.state.meta.isTouched
+                    ? field.state.meta.errors.join(", ")
+                    : undefined
+                }
                 required
               />
             )}
@@ -177,7 +212,8 @@ export function CreateJourneyModal() {
           <form.Field
             name="category"
             validators={{
-              onChange: ({ value }) => (!value ? "Category is required" : undefined),
+              onChange: ({ value }) =>
+                !value ? "Category is required" : undefined,
             }}
           >
             {(field) => (
@@ -187,7 +223,11 @@ export function CreateJourneyModal() {
                 data={JOURNEY_CATEGORIES}
                 value={field.state.value || null}
                 onChange={(value) => field.handleChange(value ?? "")}
-                error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+                error={
+                  field.state.meta.isTouched
+                    ? field.state.meta.errors.join(", ")
+                    : undefined
+                }
                 required
               />
             )}
@@ -205,9 +245,16 @@ export function CreateJourneyModal() {
                 label="Car"
                 placeholder="Select car"
                 data={carsSelectData}
-                value={field.state.value || (primaryCarId ? String(primaryCarId) : null)}
+                value={
+                  field.state.value ||
+                  (primaryCarId ? String(primaryCarId) : null)
+                }
                 onChange={(value) => field.handleChange(value ?? "")}
-                error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+                error={
+                  field.state.meta.isTouched
+                    ? field.state.meta.errors.join(", ")
+                    : undefined
+                }
                 disabled={cars.length === 0}
                 required
               />
@@ -238,7 +285,11 @@ export function CreateJourneyModal() {
           </div>
 
           <Group justify="flex-end" mt="sm">
-            <Button variant="subtle" onClick={handleClose} disabled={isSubmitting}>
+            <Button
+              variant="subtle"
+              onClick={handleClose}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button
@@ -252,5 +303,5 @@ export function CreateJourneyModal() {
         </Stack>
       </form>
     </Modal>
-  )
+  );
 }
