@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.15.0...v0.15.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* **cars:** add mobile drag-and-drop support for image reordering ([#73](https://github.com/InteLLigentMonk/Paddokk/issues/73)) ([99a0e91](https://github.com/InteLLigentMonk/Paddokk/commit/99a0e910d3ed40701eb3c07db3adf3ee43bbde7e))
+
 ## [0.15.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.14.2...v0.15.0) (2026-05-06)
 
 
