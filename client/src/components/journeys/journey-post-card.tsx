@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  ActionIcon,
   Card,
   Group,
   Stack,
@@ -9,23 +8,10 @@ import {
   Button,
   Anchor,
   Image,
-  Box,
-  Paper,
-  Divider,
-  ScrollArea,
-  Collapse,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
-import {
-  MessageSquare,
-  ChevronDown,
-  ChevronUp,
-  PanelRightClose,
-  PanelRightOpen,
-} from "lucide-react";
+import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import type { JourneyPostDto } from "@/generated/api/schemas";
-import { JourneyPostComments } from "./journey-post-comments";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
 import { PostImageModal } from "./journey-post-image-modal";
 
@@ -151,32 +137,9 @@ interface JourneyPostCardProps {
 export function JourneyPostCard({ post }: JourneyPostCardProps) {
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [commentsOpened, { toggle: toggleComments }] = useDisclosure(true);
-  const postId = Number(post.id);
 
   const sortedImages = [...post.images].sort(
     (a, b) => Number(a.sortOrder) - Number(b.sortOrder),
-  );
-
-  const postContent = (
-    <Stack gap="md">
-      <PostHeader post={post} />
-      <PostImages images={post.images} onImageClick={setLightboxIndex} />
-      {post.textContent && <PostText text={post.textContent} />}
-      <Divider hiddenFrom="md" />
-      <Group hiddenFrom="md">
-        <Button
-          variant="subtle"
-          size="sm"
-          leftSection={<MessageSquare size={14} />}
-          onClick={() => setCommentModalOpen(true)}
-        >
-          {Number(post.commentCount) > 0
-            ? `${Number(post.commentCount)}`
-            : "Comment"}
-        </Button>
-      </Group>
-    </Stack>
   );
 
   return (
