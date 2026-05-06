@@ -13,6 +13,7 @@ import {
   Paper,
   SimpleGrid,
   Typography,
+  AspectRatio,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { Image } from "@mantine/core";
@@ -368,43 +369,45 @@ interface CarImageCarouselProps {
 function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
   if (images.length === 0) {
     return (
-      <Image
-        src="https://placehold.co/800x450/e9ecef/495057?text=No+Photos"
-        alt={displayName}
-        radius="md"
-        h={380}
-        fit="cover"
-        mb="xl"
-      />
+      <AspectRatio ratio={16 / 9}>
+        <Image
+          src="https://placehold.co/800x450/e9ecef/495057?text=No+Photos"
+          alt={displayName}
+          radius="md"
+          fit="cover"
+        />
+      </AspectRatio>
     );
   }
 
   if (images.length === 1) {
     return (
-      <Image
-        src={images[0].imageUrl}
-        alt={images[0].caption ?? displayName}
-        radius="md"
-        h={380}
-        fit="cover"
-        mb="xl"
-      />
+      <AspectRatio ratio={16 / 9}>
+        <Image
+          src={images[0].imageUrl}
+          alt={images[0].caption ?? displayName}
+          radius="md"
+          fit="cover"
+        />
+      </AspectRatio>
     );
   }
 
   return (
-    <Carousel withIndicators emblaOptions={{ loop: true }} mb="xl" height={380}>
-      {images.map((img) => (
-        <Carousel.Slide key={String(img.id)}>
-          <Image
-            src={img.imageUrl}
-            alt={img.caption ?? displayName}
-            h={380}
-            fit="cover"
-            radius="md"
-          />
-        </Carousel.Slide>
-      ))}
-    </Carousel>
+    <AspectRatio ratio={16 / 9}>
+      <Carousel withIndicators slideGap="md" emblaOptions={{ loop: true }}>
+        {images.map((img) => (
+          <Carousel.Slide key={String(img.id)}>
+            <Image
+              src={img.imageUrl}
+              alt={img.caption ?? displayName}
+              fit="contain"
+              bg="black"
+              radius="md"
+            />
+          </Carousel.Slide>
+        ))}
+      </Carousel>
+    </AspectRatio>
   );
 }

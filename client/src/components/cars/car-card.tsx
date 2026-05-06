@@ -7,6 +7,7 @@ import {
   ActionIcon,
   Menu,
   Badge,
+  AspectRatio,
 } from "@mantine/core";
 import { MoreVertical, Edit, Trash, Heart, Bell, Star } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
@@ -80,15 +81,16 @@ export function CarCard({ car }: CarCardProps) {
       }
     >
       <Card.Section>
-        <Image
-          src={
-            car.primaryImageUrl ||
-            "https://placehold.co/600x400/e9ecef/495057?text=No+Image"
-          }
-          h={250}
-          alt={displayName}
-          fit="cover"
-        />
+        <AspectRatio ratio={16 / 9}>
+          <Image
+            src={
+              car.primaryImageUrl ||
+              "https://placehold.co/600x400/e9ecef/495057?text=No+Image"
+            }
+            alt={displayName}
+            fit="cover"
+          />
+        </AspectRatio>
       </Card.Section>
 
       <Stack gap="sm" mt="sm" justify="space-between" style={{ flex: 1 }}>
