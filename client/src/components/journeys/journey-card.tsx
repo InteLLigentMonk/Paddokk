@@ -7,6 +7,7 @@ import {
   ActionIcon,
   Menu,
   Badge,
+  AspectRatio,
 } from "@mantine/core";
 import {
   MoreVertical,
@@ -143,15 +144,16 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       }
     >
       <Card.Section>
-        <Image
-          src={
-            journey.primaryImageUrl ||
-            "https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
-          }
-          h={250}
-          alt={journey.title}
-          fit="cover"
-        />
+        <AspectRatio ratio={16 / 9}>
+          <Image
+            src={
+              journey.primaryImageUrl ||
+              "https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
+            }
+            alt={journey.title}
+            fit="cover"
+          />
+        </AspectRatio>
       </Card.Section>
 
       <Stack gap="sm" mt="sm" justify="space-between" style={{ flex: 1 }}>

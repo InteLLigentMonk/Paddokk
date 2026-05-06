@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm run api:generate && vite dev --port 3000",
+    "dev": "pnpm run api:generate && vite dev --port 3000 --host",
     "build": "pnpm run api:generate && vite build",
     "preview": "vite preview",
     "test": "vitest run",

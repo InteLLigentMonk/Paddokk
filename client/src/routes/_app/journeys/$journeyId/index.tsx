@@ -76,16 +76,16 @@ function JourneyDetailPage() {
         <PageBreadcrumbs current={journey?.title ?? "Journey"} />
 
         {journeyError && (
-          <Alert icon={<AlertCircle size={16} />} title="Fel" color="red">
-            Kunde inte ladda resan. Försök igen.
+          <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
+            Could not load journey. Please try again.
           </Alert>
         )}
 
         {!journeyError && journey && <JourneyDetailHeader journey={journey} />}
 
         {postsError && (
-          <Alert icon={<AlertCircle size={16} />} title="Fel" color="red">
-            Kunde inte ladda inlägg. Försök igen.
+          <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
+            Could not load posts. Please try again.
           </Alert>
         )}
 
@@ -93,7 +93,7 @@ function JourneyDetailPage() {
 
         {!postsLoading && !postsError && posts.length === 0 && (
           <Center py="xl">
-            <Text c="dimmed">Inga inlägg ännu.</Text>
+            <Text c="dimmed">No posts yet.</Text>
           </Center>
         )}
 
