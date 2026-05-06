@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.16.0...v0.17.0) (2026-05-06)
+
+
+### Features
+
+* **journeys:** auto-reassign active journey on status change or delete ([#79](https://github.com/InteLLigentMonk/Paddokk/issues/79)) ([770665d](https://github.com/InteLLigentMonk/Paddokk/commit/770665d47c7b869260f5741f6bc6012dfa9ae13c))
+
 ## [0.16.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.15.2...v0.16.0) (2026-05-06)
 
 
