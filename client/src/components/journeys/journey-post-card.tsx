@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Card,
   Group,
@@ -8,6 +8,7 @@ import {
   Button,
   Anchor,
   Image,
+  AspectRatio,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
@@ -67,34 +68,37 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
 
   if (sorted.length === 1) {
     return (
-      <Image
-        src={sorted[0].imageUrl}
-        alt={sorted[0].caption ?? ""}
-        radius="sm"
-        fit="cover"
-        mah={320}
-        onClick={() => onImageClick(0)}
-        style={imgStyle}
-      />
+      <AspectRatio ratio={16 / 9}>
+        <Image
+          src={sorted[0].imageUrl}
+          alt={sorted[0].caption ?? ""}
+          radius="sm"
+          fit="cover"
+          onClick={() => onImageClick(0)}
+          style={imgStyle}
+        />
+      </AspectRatio>
     );
   }
 
   return (
-    <Carousel height="100%" slideSize="100%" slideGap="xs">
-      {sorted.map((img, i) => (
-        <Carousel.Slide key={String(img.id)}>
-          <Image
-            src={img.imageUrl}
-            alt={img.caption ?? ""}
-            fit="cover"
-            h="100%"
-            // radius="sm"
-            onClick={() => onImageClick(i)}
-            style={imgStyle}
-          />
-        </Carousel.Slide>
-      ))}
-    </Carousel>
+    <AspectRatio ratio={16 / 9}>
+      <Carousel height="100%" slideSize="100%" slideGap="xs">
+        {sorted.map((img, i) => (
+          <Carousel.Slide key={String(img.id)}>
+            <Image
+              src={img.imageUrl}
+              alt={img.caption ?? ""}
+              fit="cover"
+              h="100%"
+              // radius="sm"
+              onClick={() => onImageClick(i)}
+              style={imgStyle}
+            />
+          </Carousel.Slide>
+        ))}
+      </Carousel>
+    </AspectRatio>
   );
 }
 
@@ -104,17 +108,31 @@ interface PostTextProps {
 
 function PostText({ text }: PostTextProps) {
   const [expanded, setExpanded] = useState(false);
-  const lines = text.split("\n");
-  const showToggle = lines.length > 5;
-  const preview = lines.slice(0, 5).join("\n");
+  const [overflows, setOverflows] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      setOverflows(ref.current.scrollHeight > ref.current.clientHeight + 1);
+    }
+  }, [text]);
 
   return (
     <Stack gap="xs">
-      <Text style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-        {expanded ? text : preview}
-        {!expanded && showToggle && "…"}
-      </Text>
-      {showToggle && (
+      <div
+        ref={ref}
+        dangerouslySetInnerHTML={{ __html: text }}
+        style={{
+          wordBreak: "break-word",
+          ...(!expanded && {
+            display: "-webkit-box",
+            WebkitLineClamp: 8,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }),
+        }}
+      />
+      {(overflows || expanded) && (
         <Anchor
           component="button"
           size="xs"

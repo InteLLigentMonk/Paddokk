@@ -63,9 +63,18 @@ function PostPreview({ post }: PostPreviewProps) {
         )}
       </Group>
       {post.textContent && (
-        <Text size="sm" c="dimmed" lineClamp={2}>
-          {post.textContent}
-        </Text>
+        <div
+          dangerouslySetInnerHTML={{ __html: post.textContent }}
+          style={{
+            fontSize: "var(--mantine-font-size-sm)",
+            color: "var(--mantine-color-dimmed)",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            wordBreak: "break-word",
+          }}
+        />
       )}
       <Divider mt="md" />
     </Box>
