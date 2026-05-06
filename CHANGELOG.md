@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.1...v0.17.2) (2026-05-06)
+
+
+### Refactoring
+
+* **journey:** replace status model with activity tiers and IsPublic toggle ([#83](https://github.com/InteLLigentMonk/Paddokk/issues/83)) ([4b6221e](https://github.com/InteLLigentMonk/Paddokk/commit/4b6221ef66a9f81942e6fbb9f96b002ee3914bf4))
+
 ## [0.17.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.0...v0.17.1) (2026-05-06)
 
 
