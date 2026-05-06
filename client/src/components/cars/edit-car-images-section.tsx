@@ -9,12 +9,13 @@ import {
   Box,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { Upload, Image as ImageIcon, X, Trash2 } from "lucide-react";
+import { Upload, Image as ImageIcon, X, Trash2, GripVertical } from "lucide-react";
 import {
   DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -28,7 +29,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useQuery } from "@tanstack/react-query";
-import { limitsGetImageLimits } from "@/generated/api/limits/limits";
+import { getImageLimitsFn } from "@/lib/api/limits.server";
 import { useNotifications } from "@/integrations/mantine";
 import { CarImagePreview } from "./car-image-preview";
 import type { PendingImage } from "./car-form-stepper";
@@ -102,10 +103,7 @@ function ExistingImageCard({
         </Badge>
       )}
 
-      <Box
-        {...listeners}
-        style={{ position: "absolute", inset: 0, padding: "4px" }}
-      >
+      <Box style={{ position: "absolute", inset: 0, padding: "4px" }}>
         <Image
           src={image.mediumUrl || image.imageUrl}
           alt={image.caption ?? "Car image"}
@@ -117,6 +115,24 @@ function ExistingImageCard({
           onDragStart={(e) => e.preventDefault()}
         />
       </Box>
+
+      <ActionIcon
+        {...listeners}
+        variant="filled"
+        color="dark"
+        size="sm"
+        style={{
+          position: "absolute",
+          top: 8,
+          left: 8,
+          zIndex: 10,
+          touchAction: "none",
+          cursor: isDragging ? "grabbing" : "grab",
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
+        <GripVertical size={14} />
+      </ActionIcon>
 
       <ActionIcon
         color="red"
@@ -167,10 +183,9 @@ export function EditCarImagesSection({
 
   const { data: limitsData } = useQuery({
     queryKey: ["image-limits"],
-    queryFn: () => limitsGetImageLimits(),
+    queryFn: () => getImageLimitsFn(),
   });
-  const maxImages =
-    limitsData?.status === 200 ? Number(limitsData.data.maxImagesPerCar) : 10;
+  const maxImages = limitsData ? Number(limitsData.maxImagesPerCar) : 10;
 
   const visibleExisting = existingImages.filter(
     (img) => !deletedImageIds.includes(Number(img.id)),
@@ -180,6 +195,7 @@ export function EditCarImagesSection({
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
