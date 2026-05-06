@@ -1,4 +1,4 @@
-import { ActionIcon, Indicator, Menu } from "@mantine/core";
+import { ActionIcon, Menu } from "@mantine/core";
 import { Plus, TrendingUp } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { navigationConfig } from "@/data/navigation/app-navigation";
@@ -15,12 +15,7 @@ interface FABMenuProps {
 
 export function FABMenu({ onActionClick }: FABMenuProps) {
   const navigate = useNavigate();
-  const { canAdd, currentCount, maxJourneys } = useCanAddJourney();
-
-  const remaining =
-    maxJourneys != null && currentCount != null
-      ? Number(maxJourneys) - currentCount
-      : null;
+  const { canAdd } = useCanAddJourney();
 
   const handleAction = (actionId: string) => {
     if (actionId === "add-car") {
