@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.18.0...v0.18.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* **journey:** display posts in descending order and restore create post bar ([#91](https://github.com/InteLLigentMonk/Paddokk/issues/91)) ([9c1303c](https://github.com/InteLLigentMonk/Paddokk/commit/9c1303c0e289800857e8bcb73e677f4c94eceecb))
+
 ## [0.18.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.3...v0.18.0) (2026-05-06)
 
 
