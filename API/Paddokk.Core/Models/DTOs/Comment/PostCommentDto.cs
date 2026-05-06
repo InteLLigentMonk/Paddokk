@@ -13,4 +13,6 @@ public class PostCommentDto
     public required bool IsEdited { get; set; }
     public required bool IsOwner { get; set; }
     public required bool IsPostOwner { get; set; }
+    public required bool IsViewerPostOwner { get; set; }
+    public PostCommentDto? Reply { get; set; }
 }

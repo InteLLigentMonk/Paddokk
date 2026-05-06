@@ -39,7 +39,6 @@ export function PostImageModal({
     >
       <Carousel
         initialSlide={initialIndex}
-        withIndicators={images.length > 1}
         withControls={images.length > 1}
         height="auto"
         styles={{

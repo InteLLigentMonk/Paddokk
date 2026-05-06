@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
+  ActionIcon,
   Card,
-  Grid,
   Group,
   Stack,
   Text,
@@ -12,9 +12,18 @@ import {
   Box,
   Paper,
   Divider,
+  ScrollArea,
+  Collapse,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
-import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  MessageSquare,
+  ChevronDown,
+  ChevronUp,
+  PanelRightClose,
+  PanelRightOpen,
+} from "lucide-react";
 import type { JourneyPostDto } from "@/generated/api/schemas";
 import { JourneyPostComments } from "./journey-post-comments";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
@@ -85,7 +94,7 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
   }
 
   return (
-    <Carousel withIndicators height="100%" slideSize="90%" slideGap="xs">
+    <Carousel height="100%" slideSize="100%" slideGap="xs">
       {sorted.map((img, i) => (
         <Carousel.Slide key={String(img.id)}>
           <Image
@@ -93,7 +102,7 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
             alt={img.caption ?? ""}
             fit="cover"
             h="100%"
-            radius="sm"
+            // radius="sm"
             onClick={() => onImageClick(i)}
             style={imgStyle}
           />
@@ -142,6 +151,7 @@ interface JourneyPostCardProps {
 export function JourneyPostCard({ post }: JourneyPostCardProps) {
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [commentsOpened, { toggle: toggleComments }] = useDisclosure(true);
   const postId = Number(post.id);
 
   const sortedImages = [...post.images].sort(
@@ -162,8 +172,8 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
           onClick={() => setCommentModalOpen(true)}
         >
           {Number(post.commentCount) > 0
-            ? `${Number(post.commentCount)} kommentarer`
-            : "Kommentera"}
+            ? `${Number(post.commentCount)}`
+            : "Comment"}
         </Button>
       </Group>
     </Stack>
@@ -171,37 +181,41 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
 
   return (
     <>
-      {/* Mobile layout */}
-      <Card withBorder radius="md" padding="md" hiddenFrom="md">
-        {postContent}
-      </Card>
-
-      {/* Desktop layout */}
-      <Paper
+      <Card
         withBorder
         radius="md"
-        p="md"
-        visibleFrom="md"
+        padding="sm"
         bg="light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))"
       >
-        <Grid gutter="md">
-          <Grid.Col span={7}>{postContent}</Grid.Col>
-          <Grid.Col span={5}>
-            <Box
-              pl="md"
-              h="100%"
-              style={{
-                borderLeft: "1px solid var(--mantine-color-default-border)",
-              }}
-            >
-              <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm">
-                Comments
-              </Text>
-              <JourneyPostComments postId={postId} />
-            </Box>
-          </Grid.Col>
-        </Grid>
-      </Paper>
+        <Card.Section withBorder inheritPadding py="sm">
+          <PostHeader post={post} />
+        </Card.Section>
+        {post.images && (
+          <Card.Section>
+            <PostImages images={post.images} onImageClick={setLightboxIndex} />
+          </Card.Section>
+        )}
+        <Card.Section
+          withBorder
+          inheritPadding
+          py="sm"
+          bg="light-dark(var(--mantine-color-white), var(--mantine-color-dark-8))"
+        >
+          {post.textContent && <PostText text={post.textContent} />}
+        </Card.Section>
+        <Card.Section withBorder inheritPadding py="xs">
+          <Button
+            variant="subtle"
+            size="sm"
+            leftSection={<MessageSquare size={14} />}
+            onClick={() => setCommentModalOpen(true)}
+          >
+            {Number(post.commentCount) > 0
+              ? `${Number(post.commentCount)}`
+              : "Comment"}
+          </Button>
+        </Card.Section>
+      </Card>
 
       {/* Mobile comments modal */}
       <JourneyPostCommentsModal

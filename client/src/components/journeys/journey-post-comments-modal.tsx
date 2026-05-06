@@ -86,7 +86,7 @@ export function JourneyPostCommentsModal({
       opened={post !== null}
       onClose={onClose}
       title={<Text fw={600}>Kommentarer</Text>}
-      size="md"
+      size="lg"
       styles={{
         content: {
           display: "flex",
@@ -110,7 +110,11 @@ export function JourneyPostCommentsModal({
             <PostPreview post={post} />
           </Box>
           <Stack px="md" pb="md" flex={1} mih={0} gap={0}>
-            <JourneyPostComments postId={Number(post.id)} stretch />
+            <JourneyPostComments
+              postId={Number(post.id)}
+              isPostOwner={post.isOwner}
+              stretch
+            />
           </Stack>
         </>
       )}

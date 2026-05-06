@@ -95,7 +95,7 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
         </Group>
         {journey.description && (
           <Stack gap={4}>
-            <Collapse in={descriptionExpanded}>
+            <Collapse expanded={descriptionExpanded}>
               <Box
                 c="dimmed"
                 fz="sm"

@@ -21,10 +21,10 @@ public class CommentRepository : ICommentRepository
 
         var query = _db.PostComments
             .Include(c => c.User)
-            .Include(c => c.JourneyPost)
-                .ThenInclude(p => p.User)
-            .Where(c => c.JourneyPostId == postId)
-            .OrderBy(c => c.CreatedAt); // Chronological order (oldest first)
+            .Include(c => c.JourneyPost).ThenInclude(p => p.User)
+            .Include(c => c.Replies).ThenInclude(r => r.User)
+            .Where(c => c.JourneyPostId == postId && c.ParentCommentId == null)
+            .OrderBy(c => c.CreatedAt);
         var totalCount = await query.CountAsync(cancellationToken);
 
         var postComments = await query
@@ -39,8 +39,8 @@ public class CommentRepository : ICommentRepository
     {
         return await _db.PostComments
             .Include(c => c.User)
-            .Include(c => c.JourneyPost)
-                .ThenInclude(p => p.User)
+            .Include(c => c.JourneyPost).ThenInclude(p => p.User)
+            .Include(c => c.Replies).ThenInclude(r => r.User)
             .FirstOrDefaultAsync(c => c.Id == commentId, cancellationToken);
     }
 
