@@ -18,6 +18,7 @@ import {
   useJourneyPostsInfinite,
 } from "@/hooks/use-journey-detail";
 import { JourneyDetailHeader } from "@/components/journeys/journey-detail-header";
+import { JourneyCreatePostBar } from "@/components/journeys/journey-create-post-bar";
 import { JourneyPostCard } from "@/components/journeys/journey-post-card";
 import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 
@@ -82,6 +83,8 @@ function JourneyDetailPage() {
         )}
 
         {!journeyError && journey && <JourneyDetailHeader journey={journey} />}
+
+        {journey?.isOwner && <JourneyCreatePostBar journey={journey} />}
 
         {postsError && (
           <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
