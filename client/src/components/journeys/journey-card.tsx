@@ -104,9 +104,16 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
           completedAt: vars.completedAt,
         },
       }),
-    onSuccess: () => {
+    onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
-      notifications.success({ message: "Resans status uppdaterad" });
+      queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
+      const defaultChanged =
+        isDefault && Number(vars.newStatus) !== STATUS_ACTIVE;
+      notifications.success({
+        message: defaultChanged
+          ? "Aktiv resa uppdaterad"
+          : "Resans status uppdaterad",
+      });
     },
     onError: () => {
       notifications.error({ message: "Kunde inte uppdatera status" });
@@ -177,7 +184,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                   size="sm"
                   leftSection={<Star size={10} />}
                 >
-                  Active Journey
+                  Primary
                 </Badge>
               )}
             </Group>

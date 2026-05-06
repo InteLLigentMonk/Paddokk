@@ -4,7 +4,7 @@ import { useStore } from "@tanstack/react-store"
 import { useForm } from "@tanstack/react-form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { journeysPageStore, closeEditJourneyModal } from "@/lib/stores/journeys-page-store"
-import { updateJourneyFn, getUserJourneysFn } from "@/lib/api/user-journeys.server"
+import { updateJourneyFn, getUserJourneysFn, getDefaultActiveJourneyFn } from "@/lib/api/user-journeys.server"
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys"
 import { RichTextEditor } from "@/components/shared/rich-text-editor"
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone"
@@ -42,6 +42,12 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
 
   const journeyId = Number(journey.id)
 
+  const { data: defaultJourney } = useQuery({
+    queryKey: ["default-active-journey"],
+    queryFn: () => getDefaultActiveJourneyFn(),
+  })
+  const isDefault = defaultJourney ? Number(defaultJourney.id) === journeyId : false
+
   const form = useForm({
     defaultValues: {
       title: journey.title,
@@ -65,9 +71,11 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
           await userJourneysUploadJourneyCoverImage(journeyId, { file: coverFile })
         }
 
+        const defaultChanged = isDefault && Number(value.status) !== Number(journey.status) && Number(value.status) !== 1
         queryClient.invalidateQueries({ queryKey: ["user-journeys"] })
         queryClient.invalidateQueries({ queryKey: ["journey-detail", journeyId] })
-        notifications.success({ message: "Journey updated!" })
+        queryClient.invalidateQueries({ queryKey: ["default-active-journey"] })
+        notifications.success({ message: defaultChanged ? "Aktiv resa uppdaterad" : "Journey updated!" })
         handleClose()
       } catch {
         notifications.error({ message: "Failed to update journey" })
