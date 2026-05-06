@@ -126,7 +126,7 @@ public class JourneyRepository : IJourneyRepository
             .Include(p => p.Images)
             .Include(p => p.Comments)
             .Where(p => p.JourneyId == journeyId)
-            .OrderBy(p => p.CreatedAt)
+            .OrderByDescending(p => p.CreatedAt)
             .Skip(skip)
             .Take(take)
             .ToListAsync(cancellationToken);
