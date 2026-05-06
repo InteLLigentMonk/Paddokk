@@ -6,7 +6,7 @@ using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Journeys.Commands.CreateJourney;
 
-public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, IActorResolver actor)
+public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, IActorResolver actor, IHtmlSanitizationService htmlSanitizer)
     : IRequestHandler<CreateJourneyCommand, Result<JourneyDto>>
 {
     public async Task<Result<JourneyDto>> Handle(CreateJourneyCommand request, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, I
         var journey = new Journey
         {
             Title = request.Title,
-            Description = request.Description,
+            Description = htmlSanitizer.Sanitize(request.Description),
             Category = request.Category,
             Status = JourneyStatus.Active,
             UserId = actor.UserId,

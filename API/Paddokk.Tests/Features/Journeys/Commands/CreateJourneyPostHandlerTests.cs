@@ -11,12 +11,14 @@ public class CreateJourneyPostHandlerTests
     private readonly IJourneyRepository _repo = Substitute.For<IJourneyRepository>();
     private readonly IImageService _imageService = Substitute.For<IImageService>();
     private readonly IActorResolver _actor = Substitute.For<IActorResolver>();
+    private readonly IHtmlSanitizationService _htmlSanitizer = Substitute.For<IHtmlSanitizationService>();
     private readonly CreateJourneyPostHandler _handler;
 
     public CreateJourneyPostHandlerTests()
     {
         _actor.UserId.Returns("user-1");
-        _handler = new CreateJourneyPostHandler(_repo, _imageService, _actor);
+        _htmlSanitizer.Sanitize(Arg.Any<string?>()).Returns(ci => ci.ArgAt<string?>(0));
+        _handler = new CreateJourneyPostHandler(_repo, _imageService, _actor, _htmlSanitizer);
     }
 
     [Fact]
