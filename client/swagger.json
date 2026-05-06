@@ -5600,6 +5600,15 @@
           },
           "content": {
             "type": "string"
+          },
+          "parentCommentId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -6319,7 +6328,8 @@
           "updatedAt",
           "isEdited",
           "isOwner",
-          "isPostOwner"
+          "isPostOwner",
+          "isViewerPostOwner"
         ],
         "type": "object",
         "properties": {
@@ -6370,6 +6380,19 @@
           },
           "isPostOwner": {
             "type": "boolean"
+          },
+          "isViewerPostOwner": {
+            "type": "boolean"
+          },
+          "reply": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PostCommentDto"
+              }
+            ]
           }
         }
       },

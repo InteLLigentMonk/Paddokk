@@ -9,7 +9,7 @@ public class PostCommentConfiguration : IEntityTypeConfiguration<PostComment>
     public void Configure(EntityTypeBuilder<PostComment> builder)
     {
         builder.HasKey(e => e.Id);
-        builder.Property(e => e.Content).HasMaxLength(2000);
+        builder.Property(e => e.Content).HasMaxLength(500);
 
         builder.HasOne(e => e.JourneyPost)
             .WithMany(e => e.Comments)
@@ -19,6 +19,11 @@ public class PostCommentConfiguration : IEntityTypeConfiguration<PostComment>
         builder.HasOne(e => e.User)
             .WithMany(e => e.Comments)
             .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(e => e.ParentComment)
+            .WithMany(e => e.Replies)
+            .HasForeignKey(e => e.ParentCommentId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

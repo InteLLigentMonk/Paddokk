@@ -51,9 +51,12 @@ public class PostComment
     public JourneyPost JourneyPost { get; set; } = null!;
     public string UserId { get; set; } = string.Empty;
     public ApplicationUser User { get; set; } = null!;
+    public int? ParentCommentId { get; set; }
+    public PostComment? ParentComment { get; set; }
+    public ICollection<PostComment> Replies { get; set; } = [];
 
     [Required]
-    [StringLength(2000)]
+    [StringLength(500)]
     public string Content { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

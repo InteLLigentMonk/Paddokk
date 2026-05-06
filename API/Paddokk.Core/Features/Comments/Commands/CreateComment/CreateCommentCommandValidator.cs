@@ -8,6 +8,6 @@ public class CreateCommentCommandValidator : AbstractValidator<CreateCommentComm
     {
         RuleFor(x => x.Content)
             .NotEmpty()
-            .MaximumLength(2000);
+            .MaximumLength(500);
     }
 }
