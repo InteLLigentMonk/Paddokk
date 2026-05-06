@@ -7,7 +7,8 @@ namespace Paddokk.Core.Features.Cars.Commands.UpdateUserCar;
 
 public sealed class UpdateUserCarHandler(
     ICarRepository carRepository,
-    IActorResolver actor)
+    IActorResolver actor,
+    IHtmlSanitizationService htmlSanitizer)
     : IRequestHandler<UpdateUserCarCommand, Result<UserCarDto>>
 {
     public async Task<Result<UserCarDto>> Handle(UpdateUserCarCommand request, CancellationToken cancellationToken)
@@ -26,7 +27,7 @@ public sealed class UpdateUserCarHandler(
             userCar.Color = string.IsNullOrEmpty(request.Color) ? null : request.Color;
 
         if (request.Description is not null)
-            userCar.Description = string.IsNullOrEmpty(request.Description) ? null : request.Description;
+            userCar.Description = string.IsNullOrEmpty(request.Description) ? null : htmlSanitizer.Sanitize(request.Description);
 
         if (request.IsPrimary.HasValue)
             userCar.IsPrimary = request.IsPrimary.Value;

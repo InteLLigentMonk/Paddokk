@@ -9,7 +9,8 @@ namespace Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 public sealed class CreateUserCarHandler(
     ICarRepository carRepository,
     IUserRepository userRepository,
-    IActorResolver actor)
+    IActorResolver actor,
+    IHtmlSanitizationService htmlSanitizer)
     : IRequestHandler<CreateUserCarCommand, Result<UserCarDto>>
 {
     public async Task<Result<UserCarDto>> Handle(CreateUserCarCommand request, CancellationToken cancellationToken)
@@ -75,7 +76,7 @@ public sealed class CreateUserCarHandler(
             Year = request.Year,
             Nickname = request.Nickname,
             Color = request.Color,
-            Description = request.Description,
+            Description = htmlSanitizer.Sanitize(request.Description),
             SearchText = searchText,
             IsPrimary = isPrimary,
             CreatedAt = DateTime.UtcNow,

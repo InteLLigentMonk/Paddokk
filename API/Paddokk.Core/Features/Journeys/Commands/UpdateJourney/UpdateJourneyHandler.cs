@@ -6,7 +6,7 @@ using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Journeys.Commands.UpdateJourney;
 
-public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, IActorResolver actor)
+public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, IActorResolver actor, IHtmlSanitizationService htmlSanitizer)
     : IRequestHandler<UpdateJourneyCommand, Result<JourneyDto>>
 {
     public async Task<Result<JourneyDto>> Handle(UpdateJourneyCommand request, CancellationToken cancellationToken)
@@ -20,7 +20,7 @@ public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, I
             journey.Title = request.Title;
 
         if (request.Description is not null)
-            journey.Description = request.Description;
+            journey.Description = htmlSanitizer.Sanitize(request.Description);
 
         if (request.Category.HasValue)
             journey.Category = request.Category.Value;

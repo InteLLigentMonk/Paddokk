@@ -5,7 +5,7 @@ using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Core.Features.Journeys.Commands.UpdateJourneyPost;
 
-public sealed class UpdateJourneyPostHandler(IJourneyRepository journeyRepository, IActorResolver actor)
+public sealed class UpdateJourneyPostHandler(IJourneyRepository journeyRepository, IActorResolver actor, IHtmlSanitizationService htmlSanitizer)
     : IRequestHandler<UpdateJourneyPostCommand, Result<JourneyPostDto>>
 {
     public async Task<Result<JourneyPostDto>> Handle(UpdateJourneyPostCommand request, CancellationToken cancellationToken)
@@ -17,7 +17,7 @@ public sealed class UpdateJourneyPostHandler(IJourneyRepository journeyRepositor
 
         if (request.TextContent is not null)
         {
-            post.TextContent = request.TextContent;
+            post.TextContent = htmlSanitizer.Sanitize(request.TextContent);
             post.IsEdited = true;
             post.UpdatedAt = DateTime.UtcNow;
         }
