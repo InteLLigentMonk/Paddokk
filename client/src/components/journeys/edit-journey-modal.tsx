@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, Group, Modal, ScrollArea, Select, Stack, Text, TextInput } from "@mantine/core"
+import { Button, Group, Modal, ScrollArea, Select, Stack, Switch, Text, TextInput } from "@mantine/core"
 import { useStore } from "@tanstack/react-store"
 import { useForm } from "@tanstack/react-form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -22,8 +22,6 @@ const JOURNEY_CATEGORIES = [
 const JOURNEY_STATUSES = [
   { value: "1", label: "Active" },
   { value: "2", label: "Completed" },
-  { value: "3", label: "Parked" },
-  { value: "4", label: "Archived" },
 ]
 
 interface EditJourneyFormProps {
@@ -53,6 +51,7 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
       title: journey.title,
       category: String(journey.category),
       status: String(journey.status),
+      isPublic: journey.isPublic,
     },
     onSubmit: async ({ value }) => {
       setIsSubmitting(true)
@@ -64,6 +63,7 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
             category: Number(value.category),
             status: Number(value.status),
             description: description || null,
+            isPublic: value.isPublic,
           },
         })
 
@@ -159,6 +159,17 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
               data={JOURNEY_STATUSES}
               value={field.state.value || null}
               onChange={(value) => field.handleChange(value ?? "")}
+            />
+          )}
+        </form.Field>
+
+        <form.Field name="isPublic">
+          {(field) => (
+            <Switch
+              label="Public"
+              description="When off, the journey is Under Wraps and hidden from others"
+              checked={field.state.value}
+              onChange={(e) => field.handleChange(e.currentTarget.checked)}
             />
           )}
         </form.Field>

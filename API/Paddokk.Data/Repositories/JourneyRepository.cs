@@ -54,6 +54,7 @@ public class JourneyRepository : IJourneyRepository
             .Include(j => j.Posts)
             .Include(j => j.Subscriptions)
             .Include(j => j.Likes)
+            .Where(j => j.IsPublic)
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(request.Query))

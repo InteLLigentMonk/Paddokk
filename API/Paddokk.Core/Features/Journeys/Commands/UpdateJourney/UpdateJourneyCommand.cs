@@ -16,4 +16,5 @@ public record UpdateJourneyCommand(
 {
     public DateTime? TargetCompletedAt { get; init; }
     public string? CoverImageUrl { get; init; }
+    public bool? IsPublic { get; init; }
 }

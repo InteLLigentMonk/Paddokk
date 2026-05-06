@@ -19,6 +19,9 @@ public sealed class CreateJourneyPostHandler(
         if (journey is null || journey.UserId != actor.UserId)
             return Result<JourneyPostDto>.Failure(Error.NotFound("Journey not found or you don't own it"));
 
+        if (journey.Status == JourneyStatus.Completed)
+            return Result<JourneyPostDto>.Failure(Error.Validation("Cannot add posts to a completed journey"));
+
         if (request.Images.Count > 0)
             await imageService.ValidatePostImagesAsync(actor.UserId, request.Images, cancellationToken);
 

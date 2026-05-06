@@ -36,6 +36,8 @@ public class Journey
     [StringLength(500)]
     public string? CoverImageUrl { get; set; }
 
+    public bool IsPublic { get; set; } = true;
+
     // Computed Properties (not mapped to database)
     public int PostCount => Posts?.Count ?? 0;
     public int SubscriberCount => Subscriptions?.Count(s => s.IsActive) ?? 0;
@@ -54,7 +56,14 @@ public enum JourneyCategory
 public enum JourneyStatus
 {
     Active = 1,
-    Completed = 2,
-    OnHold = 3,
-    Archived = 4
+    Completed = 2
+}
+
+public enum JourneyActivityTier
+{
+    FullThrottle = 1,
+    Cruising = 2,
+    SlowLane = 3,
+    Crawling = 4,
+    Stalled = 5
 }

@@ -5955,6 +5955,9 @@
           }
         }
       },
+      "JourneyActivityTier": {
+        "type": "integer"
+      },
       "JourneyCategory": {
         "type": "integer"
       },
@@ -5964,6 +5967,8 @@
           "title",
           "category",
           "status",
+          "activityTier",
+          "isPublic",
           "userId",
           "userDisplayName",
           "userCarId",
@@ -6000,6 +6005,12 @@
           },
           "status": {
             "$ref": "#/components/schemas/JourneyStatus"
+          },
+          "activityTier": {
+            "$ref": "#/components/schemas/JourneyActivityTier"
+          },
+          "isPublic": {
+            "type": "boolean"
           },
           "userId": {
             "type": "string"
@@ -6516,6 +6527,12 @@
             "type": [
               "null",
               "string"
+            ]
+          },
+          "isPublic": {
+            "type": [
+              "null",
+              "boolean"
             ]
           }
         }

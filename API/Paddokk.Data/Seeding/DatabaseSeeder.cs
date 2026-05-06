@@ -207,7 +207,7 @@ public static class DatabaseSeeder
         var statuses = new[]
         {
             JourneyStatus.Active, JourneyStatus.Active, JourneyStatus.Active,
-            JourneyStatus.Completed, JourneyStatus.OnHold
+            JourneyStatus.Completed, JourneyStatus.Active
         };
 
         foreach (var user in users)
