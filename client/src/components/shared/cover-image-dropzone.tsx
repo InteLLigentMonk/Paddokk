@@ -61,8 +61,9 @@ export function CoverImageDropzone({ previewUrl, onChange }: CoverImageDropzoneP
           borderWidth: "2px",
           borderRadius: "var(--mantine-radius-md)",
         }}
+        styles={{ inner: { height: "100%" } }}
       >
-        <Group justify="center" gap="xl" h="100%" style={{ pointerEvents: "none" }}>
+        <Group justify="center" align="center" gap="xl" h="100%" style={{ pointerEvents: "none" }}>
           <Dropzone.Accept>
             <Upload size={40} color="var(--mantine-color-blue-6)" />
           </Dropzone.Accept>
