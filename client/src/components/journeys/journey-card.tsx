@@ -16,15 +16,18 @@ import {
   Heart,
   Bell,
   MessageSquare,
-  Pause,
-  Play,
   CheckCircle,
-  Archive,
+  Eye,
+  EyeOff,
   Star,
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { JourneyDto, JourneyStatus } from "@/generated/api/schemas";
+import type {
+  JourneyDto,
+  JourneyStatus,
+  JourneyActivityTier,
+} from "@/generated/api/schemas";
 import {
   openEditJourneyModal,
   openDeleteJourneyConfirm,
@@ -42,21 +45,21 @@ interface JourneyCardProps {
 
 const STATUS_ACTIVE: JourneyStatus = 1;
 const STATUS_COMPLETED: JourneyStatus = 2;
-const STATUS_ON_HOLD: JourneyStatus = 3;
-const STATUS_ARCHIVED: JourneyStatus = 4;
 
-const STATUS_LABELS: Record<number, string> = {
-  1: "Active",
-  2: "Finished",
-  3: "Parked",
-  4: "Archived",
+const ACTIVITY_TIER_LABELS: Record<JourneyActivityTier, string> = {
+  1: "Full Throttle",
+  2: "Cruising",
+  3: "Slow Lane",
+  4: "Crawling",
+  5: "Stalled",
 };
 
-const STATUS_COLORS: Record<number, string> = {
+const ACTIVITY_TIER_COLORS: Record<JourneyActivityTier, string> = {
   1: "green",
-  2: "blue",
+  2: "teal",
   3: "yellow",
-  4: "gray",
+  4: "orange",
+  5: "red",
 };
 
 const CATEGORY_LABELS: Record<number, string> = {
@@ -83,7 +86,9 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
   const notifications = useNotifications();
 
   const status = Number(journey.status);
+  const activityTier = Number(journey.activityTier);
   const journeyId = Number(journey.id);
+  const isPublic = journey.isPublic;
 
   const carName =
     journey.carNickname ||
@@ -94,29 +99,31 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
 
   const statusMutation = useMutation({
     mutationFn: (vars: {
-      newStatus: JourneyStatus;
+      newStatus?: JourneyStatus;
       completedAt?: string | null;
+      newIsPublic?: boolean;
     }) =>
       updateJourneyFn({
         data: {
           journeyId,
           status: vars.newStatus,
           completedAt: vars.completedAt,
+          isPublic: vars.newIsPublic,
         },
       }),
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
       queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       const defaultChanged =
-        isDefault && Number(vars.newStatus) !== STATUS_ACTIVE;
+        isDefault && vars.newStatus !== undefined && Number(vars.newStatus) !== STATUS_ACTIVE;
       notifications.success({
         message: defaultChanged
           ? "Aktiv resa uppdaterad"
-          : "Resans status uppdaterad",
+          : "Resan uppdaterad",
       });
     },
     onError: () => {
-      notifications.error({ message: "Kunde inte uppdatera status" });
+      notifications.error({ message: "Kunde inte uppdatera resan" });
     },
   });
 
@@ -131,10 +138,6 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       notifications.error({ message: "Kunde inte sätta som aktiv resa" });
     },
   });
-
-  const transitionTo = (newStatus: JourneyStatus, completedAt?: string) => {
-    statusMutation.mutate({ newStatus, completedAt });
-  };
 
   return (
     <Card
@@ -169,11 +172,21 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
             <Group gap={6} wrap="wrap">
               <Badge
                 variant="light"
-                color={STATUS_COLORS[status] ?? "gray"}
+                color={ACTIVITY_TIER_COLORS[activityTier] ?? "gray"}
                 size="sm"
               >
-                {STATUS_LABELS[status] ?? "Unknown"}
+                {ACTIVITY_TIER_LABELS[activityTier] ?? "Unknown"}
               </Badge>
+              {status === STATUS_COMPLETED && (
+                <Badge variant="light" color="blue" size="sm">
+                  Complete
+                </Badge>
+              )}
+              {!isPublic && (
+                <Badge variant="light" color="gray" size="sm">
+                  Under Wraps
+                </Badge>
+              )}
               <Badge variant="outline" size="sm">
                 {CATEGORY_LABELS[Number(journey.category)] ?? "Other"}
               </Badge>
@@ -222,52 +235,32 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
                 Edit
               </Menu.Item>
 
-              {status !== STATUS_ARCHIVED && <Menu.Divider />}
+              <Menu.Divider />
 
               {status === STATUS_ACTIVE && (
-                <Menu.Item
-                  leftSection={<Pause size={16} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    transitionTo(STATUS_ON_HOLD);
-                  }}
-                >
-                  Park
-                </Menu.Item>
-              )}
-              {status === STATUS_ON_HOLD && (
-                <Menu.Item
-                  leftSection={<Play size={16} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    transitionTo(STATUS_ACTIVE);
-                  }}
-                >
-                  Make public
-                </Menu.Item>
-              )}
-              {(status === STATUS_ACTIVE || status === STATUS_ON_HOLD) && (
                 <Menu.Item
                   leftSection={<CheckCircle size={16} />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    transitionTo(STATUS_COMPLETED, new Date().toISOString());
+                    statusMutation.mutate({
+                      newStatus: STATUS_COMPLETED,
+                      completedAt: new Date().toISOString(),
+                    });
                   }}
                 >
                   Complete Journey
                 </Menu.Item>
               )}
-              {status !== STATUS_ARCHIVED && (
-                <Menu.Item
-                  leftSection={<Archive size={16} />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    transitionTo(STATUS_ARCHIVED);
-                  }}
-                >
-                  Archive
-                </Menu.Item>
-              )}
+
+              <Menu.Item
+                leftSection={isPublic ? <EyeOff size={16} /> : <Eye size={16} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  statusMutation.mutate({ newIsPublic: !isPublic });
+                }}
+              >
+                {isPublic ? "Put Under Wraps" : "Make Public"}
+              </Menu.Item>
 
               {status === STATUS_ACTIVE && !isDefault && (
                 <>

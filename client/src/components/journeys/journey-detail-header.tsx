@@ -15,20 +15,22 @@ import {
   Button,
 } from "@mantine/core";
 import { MessageSquare, Heart, Bell } from "lucide-react";
-import type { JourneyDto } from "@/generated/api/schemas";
+import type { JourneyActivityTier, JourneyDto } from "@/generated/api/schemas";
 
-const STATUS_LABELS: Record<number, string> = {
-  1: "Aktiv",
-  2: "Slutförd",
-  3: "Parkerad",
-  4: "Arkiverad",
+const ACTIVITY_TIER_LABELS: Record<JourneyActivityTier, string> = {
+  1: "Full Throttle",
+  2: "Cruising",
+  3: "Slow Lane",
+  4: "Crawling",
+  5: "Stalled",
 };
 
-const STATUS_COLORS: Record<number, string> = {
+const ACTIVITY_TIER_COLORS: Record<JourneyActivityTier, string> = {
   1: "green",
-  2: "blue",
+  2: "teal",
   3: "yellow",
-  4: "gray",
+  4: "orange",
+  5: "red",
 };
 
 const CATEGORY_LABELS: Record<number, string> = {
@@ -46,7 +48,9 @@ interface JourneyDetailHeaderProps {
 export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const status = Number(journey.status);
+  const activityTier = Number(journey.activityTier);
   const category = Number(journey.category);
+  const STATUS_COMPLETED = 2;
 
   const carLabel =
     journey.carNickname ||
@@ -76,9 +80,15 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
 
       <Stack gap="md" p="lg">
         <Group gap="xs" wrap="wrap">
-          <Badge variant="light" color={STATUS_COLORS[status] ?? "gray"}>
-            {STATUS_LABELS[status] ?? "Unknown"}
+          <Badge variant="light" color={ACTIVITY_TIER_COLORS[activityTier] ?? "gray"}>
+            {ACTIVITY_TIER_LABELS[activityTier] ?? "Unknown"}
           </Badge>
+          {status === STATUS_COMPLETED && (
+            <Badge variant="light" color="blue">Complete</Badge>
+          )}
+          {!journey.isPublic && (
+            <Badge variant="light" color="gray">Under Wraps</Badge>
+          )}
           <Badge variant="outline">
             {CATEGORY_LABELS[category] ?? "Other"}
           </Badge>

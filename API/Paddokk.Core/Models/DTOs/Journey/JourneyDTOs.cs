@@ -9,6 +9,8 @@ public class JourneyDto
     public string? Description { get; set; }
     public required JourneyCategory Category { get; set; }
     public required JourneyStatus Status { get; set; }
+    public required JourneyActivityTier ActivityTier { get; set; }
+    public required bool IsPublic { get; set; }
 
     // User Info
     public required string UserId { get; set; }

@@ -69,4 +69,29 @@ public class UpdateJourneyHandlerTests
         updated.Should().NotBeNull();
         updated!.CoverImageUrl.Should().Be(coverUrl);
     }
+
+    [Fact]
+    public async Task Handle_WithIsPublicFalse_SetsIsPublicFalseOnEntity()
+    {
+        // Arrange
+        var existing = JourneyTestHelpers.BuildJourney();
+        _repo.GetJourneyByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(existing, existing);
+
+        Journey? updated = null;
+        _repo.When(r => r.UpdateJourneyAsync(Arg.Any<Journey>(), Arg.Any<CancellationToken>()))
+            .Do(ci => updated = ci.ArgAt<Journey>(0));
+
+        var command = new UpdateJourneyCommand(1, null, null, null, null, null)
+        {
+            IsPublic = false
+        };
+
+        // Act
+        await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        updated.Should().NotBeNull();
+        updated!.IsPublic.Should().BeFalse();
+    }
 }

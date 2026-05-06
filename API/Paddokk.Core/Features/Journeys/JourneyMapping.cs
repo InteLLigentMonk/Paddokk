@@ -16,6 +16,8 @@ internal static class JourneyMapping
             Description = journey.Description,
             Category = journey.Category,
             Status = journey.Status,
+            ActivityTier = ComputeActivityTier(journey),
+            IsPublic = journey.IsPublic,
 
             UserId = journey.UserId,
             UserDisplayName = journey.User.DisplayName,
@@ -49,6 +51,22 @@ internal static class JourneyMapping
             LastPostPreview = lastPost?.TextContent?.Length > 100
                 ? lastPost.TextContent[..100] + "..."
                 : lastPost?.TextContent
+        };
+    }
+
+    private static JourneyActivityTier ComputeActivityTier(Journey journey)
+    {
+        var endDate = journey.CompletedAt ?? DateTime.UtcNow;
+        var totalDays = Math.Max(1, (endDate - journey.CreatedAt).TotalDays);
+        var postsPerDay = journey.Posts.Count / totalDays;
+
+        return postsPerDay switch
+        {
+            >= 0.35 => JourneyActivityTier.FullThrottle,
+            >= 0.17 => JourneyActivityTier.Cruising,
+            >= 0.08 => JourneyActivityTier.SlowLane,
+            >= 0.02 => JourneyActivityTier.Crawling,
+            _ => JourneyActivityTier.Stalled
         };
     }
 

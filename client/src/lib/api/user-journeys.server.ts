@@ -37,6 +37,7 @@ const updateJourneySchema = z.object({
   completedAt: z.string().nullable().optional(),
   targetCompletedAt: z.string().nullable().optional(),
   coverImageUrl: z.string().nullable().optional(),
+  isPublic: z.boolean().nullable().optional(),
 });
 
 export const getUserJourneysFn = createServerFn({ method: "GET" }).handler(
@@ -75,6 +76,7 @@ export const updateJourneyFn = createServerFn({ method: "POST" })
       completedAt: fields.completedAt ?? null,
       targetCompletedAt: fields.targetCompletedAt ?? null,
       coverImageUrl: fields.coverImageUrl ?? null,
+      isPublic: fields.isPublic ?? null,
     });
     return result.data as JourneyDto;
   });

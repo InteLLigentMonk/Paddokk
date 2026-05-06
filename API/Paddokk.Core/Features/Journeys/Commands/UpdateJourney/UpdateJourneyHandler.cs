@@ -38,11 +38,14 @@ public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, I
         if (request.CoverImageUrl is not null)
             journey.CoverImageUrl = request.CoverImageUrl;
 
+        if (request.IsPublic.HasValue)
+            journey.IsPublic = request.IsPublic.Value;
+
         journey.UpdatedAt = DateTime.UtcNow;
 
         await journeyRepository.UpdateJourneyAsync(journey, cancellationToken);
 
-        if (request.Status.HasValue && request.Status != JourneyStatus.Active)
+        if (request.Status == JourneyStatus.Completed)
         {
             var user = await journeyRepository.GetUserAsync(actor.UserId, cancellationToken);
             if (user?.DefaultActiveJourneyId == journey.Id)
