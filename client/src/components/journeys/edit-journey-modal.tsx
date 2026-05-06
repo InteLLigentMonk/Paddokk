@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, Group, Modal, Select, Stack, Text, TextInput } from "@mantine/core"
+import { Button, Group, Modal, ScrollArea, Select, Stack, Text, TextInput } from "@mantine/core"
 import { useStore } from "@tanstack/react-store"
 import { useForm } from "@tanstack/react-form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -193,6 +193,7 @@ export function EditJourneyModal() {
       title="Edit journey"
       centered
       size="lg"
+      scrollAreaComponent={ScrollArea.Autosize}
     >
       {journey ? (
         <EditJourneyForm key={journey.id} journey={journey} onClose={closeEditJourneyModal} />
