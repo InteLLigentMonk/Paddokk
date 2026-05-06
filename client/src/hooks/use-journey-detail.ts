@@ -4,6 +4,8 @@ import {
   getJourneyPostsFn,
   getPostCommentsFn,
   createCommentFn,
+  deleteCommentFn,
+  replyToCommentFn,
 } from "@/lib/api/journey-detail.server";
 
 const POSTS_PAGE_SIZE = 20;
@@ -38,6 +40,29 @@ export function useCreateComment(postId: number) {
 
   return useMutation({
     mutationFn: (content: string) => createCommentFn({ data: { postId, content } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+    },
+  });
+}
+
+export function useDeleteComment(postId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (commentId: number) => deleteCommentFn({ data: { commentId } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+    },
+  });
+}
+
+export function useReplyToComment(postId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ content, parentCommentId }: { content: string; parentCommentId: number }) =>
+      replyToCommentFn({ data: { postId, content, parentCommentId } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
     },

@@ -5,6 +5,7 @@ import {
   postCommentsGetPostComments,
   postCommentsCreateComment,
 } from "@/generated/api/post-comments/post-comments";
+import { commentsDeleteComment } from "@/generated/api/comments/comments";
 import type { JourneyDto, JourneyPostDto, CommentsPagedResponse } from "@/generated/api/schemas";
 
 const journeyIdSchema = z.object({ journeyId: z.coerce.number() });
@@ -23,7 +24,12 @@ const postCommentsSchema = z.object({
 
 const createCommentSchema = z.object({
   postId: z.coerce.number(),
-  content: z.string().min(1).max(2000),
+  content: z.string().min(1).max(500),
+  parentCommentId: z.coerce.number().optional(),
+});
+
+const deleteCommentSchema = z.object({
+  commentId: z.coerce.number(),
 });
 
 export const getJourneyDetailFn = createServerFn({ method: "GET" })
@@ -49,7 +55,28 @@ export const getPostCommentsFn = createServerFn({ method: "GET" })
 
 export const createCommentFn = createServerFn({ method: "POST" })
   .inputValidator(createCommentSchema)
-  .handler(async ({ data: { postId, content } }) => {
-    const result = await postCommentsCreateComment(postId, { postId, content });
+  .handler(async ({ data: { postId, content, parentCommentId } }) => {
+    const result = await postCommentsCreateComment(postId, {
+      postId,
+      content,
+      parentCommentId: parentCommentId ?? null,
+    });
+    return result.data;
+  });
+
+export const deleteCommentFn = createServerFn({ method: "POST" })
+  .inputValidator(deleteCommentSchema)
+  .handler(async ({ data: { commentId } }) => {
+    await commentsDeleteComment(commentId);
+  });
+
+export const replyToCommentFn = createServerFn({ method: "POST" })
+  .inputValidator(createCommentSchema)
+  .handler(async ({ data: { postId, content, parentCommentId } }) => {
+    const result = await postCommentsCreateComment(postId, {
+      postId,
+      content,
+      parentCommentId: parentCommentId ?? null,
+    });
     return result.data;
   });
