@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.14.2...v0.15.0) (2026-05-06)
+
+
+### Features
+
+* **comments:** add 1-deep reply support, delete, and UI improvements ([#70](https://github.com/InteLLigentMonk/Paddokk/issues/70)) ([b64fdcb](https://github.com/InteLLigentMonk/Paddokk/commit/b64fdcb081305716323874dd98c9ad5547f6b546))
+
 ## [0.14.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.14.1...v0.14.2) (2026-05-05)
 
 
