@@ -189,6 +189,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IActorResolver, HttpActorContext>();
 
         // Register application services here
+        services.AddSingleton<IHtmlSanitizationService, HtmlSanitizationService>();
         services.AddScoped<IImageService, ImageService>();
 
         // Register application repositories here

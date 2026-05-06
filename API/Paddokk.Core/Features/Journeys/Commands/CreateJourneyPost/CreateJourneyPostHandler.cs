@@ -9,7 +9,8 @@ namespace Paddokk.Core.Features.Journeys.Commands.CreateJourneyPost;
 public sealed class CreateJourneyPostHandler(
     IJourneyRepository journeyRepository,
     IImageService imageService,
-    IActorResolver actor)
+    IActorResolver actor,
+    IHtmlSanitizationService htmlSanitizer)
     : IRequestHandler<CreateJourneyPostCommand, Result<JourneyPostDto>>
 {
     public async Task<Result<JourneyPostDto>> Handle(CreateJourneyPostCommand request, CancellationToken cancellationToken)
@@ -29,7 +30,7 @@ public sealed class CreateJourneyPostHandler(
         {
             JourneyId = request.JourneyId,
             UserId = actor.UserId,
-            TextContent = request.TextContent,
+            TextContent = htmlSanitizer.Sanitize(request.TextContent),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
