@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.15.1...v0.15.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* **ui:** use aspect ratio for responsive card and detail images ([#75](https://github.com/InteLLigentMonk/Paddokk/issues/75)) ([3cc0320](https://github.com/InteLLigentMonk/Paddokk/commit/3cc03205a1aaf0f8f823e4623531ac607e679e11))
+
 ## [0.15.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.15.0...v0.15.1) (2026-05-06)
 
 
