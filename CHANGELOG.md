@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.15.2...v0.16.0) (2026-05-06)
+
+
+### Features
+
+* **journey:** implement edit journey modal with pre-filled form ([#77](https://github.com/InteLLigentMonk/Paddokk/issues/77)) ([ec21f21](https://github.com/InteLLigentMonk/Paddokk/commit/ec21f211b52c3dcb4a13021475731fed0cd0e493))
+
 ## [0.15.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.15.1...v0.15.2) (2026-05-06)
 
 
