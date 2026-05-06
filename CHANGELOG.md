@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.3...v0.18.0) (2026-05-06)
+
+
+### Features
+
+* **journey:** add create and manage journey post functionality ([#87](https://github.com/InteLLigentMonk/Paddokk/issues/87)) ([0c88ec4](https://github.com/InteLLigentMonk/Paddokk/commit/0c88ec4aa40f2c9b35e96a81afc4c9bbcc8a6076))
+
 ## [0.17.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.17.2...v0.17.3) (2026-05-06)
 
 
