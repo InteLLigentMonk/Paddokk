@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Container, Title, Text, Stack } from "@mantine/core";
 
 export const Route = createFileRoute("/_app/me/settings")({
+  staticData: { breadcrumb: "Settings" },
   component: SettingsPage,
 });
 

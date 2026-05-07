@@ -16,7 +16,10 @@ export const Route = createFileRoute("/_app/users/$username/")({
 function UserProfilePage() {
   const user = Route.useLoaderData();
 
-  const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
+  const fullName = [user.firstName, user.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
 
   return (
     <Container size="lg" py="xl">
@@ -29,7 +32,9 @@ function UserProfilePage() {
             <Title order={2}>{user.displayName}</Title>
             <Text c="dimmed">@{user.username}</Text>
             {fullName && fullName !== user.displayName && (
-              <Text size="sm" c="dimmed">{fullName}</Text>
+              <Text size="sm" c="dimmed">
+                {fullName}
+              </Text>
             )}
           </Stack>
         </Group>
@@ -39,11 +44,15 @@ function UserProfilePage() {
         <Group gap="lg">
           <Stack gap={0} align="center">
             <Text fw={600}>{user.carCount}</Text>
-            <Text size="sm" c="dimmed">Cars</Text>
+            <Text size="sm" c="dimmed">
+              Cars
+            </Text>
           </Stack>
           <Stack gap={0} align="center">
             <Text fw={600}>{user.journeyCount}</Text>
-            <Text size="sm" c="dimmed">Journeys</Text>
+            <Text size="sm" c="dimmed">
+              Journeys
+            </Text>
           </Stack>
         </Group>
       </Stack>

@@ -5,6 +5,7 @@ import { getCarLimitFn } from "@/lib/api/limits.server";
 import { getCurrentUserFn } from "@/lib/api/users.server";
 
 export const Route = createFileRoute("/_app/me/cars/new")({
+  staticData: { breadcrumb: "New car" },
   beforeLoad: async () => {
     const carLimits = await getCarLimitFn();
     if (!carLimits.canAdd) {

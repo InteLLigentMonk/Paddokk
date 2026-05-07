@@ -7,6 +7,7 @@ import {
 import { getCarImagesFn } from "@/lib/api/car-images.server";
 
 export const Route = createFileRoute("/_app/me/cars/$slug/edit")({
+  staticData: { breadcrumb: "Edit" },
   loader: async ({ params }) => {
     const me = await getCurrentUserFn();
     if (!me?.username) throw redirect({ to: "/login" });

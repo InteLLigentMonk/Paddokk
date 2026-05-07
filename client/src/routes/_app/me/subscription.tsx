@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { notify } from "@/integrations/mantine";
 
 export const Route = createFileRoute("/_app/me/subscription")({
+  staticData: { breadcrumb: "Subscription" },
   validateSearch: (search?): { reason?: string; from?: string } => ({
     reason: (search?.reason as string) ?? undefined,
     from: (search?.from as string) ?? undefined,
