@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.18.1...v0.18.2) (2026-05-07)
+
+
+### Refactoring
+
+* rename ownership FKs to PrincipalId and authorship FKs to AuthorId ([#93](https://github.com/InteLLigentMonk/Paddokk/issues/93)) ([345f2c9](https://github.com/InteLLigentMonk/Paddokk/commit/345f2c9b29a7c1d61ce39e6d6012ba84ddbd2e5f))
+
 ## [0.18.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.18.0...v0.18.1) (2026-05-06)
 
 
