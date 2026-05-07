@@ -8,14 +8,16 @@ internal static class JourneyTestHelpers
     {
         Id = id,
         Title = "Test Journey",
+        Slug = $"test-journey-{id}",
         Category = JourneyCategory.BuildAndMods,
         Status = JourneyStatus.Active,
         PrincipalId = userId,
         UserCarId = 1,
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,
-        User = new ApplicationUser { Id = userId, DisplayName = "Test User" },
-        UserCar = new UserCar { Id = 1, PrincipalId = userId },
+        IsPublic = true,
+        User = BuildUser(userId),
+        UserCar = new UserCar { Id = 1, PrincipalId = userId, Slug = $"test-car-{userId}", IsPublic = true },
         Posts = [],
         Subscriptions = [],
         Likes = []

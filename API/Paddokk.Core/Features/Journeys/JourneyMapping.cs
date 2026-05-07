@@ -13,6 +13,7 @@ internal static class JourneyMapping
         {
             Id = journey.Id,
             Title = journey.Title,
+            Slug = journey.Slug,
             Description = journey.Description,
             Category = journey.Category,
             Status = journey.Status,
@@ -20,6 +21,7 @@ internal static class JourneyMapping
             IsPublic = journey.IsPublic,
 
             PrincipalId = journey.PrincipalId,
+            OwnerUsername = journey.User.Username,
             UserDisplayName = journey.User.DisplayName,
             UserAvatarUrl = journey.User.AvatarUrl,
 

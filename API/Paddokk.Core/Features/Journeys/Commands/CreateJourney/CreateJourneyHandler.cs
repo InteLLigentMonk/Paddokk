@@ -1,4 +1,5 @@
 using MediatR;
+using Paddokk.Core.Common;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.DTOs.Journey;
@@ -6,7 +7,11 @@ using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Journeys.Commands.CreateJourney;
 
-public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, IActorResolver actor, IHtmlSanitizationService htmlSanitizer)
+public sealed class CreateJourneyHandler(
+    IJourneyRepository journeyRepository,
+    IActorResolver actor,
+    IHtmlSanitizationService htmlSanitizer,
+    SlugGenerator slugGenerator)
     : IRequestHandler<CreateJourneyCommand, Result<JourneyDto>>
 {
     public async Task<Result<JourneyDto>> Handle(CreateJourneyCommand request, CancellationToken cancellationToken)
@@ -29,9 +34,14 @@ public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, I
         if (currentCount >= maxJourneys)
             return Result<JourneyDto>.Failure(Error.Conflict("Journey limit reached for current subscription tier"));
 
+        var slugCandidate = slugGenerator.Generate(request.Title);
+        var slug = await slugGenerator.EnsureUniqueAsync(
+            slugCandidate, actor.UserId, journeyRepository.SlugExistsAsync, cancellationToken);
+
         var journey = new Journey
         {
             Title = request.Title,
+            Slug = slug,
             Description = htmlSanitizer.Sanitize(request.Description),
             Category = request.Category,
             Status = JourneyStatus.Active,

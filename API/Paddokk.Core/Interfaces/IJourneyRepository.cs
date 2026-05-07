@@ -7,12 +7,15 @@ public interface IJourneyRepository
 {
     // Journey queries
     Task<List<Journey>> GetUserJourneysAsync(string userId, CancellationToken cancellationToken);
+    Task<List<Journey>> GetUserJourneysByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken);
     Task<Journey?> GetJourneyByIdAsync(int journeyId, CancellationToken cancellationToken);
+    Task<Journey?> GetJourneyBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken);
     Task<List<Journey>> SearchJourneysAsync(JourneySearchRequest request, CancellationToken cancellationToken);
     Task<int> GetUserJourneyCountAsync(string userId, CancellationToken cancellationToken);
 
     // Journey mutations
     Task<int> CreateJourneyAsync(Journey journey, CancellationToken cancellationToken);
+    Task<bool> SlugExistsAsync(string principalId, string slug, CancellationToken cancellationToken);
     Task UpdateJourneyAsync(Journey journey, CancellationToken cancellationToken);
     Task DeleteJourneyAsync(int journeyId, CancellationToken cancellationToken);
 

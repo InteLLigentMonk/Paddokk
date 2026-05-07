@@ -65,6 +65,7 @@ public class CarRepository : ICarRepository
     public async Task<List<UserCar>> GetUserCarsAsync(string userId, CancellationToken cancellationToken)
     {
         return await _db.UserCars
+            .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
             .Include(c => c.CarGeneration)
@@ -80,6 +81,7 @@ public class CarRepository : ICarRepository
     public async Task<UserCar?> GetUserCarByIdAsync(string userId, int carId, CancellationToken cancellationToken)
     {
         return await _db.UserCars
+            .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
             .Include(c => c.CarGeneration)
@@ -90,11 +92,49 @@ public class CarRepository : ICarRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<UserCar>> GetUserCarsByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken)
+    {
+        return await _db.UserCars
+            .Include(c => c.User)
+            .Include(c => c.CarMake)
+            .Include(c => c.CarModel)
+            .Include(c => c.CarGeneration)
+            .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
+            .Where(c => c.User.Username == username && c.IsActive
+                && (c.IsPublic || c.PrincipalId == currentUserId))
+            .OrderByDescending(c => c.IsPrimary)
+            .ThenByDescending(c => c.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<UserCar?> GetUserCarBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken)
+    {
+        return await _db.UserCars
+            .Include(c => c.User)
+            .Include(c => c.CarMake)
+            .Include(c => c.CarModel)
+            .Include(c => c.CarGeneration)
+            .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
+            .Where(c => c.User.Username == username && c.Slug == slug && c.IsActive
+                && (c.IsPublic || c.PrincipalId == currentUserId))
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<int> CreateUserCarAsync(UserCar userCar, CancellationToken cancellationToken)
     {
         _db.UserCars.Add(userCar);
         await _db.SaveChangesAsync(cancellationToken);
         return userCar.Id;
+    }
+
+    public async Task<bool> SlugExistsAsync(string principalId, string slug, CancellationToken cancellationToken)
+    {
+        return await _db.UserCars
+            .AnyAsync(c => c.PrincipalId == principalId && c.Slug == slug, cancellationToken);
     }
     public async Task UpdateUserCarAsync(UserCar userCar, CancellationToken cancellationToken)
     {
@@ -138,6 +178,7 @@ public class CarRepository : ICarRepository
     public async Task<UserCar?> GetCarByIdAsync(int carId, CancellationToken cancellationToken)
     {
         return await _db.UserCars
+            .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
             .Include(c => c.CarGeneration)
@@ -189,6 +230,7 @@ public class CarRepository : ICarRepository
         var pattern = $"%{query.Trim()}%";
 
         return await _db.UserCars
+            .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
             .Include(c => c.CarGeneration)

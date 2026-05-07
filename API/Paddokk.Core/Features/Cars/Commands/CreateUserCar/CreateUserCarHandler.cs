@@ -1,4 +1,5 @@
 using MediatR;
+using Paddokk.Core.Common;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.DTOs.Car;
@@ -10,7 +11,8 @@ public sealed class CreateUserCarHandler(
     ICarRepository carRepository,
     IUserRepository userRepository,
     IActorResolver actor,
-    IHtmlSanitizationService htmlSanitizer)
+    IHtmlSanitizationService htmlSanitizer,
+    SlugGenerator slugGenerator)
     : IRequestHandler<CreateUserCarCommand, Result<UserCarDto>>
 {
     public async Task<Result<UserCarDto>> Handle(CreateUserCarCommand request, CancellationToken cancellationToken)
@@ -65,9 +67,16 @@ public sealed class CreateUserCarHandler(
         var searchText = BuildSearchText(makeName, modelName, generationName, request.CustomBuildName, request.Nickname);
         var isPrimary = request.IsPrimary || currentCount == 0;
 
+        var slugSource = BuildSlugSource(request, makeName, modelName);
+        var slugCandidate = slugGenerator.Generate(slugSource);
+        var slug = await slugGenerator.EnsureUniqueAsync(
+            slugCandidate, actor.UserId, carRepository.SlugExistsAsync, cancellationToken);
+
         var userCar = new UserCar
         {
             PrincipalId = actor.UserId,
+            Slug = slug,
+            IsPublic = true,
             IsCustomBuild = request.IsCustomBuild,
             CustomBuildName = request.CustomBuildName,
             CarMakeId = request.CarMakeId,
@@ -102,5 +111,22 @@ public sealed class CreateUserCarHandler(
         var parts = new[] { makeName, modelName, generationName, customBuildName, nickname }
             .Where(p => !string.IsNullOrWhiteSpace(p));
         return string.Join(" ", parts);
+    }
+
+    private static string BuildSlugSource(
+        CreateUserCarCommand request,
+        string? makeName,
+        string? modelName)
+    {
+        if (!string.IsNullOrWhiteSpace(request.Nickname))
+            return request.Nickname;
+
+        if (request.IsCustomBuild && !string.IsNullOrWhiteSpace(request.CustomBuildName))
+            return request.CustomBuildName;
+
+        var parts = new[] { makeName, modelName, request.Year?.ToString() }
+            .Where(p => !string.IsNullOrWhiteSpace(p));
+        var combined = string.Join(" ", parts);
+        return string.IsNullOrWhiteSpace(combined) ? "car" : combined;
     }
 }

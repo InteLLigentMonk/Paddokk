@@ -192,6 +192,7 @@ public static class ServiceCollectionExtensions
         // Register application services here
         services.AddSingleton<IHtmlSanitizationService, HtmlSanitizationService>();
         services.AddSingleton<UsernameGenerator>();
+        services.AddSingleton<SlugGenerator>();
         services.AddScoped<IImageService, ImageService>();
 
         // Register application repositories here

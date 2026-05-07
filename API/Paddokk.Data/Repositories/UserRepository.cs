@@ -24,6 +24,14 @@ public class UserRepository(PaddokkDbContext db) : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
+    public async Task<ApplicationUser?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _db.Users
+            .Include(u => u.Cars)
+            .Include(u => u.Journeys)
+            .FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
+    }
+
     public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
     {
         return await _db.Users.AnyAsync(u => u.Username == username, cancellationToken);

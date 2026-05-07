@@ -20,7 +20,13 @@ public interface ICarRepository
 
     Task<UserCar?> GetUserCarByIdAsync(string userId, int carId, CancellationToken cancellationToken);
 
+    Task<List<UserCar>> GetUserCarsByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken);
+
+    Task<UserCar?> GetUserCarBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken);
+
     Task<int> CreateUserCarAsync(UserCar userCar, CancellationToken cancellationToken);
+
+    Task<bool> SlugExistsAsync(string principalId, string slug, CancellationToken cancellationToken);
 
     Task UnsetPrimaryCar(string userId, CancellationToken cancellationToken);
 

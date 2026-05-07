@@ -44,6 +44,40 @@ public class JourneyRepository : IJourneyRepository
             .FirstOrDefaultAsync(j => j.Id == journeyId, cancellationToken);
   }
 
+    public async Task<List<Journey>> GetUserJourneysByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken)
+    {
+        return await _db.Journeys
+            .Include(j => j.User)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarGeneration)
+            .Include(j => j.Posts)
+            .Include(j => j.Subscriptions)
+            .Include(j => j.Likes)
+            .Where(j => j.User.Username == username
+                && (j.PrincipalId == currentUserId
+                    || (j.IsPublic && j.UserCar.IsPublic)))
+            .OrderByDescending(j => j.Status == JourneyStatus.Active ? 1 : 0)
+            .ThenByDescending(j => j.UpdatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Journey?> GetJourneyBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken)
+    {
+        return await _db.Journeys
+            .Include(j => j.User)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarGeneration)
+            .Include(j => j.Posts)
+            .Include(j => j.Subscriptions)
+            .Include(j => j.Likes)
+            .Where(j => j.User.Username == username && j.Slug == slug
+                && (j.PrincipalId == currentUserId
+                    || (j.IsPublic && j.UserCar.IsPublic)))
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<List<Journey>> SearchJourneysAsync(JourneySearchRequest request, CancellationToken cancellationToken)
     {
         var query = _db.Journeys
@@ -54,7 +88,7 @@ public class JourneyRepository : IJourneyRepository
             .Include(j => j.Posts)
             .Include(j => j.Subscriptions)
             .Include(j => j.Likes)
-            .Where(j => j.IsPublic)
+            .Where(j => j.IsPublic && j.UserCar.IsPublic)
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(request.Query))
@@ -103,6 +137,12 @@ public class JourneyRepository : IJourneyRepository
         _db.Journeys.Add(journey);
         await _db.SaveChangesAsync(cancellationToken);
         return journey.Id;
+    }
+
+    public async Task<bool> SlugExistsAsync(string principalId, string slug, CancellationToken cancellationToken)
+    {
+        return await _db.Journeys
+            .AnyAsync(j => j.PrincipalId == principalId && j.Slug == slug, cancellationToken);
     }
 
     public async Task UpdateJourneyAsync(Journey journey, CancellationToken cancellationToken)

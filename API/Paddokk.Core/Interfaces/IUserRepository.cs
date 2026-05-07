@@ -8,6 +8,8 @@ public interface IUserRepository
 
     Task<ApplicationUser?> GetByEmailAsync(string email, CancellationToken cancellationToken);
 
+    Task<ApplicationUser?> GetByUsernameAsync(string username, CancellationToken cancellationToken);
+
     Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken);
 
     Task CreateAsync(ApplicationUser user, CancellationToken cancellationToken);
