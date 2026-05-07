@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   requestPasswordReset as requestPasswordResetApi,
   resetPassword,
@@ -22,6 +23,7 @@ import { useNotifications } from "@/integrations/mantine";
 export function useAuth() {
   const navigate = useNavigate();
   const notifications = useNotifications();
+  const queryClient = useQueryClient();
   const { data: session, isPending: isSessionLoading } = useSession();
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -120,6 +122,10 @@ export function useAuth() {
     setIsLoggingOut(true);
     try {
       await signOut();
+
+      // Drop all cached server state so the next user (or guest) does not see
+      // the previous user's profile, cars, journeys, etc.
+      queryClient.clear();
 
       notifications.success({
         message: "You've been signed out",
