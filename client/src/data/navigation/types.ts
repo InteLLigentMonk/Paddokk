@@ -1,9 +1,15 @@
 import type { LucideIcon } from "lucide-react";
 
+export interface NavHrefContext {
+  username: string;
+}
+
+export type NavHref = string | ((ctx: NavHrefContext) => string);
+
 export interface NavItem {
   id: string;
   label: string;
-  href?: string;
+  href?: NavHref;
   icon: LucideIcon;
   badge?: number;
   action?: () => void;

@@ -1,6 +1,7 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { ActionIcon, Tooltip, Indicator } from "@mantine/core";
 import type { NavItem as NavItemType } from "@/data/navigation/types";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface NavItemProps {
   item: NavItemType;
@@ -12,8 +13,20 @@ const iconProps = { size: 18, strokeWidth: 1.5 } as const;
 
 export function NavItem({ item, showTooltip = false, onClick }: NavItemProps) {
   const matchRoute = useMatchRoute();
-  const isActive = item.href
-    ? !!matchRoute({ to: item.href, fuzzy: true })
+  const { data: me } = useCurrentUser();
+
+  const resolvedHref =
+    typeof item.href === "function"
+      ? me?.username
+        ? item.href({ username: me.username })
+        : undefined
+      : item.href;
+
+  // Hide items that depend on a username until it has resolved
+  if (typeof item.href === "function" && !resolvedHref) return null;
+
+  const isActive = resolvedHref
+    ? !!matchRoute({ to: resolvedHref, fuzzy: true })
     : false;
 
   const icon = <item.icon {...iconProps} />;
@@ -27,8 +40,8 @@ export function NavItem({ item, showTooltip = false, onClick }: NavItemProps) {
     >
       <ActionIcon
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        component={item.href ? (Link as any) : "button"}
-        to={item.href}
+        component={resolvedHref ? (Link as any) : "button"}
+        to={resolvedHref}
         variant={isActive ? "filled" : "subtle"}
         color={isActive ? undefined : "dark"}
         size="xl"
