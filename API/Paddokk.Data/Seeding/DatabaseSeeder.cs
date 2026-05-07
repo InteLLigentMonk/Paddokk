@@ -63,10 +63,25 @@ public static class DatabaseSeeder
 
     private static List<ApplicationUser> SeedUsers()
     {
+        var usedUsernames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        string GenerateUsername(string firstName, string lastName)
+        {
+            var baseName = $"{firstName}.{lastName}".ToLowerInvariant();
+            var candidate = baseName;
+            var suffix = 1;
+            while (!usedUsernames.Add(candidate))
+                candidate = $"{baseName}.{suffix++}";
+            return candidate;
+        }
+
         var faker = new Faker<ApplicationUser>("en")
             .RuleFor(u => u.Id, f => Guid.NewGuid().ToString())
-            .RuleFor(u => u.DisplayName, f => f.Internet.UserName())
-            .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.DisplayName))
+            .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+            .RuleFor(u => u.LastName, f => f.Name.LastName())
+            .RuleFor(u => u.Username, (f, u) => GenerateUsername(u.FirstName, u.LastName!))
+            .RuleFor(u => u.DisplayName, (f, u) => $"{u.FirstName} {u.LastName}")
+            .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
             .RuleFor(u => u.Bio, f => f.PickRandom(
                 "JDM enthusiast. Track days on weekends.",
                 "Building my R33 one part at a time.",

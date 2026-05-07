@@ -69,11 +69,20 @@ export function useAuth() {
   /**
    * Register a new user
    */
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (
+    firstName: string,
+    lastName: string | undefined,
+    email: string,
+    password: string,
+  ) => {
     setIsRegistering(true);
     try {
+      const fullName = lastName?.trim()
+        ? `${firstName.trim()} ${lastName.trim()}`
+        : firstName.trim();
+
       const result = await signUp.email({
-        name,
+        name: fullName,
         email,
         password,
       });

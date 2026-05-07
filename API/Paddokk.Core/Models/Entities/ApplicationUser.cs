@@ -1,10 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Paddokk.Core.Models.Entities;
 
 public class ApplicationUser
 {
     public string Id { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(50)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    public string? LastName { get; set; }
+
+    [Required]
+    [StringLength(30)]
+    public string Username { get; set; } = string.Empty;
+
     [Required]
     [StringLength(100)]
     public string DisplayName { get; set; } = string.Empty;

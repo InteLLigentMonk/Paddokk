@@ -15,8 +15,14 @@ public sealed class UpdateUserHandler(IUserRepository userRepository, IActorReso
         if (user is null)
             return Result<UserDto>.Failure(Error.NotFound("User not found"));
 
-        if (!string.IsNullOrEmpty(request.DisplayName))
-            user.DisplayName = request.DisplayName;
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
+            user.FirstName = request.FirstName.Trim();
+
+        if (request.LastName is not null)
+            user.LastName = string.IsNullOrWhiteSpace(request.LastName) ? null : request.LastName.Trim();
+
+        if (!string.IsNullOrWhiteSpace(request.DisplayName))
+            user.DisplayName = request.DisplayName.Trim();
 
         if (request.Bio is not null)
             user.Bio = request.Bio;

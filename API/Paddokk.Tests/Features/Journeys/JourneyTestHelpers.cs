@@ -24,6 +24,9 @@ internal static class JourneyTestHelpers
     internal static ApplicationUser BuildUser(string userId = "user-1") => new()
     {
         Id = userId,
+        FirstName = "Test",
+        LastName = "User",
+        Username = $"test.user.{userId}",
         DisplayName = "Test User",
         SubscriptionTier = SubscriptionTier.Gold
     };
