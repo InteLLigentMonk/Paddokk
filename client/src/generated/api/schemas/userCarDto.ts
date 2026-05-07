@@ -9,7 +9,7 @@
 export interface UserCarDto {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   id: number | string;
-  userId: string;
+  principalId: string;
   /**
    * @nullable
    * @pattern ^-?(?:0|[1-9]\d*)$

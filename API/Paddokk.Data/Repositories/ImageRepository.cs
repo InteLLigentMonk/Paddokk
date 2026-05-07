@@ -35,7 +35,7 @@ public class ImageRepository(PaddokkDbContext db) : IImageRepository
     {
         return await _db.UserCarImages
             .Include(i => i.UserCar)
-            .FirstOrDefaultAsync(i => i.Id == carImageId && i.UserCar.UserId == userId, cancellationToken);
+            .FirstOrDefaultAsync(i => i.Id == carImageId && i.UserCar.PrincipalId == userId, cancellationToken);
     }
 
     public async Task AddCarImageAsync(UserCarImage carImage, CancellationToken cancellationToken)

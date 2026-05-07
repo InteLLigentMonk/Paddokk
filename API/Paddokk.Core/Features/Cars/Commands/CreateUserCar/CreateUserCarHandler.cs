@@ -67,7 +67,7 @@ public sealed class CreateUserCarHandler(
 
         var userCar = new UserCar
         {
-            UserId = actor.UserId,
+            PrincipalId = actor.UserId,
             IsCustomBuild = request.IsCustomBuild,
             CustomBuildName = request.CustomBuildName,
             CarMakeId = request.CarMakeId,

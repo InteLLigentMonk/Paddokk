@@ -16,7 +16,7 @@ public sealed class UploadJourneyCoverImageHandler(
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(command.JourneyId, ct);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result<JourneyDto>.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         var uploaded = await imageService.UploadImageAsync(command.File, ImageContext.JourneyCover, ct, command.JourneyId);

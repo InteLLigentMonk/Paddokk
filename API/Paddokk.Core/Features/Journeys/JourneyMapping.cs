@@ -19,7 +19,7 @@ internal static class JourneyMapping
             ActivityTier = ComputeActivityTier(journey),
             IsPublic = journey.IsPublic,
 
-            UserId = journey.UserId,
+            PrincipalId = journey.PrincipalId,
             UserDisplayName = journey.User.DisplayName,
             UserAvatarUrl = journey.User.AvatarUrl,
 
@@ -38,7 +38,7 @@ internal static class JourneyMapping
                 journey.Subscriptions.Any(s => s.UserId == currentUserId && s.IsActive),
             IsLiked = !string.IsNullOrEmpty(currentUserId) &&
                 journey.Likes.Any(l => l.UserId == currentUserId),
-            IsOwner = !string.IsNullOrEmpty(currentUserId) && journey.UserId == currentUserId,
+            IsOwner = !string.IsNullOrEmpty(currentUserId) && journey.PrincipalId == currentUserId,
 
             PrimaryImageUrl = journey.CoverImageUrl,
 
@@ -76,9 +76,9 @@ internal static class JourneyMapping
         {
             Id = post.Id,
             JourneyId = post.JourneyId,
-            UserId = post.UserId,
-            UserDisplayName = post.User.DisplayName,
-            UserAvatarUrl = post.User.AvatarUrl,
+            AuthorId = post.AuthorId,
+            UserDisplayName = post.Author.DisplayName,
+            UserAvatarUrl = post.Author.AvatarUrl,
             TextContent = post.TextContent,
             Images = post.Images.OrderBy(i => i.SortOrder).Select(i => new JourneyPostImageDto
             {
@@ -91,7 +91,7 @@ internal static class JourneyMapping
             CreatedAt = post.CreatedAt,
             UpdatedAt = post.UpdatedAt,
             IsEdited = post.IsEdited,
-            IsOwner = !string.IsNullOrEmpty(currentUserId) && post.UserId == currentUserId
+            IsOwner = !string.IsNullOrEmpty(currentUserId) && post.AuthorId == currentUserId
         };
     }
 }

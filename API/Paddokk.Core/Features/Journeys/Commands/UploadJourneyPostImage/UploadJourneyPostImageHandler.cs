@@ -15,7 +15,7 @@ public sealed class UploadJourneyPostImageHandler(
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(command.JourneyId, ct);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result<ImageUploadDto>.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         var limits = await imageService.GetImageLimitsAsync(actor.UserId, ct);

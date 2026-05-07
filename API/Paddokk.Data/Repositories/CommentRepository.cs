@@ -20,9 +20,9 @@ public class CommentRepository : ICommentRepository
             throw new ArgumentException("Post not found");
 
         var query = _db.PostComments
-            .Include(c => c.User)
-            .Include(c => c.JourneyPost).ThenInclude(p => p.User)
-            .Include(c => c.Replies).ThenInclude(r => r.User)
+            .Include(c => c.Author)
+            .Include(c => c.JourneyPost).ThenInclude(p => p.Author)
+            .Include(c => c.Replies).ThenInclude(r => r.Author)
             .Where(c => c.JourneyPostId == postId && c.ParentCommentId == null)
             .OrderBy(c => c.CreatedAt);
         var totalCount = await query.CountAsync(cancellationToken);
@@ -38,9 +38,9 @@ public class CommentRepository : ICommentRepository
     public async Task<PostComment?> GetCommentByIdAsync(int commentId, CancellationToken cancellationToken)
     {
         return await _db.PostComments
-            .Include(c => c.User)
-            .Include(c => c.JourneyPost).ThenInclude(p => p.User)
-            .Include(c => c.Replies).ThenInclude(r => r.User)
+            .Include(c => c.Author)
+            .Include(c => c.JourneyPost).ThenInclude(p => p.Author)
+            .Include(c => c.Replies).ThenInclude(r => r.Author)
             .FirstOrDefaultAsync(c => c.Id == commentId, cancellationToken);
     }
 
@@ -53,7 +53,7 @@ public class CommentRepository : ICommentRepository
     public async Task<bool> UpdateCommentAsync(string userId, int commentId, string content, CancellationToken cancellationToken)
     {
         var comment = await _db.PostComments
-            .FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == userId, cancellationToken);
+            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userId, cancellationToken);
         if (comment == null)
             return false;
 

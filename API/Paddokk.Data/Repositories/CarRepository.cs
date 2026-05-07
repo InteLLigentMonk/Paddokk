@@ -71,7 +71,7 @@ public class CarRepository : ICarRepository
             .Include(c => c.Journeys)
             .Include(c => c.Likes)
             .Include(c => c.Subscriptions)
-            .Where(c => c.UserId == userId && c.IsActive)
+            .Where(c => c.PrincipalId == userId && c.IsActive)
             .OrderByDescending(c => c.IsPrimary)
             .ThenByDescending(c => c.CreatedAt)
             .ToListAsync(cancellationToken);
@@ -86,7 +86,7 @@ public class CarRepository : ICarRepository
             .Include(c => c.Journeys)
             .Include(c => c.Likes)
             .Include(c => c.Subscriptions)
-            .Where(c => c.UserId == userId && c.Id == carId && c.IsActive)
+            .Where(c => c.PrincipalId == userId && c.Id == carId && c.IsActive)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -105,7 +105,7 @@ public class CarRepository : ICarRepository
     public async Task DeleteUserCarAsync(string userId, int carId, CancellationToken cancellationToken)
     {
         await _db.UserCars
-            .Where(c => c.Id == carId && c.UserId == userId)
+            .Where(c => c.Id == carId && c.PrincipalId == userId)
             .ExecuteUpdateAsync(c => c
                 .SetProperty(p => p.IsActive, false)
                 .SetProperty(p => p.UpdatedAt, DateTime.UtcNow), cancellationToken);
@@ -114,7 +114,7 @@ public class CarRepository : ICarRepository
     public async Task UnsetPrimaryCar(string userId, CancellationToken cancellationToken)
     {
         await _db.UserCars
-                .Where(c => c.UserId == userId && c.IsPrimary)
+                .Where(c => c.PrincipalId == userId && c.IsPrimary)
                 .ExecuteUpdateAsync(c => c
                 .SetProperty(p => p.IsPrimary, false), cancellationToken);
     }
@@ -122,7 +122,7 @@ public class CarRepository : ICarRepository
     public Task<int> GetUserCarCountAsync(string userId, CancellationToken cancellationToken)
     {
         return _db.UserCars
-            .Where(c => c.UserId == userId && c.IsActive)
+            .Where(c => c.PrincipalId == userId && c.IsActive)
             .CountAsync(cancellationToken);
     }
 

@@ -15,7 +15,7 @@ public sealed class SubscribeToUserCarHandler(ICarRepository carRepository, IAct
         if (car is null)
             return Result.Failure(Error.NotFound($"Car {request.CarId} not found"));
 
-        if (car.UserId == actor.UserId)
+        if (car.PrincipalId == actor.UserId)
             return Result.Failure(Error.Conflict("Cannot subscribe to your own car"));
 
         var existing = await carRepository.GetCarSubscriptionAsync(actor.UserId, request.CarId, cancellationToken);

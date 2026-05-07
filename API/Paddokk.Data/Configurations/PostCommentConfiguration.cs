@@ -16,9 +16,9 @@ public class PostCommentConfiguration : IEntityTypeConfiguration<PostComment>
             .HasForeignKey(e => e.JourneyPostId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(e => e.User)
+        builder.HasOne(e => e.Author)
             .WithMany(e => e.Comments)
-            .HasForeignKey(e => e.UserId)
+            .HasForeignKey(e => e.AuthorId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.ParentComment)

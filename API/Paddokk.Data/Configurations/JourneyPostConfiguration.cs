@@ -16,9 +16,9 @@ public class JourneyPostConfiguration : IEntityTypeConfiguration<JourneyPost>
             .HasForeignKey(e => e.JourneyId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(e => e.User)
+        builder.HasOne(e => e.Author)
             .WithMany()
-            .HasForeignKey(e => e.UserId)
+            .HasForeignKey(e => e.AuthorId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

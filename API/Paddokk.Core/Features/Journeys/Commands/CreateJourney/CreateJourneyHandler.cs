@@ -35,7 +35,7 @@ public sealed class CreateJourneyHandler(IJourneyRepository journeyRepository, I
             Description = htmlSanitizer.Sanitize(request.Description),
             Category = request.Category,
             Status = JourneyStatus.Active,
-            UserId = actor.UserId,
+            PrincipalId = actor.UserId,
             UserCarId = request.UserCarId,
             TargetCompletedAt = request.TargetCompletedAt,
             CoverImageUrl = request.CoverImageUrl,

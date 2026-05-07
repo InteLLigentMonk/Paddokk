@@ -19,7 +19,7 @@ export interface JourneyDto {
   status: JourneyStatus;
   activityTier: JourneyActivityTier;
   isPublic: boolean;
-  userId: string;
+  principalId: string;
   userDisplayName: string;
   /** @nullable */
   userAvatarUrl?: string | null;

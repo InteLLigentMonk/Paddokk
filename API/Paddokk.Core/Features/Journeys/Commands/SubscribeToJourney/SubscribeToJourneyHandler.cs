@@ -15,7 +15,7 @@ public sealed class SubscribeToJourneyHandler(IJourneyRepository journeyReposito
         if (journey is null)
             return Result.Failure(Error.NotFound($"Journey {request.JourneyId} not found"));
 
-        if (journey.UserId == actor.UserId)
+        if (journey.PrincipalId == actor.UserId)
             return Result.Failure(Error.Conflict("Cannot subscribe to your own journey"));
 
         var existing = await journeyRepository.GetSubscriptionAsync(actor.UserId, request.JourneyId, cancellationToken);

@@ -42,7 +42,7 @@ public class UserJourneysController(ISender sender) : ApiControllerBase
         if (!result.IsSuccess)
             return FromError(result.Error);
 
-        if (result.Value!.UserId != User.GetUserId())
+        if (result.Value!.PrincipalId != User.GetUserId())
             return NotFound(new { message = "Journey not found or you don't own it" });
 
         return Ok(result.Value);

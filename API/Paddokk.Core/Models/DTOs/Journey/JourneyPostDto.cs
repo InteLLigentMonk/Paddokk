@@ -4,7 +4,7 @@ public class JourneyPostDto
 {
     public required int Id { get; set; }
     public required int JourneyId { get; set; }
-    public required string UserId { get; set; }
+    public required string AuthorId { get; set; }
     public required string UserDisplayName { get; set; }
     public string? UserAvatarUrl { get; set; }
 

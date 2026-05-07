@@ -14,7 +14,7 @@ public sealed class DeleteJourneyPostImageHandler(
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(command.JourneyId, ct);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         await imageService.DeleteImageAsync(command.ImageUrl, ct);

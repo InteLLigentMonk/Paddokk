@@ -5,7 +5,7 @@ namespace Paddokk.Core.Models.Entities;
 public class UserCar
 {
     public int Id { get; set; }
-    public string UserId { get; set; } = string.Empty;
+    public string PrincipalId { get; set; } = string.Empty;
     public ApplicationUser User { get; set; } = null!;
 
     // Car Details — null when IsCustomBuild = true
