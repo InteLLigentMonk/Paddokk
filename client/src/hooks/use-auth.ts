@@ -123,16 +123,15 @@ export function useAuth() {
     try {
       await signOut();
 
-      // Drop all cached server state so the next user (or guest) does not see
-      // the previous user's profile, cars, journeys, etc.
-      queryClient.clear();
-
       notifications.success({
         message: "You've been signed out",
       });
 
-      // Navigate to landing page
-      navigate({ to: "/" });
+      // Navigate first so authenticated routes unmount their queries before
+      // we wipe the cache — otherwise the still-mounted observers would
+      // immediately refetch without a session and trigger 401s on the API.
+      await navigate({ to: "/" });
+      queryClient.clear();
 
       return { success: true };
     } catch (error) {
