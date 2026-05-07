@@ -10,6 +10,10 @@ import type { SubscriptionTier } from './subscriptionTier';
 export interface UserDto {
   id: string;
   email: string;
+  firstName: string;
+  /** @nullable */
+  lastName?: string | null;
+  username: string;
   displayName: string;
   /** @nullable */
   bio?: string | null;

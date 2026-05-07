@@ -136,8 +136,11 @@ export function CreateJourneyModal() {
         notifications.success({ message: "Journey created!" });
         handleClose();
         navigate({
-          to: "/journeys/$journeyId",
-          params: { journeyId: String(journey.id) },
+          to: "/users/$username/journeys/$slug",
+          params: {
+            username: journey.ownerUsername,
+            slug: journey.slug,
+          },
         });
       } catch {
         notifications.error({ message: "Failed to create journey" });

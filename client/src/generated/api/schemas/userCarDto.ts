@@ -10,6 +10,9 @@ export interface UserCarDto {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   id: number | string;
   principalId: string;
+  ownerUsername: string;
+  slug: string;
+  isPublic: boolean;
   /**
    * @nullable
    * @pattern ^-?(?:0|[1-9]\d*)$

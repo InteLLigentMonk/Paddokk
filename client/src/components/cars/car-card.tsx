@@ -77,7 +77,10 @@ export function CarCard({ car }: CarCardProps) {
       withBorder
       style={{ cursor: "pointer" }}
       onClick={() =>
-        navigate({ to: "/me/cars/$carId", params: { carId: String(car.id) } })
+        navigate({
+          to: "/users/$username/cars/$slug",
+          params: { username: car.ownerUsername, slug: car.slug },
+        })
       }
     >
       <Card.Section>
@@ -144,9 +147,8 @@ export function CarCard({ car }: CarCardProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate({
-                    to: "/me/cars/$carId",
-                    params: { carId: String(car.id) },
-                    search: { edit: true },
+                    to: "/me/cars/$slug/edit",
+                    params: { slug: car.slug },
                   });
                 }}
               >

@@ -12,7 +12,7 @@ export function CarsHeader() {
     if (canAdd) {
       openAddCarModal();
     } else {
-      navigate({ to: "/subscription", search: {} });
+      navigate({ to: "/me/subscription", search: {} });
     }
   };
 

@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Container, Title, Text, Stack } from '@mantine/core'
+import { createFileRoute } from "@tanstack/react-router";
+import { Container, Title, Text, Stack } from "@mantine/core";
 
-export const Route = createFileRoute('/_app/settings')({
+export const Route = createFileRoute("/_app/me/settings")({
   component: SettingsPage,
-})
+});
 
 function SettingsPage() {
   return (
@@ -13,5 +13,5 @@ function SettingsPage() {
         <Text c="dimmed">Manage your account preferences and privacy</Text>
       </Stack>
     </Container>
-  )
+  );
 }

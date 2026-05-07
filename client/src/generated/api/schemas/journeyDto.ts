@@ -13,6 +13,7 @@ export interface JourneyDto {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   id: number | string;
   title: string;
+  slug: string;
   /** @nullable */
   description?: string | null;
   category: JourneyCategory;
@@ -20,6 +21,7 @@ export interface JourneyDto {
   activityTier: JourneyActivityTier;
   isPublic: boolean;
   principalId: string;
+  ownerUsername: string;
   userDisplayName: string;
   /** @nullable */
   userAvatarUrl?: string | null;

@@ -12,7 +12,7 @@ export function JourneysHeader() {
     if (canAdd) {
       openCreateJourneyModal();
     } else {
-      navigate({ to: "/subscription", search: {} });
+      navigate({ to: "/me/subscription", search: {} });
     }
   };
 

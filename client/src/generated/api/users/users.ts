@@ -7,7 +7,9 @@
  */
 import type {
   ApiErrorResponse,
+  JourneyDto,
   UpdateUserCommand,
+  UserCarDto,
   UserDto
 } from '.././schemas';
 
@@ -208,6 +210,245 @@ export const getUsersGetUserByEmailUrl = (email: string,) => {
 export const usersGetUserByEmail = async (email: string, options?: RequestInit): Promise<usersGetUserByEmailResponse> => {
   
   return apiFetcher<usersGetUserByEmailResponse>(getUsersGetUserByEmailUrl(email),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Get user profile by username
+ */
+export type usersGetUserByUsernameResponse200 = {
+  data: UserDto
+  status: 200
+}
+
+export type usersGetUserByUsernameResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type usersGetUserByUsernameResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type usersGetUserByUsernameResponseSuccess = (usersGetUserByUsernameResponse200) & {
+  headers: Headers;
+};
+export type usersGetUserByUsernameResponseError = (usersGetUserByUsernameResponse404 | usersGetUserByUsernameResponse500) & {
+  headers: Headers;
+};
+
+export type usersGetUserByUsernameResponse = (usersGetUserByUsernameResponseSuccess | usersGetUserByUsernameResponseError)
+
+export const getUsersGetUserByUsernameUrl = (username: string,) => {
+
+
+  
+
+  return `/api/v1/Users/by-username/${username}`
+}
+
+export const usersGetUserByUsername = async (username: string, options?: RequestInit): Promise<usersGetUserByUsernameResponse> => {
+  
+  return apiFetcher<usersGetUserByUsernameResponse>(getUsersGetUserByUsernameUrl(username),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Get a user's cars (filtered by visibility)
+ */
+export type usersGetUserCarsByUsernameResponse200 = {
+  data: UserCarDto[]
+  status: 200
+}
+
+export type usersGetUserCarsByUsernameResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type usersGetUserCarsByUsernameResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type usersGetUserCarsByUsernameResponseSuccess = (usersGetUserCarsByUsernameResponse200) & {
+  headers: Headers;
+};
+export type usersGetUserCarsByUsernameResponseError = (usersGetUserCarsByUsernameResponse404 | usersGetUserCarsByUsernameResponse500) & {
+  headers: Headers;
+};
+
+export type usersGetUserCarsByUsernameResponse = (usersGetUserCarsByUsernameResponseSuccess | usersGetUserCarsByUsernameResponseError)
+
+export const getUsersGetUserCarsByUsernameUrl = (username: string,) => {
+
+
+  
+
+  return `/api/v1/Users/by-username/${username}/cars`
+}
+
+export const usersGetUserCarsByUsername = async (username: string, options?: RequestInit): Promise<usersGetUserCarsByUsernameResponse> => {
+  
+  return apiFetcher<usersGetUserCarsByUsernameResponse>(getUsersGetUserCarsByUsernameUrl(username),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Get a user's car by slug
+ */
+export type usersGetUserCarBySlugResponse200 = {
+  data: UserCarDto
+  status: 200
+}
+
+export type usersGetUserCarBySlugResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type usersGetUserCarBySlugResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type usersGetUserCarBySlugResponseSuccess = (usersGetUserCarBySlugResponse200) & {
+  headers: Headers;
+};
+export type usersGetUserCarBySlugResponseError = (usersGetUserCarBySlugResponse404 | usersGetUserCarBySlugResponse500) & {
+  headers: Headers;
+};
+
+export type usersGetUserCarBySlugResponse = (usersGetUserCarBySlugResponseSuccess | usersGetUserCarBySlugResponseError)
+
+export const getUsersGetUserCarBySlugUrl = (username: string,
+    slug: string,) => {
+
+
+  
+
+  return `/api/v1/Users/by-username/${username}/cars/${slug}`
+}
+
+export const usersGetUserCarBySlug = async (username: string,
+    slug: string, options?: RequestInit): Promise<usersGetUserCarBySlugResponse> => {
+  
+  return apiFetcher<usersGetUserCarBySlugResponse>(getUsersGetUserCarBySlugUrl(username,slug),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Get a user's journeys (filtered by visibility)
+ */
+export type usersGetUserJourneysByUsernameResponse200 = {
+  data: JourneyDto[]
+  status: 200
+}
+
+export type usersGetUserJourneysByUsernameResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type usersGetUserJourneysByUsernameResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type usersGetUserJourneysByUsernameResponseSuccess = (usersGetUserJourneysByUsernameResponse200) & {
+  headers: Headers;
+};
+export type usersGetUserJourneysByUsernameResponseError = (usersGetUserJourneysByUsernameResponse404 | usersGetUserJourneysByUsernameResponse500) & {
+  headers: Headers;
+};
+
+export type usersGetUserJourneysByUsernameResponse = (usersGetUserJourneysByUsernameResponseSuccess | usersGetUserJourneysByUsernameResponseError)
+
+export const getUsersGetUserJourneysByUsernameUrl = (username: string,) => {
+
+
+  
+
+  return `/api/v1/Users/by-username/${username}/journeys`
+}
+
+export const usersGetUserJourneysByUsername = async (username: string, options?: RequestInit): Promise<usersGetUserJourneysByUsernameResponse> => {
+  
+  return apiFetcher<usersGetUserJourneysByUsernameResponse>(getUsersGetUserJourneysByUsernameUrl(username),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Get a user's journey by slug
+ */
+export type usersGetJourneyBySlugResponse200 = {
+  data: JourneyDto
+  status: 200
+}
+
+export type usersGetJourneyBySlugResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type usersGetJourneyBySlugResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type usersGetJourneyBySlugResponseSuccess = (usersGetJourneyBySlugResponse200) & {
+  headers: Headers;
+};
+export type usersGetJourneyBySlugResponseError = (usersGetJourneyBySlugResponse404 | usersGetJourneyBySlugResponse500) & {
+  headers: Headers;
+};
+
+export type usersGetJourneyBySlugResponse = (usersGetJourneyBySlugResponseSuccess | usersGetJourneyBySlugResponseError)
+
+export const getUsersGetJourneyBySlugUrl = (username: string,
+    slug: string,) => {
+
+
+  
+
+  return `/api/v1/Users/by-username/${username}/journeys/${slug}`
+}
+
+export const usersGetJourneyBySlug = async (username: string,
+    slug: string, options?: RequestInit): Promise<usersGetJourneyBySlugResponse> => {
+  
+  return apiFetcher<usersGetJourneyBySlugResponse>(getUsersGetJourneyBySlugUrl(username,slug),
   {      
     ...options,
     method: 'GET'

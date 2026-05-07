@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Container, Title, Text, Stack } from '@mantine/core'
+import { createFileRoute } from "@tanstack/react-router";
+import { Container, Title, Text, Stack } from "@mantine/core";
 
-export const Route = createFileRoute('/_app/notifications')({
+export const Route = createFileRoute("/_app/me/notifications")({
   component: NotificationsPage,
-})
+});
 
 function NotificationsPage() {
   return (
@@ -13,5 +13,5 @@ function NotificationsPage() {
         <Text c="dimmed">Stay updated with your activity and mentions</Text>
       </Stack>
     </Container>
-  )
+  );
 }

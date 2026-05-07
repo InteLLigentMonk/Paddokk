@@ -13,7 +13,9 @@
   "paths": {
     "/api/v1/cars/{carId}/images": {
       "get": {
-        "tags": ["CarImages"],
+        "tags": [
+          "CarImages"
+        ],
         "summary": "Get all images for a car",
         "operationId": "CarImages_GetCarImages",
         "parameters": [
@@ -23,7 +25,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -92,7 +97,9 @@
         }
       },
       "post": {
-        "tags": ["CarImages"],
+        "tags": [
+          "CarImages"
+        ],
         "summary": "Upload a new image for the car",
         "operationId": "CarImages_UploadCarImage",
         "parameters": [
@@ -102,7 +109,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -203,7 +213,9 @@
     },
     "/api/v1/cars/{carId}/images/{imageId}": {
       "get": {
-        "tags": ["CarImages"],
+        "tags": [
+          "CarImages"
+        ],
         "summary": "Get a specific car image by ID",
         "operationId": "CarImages_GetCarImageById",
         "parameters": [
@@ -213,7 +225,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -223,7 +238,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -292,7 +310,9 @@
         }
       },
       "put": {
-        "tags": ["CarImages"],
+        "tags": [
+          "CarImages"
+        ],
         "summary": "Update caption or sort order of a car image",
         "operationId": "CarImages_UpdateCarImage",
         "parameters": [
@@ -302,7 +322,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -312,7 +335,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -411,7 +437,9 @@
         }
       },
       "delete": {
-        "tags": ["CarImages"],
+        "tags": [
+          "CarImages"
+        ],
         "summary": "Delete a car image",
         "operationId": "CarImages_DeleteCarImage",
         "parameters": [
@@ -421,7 +449,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -431,7 +462,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -495,7 +529,9 @@
     },
     "/api/v1/cars/{carId}/images/{imageId}/setprimary": {
       "put": {
-        "tags": ["CarImages"],
+        "tags": [
+          "CarImages"
+        ],
         "summary": "Set an image as the primary image for the car",
         "operationId": "CarImages_SetPrimaryImage",
         "parameters": [
@@ -505,7 +541,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -515,7 +554,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -579,7 +621,9 @@
     },
     "/api/v1/Cars/makes": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns list of all car makes",
         "operationId": "Cars_GetCarMakes",
         "responses": {
@@ -614,12 +658,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/makes/{makeId}/models": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns list of all car models for a specific make",
         "operationId": "Cars_GetCarModels",
         "parameters": [
@@ -629,7 +675,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -676,12 +725,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/models/{modelId}/generations": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns list of all car generations for a specific model",
         "operationId": "Cars_GetCarGenerations",
         "parameters": [
@@ -691,7 +742,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -738,12 +792,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/makes/{makeId}": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns details of a specific car make",
         "operationId": "Cars_GetCarMake",
         "parameters": [
@@ -753,7 +809,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -800,12 +859,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/models/{modelId}": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns details of a specific car model",
         "operationId": "Cars_GetCarModel",
         "parameters": [
@@ -815,7 +876,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -862,12 +926,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/generations/{generationId}": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns details of a specific car generation",
         "operationId": "Cars_GetCarGeneration",
         "parameters": [
@@ -877,7 +943,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -924,12 +993,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/{carId}": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Returns a specific car by ID — publicly accessible",
         "operationId": "Cars_GetCar",
         "parameters": [
@@ -986,12 +1057,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Cars/search": {
       "get": {
-        "tags": ["Cars"],
+        "tags": [
+          "Cars"
+        ],
         "summary": "Full-text search across all cars on the platform",
         "operationId": "Cars_SearchCars",
         "parameters": [
@@ -1007,7 +1080,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 1
             }
@@ -1017,7 +1093,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 20
             }
@@ -1055,12 +1134,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/comments/{commentId}": {
       "get": {
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "summary": "Get specific comment by ID",
         "operationId": "Comments_GetComment",
         "parameters": [
@@ -1070,7 +1151,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1139,7 +1223,9 @@
         }
       },
       "put": {
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "summary": "Update comment (owner only)",
         "operationId": "Comments_UpdateComment",
         "parameters": [
@@ -1149,7 +1235,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1248,7 +1337,9 @@
         }
       },
       "delete": {
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "summary": "Delete comment (owner or post owner)",
         "operationId": "Comments_DeleteComment",
         "parameters": [
@@ -1258,7 +1349,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1322,7 +1416,9 @@
     },
     "/api/v1/comments/{commentId}/report": {
       "post": {
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "summary": "Report comment for moderation",
         "operationId": "Comments_ReportComment",
         "parameters": [
@@ -1332,7 +1428,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1416,7 +1515,9 @@
     },
     "/api/v1/users/me/Dashboard": {
       "get": {
-        "tags": ["Dashboard"],
+        "tags": [
+          "Dashboard"
+        ],
         "summary": "Get dashboard data for authenticated user",
         "operationId": "Dashboard_GetDashboard",
         "responses": {
@@ -1475,7 +1576,9 @@
     },
     "/api/v1/users/me/Dashboard/feed": {
       "get": {
-        "tags": ["Dashboard"],
+        "tags": [
+          "Dashboard"
+        ],
         "summary": "Get activity feed for dashboard (trending journeys)",
         "operationId": "Dashboard_GetActivityFeed",
         "parameters": [
@@ -1484,7 +1587,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 0
             }
@@ -1494,7 +1600,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 20
             }
@@ -1565,7 +1674,9 @@
     },
     "/api/v1/journeys": {
       "get": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Search and browse journeys with filtering",
         "operationId": "Journeys_SearchJourneys",
         "parameters": [
@@ -1595,7 +1706,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1604,7 +1718,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1627,7 +1744,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1636,7 +1756,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1682,12 +1805,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/journeys/{journeyId}": {
       "get": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Get specific journey details",
         "operationId": "Journeys_GetJourney",
         "parameters": [
@@ -1697,7 +1822,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1744,12 +1872,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/journeys/featured": {
       "get": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Get featured journeys (most liked)",
         "operationId": "Journeys_GetFeaturedJourneys",
         "responses": {
@@ -1793,12 +1923,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/journeys/trending": {
       "get": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Get trending journeys (recently active)",
         "operationId": "Journeys_GetTrendingJourneys",
         "responses": {
@@ -1842,12 +1974,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/journeys/{journeyId}/subscribe": {
       "post": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Subscribe to journey for updates",
         "operationId": "Journeys_SubscribeToJourney",
         "parameters": [
@@ -1857,7 +1991,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1919,7 +2056,9 @@
         }
       },
       "delete": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Unsubscribe from journey",
         "operationId": "Journeys_UnsubscribeFromJourney",
         "parameters": [
@@ -1929,7 +2068,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1993,7 +2135,9 @@
     },
     "/api/v1/journeys/{journeyId}/like": {
       "post": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Like a journey",
         "operationId": "Journeys_LikeJourney",
         "parameters": [
@@ -2003,7 +2147,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2065,7 +2212,9 @@
         }
       },
       "delete": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Unlike a journey",
         "operationId": "Journeys_UnlikeJourney",
         "parameters": [
@@ -2075,7 +2224,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2139,7 +2291,9 @@
     },
     "/api/v1/journeys/{journeyId}/posts": {
       "get": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Get journey posts (timeline)",
         "operationId": "Journeys_GetJourneyPosts",
         "parameters": [
@@ -2149,7 +2303,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2158,7 +2315,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 0
             }
@@ -2168,7 +2328,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 20
             }
@@ -2225,10 +2388,12 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       },
       "post": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Create new post in journey",
         "operationId": "Journeys_CreateJourneyPost",
         "parameters": [
@@ -2238,7 +2403,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2339,7 +2507,9 @@
     },
     "/api/v1/journeys/posts/{postId}": {
       "get": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Get specific journey post",
         "operationId": "Journeys_GetJourneyPost",
         "parameters": [
@@ -2349,7 +2519,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2396,10 +2569,12 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       },
       "put": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Update journey post (text content only)",
         "operationId": "Journeys_UpdateJourneyPost",
         "parameters": [
@@ -2409,7 +2584,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2508,7 +2686,9 @@
         }
       },
       "delete": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Delete journey post",
         "operationId": "Journeys_DeleteJourneyPost",
         "parameters": [
@@ -2518,7 +2698,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2582,7 +2765,9 @@
     },
     "/api/v1/journeys/{journeyId}/posts/upload-image": {
       "post": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Upload an image for a journey post (pre-upload before post creation)",
         "operationId": "Journeys_UploadJourneyPostImage",
         "parameters": [
@@ -2592,7 +2777,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2686,7 +2874,9 @@
         }
       },
       "delete": {
-        "tags": ["Journeys"],
+        "tags": [
+          "Journeys"
+        ],
         "summary": "Delete a pre-uploaded journey post image (cleanup orphaned images)",
         "operationId": "Journeys_DeleteJourneyPostImage",
         "parameters": [
@@ -2696,7 +2886,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2780,7 +2973,9 @@
     },
     "/api/v1/limits/images": {
       "get": {
-        "tags": ["Limits"],
+        "tags": [
+          "Limits"
+        ],
         "summary": "Get the current user's image upload limits across all contexts",
         "operationId": "Limits_GetImageLimits",
         "responses": {
@@ -2839,7 +3034,9 @@
     },
     "/api/v1/limits/cars": {
       "get": {
-        "tags": ["Limits"],
+        "tags": [
+          "Limits"
+        ],
         "summary": "Get the current user's car limit status",
         "operationId": "Limits_GetCarLimits",
         "responses": {
@@ -2898,7 +3095,9 @@
     },
     "/api/v1/posts/{postId}/comments": {
       "get": {
-        "tags": ["PostComments"],
+        "tags": [
+          "PostComments"
+        ],
         "operationId": "PostComments_GetPostComments",
         "parameters": [
           {
@@ -2907,7 +3106,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2916,7 +3118,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 1
             }
@@ -2926,7 +3131,10 @@
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 20
             }
@@ -2974,10 +3182,12 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       },
       "post": {
-        "tags": ["PostComments"],
+        "tags": [
+          "PostComments"
+        ],
         "operationId": "PostComments_CreateComment",
         "parameters": [
           {
@@ -2986,7 +3196,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3087,7 +3300,9 @@
     },
     "/api/v1/posts/{postId}/comments/{commentId}": {
       "get": {
-        "tags": ["PostComments"],
+        "tags": [
+          "PostComments"
+        ],
         "operationId": "PostComments_GetComment",
         "parameters": [
           {
@@ -3096,7 +3311,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3106,7 +3324,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3153,10 +3374,12 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       },
       "put": {
-        "tags": ["PostComments"],
+        "tags": [
+          "PostComments"
+        ],
         "operationId": "PostComments_UpdateComment",
         "parameters": [
           {
@@ -3165,7 +3388,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3175,7 +3401,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3274,7 +3503,9 @@
         }
       },
       "delete": {
-        "tags": ["PostComments"],
+        "tags": [
+          "PostComments"
+        ],
         "operationId": "PostComments_DeleteComment",
         "parameters": [
           {
@@ -3283,7 +3514,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3293,7 +3527,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3357,7 +3594,9 @@
     },
     "/api/v1/users/me/cars": {
       "get": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Get all cars for the current user",
         "operationId": "UserCars_GetUserCars",
         "responses": {
@@ -3414,7 +3653,9 @@
         }
       },
       "post": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Add a new car for the current user",
         "operationId": "UserCars_CreateUserCar",
         "requestBody": {
@@ -3503,7 +3744,9 @@
     },
     "/api/v1/users/me/cars/{carId}": {
       "get": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Get a specific car for the current user",
         "operationId": "UserCars_GetUserCar",
         "parameters": [
@@ -3513,7 +3756,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3582,7 +3828,9 @@
         }
       },
       "put": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Update a car for the current user",
         "operationId": "UserCars_UpdateUserCar",
         "parameters": [
@@ -3592,7 +3840,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3691,7 +3942,9 @@
         }
       },
       "delete": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Delete a car for the current user",
         "operationId": "UserCars_DeleteUserCar",
         "parameters": [
@@ -3701,7 +3954,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3765,7 +4021,9 @@
     },
     "/api/v1/users/me/cars/{carId}/like": {
       "post": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Like a car",
         "operationId": "UserCars_LikeUserCar",
         "parameters": [
@@ -3775,7 +4033,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3837,7 +4098,9 @@
         }
       },
       "delete": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Unlike a car",
         "operationId": "UserCars_UnlikeUserCar",
         "parameters": [
@@ -3847,7 +4110,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3911,7 +4177,9 @@
     },
     "/api/v1/users/me/cars/{carId}/subscribe": {
       "post": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Subscribe to a car for updates",
         "operationId": "UserCars_SubscribeToUserCar",
         "parameters": [
@@ -3921,7 +4189,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3983,7 +4254,9 @@
         }
       },
       "delete": {
-        "tags": ["UserCars"],
+        "tags": [
+          "UserCars"
+        ],
         "summary": "Unsubscribe from a car",
         "operationId": "UserCars_UnsubscribeFromUserCar",
         "parameters": [
@@ -3993,7 +4266,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -4057,7 +4333,9 @@
     },
     "/api/v1/users/me/journeys": {
       "get": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Get current user's journeys",
         "operationId": "UserJourneys_GetUserJourneys",
         "responses": {
@@ -4123,7 +4401,9 @@
         }
       },
       "post": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Create new journey",
         "operationId": "UserJourneys_CreateJourney",
         "requestBody": {
@@ -4212,7 +4492,9 @@
     },
     "/api/v1/users/me/journeys/{journeyId}": {
       "get": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Get specific user journey",
         "operationId": "UserJourneys_GetUserJourney",
         "parameters": [
@@ -4222,7 +4504,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -4291,7 +4576,9 @@
         }
       },
       "put": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Update journey details",
         "operationId": "UserJourneys_UpdateJourney",
         "parameters": [
@@ -4301,7 +4588,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -4400,7 +4690,9 @@
         }
       },
       "delete": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Delete journey",
         "operationId": "UserJourneys_DeleteJourney",
         "parameters": [
@@ -4410,7 +4702,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -4474,7 +4769,9 @@
     },
     "/api/v1/users/me/journeys/default-active": {
       "get": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Get user's default active journey",
         "operationId": "UserJourneys_GetDefaultActiveJourney",
         "responses": {
@@ -4533,7 +4830,9 @@
     },
     "/api/v1/users/me/journeys/{journeyId}/set-default-active": {
       "put": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Set journey as default active",
         "operationId": "UserJourneys_SetDefaultActiveJourney",
         "parameters": [
@@ -4543,7 +4842,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -4607,7 +4909,9 @@
     },
     "/api/v1/users/me/journeys/stats": {
       "get": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Get user's journey statistics",
         "operationId": "UserJourneys_GetUserJourneyStats",
         "responses": {
@@ -4666,7 +4970,9 @@
     },
     "/api/v1/users/me/journeys/can-create": {
       "get": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Check if user can create more journeys",
         "operationId": "UserJourneys_CanCreateJourney",
         "responses": {
@@ -4725,7 +5031,9 @@
     },
     "/api/v1/users/me/journeys/{journeyId}/cover-image": {
       "post": {
-        "tags": ["UserJourneys"],
+        "tags": [
+          "UserJourneys"
+        ],
         "summary": "Upload journey cover image",
         "operationId": "UserJourneys_UploadJourneyCoverImage",
         "parameters": [
@@ -4735,7 +5043,10 @@
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -4831,7 +5142,9 @@
     },
     "/api/v1/Users/me": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get current authenticated user's profile",
         "operationId": "Users_GetCurrentUser",
         "responses": {
@@ -4888,7 +5201,9 @@
         }
       },
       "put": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Update current authenticated user's profile",
         "operationId": "Users_UpdateCurrentUser",
         "requestBody": {
@@ -4977,7 +5292,9 @@
     },
     "/api/v1/Users/{userId}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get user profile by ID",
         "operationId": "Users_GetUserById",
         "parameters": [
@@ -5032,12 +5349,14 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
       }
     },
     "/api/v1/Users/email/{email}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get user profile by email",
         "operationId": "Users_GetUserByEmail",
         "parameters": [
@@ -5092,7 +5411,351 @@
             }
           }
         },
-        "security": []
+        "security": [ ]
+      }
+    },
+    "/api/v1/Users/by-username/{username}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user profile by username",
+        "operationId": "Users_GetUserByUsername",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
+    "/api/v1/Users/by-username/{username}/cars": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user's cars (filtered by visibility)",
+        "operationId": "Users_GetUserCarsByUsername",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCarDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCarDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCarDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
+    "/api/v1/Users/by-username/{username}/cars/{slug}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user's car by slug",
+        "operationId": "Users_GetUserCarBySlug",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCarDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
+    "/api/v1/Users/by-username/{username}/journeys": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user's journeys (filtered by visibility)",
+        "operationId": "Users_GetUserJourneysByUsername",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
+    "/api/v1/Users/by-username/{username}/journeys/{slug}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user's journey by slug",
+        "operationId": "Users_GetJourneyBySlug",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
       }
     }
   },
@@ -5106,7 +5769,10 @@
           },
           "statusCode": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "path": {
@@ -5128,7 +5794,10 @@
           },
           "currentCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "maxJourneys": {
@@ -5140,12 +5809,21 @@
         }
       },
       "CarGenerationDto": {
-        "required": ["id", "name", "startYear", "carModelId", "carModelName"],
+        "required": [
+          "id",
+          "name",
+          "startYear",
+          "carModelId",
+          "carModelName"
+        ],
         "type": "object",
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "name": {
@@ -5153,17 +5831,27 @@
           },
           "startYear": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "endYear": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carModelId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carModelName": {
@@ -5172,7 +5860,9 @@
         }
       },
       "CarGenerationsResponse": {
-        "required": ["generations"],
+        "required": [
+          "generations"
+        ],
         "type": "object",
         "properties": {
           "generations": {
@@ -5201,12 +5891,18 @@
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "userCarId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "imageUrl": {
@@ -5219,11 +5915,17 @@
             "type": "string"
           },
           "caption": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "sortOrder": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "isPrimary": {
@@ -5236,7 +5938,9 @@
         }
       },
       "CarImagesResponse": {
-        "required": ["images"],
+        "required": [
+          "images"
+        ],
         "type": "object",
         "properties": {
           "images": {
@@ -5261,7 +5965,10 @@
           },
           "currentCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "maxAllowed": {
@@ -5273,12 +5980,21 @@
         }
       },
       "CarMakeDto": {
-        "required": ["id", "name", "country", "group", "modelCount"],
+        "required": [
+          "id",
+          "name",
+          "country",
+          "group",
+          "modelCount"
+        ],
         "type": "object",
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "name": {
@@ -5292,13 +6008,18 @@
           },
           "modelCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "CarMakesResponse": {
-        "required": ["makes"],
+        "required": [
+          "makes"
+        ],
         "type": "object",
         "properties": {
           "makes": {
@@ -5321,7 +6042,10 @@
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "name": {
@@ -5329,7 +6053,10 @@
           },
           "carMakeId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carMakeName": {
@@ -5337,13 +6064,18 @@
           },
           "generationCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "CarModelsResponse": {
-        "required": ["models"],
+        "required": [
+          "models"
+        ],
         "type": "object",
         "properties": {
           "models": {
@@ -5373,17 +6105,26 @@
           },
           "totalCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "page": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "pageSize": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "hasNext": {
@@ -5395,12 +6136,18 @@
         }
       },
       "CreateCommentCommand": {
-        "required": ["postId", "content"],
+        "required": [
+          "postId",
+          "content"
+        ],
         "type": "object",
         "properties": {
           "postId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "content": {
@@ -5408,27 +6155,42 @@
           },
           "parentCommentId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "CreateJourneyCommand": {
-        "required": ["title", "description", "category", "userCarId"],
+        "required": [
+          "title",
+          "description",
+          "category",
+          "userCarId"
+        ],
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "category": {
             "$ref": "#/components/schemas/JourneyCategory"
           },
           "userCarId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "setAsDefaultActive": {
@@ -5436,25 +6198,41 @@
             "default": true
           },
           "targetCompletedAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "coverImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateJourneyPostCommand": {
-        "required": ["journeyId", "textContent", "images"],
+        "required": [
+          "journeyId",
+          "textContent",
+          "images"
+        ],
         "type": "object",
         "properties": {
           "journeyId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "textContent": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "images": {
             "type": "array",
@@ -5465,7 +6243,9 @@
         }
       },
       "CreateJourneyPostImageRequest": {
-        "required": ["imageUrl"],
+        "required": [
+          "imageUrl"
+        ],
         "type": "object",
         "properties": {
           "imageUrl": {
@@ -5474,11 +6254,17 @@
           "caption": {
             "maxLength": 500,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "sortOrder": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
@@ -5501,36 +6287,64 @@
             "type": "boolean"
           },
           "customBuildName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carMakeId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carModelId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carGenerationId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "year": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "nickname": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "color": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "isPrimary": {
             "type": "boolean",
@@ -5574,7 +6388,10 @@
         "properties": {
           "current": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "max": {
@@ -5628,7 +6445,10 @@
             "type": "string"
           },
           "avatarUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "subscriptionTier": {
             "$ref": "#/components/schemas/SubscriptionTier"
@@ -5639,12 +6459,18 @@
         }
       },
       "DeleteJourneyPostImageCommand": {
-        "required": ["journeyId", "imageUrl"],
+        "required": [
+          "journeyId",
+          "imageUrl"
+        ],
         "type": "object",
         "properties": {
           "journeyId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "imageUrl": {
@@ -5668,17 +6494,26 @@
         "properties": {
           "maxImagesPerPost": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "maxImagesPerCar": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "maxFileSizeBytes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int64"
           },
           "allowedFormats": {
@@ -5724,17 +6559,26 @@
           },
           "fileSizeBytes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int64"
           },
           "width": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "height": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "contentType": {
@@ -5756,11 +6600,13 @@
         "required": [
           "id",
           "title",
+          "slug",
           "category",
           "status",
           "activityTier",
           "isPublic",
           "principalId",
+          "ownerUsername",
           "userDisplayName",
           "userCarId",
           "postCount",
@@ -5776,14 +6622,23 @@
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "title": {
             "type": "string"
           },
+          "slug": {
+            "type": "string"
+          },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "category": {
             "$ref": "#/components/schemas/JourneyCategory"
@@ -5800,50 +6655,87 @@
           "principalId": {
             "type": "string"
           },
+          "ownerUsername": {
+            "type": "string"
+          },
           "userDisplayName": {
             "type": "string"
           },
           "userAvatarUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "userCarId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carMakeName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carModelName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carGenerationName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carYear": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carNickname": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carPrimaryImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "postCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "subscriberCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "likeCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "isSubscribed": {
@@ -5856,7 +6748,10 @@
             "type": "boolean"
           },
           "primaryImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -5867,19 +6762,31 @@
             "format": "date-time"
           },
           "completedAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "targetCompletedAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "lastPostAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "lastPostPreview": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -5900,12 +6807,18 @@
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "journeyId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "authorId": {
@@ -5915,10 +6828,16 @@
             "type": "string"
           },
           "userAvatarUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "textContent": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "images": {
             "type": "array",
@@ -5928,7 +6847,10 @@
           },
           "commentCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "createdAt": {
@@ -5948,23 +6870,36 @@
         }
       },
       "JourneyPostImageDto": {
-        "required": ["id", "imageUrl", "sortOrder"],
+        "required": [
+          "id",
+          "imageUrl",
+          "sortOrder"
+        ],
         "type": "object",
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "imageUrl": {
             "type": "string"
           },
           "caption": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "sortOrder": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
@@ -5985,32 +6920,50 @@
         "properties": {
           "totalJourneys": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "activeJourneys": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "completedJourneys": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "totalPosts": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "totalSubscribers": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "totalLikes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
@@ -6036,12 +6989,18 @@
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "journeyPostId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "authorId": {
@@ -6051,7 +7010,10 @@
             "type": "string"
           },
           "userAvatarUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "content": {
             "type": "string"
@@ -6097,25 +7059,41 @@
           "caption": {
             "maxLength": 500,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "sortOrder": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "isPrimary": {
-            "type": ["null", "boolean"]
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
       "UpdateCommentCommand": {
-        "required": ["commentId", "content"],
+        "required": [
+          "commentId",
+          "content"
+        ],
         "type": "object",
         "properties": {
           "commentId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "content": {
@@ -6136,14 +7114,23 @@
         "properties": {
           "journeyId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "title": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "category": {
             "oneOf": [
@@ -6166,32 +7153,53 @@
             ]
           },
           "completedAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "targetCompletedAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "coverImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "isPublic": {
-            "type": ["null", "boolean"]
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
       "UpdateJourneyPostCommand": {
-        "required": ["postId", "textContent"],
+        "required": [
+          "postId",
+          "textContent"
+        ],
         "type": "object",
         "properties": {
           "postId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "textContent": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6208,38 +7216,83 @@
         "properties": {
           "carId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "customBuildName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "nickname": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "color": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "isPrimary": {
-            "type": ["null", "boolean"]
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
       "UpdateUserCommand": {
-        "required": ["displayName", "bio", "avatarUrl"],
+        "required": [
+          "firstName",
+          "lastName",
+          "displayName",
+          "bio",
+          "avatarUrl"
+        ],
         "type": "object",
         "properties": {
+          "firstName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lastName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "displayName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "bio": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "avatarUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6247,6 +7300,9 @@
         "required": [
           "id",
           "principalId",
+          "ownerUsername",
+          "slug",
+          "isPublic",
           "isCustomBuild",
           "isPrimary",
           "createdAt",
@@ -6262,58 +7318,110 @@
         "properties": {
           "id": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "principalId": {
             "type": "string"
           },
+          "ownerUsername": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
           "carMakeId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carMakeName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carModelId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carModelName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "carGenerationId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carGenerationName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "year": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "isCustomBuild": {
             "type": "boolean"
           },
           "customBuildName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "nickname": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "color": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "primaryImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "isPrimary": {
             "type": "boolean"
@@ -6328,17 +7436,26 @@
           },
           "journeyCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "likeCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "subscriberCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "isLiked": {
@@ -6353,7 +7470,9 @@
         }
       },
       "UserCarsResponse": {
-        "required": ["cars"],
+        "required": [
+          "cars"
+        ],
         "type": "object",
         "properties": {
           "cars": {
@@ -6368,6 +7487,8 @@
         "required": [
           "id",
           "email",
+          "firstName",
+          "username",
           "displayName",
           "createdAt",
           "emailConfirmed",
@@ -6384,14 +7505,32 @@
           "email": {
             "type": "string"
           },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "username": {
+            "type": "string"
+          },
           "displayName": {
             "type": "string"
           },
           "bio": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "avatarUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -6404,27 +7543,43 @@
             "$ref": "#/components/schemas/SubscriptionTier"
           },
           "subscriptionExpiresAt": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "defaultActiveJourneyId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "carCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "journeyCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "maxCars": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
@@ -6441,7 +7596,7 @@
   },
   "security": [
     {
-      "Bearer": []
+      "Bearer": [ ]
     }
   ],
   "tags": [
