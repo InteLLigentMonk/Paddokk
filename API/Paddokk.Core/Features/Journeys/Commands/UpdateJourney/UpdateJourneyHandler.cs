@@ -13,7 +13,7 @@ public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, I
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(request.JourneyId, cancellationToken);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result<JourneyDto>.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         if (!string.IsNullOrEmpty(request.Title))

@@ -16,7 +16,7 @@ public class JourneyConfiguration : IEntityTypeConfiguration<Journey>
 
         builder.HasOne(e => e.User)
             .WithMany(e => e.Journeys)
-            .HasForeignKey(e => e.UserId)
+            .HasForeignKey(e => e.PrincipalId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.UserCar)

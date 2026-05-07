@@ -18,7 +18,7 @@ public sealed class UpdateCommentHandler(
         if (comment is null)
             return Result<PostCommentDto>.Failure(Error.NotFound("Comment not found"));
 
-        if (comment.UserId != actor.UserId)
+        if (comment.AuthorId != actor.UserId)
             return Result<PostCommentDto>.Failure(Error.Unauthorized("Not your comment"));
 
         var updated = await comments.UpdateCommentAsync(actor.UserId, command.CommentId, command.Content, ct);

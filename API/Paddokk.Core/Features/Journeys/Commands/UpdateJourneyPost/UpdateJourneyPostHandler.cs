@@ -12,7 +12,7 @@ public sealed class UpdateJourneyPostHandler(IJourneyRepository journeyRepositor
     {
         var post = await journeyRepository.GetJourneyPostByIdAsync(request.PostId, cancellationToken);
 
-        if (post is null || post.UserId != actor.UserId)
+        if (post is null || post.AuthorId != actor.UserId)
             return Result<JourneyPostDto>.Failure(Error.NotFound("Post not found or you don't own it"));
 
         if (request.TextContent is not null)

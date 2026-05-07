@@ -12,8 +12,8 @@ public class JourneyDto
     public required JourneyActivityTier ActivityTier { get; set; }
     public required bool IsPublic { get; set; }
 
-    // User Info
-    public required string UserId { get; set; }
+    // Owner Info
+    public required string PrincipalId { get; set; }
     public required string UserDisplayName { get; set; }
     public string? UserAvatarUrl { get; set; }
 

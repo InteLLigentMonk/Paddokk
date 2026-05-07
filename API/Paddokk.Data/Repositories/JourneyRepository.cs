@@ -25,7 +25,7 @@ public class JourneyRepository : IJourneyRepository
             .Include(j => j.Posts)
             .Include(j => j.Subscriptions)
             .Include(j => j.Likes)
-            .Where(j => j.UserId == userId)
+            .Where(j => j.PrincipalId == userId)
             .OrderByDescending(j => j.Status == JourneyStatus.Active ? 1 : 0)
             .ThenByDescending(j => j.UpdatedAt)
             .ToListAsync(cancellationToken);
@@ -94,7 +94,7 @@ public class JourneyRepository : IJourneyRepository
 
     public Task<int> GetUserJourneyCountAsync(string userId, CancellationToken cancellationToken)
     {
-        return _db.Journeys.CountAsync(j => j.UserId == userId, cancellationToken);
+        return _db.Journeys.CountAsync(j => j.PrincipalId == userId, cancellationToken);
     }
 
     // Journey mutations
@@ -122,7 +122,7 @@ public class JourneyRepository : IJourneyRepository
     public async Task<List<JourneyPost>> GetJourneyPostsAsync(int journeyId, int skip, int take, CancellationToken cancellationToken)
     {
         return await _db.JourneyPosts
-            .Include(p => p.User)
+            .Include(p => p.Author)
             .Include(p => p.Images)
             .Include(p => p.Comments)
             .Where(p => p.JourneyId == journeyId)
@@ -135,7 +135,7 @@ public class JourneyRepository : IJourneyRepository
     public async Task<JourneyPost?> GetJourneyPostByIdAsync(int postId, CancellationToken cancellationToken)
     {
         return await _db.JourneyPosts
-            .Include(p => p.User)
+            .Include(p => p.Author)
             .Include(p => p.Images)
             .Include(p => p.Comments)
             .FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
@@ -251,7 +251,7 @@ public class JourneyRepository : IJourneyRepository
             .Include(j => j.Posts)
             .Include(j => j.Subscriptions)
             .Include(j => j.Likes)
-            .Where(j => j.UserId == userId)
+            .Where(j => j.PrincipalId == userId)
             .ToListAsync(cancellationToken);
     }
 }

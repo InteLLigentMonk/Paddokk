@@ -52,11 +52,11 @@ public class CreateJourneyPostHandlerTests
         {
             Id = 1,
             JourneyId = 1,
-            UserId = "user-1",
+            AuthorId = "user-1",
             TextContent = "Some text",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            User = new ApplicationUser { Id = "user-1", DisplayName = "Test User" },
+            Author = new ApplicationUser { Id = "user-1", DisplayName = "Test User" },
             Images = [],
             Comments = []
         };

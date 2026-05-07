@@ -72,7 +72,7 @@ public class JourneyMappingTests
         journey.CreatedAt = DateTime.UtcNow.AddDays(-10);
         journey.Posts = Enumerable.Range(0, 5).Select(_ => new JourneyPost
         {
-            UserId = journey.UserId,
+            AuthorId = journey.PrincipalId,
             JourneyId = journey.Id,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -113,7 +113,7 @@ public class JourneyMappingTests
         journey.CompletedAt = now.AddDays(-50);
         journey.Posts = Enumerable.Range(0, 6).Select(_ => new JourneyPost
         {
-            UserId = journey.UserId,
+            AuthorId = journey.PrincipalId,
             JourneyId = journey.Id,
             CreatedAt = now,
             UpdatedAt = now,

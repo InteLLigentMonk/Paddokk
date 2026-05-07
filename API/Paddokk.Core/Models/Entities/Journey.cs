@@ -17,7 +17,7 @@ public class Journey
     public JourneyStatus Status { get; set; } = JourneyStatus.Active;
 
     // Relationships
-    public string UserId { get; set; } = string.Empty;
+    public string PrincipalId { get; set; } = string.Empty;
     public ApplicationUser User { get; set; } = null!;
     public int UserCarId { get; set; }
     public UserCar UserCar { get; set; } = null!;

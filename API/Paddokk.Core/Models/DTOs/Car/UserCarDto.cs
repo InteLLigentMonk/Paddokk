@@ -3,7 +3,7 @@ namespace Paddokk.Core.Models.DTOs.Car;
 public class UserCarDto
 {
     public required int Id { get; set; }
-    public required string UserId { get; set; }
+    public required string PrincipalId { get; set; }
 
     // Car Details
     public int? CarMakeId { get; set; }

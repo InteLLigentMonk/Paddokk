@@ -120,7 +120,7 @@ public static class DatabaseSeeder
                     var build = faker.PickRandom(customBuilds);
                     car = new UserCar
                     {
-                        UserId = user.Id,
+                        PrincipalId = user.Id,
                         IsCustomBuild = true,
                         CustomBuildName = build.Item1,
                         Description = build.Item2,
@@ -143,7 +143,7 @@ public static class DatabaseSeeder
 
                     car = new UserCar
                     {
-                        UserId = user.Id,
+                        PrincipalId = user.Id,
                         CarMakeId = make.Id,
                         CarModelId = model?.Id,
                         CarGenerationId = generation?.Id,
@@ -212,7 +212,7 @@ public static class DatabaseSeeder
 
         foreach (var user in users)
         {
-            var userCars = cars.Where(c => c.UserId == user.Id).ToList();
+            var userCars = cars.Where(c => c.PrincipalId == user.Id).ToList();
             if (!userCars.Any()) continue;
 
             var journeyCount = faker.Random.Int(1, 3);
@@ -230,7 +230,7 @@ public static class DatabaseSeeder
                         JourneyCategory.BuildAndMods, JourneyCategory.Restoration,
                         JourneyCategory.Racing, JourneyCategory.Adventures, JourneyCategory.Ownership),
                     Status = status,
-                    UserId = user.Id,
+                    PrincipalId = user.Id,
                     UserCarId = car.Id,
                     CreatedAt = createdAt,
                     UpdatedAt = faker.Date.Between(createdAt, DateTime.UtcNow).ToUniversalTime(),
@@ -283,7 +283,7 @@ public static class DatabaseSeeder
                 posts.Add(new JourneyPost
                 {
                     JourneyId = journey.Id,
-                    UserId = journey.UserId,
+                    AuthorId = journey.PrincipalId,
                     TextContent = faker.PickRandom(postContents),
                     CreatedAt = postDate.ToUniversalTime(),
                     UpdatedAt = postDate.ToUniversalTime(),
@@ -329,7 +329,7 @@ public static class DatabaseSeeder
         foreach (var post in posts)
         {
             var commentCount = faker.Random.Int(0, 5);
-            var otherUsers = users.Where(u => u.Id != post.UserId).ToList();
+            var otherUsers = users.Where(u => u.Id != post.AuthorId).ToList();
             if (!otherUsers.Any()) continue;
 
             for (var i = 0; i < commentCount; i++)
@@ -338,7 +338,7 @@ public static class DatabaseSeeder
                 comments.Add(new PostComment
                 {
                     JourneyPostId = post.Id,
-                    UserId = commenter.Id,
+                    AuthorId = commenter.Id,
                     Content = faker.PickRandom(commentContents),
                     CreatedAt = post.CreatedAt.AddHours(faker.Random.Int(1, 72)).ToUniversalTime(),
                     UpdatedAt = post.CreatedAt.AddHours(faker.Random.Int(1, 72)).ToUniversalTime(),
@@ -359,7 +359,7 @@ public static class DatabaseSeeder
 
         foreach (var journey in journeys)
         {
-            var otherUsers = users.Where(u => u.Id != journey.UserId).ToList();
+            var otherUsers = users.Where(u => u.Id != journey.PrincipalId).ToList();
             var likerCount = faker.Random.Int(0, otherUsers.Count);
             var subCount = faker.Random.Int(0, otherUsers.Count);
 
@@ -402,7 +402,7 @@ public static class DatabaseSeeder
 
         foreach (var car in cars)
         {
-            var otherUsers = users.Where(u => u.Id != car.UserId).ToList();
+            var otherUsers = users.Where(u => u.Id != car.PrincipalId).ToList();
             var likerCount = faker.Random.Int(0, otherUsers.Count);
             var subCount = faker.Random.Int(0, Math.Min(3, otherUsers.Count));
 

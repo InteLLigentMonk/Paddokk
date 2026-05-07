@@ -12,7 +12,7 @@ public sealed class DeleteJourneyHandler(IJourneyRepository journeyRepository, I
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(request.JourneyId, cancellationToken);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         var user = await journeyRepository.GetUserAsync(actor.UserId, cancellationToken);

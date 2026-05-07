@@ -7,8 +7,8 @@ public class JourneyPost
     public int Id { get; set; }
     public int JourneyId { get; set; }
     public Journey Journey { get; set; } = null!;
-    public string UserId { get; set; } = string.Empty;
-    public ApplicationUser User { get; set; } = null!;
+    public string AuthorId { get; set; } = string.Empty;
+    public ApplicationUser Author { get; set; } = null!;
 
     // Content
     [StringLength(5000)]

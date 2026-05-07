@@ -30,14 +30,14 @@ public sealed class CreateCommentHandler(
             if (parent.ParentCommentId is not null)
                 return Result<PostCommentDto>.Failure(Error.Validation("Cannot reply to a reply"));
 
-            if (parent.JourneyPost.UserId != actor.UserId)
+            if (parent.JourneyPost.AuthorId != actor.UserId)
                 return Result<PostCommentDto>.Failure(Error.Unauthorized("Only the post owner can reply"));
         }
 
         var comment = new PostComment
         {
             JourneyPostId = command.PostId,
-            UserId = actor.UserId,
+            AuthorId = actor.UserId,
             Content = command.Content.Trim(),
             ParentCommentId = command.ParentCommentId,
             CreatedAt = DateTime.UtcNow,

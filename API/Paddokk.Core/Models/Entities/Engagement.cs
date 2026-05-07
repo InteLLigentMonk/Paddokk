@@ -49,8 +49,8 @@ public class PostComment
     public int Id { get; set; }
     public int JourneyPostId { get; set; }
     public JourneyPost JourneyPost { get; set; } = null!;
-    public string UserId { get; set; } = string.Empty;
-    public ApplicationUser User { get; set; } = null!;
+    public string AuthorId { get; set; } = string.Empty;
+    public ApplicationUser Author { get; set; } = null!;
     public int? ParentCommentId { get; set; }
     public PostComment? ParentComment { get; set; }
     public ICollection<PostComment> Replies { get; set; } = [];

@@ -17,7 +17,7 @@ public sealed class CreateJourneyPostHandler(
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(request.JourneyId, cancellationToken);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result<JourneyPostDto>.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         if (journey.Status == JourneyStatus.Completed)
@@ -29,7 +29,7 @@ public sealed class CreateJourneyPostHandler(
         var post = new JourneyPost
         {
             JourneyId = request.JourneyId,
-            UserId = actor.UserId,
+            AuthorId = actor.UserId,
             TextContent = htmlSanitizer.Sanitize(request.TextContent),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow

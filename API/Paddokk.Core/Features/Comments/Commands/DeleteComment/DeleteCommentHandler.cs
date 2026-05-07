@@ -17,8 +17,8 @@ public sealed class DeleteCommentHandler(
         if (comment is null)
             return Result.Failure(Error.NotFound("Comment not found"));
 
-        var canDelete = comment.UserId == actor.UserId
-                        || comment.JourneyPost.UserId == actor.UserId;
+        var canDelete = comment.AuthorId == actor.UserId
+                        || comment.JourneyPost.AuthorId == actor.UserId;
 
         if (!canDelete)
             return Result.Failure(Error.Unauthorized("Cannot delete this comment"));

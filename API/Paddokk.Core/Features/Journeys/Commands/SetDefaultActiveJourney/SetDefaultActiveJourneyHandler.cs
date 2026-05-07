@@ -11,7 +11,7 @@ public sealed class SetDefaultActiveJourneyHandler(IJourneyRepository journeyRep
     {
         var journey = await journeyRepository.GetJourneyByIdAsync(request.JourneyId, cancellationToken);
 
-        if (journey is null || journey.UserId != actor.UserId)
+        if (journey is null || journey.PrincipalId != actor.UserId)
             return Result.Failure(Error.NotFound("Journey not found or you don't own it"));
 
         await journeyRepository.UpdateUserDefaultJourneyAsync(actor.UserId, request.JourneyId, cancellationToken);

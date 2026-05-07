@@ -7,41 +7,41 @@ internal static class CommentMapping
 {
     internal static PostCommentDto ToDto(PostComment comment, string? currentUserId)
     {
-        var postOwnerUserId = comment.JourneyPost.UserId;
+        var postAuthorId = comment.JourneyPost.AuthorId;
         return new PostCommentDto
         {
             Id = comment.Id,
             JourneyPostId = comment.JourneyPostId,
-            UserId = comment.UserId,
-            UserDisplayName = comment.User.DisplayName,
-            UserAvatarUrl = comment.User.AvatarUrl,
+            AuthorId = comment.AuthorId,
+            UserDisplayName = comment.Author.DisplayName,
+            UserAvatarUrl = comment.Author.AvatarUrl,
             Content = comment.Content,
             CreatedAt = comment.CreatedAt,
             UpdatedAt = comment.UpdatedAt,
             IsEdited = comment.IsEdited,
-            IsOwner = comment.UserId == currentUserId,
-            IsPostOwner = comment.UserId == postOwnerUserId,
-            IsViewerPostOwner = currentUserId == postOwnerUserId,
+            IsOwner = comment.AuthorId == currentUserId,
+            IsPostOwner = comment.AuthorId == postAuthorId,
+            IsViewerPostOwner = currentUserId == postAuthorId,
             Reply = comment.Replies.FirstOrDefault() is PostComment reply
-                ? ToReplyDto(reply, currentUserId, postOwnerUserId)
+                ? ToReplyDto(reply, currentUserId, postAuthorId)
                 : null
         };
     }
 
-    private static PostCommentDto ToReplyDto(PostComment reply, string? currentUserId, string postOwnerUserId) => new()
+    private static PostCommentDto ToReplyDto(PostComment reply, string? currentUserId, string postAuthorId) => new()
     {
         Id = reply.Id,
         JourneyPostId = reply.JourneyPostId,
-        UserId = reply.UserId,
-        UserDisplayName = reply.User.DisplayName,
-        UserAvatarUrl = reply.User.AvatarUrl,
+        AuthorId = reply.AuthorId,
+        UserDisplayName = reply.Author.DisplayName,
+        UserAvatarUrl = reply.Author.AvatarUrl,
         Content = reply.Content,
         CreatedAt = reply.CreatedAt,
         UpdatedAt = reply.UpdatedAt,
         IsEdited = reply.IsEdited,
-        IsOwner = reply.UserId == currentUserId,
+        IsOwner = reply.AuthorId == currentUserId,
         IsPostOwner = true,
-        IsViewerPostOwner = currentUserId == postOwnerUserId,
+        IsViewerPostOwner = currentUserId == postAuthorId,
         Reply = null
     };
 }
