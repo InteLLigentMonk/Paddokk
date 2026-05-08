@@ -9,10 +9,14 @@ public class UserCarConfiguration : IEntityTypeConfiguration<UserCar>
     public void Configure(EntityTypeBuilder<UserCar> builder)
     {
         builder.HasKey(e => e.Id);
+        builder.Property(e => e.Slug).HasMaxLength(100).IsRequired();
+        builder.Property(e => e.IsPublic).HasDefaultValue(true);
         builder.Property(e => e.Nickname).HasMaxLength(100);
         builder.Property(e => e.Color).HasMaxLength(50);
         builder.Property(e => e.Description).HasMaxLength(10000);
         builder.Property(e => e.CustomBuildName).HasMaxLength(200);
+
+        builder.HasIndex(e => new { e.PrincipalId, e.Slug }).IsUnique();
 
         builder.HasOne(e => e.User)
             .WithMany(e => e.Cars)

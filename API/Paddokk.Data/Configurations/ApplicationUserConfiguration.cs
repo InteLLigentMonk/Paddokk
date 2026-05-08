@@ -10,8 +10,13 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
     {
         builder.ToTable("Users");
 
-        builder.Property(e => e.DisplayName).HasMaxLength(100);
+        builder.Property(e => e.FirstName).HasMaxLength(50).IsRequired();
+        builder.Property(e => e.LastName).HasMaxLength(50);
+        builder.Property(e => e.Username).HasMaxLength(30).IsRequired();
+        builder.Property(e => e.DisplayName).HasMaxLength(100).IsRequired();
         builder.Property(e => e.Bio).HasMaxLength(500);
+
+        builder.HasIndex(e => e.Username).IsUnique();
 
         builder.HasOne(e => e.DefaultActiveJourney)
             .WithMany()

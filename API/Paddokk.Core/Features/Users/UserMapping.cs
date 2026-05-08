@@ -21,6 +21,9 @@ internal static class UserMapping
         {
             Id = user.Id,
             Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Username = user.Username,
             DisplayName = user.DisplayName,
             Bio = user.Bio,
             AvatarUrl = user.AvatarUrl,

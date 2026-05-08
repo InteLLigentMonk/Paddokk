@@ -6,6 +6,7 @@ public class JourneyDto
 {
     public required int Id { get; set; }
     public required string Title { get; set; }
+    public required string Slug { get; set; }
     public string? Description { get; set; }
     public required JourneyCategory Category { get; set; }
     public required JourneyStatus Status { get; set; }
@@ -14,6 +15,7 @@ public class JourneyDto
 
     // Owner Info
     public required string PrincipalId { get; set; }
+    public required string OwnerUsername { get; set; }
     public required string UserDisplayName { get; set; }
     public string? UserAvatarUrl { get; set; }
 

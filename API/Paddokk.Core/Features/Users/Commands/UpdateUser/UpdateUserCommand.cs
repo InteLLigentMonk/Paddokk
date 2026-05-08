@@ -5,6 +5,8 @@ using Paddokk.Core.Models.DTOs.User;
 namespace Paddokk.Core.Features.Users.Commands.UpdateUser;
 
 public record UpdateUserCommand(
+    string? FirstName,
+    string? LastName,
     string? DisplayName,
     string? Bio,
     string? AvatarUrl

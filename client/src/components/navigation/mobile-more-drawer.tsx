@@ -2,6 +2,7 @@ import { Drawer, Stack, Title, Group, Text, UnstyledButton } from '@mantine/core
 import { Link } from '@tanstack/react-router'
 import { navigationConfig } from '@/data/navigation/app-navigation'
 import type { NavItem } from '@/data/navigation/types'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const
 
@@ -12,10 +13,21 @@ interface MobileMoreDrawerProps {
 
 function DrawerNavItem({ item, onClose }: { item: NavItem; onClose: () => void }) {
   const Icon = item.icon
+  const { data: me } = useCurrentUser()
+
+  const resolvedHref =
+    typeof item.href === 'function'
+      ? me?.username
+        ? item.href({ username: me.username })
+        : undefined
+      : item.href
+
+  if (typeof item.href === 'function' && !resolvedHref) return null
+
   return (
     <UnstyledButton
       component={Link}
-      to={item.href!}
+      to={resolvedHref!}
       onClick={onClose}
       style={{
         padding: '12px 16px',

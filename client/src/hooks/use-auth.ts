@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   requestPasswordReset as requestPasswordResetApi,
   resetPassword,
@@ -22,6 +23,7 @@ import { useNotifications } from "@/integrations/mantine";
 export function useAuth() {
   const navigate = useNavigate();
   const notifications = useNotifications();
+  const queryClient = useQueryClient();
   const { data: session, isPending: isSessionLoading } = useSession();
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -69,11 +71,20 @@ export function useAuth() {
   /**
    * Register a new user
    */
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (
+    firstName: string,
+    lastName: string | undefined,
+    email: string,
+    password: string,
+  ) => {
     setIsRegistering(true);
     try {
+      const fullName = lastName?.trim()
+        ? `${firstName.trim()} ${lastName.trim()}`
+        : firstName.trim();
+
       const result = await signUp.email({
-        name,
+        name: fullName,
         email,
         password,
       });
@@ -116,8 +127,11 @@ export function useAuth() {
         message: "You've been signed out",
       });
 
-      // Navigate to landing page
-      navigate({ to: "/" });
+      // Navigate first so authenticated routes unmount their queries before
+      // we wipe the cache — otherwise the still-mounted observers would
+      // immediately refetch without a session and trigger 401s on the API.
+      await navigate({ to: "/" });
+      queryClient.clear();
 
       return { success: true };
     } catch (error) {

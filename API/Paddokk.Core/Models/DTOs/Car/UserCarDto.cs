@@ -4,6 +4,9 @@ public class UserCarDto
 {
     public required int Id { get; set; }
     public required string PrincipalId { get; set; }
+    public required string OwnerUsername { get; set; }
+    public required string Slug { get; set; }
+    public required bool IsPublic { get; set; }
 
     // Car Details
     public int? CarMakeId { get; set; }

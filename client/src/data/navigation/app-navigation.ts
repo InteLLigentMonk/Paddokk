@@ -16,6 +16,7 @@ import {
   Warehouse,
 } from "lucide-react";
 import type { NavConfig } from "./types";
+import { userCarsUrl, userJourneysUrl } from "@/lib/urls";
 
 export const navigationConfig: NavConfig = {
   me: [
@@ -38,14 +39,14 @@ export const navigationConfig: NavConfig = {
     {
       id: "me-journeys",
       label: "My Journeys",
-      href: "/me/journeys",
+      href: ({ username }) => userJourneysUrl(username),
       icon: MapPinHouse,
       group: "me",
     },
     {
       id: "me-cars",
       label: "My Garage",
-      href: "/me/cars",
+      href: ({ username }) => userCarsUrl(username),
       icon: Warehouse,
       group: "me",
     },
@@ -98,7 +99,7 @@ export const navigationConfig: NavConfig = {
     {
       id: "inventory",
       label: "Inventory List",
-      href: "/inventory",
+      href: "/me/inventory",
       icon: ClipboardList,
       group: "tools",
     },

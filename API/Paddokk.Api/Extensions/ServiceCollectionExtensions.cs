@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Paddokk.Api.OpenApi;
 using Paddokk.Api.Security;
 using Paddokk.Core.Behaviours;
+using Paddokk.Core.Common;
 using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 using Paddokk.Core.Features.Comments.Commands.CreateComment;
 using Paddokk.Core.Interfaces;
@@ -190,6 +191,8 @@ public static class ServiceCollectionExtensions
 
         // Register application services here
         services.AddSingleton<IHtmlSanitizationService, HtmlSanitizationService>();
+        services.AddSingleton<UsernameGenerator>();
+        services.AddSingleton<SlugGenerator>();
         services.AddScoped<IImageService, ImageService>();
 
         // Register application repositories here

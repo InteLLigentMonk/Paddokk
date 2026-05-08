@@ -10,9 +10,12 @@ public class JourneyConfiguration : IEntityTypeConfiguration<Journey>
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Title).HasMaxLength(200);
+        builder.Property(e => e.Slug).HasMaxLength(100).IsRequired();
         builder.Property(e => e.Description).HasMaxLength(1000);
         builder.Property(e => e.CoverImageUrl).HasMaxLength(500);
         builder.Property(e => e.IsPublic).HasDefaultValue(true);
+
+        builder.HasIndex(e => new { e.PrincipalId, e.Slug }).IsUnique();
 
         builder.HasOne(e => e.User)
             .WithMany(e => e.Journeys)

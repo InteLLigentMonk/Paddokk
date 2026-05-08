@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { Anchor, Button, PasswordInput, Stack, TextInput } from "@mantine/core";
+import { Anchor, Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { SocialLoginButtons } from "./social-login-buttons";
 import { AuthFormWrapper } from "./auth-form-wrapper";
@@ -20,7 +20,8 @@ export function SignupForm({
 
   const form = useForm({
     defaultValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -29,7 +30,12 @@ export function SignupForm({
       onChange: signupSchema,
     },
     onSubmit: async ({ value }) => {
-      await register(value.name, value.email, value.password);
+      await register(
+        value.firstName,
+        value.lastName || undefined,
+        value.email,
+        value.password,
+      );
     },
   });
 
@@ -63,30 +69,56 @@ export function SignupForm({
         <Stack gap="md">
           <SocialLoginButtons />
 
-          <form.Field
-            name="name"
-            validators={{
-              onChange: signupSchema.shape.name,
-            }}
-          >
-            {(field) => (
-              <TextInput
-                label="Name"
-                placeholder="Your name"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                error={
-                  field.state.meta.isTouched &&
-                  field.state.meta.errors.length > 0
-                    ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
-                    : undefined
-                }
-                disabled={isRegistering}
-                required
-              />
-            )}
-          </form.Field>
+          <Group grow align="flex-start">
+            <form.Field
+              name="firstName"
+              validators={{
+                onChange: signupSchema.shape.firstName,
+              }}
+            >
+              {(field) => (
+                <TextInput
+                  label="First name"
+                  placeholder="Your first name"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  error={
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors.length > 0
+                      ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                      : undefined
+                  }
+                  disabled={isRegistering}
+                  required
+                />
+              )}
+            </form.Field>
+
+            <form.Field
+              name="lastName"
+              validators={{
+                onChange: signupSchema.shape.lastName,
+              }}
+            >
+              {(field) => (
+                <TextInput
+                  label="Last name"
+                  placeholder="Your last name"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  error={
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors.length > 0
+                      ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                      : undefined
+                  }
+                  disabled={isRegistering}
+                />
+              )}
+            </form.Field>
+          </Group>
 
           <form.Field
             name="email"

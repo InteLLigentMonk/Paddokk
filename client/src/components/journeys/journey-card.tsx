@@ -89,6 +89,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
   const activityTier = Number(journey.activityTier);
   const journeyId = Number(journey.id);
   const isPublic = journey.isPublic;
+  const isOwner = !!journey.isOwner;
 
   const carName =
     journey.carNickname ||
@@ -148,8 +149,11 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       style={{ cursor: "pointer" }}
       onClick={() =>
         navigate({
-          to: "/journeys/$journeyId",
-          params: { journeyId: String(journey.id) },
+          to: "/users/$username/journeys/$slug",
+          params: {
+            username: journey.ownerUsername,
+            slug: journey.slug,
+          },
         })
       }
     >
@@ -210,6 +214,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
             </Text>
           </Stack>
 
+          {isOwner && (
           <Menu shadow="md" width={220} position="bottom-end">
             <Menu.Target>
               <ActionIcon
@@ -290,6 +295,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
+          )}
         </Group>
 
         <Group justify="space-between" wrap="nowrap" gap="sm">

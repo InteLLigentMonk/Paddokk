@@ -10,6 +10,10 @@ public class Journey
     [StringLength(200)]
     public string Title { get; set; } = string.Empty;
 
+    [Required]
+    [StringLength(100)]
+    public string Slug { get; set; } = string.Empty;
+
     [StringLength(1000)]
     public string? Description { get; set; }
 

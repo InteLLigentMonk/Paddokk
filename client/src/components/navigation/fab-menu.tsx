@@ -24,7 +24,7 @@ export function FABMenu({ onActionClick }: FABMenuProps) {
       if (canAdd) {
         openCreateJourneyModal();
       } else {
-        navigate({ to: "/subscription", search: {} });
+        navigate({ to: "/me/subscription", search: {} });
       }
     }
     onActionClick?.(actionId);

@@ -63,10 +63,25 @@ public static class DatabaseSeeder
 
     private static List<ApplicationUser> SeedUsers()
     {
+        var usedUsernames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        string GenerateUsername(string firstName, string lastName)
+        {
+            var baseName = $"{firstName}.{lastName}".ToLowerInvariant();
+            var candidate = baseName;
+            var suffix = 1;
+            while (!usedUsernames.Add(candidate))
+                candidate = $"{baseName}.{suffix++}";
+            return candidate;
+        }
+
         var faker = new Faker<ApplicationUser>("en")
             .RuleFor(u => u.Id, f => Guid.NewGuid().ToString())
-            .RuleFor(u => u.DisplayName, f => f.Internet.UserName())
-            .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.DisplayName))
+            .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+            .RuleFor(u => u.LastName, f => f.Name.LastName())
+            .RuleFor(u => u.Username, (f, u) => GenerateUsername(u.FirstName, u.LastName!))
+            .RuleFor(u => u.DisplayName, (f, u) => $"{u.FirstName} {u.LastName}")
+            .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
             .RuleFor(u => u.Bio, f => f.PickRandom(
                 "JDM enthusiast. Track days on weekends.",
                 "Building my R33 one part at a time.",
@@ -105,6 +120,23 @@ public static class DatabaseSeeder
             ("Widebody Project", "S14 with custom carbon wide-body kit.")
         };
 
+        var slugsByUser = new Dictionary<string, HashSet<string>>();
+        string AssignSlug(string userId, string seedText)
+        {
+            if (!slugsByUser.TryGetValue(userId, out var taken))
+                slugsByUser[userId] = taken = new HashSet<string>();
+
+            var baseSlug = string.Concat(seedText.ToLowerInvariant()
+                .Where(c => char.IsLetterOrDigit(c) || c == ' '))
+                .Trim()
+                .Replace(' ', '-');
+            if (string.IsNullOrEmpty(baseSlug)) baseSlug = "car";
+            var slug = baseSlug;
+            var n = 2;
+            while (!taken.Add(slug)) slug = $"{baseSlug}-{n++}";
+            return slug;
+        }
+
         foreach (var user in users)
         {
             var carCount = faker.Random.Int(2, 4);
@@ -118,13 +150,17 @@ public static class DatabaseSeeder
                 if (useCustomBuild)
                 {
                     var build = faker.PickRandom(customBuilds);
+                    var nickname = faker.PickRandom("The Beast", "Project X", "Daily Hack", "The Sleeper", null);
+                    var slugSeed = nickname ?? build.Item1;
                     car = new UserCar
                     {
                         PrincipalId = user.Id,
+                        Slug = AssignSlug(user.Id, slugSeed),
+                        IsPublic = faker.Random.Bool(0.85f),
                         IsCustomBuild = true,
                         CustomBuildName = build.Item1,
                         Description = build.Item2,
-                        Nickname = faker.PickRandom("The Beast", "Project X", "Daily Hack", "The Sleeper", null),
+                        Nickname = nickname,
                         Color = faker.PickRandom(colors),
                         PrimaryImageUrl = $"https://picsum.photos/seed/{faker.Random.AlphaNumeric(8)}/800/600",
                         IsPrimary = isFirst,
@@ -140,18 +176,23 @@ public static class DatabaseSeeder
                     var generation = model?.Generations.Any() == true
                         ? faker.PickRandom(model.Generations)
                         : null;
+                    var nickname = faker.PickRandom("DD", "Track Toy", "Project Car", "The Daily", "Beater", null);
+                    var year = generation != null
+                        ? faker.Random.Int(generation.StartYear, generation.EndYear ?? 2024)
+                        : faker.Random.Int(1990, 2023);
+                    var slugSeed = nickname ?? $"{make.Name} {model?.Name} {year}";
 
                     car = new UserCar
                     {
                         PrincipalId = user.Id,
+                        Slug = AssignSlug(user.Id, slugSeed),
+                        IsPublic = faker.Random.Bool(0.85f),
                         CarMakeId = make.Id,
                         CarModelId = model?.Id,
                         CarGenerationId = generation?.Id,
-                        Year = generation != null
-                            ? faker.Random.Int(generation.StartYear, generation.EndYear ?? 2024)
-                            : faker.Random.Int(1990, 2023),
+                        Year = year,
                         IsCustomBuild = false,
-                        Nickname = faker.PickRandom("DD", "Track Toy", "Project Car", "The Daily", "Beater", null),
+                        Nickname = nickname,
                         Color = faker.PickRandom(colors),
                         Description = faker.PickRandom(
                             "Stage 2 tune, full exhaust, coilovers.",
@@ -181,6 +222,22 @@ public static class DatabaseSeeder
     {
         var faker = new Faker("en");
         var journeys = new List<Journey>();
+        var slugsByUser = new Dictionary<string, HashSet<string>>();
+
+        string AssignJourneySlug(string userId, string title)
+        {
+            if (!slugsByUser.TryGetValue(userId, out var taken))
+                slugsByUser[userId] = taken = new HashSet<string>();
+            var baseSlug = string.Concat(title.ToLowerInvariant()
+                .Where(c => char.IsLetterOrDigit(c) || c == ' '))
+                .Trim()
+                .Replace(' ', '-');
+            if (string.IsNullOrEmpty(baseSlug)) baseSlug = "journey";
+            var slug = baseSlug;
+            var n = 2;
+            while (!taken.Add(slug)) slug = $"{baseSlug}-{n++}";
+            return slug;
+        }
 
         var titles = new[]
         {
@@ -222,9 +279,11 @@ public static class DatabaseSeeder
                 var status = faker.PickRandom(statuses);
                 var createdAt = faker.Date.Past(1).ToUniversalTime();
 
+                var title = faker.PickRandom(titles);
                 journeys.Add(new Journey
                 {
-                    Title = faker.PickRandom(titles),
+                    Title = title,
+                    Slug = AssignJourneySlug(user.Id, title),
                     Description = faker.PickRandom(descriptions),
                     Category = faker.PickRandom(
                         JourneyCategory.BuildAndMods, JourneyCategory.Restoration,

@@ -9,11 +9,15 @@ interface PageBreadcrumbsProps {
 export function PageBreadcrumbs({ current }: PageBreadcrumbsProps) {
   const matches = useMatches();
   const parentCrumbs = matches
-    .filter((m) => typeof m.staticData?.breadcrumb === "string")
-    .map((m) => ({
-      label: m.staticData.breadcrumb as string,
-      pathname: m.pathname,
-    }));
+    .map((m) => {
+      const raw = m.staticData?.breadcrumb;
+      if (typeof raw === "string") return { label: raw, pathname: m.pathname };
+      if (typeof raw === "function") {
+        return { label: raw(m.loaderData), pathname: m.pathname };
+      }
+      return null;
+    })
+    .filter((c): c is { label: string; pathname: string } => c !== null);
 
   const crumbs = current
     ? [...parentCrumbs, { label: current, pathname: "" }]

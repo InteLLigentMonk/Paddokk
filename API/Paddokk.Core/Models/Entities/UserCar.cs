@@ -8,6 +8,12 @@ public class UserCar
     public string PrincipalId { get; set; } = string.Empty;
     public ApplicationUser User { get; set; } = null!;
 
+    [Required]
+    [StringLength(100)]
+    public string Slug { get; set; } = string.Empty;
+
+    public bool IsPublic { get; set; } = true;
+
     // Car Details — null when IsCustomBuild = true
     public int? CarMakeId { get; set; }
     public CarMake? CarMake { get; set; }

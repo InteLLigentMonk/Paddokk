@@ -51,8 +51,17 @@ namespace Paddokk.Data.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
@@ -66,9 +75,17 @@ namespace Paddokk.Data.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DefaultActiveJourneyId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });
@@ -451,6 +468,11 @@ namespace Paddokk.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -470,9 +492,10 @@ namespace Paddokk.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PrincipalId");
-
                     b.HasIndex("UserCarId");
+
+                    b.HasIndex("PrincipalId", "Slug")
+                        .IsUnique();
 
                     b.ToTable("Journeys");
                 });
@@ -690,6 +713,11 @@ namespace Paddokk.Data.Migrations
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsPublic")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Nickname")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -703,6 +731,11 @@ namespace Paddokk.Data.Migrations
 
                     b.Property<string>("SearchText")
                         .HasColumnType("text");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -718,9 +751,10 @@ namespace Paddokk.Data.Migrations
 
                     b.HasIndex("CarModelId");
 
-                    b.HasIndex("PrincipalId");
-
                     b.HasIndex("SearchText");
+
+                    b.HasIndex("PrincipalId", "Slug")
+                        .IsUnique();
 
                     b.ToTable("UserCars");
                 });

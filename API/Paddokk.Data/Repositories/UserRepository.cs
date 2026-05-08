@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.Entities;
 
@@ -22,6 +22,25 @@ public class UserRepository(PaddokkDbContext db) : IUserRepository
             .Include(u => u.Cars)
             .Include(u => u.Journeys)
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+    }
+
+    public async Task<ApplicationUser?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _db.Users
+            .Include(u => u.Cars)
+            .Include(u => u.Journeys)
+            .FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
+    }
+
+    public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _db.Users.AnyAsync(u => u.Username == username, cancellationToken);
+    }
+
+    public async Task CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
+    {
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)

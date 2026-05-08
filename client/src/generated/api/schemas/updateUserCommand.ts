@@ -8,6 +8,10 @@
 
 export interface UpdateUserCommand {
   /** @nullable */
+  firstName: string | null;
+  /** @nullable */
+  lastName: string | null;
+  /** @nullable */
   displayName: string | null;
   /** @nullable */
   bio: string | null;

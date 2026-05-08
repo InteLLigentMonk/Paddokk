@@ -14,7 +14,8 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
 import { notify } from "@/integrations/mantine";
 
-export const Route = createFileRoute("/_app/subscription")({
+export const Route = createFileRoute("/_app/me/subscription")({
+  staticData: { breadcrumb: "Subscription" },
   validateSearch: (search?): { reason?: string; from?: string } => ({
     reason: (search?.reason as string) ?? undefined,
     from: (search?.from as string) ?? undefined,
@@ -44,7 +45,7 @@ function SubscriptionPage() {
         leftSection={<ArrowLeft size={16} />}
         mb="xl"
       >
-        Back to My Cars
+        Back
       </Button>
 
       <Stack gap="xl">

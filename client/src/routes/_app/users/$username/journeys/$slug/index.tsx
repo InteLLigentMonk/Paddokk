@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import {
   Container,
   Stack,
@@ -12,15 +12,19 @@ import {
 } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { AlertCircle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  journeyDetailQueryOptions,
-  useJourneyPostsInfinite,
-} from "@/hooks/use-journey-detail";
+import { useQuery, queryOptions } from "@tanstack/react-query";
+import { useJourneyPostsInfinite } from "@/hooks/use-journey-detail";
 import { JourneyDetailHeader } from "@/components/journeys/journey-detail-header";
 import { JourneyCreatePostBar } from "@/components/journeys/journey-create-post-bar";
 import { JourneyPostCard } from "@/components/journeys/journey-post-card";
 import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
+import { getUserJourneyBySlugFn } from "@/lib/api/users.server";
+
+const journeyBySlugQueryOptions = (username: string, slug: string) =>
+  queryOptions({
+    queryKey: ["journey-by-slug", username, slug],
+    queryFn: () => getUserJourneyBySlugFn({ data: { username, slug } }),
+  });
 
 function PostsLoadingSkeleton() {
   return (
@@ -36,21 +40,27 @@ function PostsLoadingSkeleton() {
   );
 }
 
-export const Route = createFileRoute("/_app/journeys/$journeyId/")({
-  loader: ({ params, context: { queryClient } }) =>
-    queryClient.ensureQueryData(
-      journeyDetailQueryOptions(Number(params.journeyId)),
-    ),
+export const Route = createFileRoute("/_app/users/$username/journeys/$slug/")({
+  loader: async ({ params, context: { queryClient } }) => {
+    try {
+      await queryClient.ensureQueryData(
+        journeyBySlugQueryOptions(params.username, params.slug),
+      );
+    } catch {
+      throw notFound();
+    }
+  },
   component: JourneyDetailPage,
 });
 
 function JourneyDetailPage() {
-  const { journeyId } = Route.useParams();
-  const id = Number(journeyId);
+  const { username, slug } = Route.useParams();
 
   const { data: journey, error: journeyError } = useQuery(
-    journeyDetailQueryOptions(id),
+    journeyBySlugQueryOptions(username, slug),
   );
+
+  const journeyId = Number(journey?.id ?? 0);
 
   const {
     data: postsData,
@@ -59,7 +69,7 @@ function JourneyDetailPage() {
     fetchNextPage,
     hasNextPage,
     error: postsError,
-  } = useJourneyPostsInfinite(id);
+  } = useJourneyPostsInfinite(journeyId);
 
   const { ref, entry } = useIntersection({ root: null, threshold: 0.1 });
 
