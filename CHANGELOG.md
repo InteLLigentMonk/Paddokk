@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.18.2...v0.19.0) (2026-05-08)
+
+
+### Features
+
+* **auth:** implement user identity with slug-based URLs and privacy controls ([#95](https://github.com/InteLLigentMonk/Paddokk/issues/95)) ([3d5a0f6](https://github.com/InteLLigentMonk/Paddokk/commit/3d5a0f6f89858c5c483d8d8316640265a9c022cb))
+
 ## [0.18.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.18.1...v0.18.2) (2026-05-07)
 
 
