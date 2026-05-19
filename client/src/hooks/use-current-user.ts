@@ -1,21 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
-import { getCurrentUserFn } from "@/lib/api/users.server";
+import { currentUserQueryOptions } from "@/lib/api/users.queries";
 
 /**
  * Resolves the current user's full profile (including username) from the API.
- * The cache key is scoped by BetterAuth session user id so the query refetches
- * automatically when a different user logs in — otherwise the previous user's
- * profile would still serve from cache.
+ * Shares the cache key with route loaders that use currentUserQueryOptions,
+ * so a hover-preload and a component-mount don't double-fetch. Logout calls
+ * queryClient.clear(), so cross-user cache contamination is handled there.
  */
 export function useCurrentUser() {
   const { data: session } = useSession();
-  const userId = session?.user?.id ?? null;
-
   return useQuery({
-    queryKey: ["current-user", userId],
-    queryFn: () => getCurrentUserFn(),
-    enabled: !!userId,
-    staleTime: 5 * 60 * 1000,
+    ...currentUserQueryOptions(),
+    enabled: !!session?.user?.id,
   });
 }

@@ -12,19 +12,13 @@ import {
 } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { AlertCircle } from "lucide-react";
-import { useQuery, queryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useJourneyPostsInfinite } from "@/hooks/use-journey-detail";
 import { JourneyDetailHeader } from "@/components/journeys/journey-detail-header";
 import { JourneyCreatePostBar } from "@/components/journeys/journey-create-post-bar";
 import { JourneyPostCard } from "@/components/journeys/journey-post-card";
 import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
-import { getUserJourneyBySlugFn } from "@/lib/api/users.server";
-
-const journeyBySlugQueryOptions = (username: string, slug: string) =>
-  queryOptions({
-    queryKey: ["journey-by-slug", username, slug],
-    queryFn: () => getUserJourneyBySlugFn({ data: { username, slug } }),
-  });
+import { userJourneyBySlugQueryOptions } from "@/lib/api/users.queries";
 
 function PostsLoadingSkeleton() {
   return (
@@ -44,7 +38,7 @@ export const Route = createFileRoute("/_app/users/$username/journeys/$slug/")({
   loader: async ({ params, context: { queryClient } }) => {
     try {
       await queryClient.ensureQueryData(
-        journeyBySlugQueryOptions(params.username, params.slug),
+        userJourneyBySlugQueryOptions(params.username, params.slug),
       );
     } catch {
       throw notFound();
@@ -57,7 +51,7 @@ function JourneyDetailPage() {
   const { username, slug } = Route.useParams();
 
   const { data: journey, error: journeyError } = useQuery(
-    journeyBySlugQueryOptions(username, slug),
+    userJourneyBySlugQueryOptions(username, slug),
   );
 
   const journeyId = Number(journey?.id ?? 0);

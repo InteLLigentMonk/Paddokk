@@ -26,6 +26,8 @@ export const getRouter = () => {
     },
 
     defaultPreload: "intent",
+    defaultPreloadStaleTime: 5 * 60 * 1000,
+    defaultStaleTime: 30 * 1000,
   });
 
   setupRouterSsrQueryIntegration({

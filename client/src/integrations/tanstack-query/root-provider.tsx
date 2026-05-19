@@ -8,6 +8,7 @@ import {
   createMutationErrorHandler,
   createQueryErrorHandler,
 } from "./error-handler";
+import { mobileQueryDefaults } from "@/lib/api/query-defaults";
 
 export function getContext() {
   const queryClient = new QueryClient({
@@ -17,6 +18,9 @@ export function getContext() {
     mutationCache: new MutationCache({
       onError: createMutationErrorHandler(),
     }),
+    defaultOptions: {
+      queries: mobileQueryDefaults,
+    },
   });
   return {
     queryClient,

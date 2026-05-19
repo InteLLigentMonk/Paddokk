@@ -18,7 +18,7 @@ import {
   NotificationsContainer,
 } from "../integrations/mantine";
 
-import { getAuthSession } from "../lib/auth-session.server";
+import { authSessionQueryOptions } from "../lib/api/auth.queries";
 import type { QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
@@ -35,8 +35,10 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  beforeLoad: async () => {
-    const session = await getAuthSession();
+  beforeLoad: async ({ context: { queryClient } }) => {
+    const session = await queryClient.ensureQueryData(
+      authSessionQueryOptions(),
+    );
 
     return {
       auth: {

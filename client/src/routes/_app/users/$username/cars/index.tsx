@@ -1,127 +1,134 @@
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import {
   Container,
   Stack,
   Title,
-  Alert,
-  SimpleGrid,
-  Skeleton,
   Text,
-  Card,
-  AspectRatio,
-  Image,
-  Badge,
+  Alert,
   Group,
+  Pagination,
 } from "@mantine/core";
-import { AlertCircle, EyeOff } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useStore } from "@tanstack/react-store";
+import { AlertCircle } from "lucide-react";
 import {
-  getUserByUsernameFn,
-  getUserCarsByUsernameFn,
-} from "@/lib/api/users.server";
-import type { UserCarDto } from "@/generated/api/schemas";
+  userByUsernameQueryOptions,
+  userCarsByUsernameQueryOptions,
+} from "@/lib/api/users.queries";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import {
+  carsPageStore,
+  setSortBy,
+  openAddCarModal,
+} from "@/lib/stores/cars-page-store";
+import { sortCars } from "@/lib/utils/sort-cars";
+import { CarsHeader } from "@/components/cars/cars-header";
+import { CarsSortControl } from "@/components/cars/cars-sort-control";
+import { CarsGrid } from "@/components/cars/cars-grid";
+import { AddCarModal } from "@/components/cars/add-car-modal";
+import { EditCarModal } from "@/components/cars/edit-car-modal";
+import { DeleteCarConfirm } from "@/components/cars/delete-car-confirm";
 
 export const Route = createFileRoute("/_app/users/$username/cars/")({
   loader: async ({ params, context: { queryClient } }) => {
     try {
-      await getUserByUsernameFn({ data: { username: params.username } });
+      await queryClient.ensureQueryData(
+        userByUsernameQueryOptions(params.username),
+      );
     } catch {
       throw notFound();
     }
-    await queryClient.ensureQueryData({
-      queryKey: ["user-cars-by-username", params.username],
-      queryFn: () =>
-        getUserCarsByUsernameFn({ data: { username: params.username } }),
-    });
+    await queryClient.ensureQueryData(
+      userCarsByUsernameQueryOptions(params.username),
+    );
   },
   component: UserCarsPage,
 });
 
+const PAGE_SIZE = 12;
+
 function UserCarsPage() {
   const { username } = Route.useParams();
-  const { data: cars, isLoading, error } = useQuery({
-    queryKey: ["user-cars-by-username", username],
-    queryFn: () => getUserCarsByUsernameFn({ data: { username } }),
-  });
+  const { data: currentUser } = useCurrentUser();
+  const isOwner = currentUser?.username === username;
+
+  const [page, setPage] = useState(1);
+
+  const {
+    data: cars,
+    isLoading,
+    error,
+  } = useQuery(userCarsByUsernameQueryOptions(username));
+
+  const carList = cars ?? [];
+  const sortBy = useStore(carsPageStore, (state) => state.sortBy);
+
+  const sortedCars = useMemo(() => sortCars(carList, sortBy), [carList, sortBy]);
+
+  const paginatedCars = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return sortedCars.slice(start, start + PAGE_SIZE);
+  }, [sortedCars, page]);
+
+  const totalPages = Math.ceil(sortedCars.length / PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [sortBy, carList.length]);
 
   return (
     <Container size="lg" py="xl">
-      <Stack gap="xl">
-        <Title order={2}>@{username} — Cars</Title>
+      <Stack gap="sm">
+        {isOwner ? (
+          <CarsHeader />
+        ) : (
+          <Stack gap={4}>
+            <Title order={2}>@{username} — Cars</Title>
+            <Text c="dimmed" size="sm">
+              Cars shared by @{username}
+            </Text>
+          </Stack>
+        )}
 
         {error ? (
-          <Alert icon={<AlertCircle size={16} />} title="Fel" color="red">
-            Kunde inte ladda bilar. Försök igen.
+          <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
+            Failed to load cars. Please try again.
           </Alert>
-        ) : isLoading ? (
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} height={300} radius="md" />
-            ))}
-          </SimpleGrid>
-        ) : !cars || cars.length === 0 ? (
-          <Text c="dimmed">No cars to show.</Text>
         ) : (
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-            {cars.map((car) => (
-              <CarTile key={car.id} car={car} />
-            ))}
-          </SimpleGrid>
+          <>
+            {carList.length > 0 && (
+              <Group justify="space-between" align="flex-end" wrap="wrap">
+                <CarsSortControl value={sortBy} onChange={setSortBy} />
+              </Group>
+            )}
+
+            <CarsGrid
+              cars={paginatedCars}
+              isLoading={isLoading}
+              onAddCar={openAddCarModal}
+            />
+
+            {totalPages > 1 && (
+              <Group justify="center" mt="xl">
+                <Pagination
+                  total={totalPages}
+                  value={page}
+                  onChange={setPage}
+                />
+              </Group>
+            )}
+          </>
         )}
       </Stack>
+
+      {isOwner && (
+        <>
+          <AddCarModal />
+          <EditCarModal />
+          <DeleteCarConfirm />
+        </>
+      )}
     </Container>
-  );
-}
-
-function CarTile({ car }: { car: UserCarDto }) {
-  const navigate = useNavigate();
-  const carName =
-    car.nickname ||
-    [car.carMakeName, car.carModelName, car.year].filter(Boolean).join(" ") ||
-    car.customBuildName ||
-    "Car";
-
-  return (
-    <Card
-      shadow="sm"
-      padding="sm"
-      radius="md"
-      withBorder
-      style={{ cursor: "pointer" }}
-      onClick={() =>
-        navigate({
-          to: "/users/$username/cars/$slug",
-          params: { username: car.ownerUsername, slug: car.slug },
-        })
-      }
-    >
-      <Card.Section>
-        <AspectRatio ratio={16 / 9}>
-          <Image
-            src={
-              car.primaryImageUrl ||
-              "https://placehold.co/600x400/e9ecef/495057?text=No+Image"
-            }
-            alt={carName}
-            fit="cover"
-          />
-        </AspectRatio>
-      </Card.Section>
-      <Stack gap={4} mt="sm">
-        <Group justify="space-between">
-          <Text fw={600} lineClamp={1}>{carName}</Text>
-          {!car.isPublic && (
-            <Badge size="sm" color="gray" leftSection={<EyeOff size={10} />}>
-              Private
-            </Badge>
-          )}
-        </Group>
-        {car.description && (
-          <Text size="sm" c="dimmed" lineClamp={2}>
-            {car.description}
-          </Text>
-        )}
-      </Stack>
-    </Card>
   );
 }

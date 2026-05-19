@@ -26,7 +26,12 @@ export function DeleteCarConfirm() {
     },
     onSuccess: () => {
       notifications.success({ message: 'Car deleted successfully' })
-      queryClient.invalidateQueries({ queryKey: ['user-cars'] })
+      queryClient.invalidateQueries({
+        predicate: (q) => {
+          const key = q.queryKey[0]
+          return key === 'user-cars' || key === 'user-cars-by-username'
+        },
+      })
       queryClient.invalidateQueries({ queryKey: ['car-limits'] })
       closeDeleteCarConfirm()
     },

@@ -97,7 +97,12 @@ export function CarForm({
     mutationFn: (payload: CreateUserCarCommand) =>
       userCarsCreateUserCar(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-cars"] });
+      queryClient.invalidateQueries({
+        predicate: (q) => {
+          const key = q.queryKey[0];
+          return key === "user-cars" || key === "user-cars-by-username";
+        },
+      });
       queryClient.invalidateQueries({ queryKey: ["car-limits"] });
       notifications.success({ message: "Car added successfully!" });
       onSuccess();
@@ -129,7 +134,12 @@ export function CarForm({
         isPrimary,
       } as import("@/generated/api/schemas").UpdateUserCarCommand),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-cars"] });
+      queryClient.invalidateQueries({
+        predicate: (q) => {
+          const key = q.queryKey[0];
+          return key === "user-cars" || key === "user-cars-by-username";
+        },
+      });
       queryClient.invalidateQueries({ queryKey: ["car-limits"] });
       notifications.success({ message: "Car updated successfully!" });
       onSuccess();

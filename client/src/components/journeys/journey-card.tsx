@@ -113,7 +113,12 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
         },
       }),
     onSuccess: (_, vars) => {
-      queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
+      queryClient.invalidateQueries({
+        predicate: (q) => {
+          const key = q.queryKey[0];
+          return key === "user-journeys" || key === "user-journeys-by-username";
+        },
+      });
       queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       const defaultChanged =
         isDefault && vars.newStatus !== undefined && Number(vars.newStatus) !== STATUS_ACTIVE;
@@ -131,7 +136,12 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
   const setDefaultMutation = useMutation({
     mutationFn: () => setDefaultActiveJourneyFn({ data: { journeyId } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
+      queryClient.invalidateQueries({
+        predicate: (q) => {
+          const key = q.queryKey[0];
+          return key === "user-journeys" || key === "user-journeys-by-username";
+        },
+      });
       queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       notifications.success({ message: "Aktiv resa uppdaterad" });
     },
