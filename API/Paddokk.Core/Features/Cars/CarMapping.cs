@@ -38,6 +38,7 @@ internal static class CarMapping
         Id = car.Id,
         PrincipalId = car.PrincipalId,
         OwnerUsername = car.User?.Username ?? string.Empty,
+        OwnerAvatarUrl = car.User?.AvatarUrl,
         Slug = car.Slug,
         IsPublic = car.IsPublic,
         CarMakeId = car.CarMakeId,

@@ -11,6 +11,8 @@ export interface UserCarDto {
   id: number | string;
   principalId: string;
   ownerUsername: string;
+  /** @nullable */
+  ownerAvatarUrl?: string | null;
   slug: string;
   isPublic: boolean;
   /**

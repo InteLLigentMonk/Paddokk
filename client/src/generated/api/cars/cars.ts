@@ -13,9 +13,11 @@ import type {
   CarMakesResponse,
   CarModelDto,
   CarModelsResponse,
+  CarsBrowseStatsParams,
   CarsSearchCarsParams,
-  UserCarDto,
-  UserCarsResponse
+  GetCarsBrowseStatsResponse,
+  PagedUserCarsResponse,
+  UserCarDto
 } from '.././schemas';
 
 import { apiFetcher } from '../../../lib/api/client';
@@ -345,10 +347,10 @@ export const carsGetCar = async (carId: number, options?: RequestInit): Promise<
 
 
 /**
- * @summary Full-text search across all cars on the platform
+ * @summary Trigram fuzzy search across all public cars
  */
 export type carsSearchCarsResponse200 = {
-  data: UserCarsResponse
+  data: PagedUserCarsResponse
   status: 200
 }
 
@@ -384,6 +386,55 @@ export const getCarsSearchCarsUrl = (params?: CarsSearchCarsParams,) => {
 export const carsSearchCars = async (params?: CarsSearchCarsParams, options?: RequestInit): Promise<carsSearchCarsResponse> => {
   
   return apiFetcher<carsSearchCarsResponse>(getCarsSearchCarsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Returns aggregate stats for the browse page, filtered by the same terms as search
+ */
+export type carsBrowseStatsResponse200 = {
+  data: GetCarsBrowseStatsResponse
+  status: 200
+}
+
+export type carsBrowseStatsResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type carsBrowseStatsResponseSuccess = (carsBrowseStatsResponse200) & {
+  headers: Headers;
+};
+export type carsBrowseStatsResponseError = (carsBrowseStatsResponse500) & {
+  headers: Headers;
+};
+
+export type carsBrowseStatsResponse = (carsBrowseStatsResponseSuccess | carsBrowseStatsResponseError)
+
+export const getCarsBrowseStatsUrl = (params?: CarsBrowseStatsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/Cars/browse-stats?${stringifiedParams}` : `/api/v1/Cars/browse-stats`
+}
+
+export const carsBrowseStats = async (params?: CarsBrowseStatsParams, options?: RequestInit): Promise<carsBrowseStatsResponse> => {
+  
+  return apiFetcher<carsBrowseStatsResponse>(getCarsBrowseStatsUrl(params),
   {      
     ...options,
     method: 'GET'

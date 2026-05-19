@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Features.Cars.Queries.GetCarsBrowseStats;
+using Paddokk.Core.Features.Cars.Queries.SearchCars;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.Entities;
 
@@ -225,11 +227,33 @@ public class CarRepository : ICarRepository
         await _db.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<UserCar>> SearchCarsAsync(string query, int page, int pageSize, CancellationToken cancellationToken)
+    public async Task<(List<UserCar> Cars, int Total)> SearchCarsAsync(
+        IReadOnlyList<string> terms,
+        bool? isPublic,
+        CarSearchSort sort,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken)
     {
-        var pattern = $"%{query.Trim()}%";
+        var query = BuildSearchQuery(terms, isPublic);
 
-        return await _db.UserCars
+        var total = await query.CountAsync(cancellationToken);
+
+        IOrderedQueryable<UserCar> ordered = sort switch
+        {
+            CarSearchSort.Relevance when terms.Count > 0 =>
+                query.OrderBy(c => EF.Functions.TrigramsSimilarityDistance(c.SearchText!, terms[0]))
+                     .ThenByDescending(c => c.CreatedAt),
+            CarSearchSort.MostLiked =>
+                query.OrderByDescending(c => c.Likes.Count)
+                     .ThenByDescending(c => c.CreatedAt),
+            CarSearchSort.MostJourneys =>
+                query.OrderByDescending(c => c.Journeys.Count)
+                     .ThenByDescending(c => c.CreatedAt),
+            _ => query.OrderByDescending(c => c.CreatedAt)
+        };
+
+        var cars = await ordered
             .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
@@ -237,12 +261,46 @@ public class CarRepository : ICarRepository
             .Include(c => c.Journeys)
             .Include(c => c.Likes)
             .Include(c => c.Subscriptions)
-            .Where(c => c.IsActive &&
-                c.SearchText != null &&
-                EF.Functions.ILike(c.SearchText, pattern))
-            .OrderByDescending(c => c.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return (cars, total);
+    }
+
+    public async Task<GetCarsBrowseStatsResponse> GetBrowseStatsAsync(
+        IReadOnlyList<string> terms,
+        bool? isPublic,
+        CancellationToken cancellationToken)
+    {
+        var query = BuildSearchQuery(terms, isPublic);
+
+        return await query
+            .GroupBy(_ => 1)
+            .Select(g => new GetCarsBrowseStatsResponse
+            {
+                Cars = g.Count(),
+                Makes = g.Select(c => c.CarMakeId).Distinct().Count(),
+                Owners = g.Select(c => c.PrincipalId).Distinct().Count(),
+                Journeys = g.Sum(c => c.Journeys.Count)
+            })
+            .FirstOrDefaultAsync(cancellationToken) ?? new GetCarsBrowseStatsResponse();
+    }
+
+    private IQueryable<UserCar> BuildSearchQuery(IReadOnlyList<string> terms, bool? isPublic)
+    {
+        var query = _db.UserCars.Where(c => c.IsActive);
+
+        if (isPublic.HasValue)
+            query = query.Where(c => c.IsPublic == isPublic.Value);
+
+        foreach (var term in terms.Where(t => !string.IsNullOrWhiteSpace(t)))
+        {
+            var captured = term;
+            query = query.Where(c => c.SearchText != null &&
+                EF.Functions.TrigramsSimilarity(c.SearchText, captured) >= 0.2);
+        }
+
+        return query;
     }
 }
