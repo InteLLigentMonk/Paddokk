@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.19.1...v0.20.0) (2026-05-19)
+
+
+### Features
+
+* **journeys:** link author and car avatars to their pages ([#99](https://github.com/InteLLigentMonk/Paddokk/issues/99)) ([06e8447](https://github.com/InteLLigentMonk/Paddokk/commit/06e844765da45617fe4598970b6d262207a19ef7))
+
 ## [0.19.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.19.0...v0.19.1) (2026-05-19)
 
 
