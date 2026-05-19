@@ -12,6 +12,7 @@ export interface PostCommentDto {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   journeyPostId: number | string;
   authorId: string;
+  userUsername: string;
   userDisplayName: string;
   /** @nullable */
   userAvatarUrl?: string | null;

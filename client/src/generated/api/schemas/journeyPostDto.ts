@@ -13,6 +13,7 @@ export interface JourneyPostDto {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   journeyId: number | string;
   authorId: string;
+  userUsername: string;
   userDisplayName: string;
   /** @nullable */
   userAvatarUrl?: string | null;

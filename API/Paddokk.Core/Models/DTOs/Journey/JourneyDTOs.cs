@@ -21,6 +21,7 @@ public class JourneyDto
 
     // Car Info
     public required int UserCarId { get; set; }
+    public required string CarSlug { get; set; }
     public string? CarMakeName { get; set; }
     public string? CarModelName { get; set; }
     public string? CarGenerationName { get; set; }

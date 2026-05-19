@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://localhost:7015/"
+      "url": "http://localhost:5037/"
     }
   ],
   "paths": {
@@ -6609,6 +6609,7 @@
           "ownerUsername",
           "userDisplayName",
           "userCarId",
+          "carSlug",
           "postCount",
           "subscriberCount",
           "likeCount",
@@ -6674,6 +6675,9 @@
               "string"
             ],
             "format": "int32"
+          },
+          "carSlug": {
+            "type": "string"
           },
           "carMakeName": {
             "type": [
@@ -6795,6 +6799,7 @@
           "id",
           "journeyId",
           "authorId",
+          "userUsername",
           "userDisplayName",
           "images",
           "commentCount",
@@ -6822,6 +6827,9 @@
             "format": "int32"
           },
           "authorId": {
+            "type": "string"
+          },
+          "userUsername": {
             "type": "string"
           },
           "userDisplayName": {
@@ -6976,6 +6984,7 @@
           "id",
           "journeyPostId",
           "authorId",
+          "userUsername",
           "userDisplayName",
           "content",
           "createdAt",
@@ -7004,6 +7013,9 @@
             "format": "int32"
           },
           "authorId": {
+            "type": "string"
+          },
+          "userUsername": {
             "type": "string"
           },
           "userDisplayName": {

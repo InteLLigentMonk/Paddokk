@@ -26,6 +26,7 @@ internal static class JourneyMapping
             UserAvatarUrl = journey.User.AvatarUrl,
 
             UserCarId = journey.UserCarId,
+            CarSlug = journey.UserCar.Slug,
             CarMakeName = journey.UserCar.CarMake?.Name,
             CarModelName = journey.UserCar.CarModel?.Name,
             CarGenerationName = journey.UserCar.CarGeneration?.Name,
@@ -79,6 +80,7 @@ internal static class JourneyMapping
             Id = post.Id,
             JourneyId = post.JourneyId,
             AuthorId = post.AuthorId,
+            UserUsername = post.Author.Username,
             UserDisplayName = post.Author.DisplayName,
             UserAvatarUrl = post.Author.AvatarUrl,
             TextContent = post.TextContent,
