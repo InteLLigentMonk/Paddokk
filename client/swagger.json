@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5037/"
+      "url": "https://localhost:7015/"
     }
   ],
   "paths": {
@@ -1065,14 +1065,32 @@
         "tags": [
           "Cars"
         ],
-        "summary": "Full-text search across all cars on the platform",
+        "summary": "Trigram fuzzy search across all public cars",
         "operationId": "Cars_SearchCars",
         "parameters": [
           {
-            "name": "q",
+            "name": "terms",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "isPublic",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "$ref": "#/components/schemas/CarSearchSort"
             }
           },
           {
@@ -1098,7 +1116,7 @@
                 "string"
               ],
               "format": "int32",
-              "default": 20
+              "default": 24
             }
           }
         ],
@@ -1108,17 +1126,78 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserCarsResponse"
+                  "$ref": "#/components/schemas/PagedUserCarsResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserCarsResponse"
+                  "$ref": "#/components/schemas/PagedUserCarsResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserCarsResponse"
+                  "$ref": "#/components/schemas/PagedUserCarsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
+    },
+    "/api/v1/Cars/browse-stats": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Returns aggregate stats for the browse page, filtered by the same terms as search",
+        "operationId": "Cars_BrowseStats",
+        "parameters": [
+          {
+            "name": "terms",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "isPublic",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCarsBrowseStatsResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCarsBrowseStatsResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCarsBrowseStatsResponse"
                 }
               }
             }
@@ -6086,6 +6165,9 @@
           }
         }
       },
+      "CarSearchSort": {
+        "type": "integer"
+      },
       "CommentsPagedResponse": {
         "required": [
           "comments",
@@ -6475,6 +6557,43 @@
           },
           "imageUrl": {
             "type": "string"
+          }
+        }
+      },
+      "GetCarsBrowseStatsResponse": {
+        "type": "object",
+        "properties": {
+          "cars": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "makes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "owners": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "journeys": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -6979,6 +7098,33 @@
       "JourneyStatus": {
         "type": "integer"
       },
+      "PagedUserCarsResponse": {
+        "required": [
+          "cars",
+          "totalCount",
+          "hasMore"
+        ],
+        "type": "object",
+        "properties": {
+          "cars": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserCarDto"
+            }
+          },
+          "totalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
       "PostCommentDto": {
         "required": [
           "id",
@@ -7341,6 +7487,12 @@
           },
           "ownerUsername": {
             "type": "string"
+          },
+          "ownerAvatarUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "slug": {
             "type": "string"

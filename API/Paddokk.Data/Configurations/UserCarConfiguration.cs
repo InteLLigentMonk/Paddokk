@@ -41,7 +41,6 @@ public class UserCarConfiguration : IEntityTypeConfiguration<UserCar>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // SearchText is indexed for ILIKE-based full-text search
-        builder.HasIndex(e => e.SearchText);
+        // GIN trigram index is added via raw SQL migration (gin_trgm_ops, not expressible in EF fluent API)
     }
 }

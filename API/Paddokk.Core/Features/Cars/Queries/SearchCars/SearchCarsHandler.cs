@@ -5,23 +5,27 @@ using Paddokk.Core.Models.DTOs.Car;
 
 namespace Paddokk.Core.Features.Cars.Queries.SearchCars;
 
-public sealed class SearchCarsHandler(ICarRepository carRepository)
-    : IRequestHandler<SearchCarsQuery, Result<UserCarsResponse>>
+public sealed class SearchCarsHandler(ICarRepository carRepository, IActorResolver actor)
+    : IRequestHandler<SearchCarsQuery, Result<PagedUserCarsResponse>>
 {
-    public async Task<Result<UserCarsResponse>> Handle(SearchCarsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedUserCarsResponse>> Handle(SearchCarsQuery request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Query))
-            return Result<UserCarsResponse>.Failure(Error.Validation("Search query cannot be empty"));
-
-        var cars = await carRepository.SearchCarsAsync(
-            request.Query,
+        var (cars, total) = await carRepository.SearchCarsAsync(
+            request.Terms,
+            request.IsPublic,
+            request.Sort,
             request.Page,
             request.PageSize,
+            actor.IsAuthenticated ? actor.UserId : null,
             cancellationToken);
 
-        return Result<UserCarsResponse>.Success(new UserCarsResponse
+        var hasMore = (long)request.Page * request.PageSize < total;
+
+        return Result<PagedUserCarsResponse>.Success(new PagedUserCarsResponse
         {
-            Cars = [.. cars.Select(c => CarMapping.ToUserCarDto(c))]
+            Cars = [.. cars.Select(c => CarMapping.ToUserCarDto(c, actor.UserId))],
+            TotalCount = total,
+            HasMore = hasMore
         });
     }
 }

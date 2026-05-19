@@ -5,9 +5,12 @@
  * The automotive journey sharing platform API
  * OpenAPI spec version: v1
  */
+import type { CarSearchSort } from './carSearchSort';
 
 export type CarsSearchCarsParams = {
-q?: string;
+terms?: string[];
+isPublic?: boolean;
+sort?: CarSearchSort;
 /**
  * @pattern ^-?(?:0|[1-9]\d*)$
  */

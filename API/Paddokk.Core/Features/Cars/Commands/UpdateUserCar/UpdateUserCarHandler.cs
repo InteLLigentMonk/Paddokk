@@ -32,12 +32,13 @@ public sealed class UpdateUserCarHandler(
         if (request.IsPrimary.HasValue)
             userCar.IsPrimary = request.IsPrimary.Value;
 
-        userCar.SearchText = BuildSearchText(
+        userCar.SearchText = CarSearchTextBuilder.Build(
             userCar.CarMake?.Name,
             userCar.CarModel?.Name,
             userCar.CarGeneration?.Name,
             userCar.CustomBuildName,
-            userCar.Nickname);
+            userCar.Nickname,
+            userCar.Year);
 
         userCar.UpdatedAt = DateTime.UtcNow;
 
@@ -50,15 +51,4 @@ public sealed class UpdateUserCarHandler(
         return Result<UserCarDto>.Success(CarMapping.ToUserCarDto(updated!));
     }
 
-    private static string BuildSearchText(
-        string? makeName,
-        string? modelName,
-        string? generationName,
-        string? customBuildName,
-        string? nickname)
-    {
-        var parts = new[] { makeName, modelName, generationName, customBuildName, nickname }
-            .Where(p => !string.IsNullOrWhiteSpace(p));
-        return string.Join(" ", parts);
-    }
 }

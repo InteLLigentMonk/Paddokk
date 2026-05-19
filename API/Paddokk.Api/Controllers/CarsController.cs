@@ -8,6 +8,7 @@ using Paddokk.Core.Features.Cars.Queries.GetCarMakeById;
 using Paddokk.Core.Features.Cars.Queries.GetCarMakes;
 using Paddokk.Core.Features.Cars.Queries.GetCarModelById;
 using Paddokk.Core.Features.Cars.Queries.GetCarModelsByMake;
+using Paddokk.Core.Features.Cars.Queries.GetCarsBrowseStats;
 using Paddokk.Core.Features.Cars.Queries.GetPublicCarById;
 using Paddokk.Core.Features.Cars.Queries.SearchCars;
 using Paddokk.Core.Models.DTOs.Car;
@@ -74,14 +75,28 @@ public class CarsController(ISender sender) : ApiControllerBase
 
     [HttpGet("search")]
     [EnableRateLimiting("reads")]
-    [EndpointSummary("Full-text search across all cars on the platform")]
-    public async Task<ActionResult<UserCarsResponse>> SearchCars(
-        [FromQuery] string q,
+    [EndpointSummary("Trigram fuzzy search across all public cars")]
+    public async Task<ActionResult<PagedUserCarsResponse>> SearchCars(
+        [FromQuery] string[]? terms,
+        [FromQuery] bool? isPublic,
+        [FromQuery] CarSearchSort sort = CarSearchSort.Newest,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
+        [FromQuery] int pageSize = 24,
         CancellationToken ct = default)
     {
-        var result = await sender.Send(new SearchCarsQuery(q, page, pageSize), ct);
+        var result = await sender.Send(new SearchCarsQuery(terms ?? [], isPublic, sort, page, pageSize), ct);
+        return OkOrError(result);
+    }
+
+    [HttpGet("browse-stats")]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Returns aggregate stats for the browse page, filtered by the same terms as search")]
+    public async Task<ActionResult<GetCarsBrowseStatsResponse>> BrowseStats(
+        [FromQuery] string[]? terms,
+        [FromQuery] bool? isPublic,
+        CancellationToken ct = default)
+    {
+        var result = await sender.Send(new GetCarsBrowseStatsQuery(terms ?? [], isPublic), ct);
         return OkOrError(result);
     }
 }

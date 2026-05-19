@@ -1,6 +1,7 @@
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Paddokk.Core.Features.Cars;
 using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Data.Seeding;
@@ -162,6 +163,7 @@ public static class DatabaseSeeder
                         Description = build.Item2,
                         Nickname = nickname,
                         Color = faker.PickRandom(colors),
+                        SearchText = CarSearchTextBuilder.Build(null, null, null, build.Item1, nickname, null),
                         PrimaryImageUrl = $"https://picsum.photos/seed/{faker.Random.AlphaNumeric(8)}/800/600",
                         IsPrimary = isFirst,
                         IsActive = true,
@@ -194,6 +196,7 @@ public static class DatabaseSeeder
                         IsCustomBuild = false,
                         Nickname = nickname,
                         Color = faker.PickRandom(colors),
+                        SearchText = CarSearchTextBuilder.Build(make.Name, model?.Name, generation?.Name, null, nickname, year),
                         Description = faker.PickRandom(
                             "Stage 2 tune, full exhaust, coilovers.",
                             "Mostly stock, keeping it clean.",
@@ -497,4 +500,5 @@ public static class DatabaseSeeder
 
         return (likes, subscriptions);
     }
+
 }
