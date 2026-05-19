@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.20.0...v0.21.0) (2026-05-19)
+
+
+### Features
+
+* **car:** public browse page with trigram fuzzy search ([#102](https://github.com/InteLLigentMonk/Paddokk/issues/102)) ([a7bac7b](https://github.com/InteLLigentMonk/Paddokk/commit/a7bac7bd11be04f8ee8bb04cfdc0917dab411f4f))
+
 ## [0.20.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.19.1...v0.20.0) (2026-05-19)
 
 
