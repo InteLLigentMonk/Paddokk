@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Stack,
   Group,
-  Avatar,
   Text,
   Textarea,
   ScrollArea,
@@ -21,6 +20,7 @@ import {
   useReplyToComment,
 } from "@/hooks/use-journey-detail";
 import { ExpandableText } from "@/components/common/expandable-text";
+import { OwnerLink } from "@/components/common/owner-link";
 import type { PostCommentDto } from "@/generated/api/schemas";
 
 const MAX_COMMENT_LENGTH = 500;
@@ -131,20 +131,17 @@ function CommentItem({ comment, postId, isPostOwner }: CommentItemProps) {
       radius="md"
     >
       <Group align="flex-start" gap="xs" wrap="nowrap">
-        <Avatar
-          src={comment.userAvatarUrl ?? null}
-          size="sm"
-          radius="xl"
-          alt={comment.userDisplayName}
-        />
         <Stack gap={2} flex={1} miw={0}>
-          <Group gap="xs" wrap="nowrap">
-            <Text size="xs" fw={600} style={{ whiteSpace: "nowrap" }}>
-              {comment.userDisplayName}
-            </Text>
-            <Text size="xs" c="dimmed">
-              {formatRelativeDate(comment.createdAt)}
-            </Text>
+          <Group gap="xs" wrap="nowrap" align="center">
+            <OwnerLink
+              target={{ kind: "user", username: comment.userUsername }}
+              avatarUrl={comment.userAvatarUrl}
+              primaryText={comment.userDisplayName}
+              secondaryText={formatRelativeDate(comment.createdAt)}
+              avatarSize="sm"
+              avatarRadius="xl"
+              primaryTextSize="xs"
+            />
             {comment.isEdited && (
               <Text size="xs" c="dimmed" fs="italic">
                 (edited)
@@ -194,7 +191,7 @@ function CommentItem({ comment, postId, isPostOwner }: CommentItemProps) {
           styles={{ root: { marginLeft: "auto" } }}
         >
           <Stack gap={2} miw={0} maw="90%" style={{ alignItems: "flex-end" }}>
-            <Group gap="xs" wrap="nowrap">
+            <Group gap="xs" wrap="nowrap" align="center">
               {comment.reply.isOwner && (
                 <ActionIcon
                   variant="subtle"
@@ -207,23 +204,21 @@ function CommentItem({ comment, postId, isPostOwner }: CommentItemProps) {
                   <Trash2 size={14} />
                 </ActionIcon>
               )}
-              <Text size="xs" c="dimmed">
-                {formatRelativeDate(comment.reply.createdAt)}
-              </Text>
-              <Text size="xs" fw={600} style={{ whiteSpace: "nowrap" }}>
-                {comment.reply.userDisplayName}
-              </Text>
+              <OwnerLink
+                target={{ kind: "user", username: comment.reply.userUsername }}
+                avatarUrl={comment.reply.userAvatarUrl}
+                primaryText={comment.reply.userDisplayName}
+                secondaryText={formatRelativeDate(comment.reply.createdAt)}
+                avatarSize="sm"
+                avatarRadius="xl"
+                primaryTextSize="xs"
+                reverse
+              />
             </Group>
             <Text size="sm" ta="right">
               {comment.reply.content}
             </Text>
           </Stack>
-          <Avatar
-            src={comment.reply.userAvatarUrl ?? null}
-            size="sm"
-            radius="xl"
-            alt={comment.reply.userDisplayName}
-          />
         </Group>
       )}
 

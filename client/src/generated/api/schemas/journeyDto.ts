@@ -27,6 +27,7 @@ export interface JourneyDto {
   userAvatarUrl?: string | null;
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   userCarId: number | string;
+  carSlug: string;
   /** @nullable */
   carMakeName?: string | null;
   /** @nullable */

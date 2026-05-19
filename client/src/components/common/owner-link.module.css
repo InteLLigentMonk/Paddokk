@@ -1,0 +1,10 @@
+.root {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  width: fit-content;
+}
+
+.root:hover .primary {
+  text-decoration: underline;
+}

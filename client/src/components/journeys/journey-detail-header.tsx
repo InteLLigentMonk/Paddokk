@@ -6,7 +6,6 @@ import {
   Text,
   Title,
   Badge,
-  Avatar,
   Image,
   Paper,
   Divider,
@@ -16,6 +15,7 @@ import {
 } from "@mantine/core";
 import { MessageSquare, Heart, Bell } from "lucide-react";
 import type { JourneyActivityTier, JourneyDto } from "@/generated/api/schemas";
+import { OwnerLink } from "@/components/common/owner-link";
 
 const ACTIVITY_TIER_LABELS: Record<JourneyActivityTier, string> = {
   1: "Full Throttle",
@@ -126,24 +126,19 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
         <Divider />
 
         <Group justify="space-between" wrap="wrap" gap="md">
-          <Group gap="sm" wrap="nowrap">
-            <Avatar
-              src={journey.carPrimaryImageUrl ?? null}
-              radius="sm"
-              size="md"
-              alt={carLabel}
-            />
-            <Stack gap={2}>
-              <Text fw={500} size="sm">
-                {carLabel}
-              </Text>
-              {journey.carGenerationName && (
-                <Text size="xs" c="dimmed">
-                  {journey.carGenerationName}
-                </Text>
-              )}
-            </Stack>
-          </Group>
+          <OwnerLink
+            target={{
+              kind: "car",
+              username: journey.ownerUsername,
+              slug: journey.carSlug,
+            }}
+            avatarUrl={journey.carPrimaryImageUrl}
+            primaryText={carLabel}
+            secondaryText={journey.carGenerationName ?? undefined}
+            avatarSize="md"
+            avatarRadius="sm"
+            primaryTextWeight={500}
+          />
 
           <Group gap="lg" wrap="wrap">
             <Group gap={4}>

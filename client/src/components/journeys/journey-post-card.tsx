@@ -3,8 +3,6 @@ import {
   Card,
   Group,
   Stack,
-  Text,
-  Avatar,
   Button,
   Anchor,
   Image,
@@ -13,6 +11,7 @@ import {
 import { Carousel } from "@mantine/carousel";
 import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import type { JourneyPostDto } from "@/generated/api/schemas";
+import { OwnerLink } from "@/components/common/owner-link";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
 import { PostImageModal } from "./journey-post-image-modal";
 
@@ -32,23 +31,19 @@ interface PostHeaderProps {
 
 function PostHeader({ post }: PostHeaderProps) {
   return (
-    <Group gap="sm" wrap="nowrap">
-      <Avatar
-        src={post.userAvatarUrl ?? null}
-        radius="xl"
-        size="md"
-        alt={post.userDisplayName}
-      />
-      <Stack gap={0}>
-        <Text fw={600} size="sm">
-          {post.userDisplayName}
-        </Text>
-        <Text size="xs" c="dimmed">
+    <OwnerLink
+      target={{ kind: "user", username: post.userUsername }}
+      avatarUrl={post.userAvatarUrl}
+      primaryText={post.userDisplayName}
+      secondaryText={
+        <>
           {formatDate(post.createdAt)}
           {post.isEdited && " · redigerad"}
-        </Text>
-      </Stack>
-    </Group>
+        </>
+      }
+      avatarSize="md"
+      avatarRadius="xl"
+    />
   );
 }
 

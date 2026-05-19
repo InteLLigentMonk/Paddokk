@@ -1,7 +1,6 @@
 import {
   Modal,
   Group,
-  Avatar,
   Stack,
   Text,
   Image,
@@ -9,6 +8,7 @@ import {
   Box,
 } from "@mantine/core";
 import type { JourneyPostDto } from "@/generated/api/schemas";
+import { OwnerLink } from "@/components/common/owner-link";
 import { JourneyPostComments } from "./journey-post-comments";
 
 function formatDate(iso: string): string {
@@ -36,20 +36,15 @@ function PostPreview({ post }: PostPreviewProps) {
   return (
     <Box mb="md">
       <Group gap="sm" wrap="nowrap" mb="xs">
-        <Avatar
-          src={post.userAvatarUrl ?? null}
-          radius="xl"
-          size="sm"
-          alt={post.userDisplayName}
+        <OwnerLink
+          target={{ kind: "user", username: post.userUsername }}
+          avatarUrl={post.userAvatarUrl}
+          primaryText={post.userDisplayName}
+          secondaryText={formatDate(post.createdAt)}
+          avatarSize="sm"
+          avatarRadius="xl"
+          primaryTextSize="xs"
         />
-        <Stack gap={0}>
-          <Text size="xs" fw={600}>
-            {post.userDisplayName}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {formatDate(post.createdAt)}
-          </Text>
-        </Stack>
         {firstImage && (
           <Image
             src={firstImage.imageUrl}

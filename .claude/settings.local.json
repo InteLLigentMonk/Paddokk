@@ -26,7 +26,9 @@
       "Bash(gh pr create --title 'refactor\\(routing\\): move /cars to /me/cars, add public /cars/:id view' --body ':*)",
       "Bash(git pull:*)",
       "Bash(git stash:*)",
-      "mcp__plugin_playwright_playwright__*"
+      "mcp__plugin_playwright_playwright__*",
+      "Skill(git-workflow)",
+      "Skill(git-workflow:*)"
     ]
   },
   "hooks": {
