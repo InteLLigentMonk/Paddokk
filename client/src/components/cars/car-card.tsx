@@ -41,12 +41,20 @@ export function CarCard({ car }: CarCardProps) {
       ? (carAny.customBuildName ?? "Custom Build")
       : `${car.carMakeName} ${car.carModelName}`);
 
+  const invalidateUserCars = () =>
+    queryClient.invalidateQueries({
+      predicate: (q) => {
+        const key = q.queryKey[0];
+        return key === "user-cars" || key === "user-cars-by-username";
+      },
+    });
+
   const likeMutation = useMutation({
     mutationFn: () =>
       car.isLiked
         ? unlikeUserCarFn({ data: { carId: Number(car.id) } })
         : likeUserCarFn({ data: { carId: Number(car.id) } }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["user-cars"] }),
+    onSuccess: invalidateUserCars,
   });
 
   const subscribeMutation = useMutation({
@@ -54,14 +62,14 @@ export function CarCard({ car }: CarCardProps) {
       car.isSubscribed
         ? unsubscribeFromUserCarFn({ data: { carId: Number(car.id) } })
         : subscribeToUserCarFn({ data: { carId: Number(car.id) } }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["user-cars"] }),
+    onSuccess: invalidateUserCars,
   });
 
   const setPrimaryMutation = useMutation({
     mutationFn: () =>
       updateUserCarFn({ data: { carId: Number(car.id), isPrimary: true } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-cars"] });
+      invalidateUserCars();
       notifications.success({ message: "Active car updated" });
     },
     onError: () => {
@@ -128,61 +136,63 @@ export function CarCard({ car }: CarCardProps) {
             )}
           </Stack>
 
-          <Menu shadow="md" width={200} position="bottom-end">
-            <Menu.Target>
-              <ActionIcon
-                variant="subtle"
-                size={44}
-                aria-label="Car actions"
-                style={{ flexShrink: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoreVertical size={18} />
-              </ActionIcon>
-            </Menu.Target>
+          {car.isOwner && (
+            <Menu shadow="md" width={200} position="bottom-end">
+              <Menu.Target>
+                <ActionIcon
+                  variant="subtle"
+                  size={44}
+                  aria-label="Car actions"
+                  style={{ flexShrink: 0 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreVertical size={18} />
+                </ActionIcon>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={<Edit size={16} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate({
-                    to: "/me/cars/$slug/edit",
-                    params: { slug: car.slug },
-                  });
-                }}
-              >
-                Edit
-              </Menu.Item>
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={<Edit size={16} />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate({
+                      to: "/users/$username/cars/$slug/edit",
+                      params: { username: car.ownerUsername, slug: car.slug },
+                    });
+                  }}
+                >
+                  Edit
+                </Menu.Item>
 
-              {car.isOwner && !car.isPrimary && (
-                <>
-                  <Menu.Divider />
-                  <Menu.Item
-                    leftSection={<Star size={16} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPrimaryMutation.mutate();
-                    }}
-                  >
-                    Set as Active Car
-                  </Menu.Item>
-                </>
-              )}
+                {!car.isPrimary && (
+                  <>
+                    <Menu.Divider />
+                    <Menu.Item
+                      leftSection={<Star size={16} />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPrimaryMutation.mutate();
+                      }}
+                    >
+                      Set as Active Car
+                    </Menu.Item>
+                  </>
+                )}
 
-              <Menu.Divider />
-              <Menu.Item
-                leftSection={<Trash size={16} />}
-                c="red"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openDeleteCarConfirm(Number(car.id));
-                }}
-              >
-                Delete
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+                <Menu.Divider />
+                <Menu.Item
+                  leftSection={<Trash size={16} />}
+                  c="red"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openDeleteCarConfirm(Number(car.id));
+                  }}
+                >
+                  Delete
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
         </Group>
 
         <Group gap="sm" wrap="nowrap">

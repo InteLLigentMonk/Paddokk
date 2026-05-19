@@ -44,7 +44,12 @@ export function DeleteJourneyConfirm() {
       notifications.success({
         message: isDefault ? "Resan borttagen, aktiv resa uppdaterad" : "Resan borttagen",
       });
-      queryClient.invalidateQueries({ queryKey: ["user-journeys"] });
+      queryClient.invalidateQueries({
+        predicate: (q) => {
+          const key = q.queryKey[0];
+          return key === "user-journeys" || key === "user-journeys-by-username";
+        },
+      });
       queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       queryClient.invalidateQueries({ queryKey: ["journey-limits"] });
       closeDeleteJourneyConfirm();

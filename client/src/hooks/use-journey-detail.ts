@@ -1,4 +1,9 @@
-import { queryOptions, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   getJourneyDetailFn,
   getJourneyPostsFn,
@@ -20,14 +25,17 @@ export const journeyDetailQueryOptions = (journeyId: number) =>
 export const postCommentsQueryOptions = (postId: number) =>
   queryOptions({
     queryKey: ["post-comments", postId],
-    queryFn: () => getPostCommentsFn({ data: { postId, page: 1, pageSize: 50 } }),
+    queryFn: () =>
+      getPostCommentsFn({ data: { postId, page: 1, pageSize: 50 } }),
   });
 
 export function useJourneyPostsInfinite(journeyId: number) {
   return useInfiniteQuery({
     queryKey: ["journey-posts", journeyId],
     queryFn: ({ pageParam = 0 }) =>
-      getJourneyPostsFn({ data: { journeyId, skip: pageParam, take: POSTS_PAGE_SIZE } }),
+      getJourneyPostsFn({
+        data: { journeyId, skip: pageParam, take: POSTS_PAGE_SIZE },
+      }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage || lastPage.length < POSTS_PAGE_SIZE) return undefined;
@@ -40,7 +48,8 @@ export function useCreateComment(postId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (content: string) => createCommentFn({ data: { postId, content } }),
+    mutationFn: (content: string) =>
+      createCommentFn({ data: { postId, content } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
     },
@@ -62,8 +71,13 @@ export function useReplyToComment(postId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ content, parentCommentId }: { content: string; parentCommentId: number }) =>
-      replyToCommentFn({ data: { postId, content, parentCommentId } }),
+    mutationFn: ({
+      content,
+      parentCommentId,
+    }: {
+      content: string;
+      parentCommentId: number;
+    }) => replyToCommentFn({ data: { postId, content, parentCommentId } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
     },
@@ -80,8 +94,10 @@ export function useCreateJourneyPost(journeyId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: { textContent: string | null; images: PostImagePayload[] }) =>
-      createJourneyPostFn({ data: { journeyId, ...payload } }),
+    mutationFn: (payload: {
+      textContent: string | null;
+      images: PostImagePayload[];
+    }) => createJourneyPostFn({ data: { journeyId, ...payload } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["journey-posts", journeyId] });
     },

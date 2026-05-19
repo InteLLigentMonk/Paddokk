@@ -1,55 +1,89 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { Container, Stack, Title, Alert } from "@mantine/core";
+import { Container, Stack, Title, Text, Alert } from "@mantine/core";
 import { AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { JourneysHeader } from "@/components/journeys/journeys-header";
 import { JourneysGrid } from "@/components/journeys/journeys-grid";
+import { EditJourneyModal } from "@/components/journeys/edit-journey-modal";
+import { DeleteJourneyConfirm } from "@/components/journeys/delete-journey-confirm";
 import {
-  getUserByUsernameFn,
-  getUserJourneysByUsernameFn,
-} from "@/lib/api/users.server";
+  userByUsernameQueryOptions,
+  userJourneysByUsernameQueryOptions,
+} from "@/lib/api/users.queries";
+import { getDefaultActiveJourneyFn } from "@/lib/api/user-journeys.server";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { openCreateJourneyModal } from "@/lib/stores/journeys-page-store";
 
 export const Route = createFileRoute("/_app/users/$username/journeys/")({
   loader: async ({ params, context: { queryClient } }) => {
     try {
-      await getUserByUsernameFn({ data: { username: params.username } });
+      await queryClient.ensureQueryData(
+        userByUsernameQueryOptions(params.username),
+      );
     } catch {
       throw notFound();
     }
-    await queryClient.ensureQueryData({
-      queryKey: ["user-journeys-by-username", params.username],
-      queryFn: () =>
-        getUserJourneysByUsernameFn({ data: { username: params.username } }),
-    });
+    await queryClient.ensureQueryData(
+      userJourneysByUsernameQueryOptions(params.username),
+    );
   },
   component: UserJourneysPage,
 });
 
 function UserJourneysPage() {
   const { username } = Route.useParams();
-  const { data: journeys, isLoading, error } = useQuery({
-    queryKey: ["user-journeys-by-username", username],
-    queryFn: () =>
-      getUserJourneysByUsernameFn({ data: { username } }),
+  const { data: currentUser } = useCurrentUser();
+  const isOwner = currentUser?.username === username;
+
+  const {
+    data: journeys,
+    isLoading,
+    error,
+  } = useQuery(userJourneysByUsernameQueryOptions(username));
+
+  const { data: defaultJourney } = useQuery({
+    queryKey: ["default-active-journey"],
+    queryFn: () => getDefaultActiveJourneyFn(),
+    enabled: isOwner,
   });
+
+  const defaultJourneyId =
+    isOwner && defaultJourney ? Number(defaultJourney.id) : null;
 
   return (
     <Container size="lg" py="xl">
       <Stack gap="xl">
-        <Title order={2}>@{username} — Journeys</Title>
+        {isOwner ? (
+          <JourneysHeader />
+        ) : (
+          <Stack gap={4}>
+            <Title order={2}>@{username} — Journeys</Title>
+            <Text c="dimmed" size="sm">
+              Journeys shared by @{username}
+            </Text>
+          </Stack>
+        )}
 
         {error ? (
-          <Alert icon={<AlertCircle size={16} />} title="Fel" color="red">
-            Kunde inte ladda resor. Försök igen.
+          <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
+            Failed to load journeys. Please try again.
           </Alert>
         ) : (
           <JourneysGrid
             journeys={journeys ?? []}
+            defaultJourneyId={defaultJourneyId}
             isLoading={isLoading}
             onCreateJourney={openCreateJourneyModal}
           />
         )}
       </Stack>
+
+      {isOwner && (
+        <>
+          <EditJourneyModal />
+          <DeleteJourneyConfirm />
+        </>
+      )}
     </Container>
   );
 }

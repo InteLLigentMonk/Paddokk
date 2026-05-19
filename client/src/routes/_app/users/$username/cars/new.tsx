@@ -2,9 +2,9 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Container, Title } from "@mantine/core";
 import { CarFormStepper } from "@/components/cars/car-form-stepper";
 import { getCarLimitFn } from "@/lib/api/limits.server";
-import { getCurrentUserFn } from "@/lib/api/users.server";
+import { currentUserQueryOptions } from "@/lib/api/users.queries";
 
-export const Route = createFileRoute("/_app/me/cars/new")({
+export const Route = createFileRoute("/_app/users/$username/cars/new")({
   staticData: { breadcrumb: "New car" },
   beforeLoad: async () => {
     const carLimits = await getCarLimitFn();
@@ -15,8 +15,8 @@ export const Route = createFileRoute("/_app/me/cars/new")({
       });
     }
   },
-  loader: async () => {
-    const me = await getCurrentUserFn();
+  loader: async ({ context: { queryClient } }) => {
+    const me = await queryClient.ensureQueryData(currentUserQueryOptions());
     return { username: me.username };
   },
   component: AddCarPage,

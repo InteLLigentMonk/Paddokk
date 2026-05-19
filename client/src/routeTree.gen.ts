@@ -39,16 +39,16 @@ import { Route as AppMeSubscriptionRouteImport } from './routes/_app/me/subscrip
 import { Route as AppMeSettingsRouteImport } from './routes/_app/me/settings'
 import { Route as AppMeNotificationsRouteImport } from './routes/_app/me/notifications'
 import { Route as AppMeInventoryRouteImport } from './routes/_app/me/inventory'
-import { Route as AppMeCarsRouteImport } from './routes/_app/me/cars'
 import { Route as AppUsersUsernameIndexRouteImport } from './routes/_app/users/$username/index'
 import { Route as AppUsersUsernameJourneysRouteImport } from './routes/_app/users/$username/journeys'
 import { Route as AppUsersUsernameCarsRouteImport } from './routes/_app/users/$username/cars'
-import { Route as AppMeCarsNewRouteImport } from './routes/_app/me/cars/new'
 import { Route as AppUsersUsernameJourneysIndexRouteImport } from './routes/_app/users/$username/journeys/index'
 import { Route as AppUsersUsernameCarsIndexRouteImport } from './routes/_app/users/$username/cars/index'
-import { Route as AppMeCarsSlugEditRouteImport } from './routes/_app/me/cars/$slug/edit'
+import { Route as AppUsersUsernameCarsNewRouteImport } from './routes/_app/users/$username/cars/new'
+import { Route as AppUsersUsernameCarsSlugRouteImport } from './routes/_app/users/$username/cars/$slug'
 import { Route as AppUsersUsernameJourneysSlugIndexRouteImport } from './routes/_app/users/$username/journeys/$slug/index'
 import { Route as AppUsersUsernameCarsSlugIndexRouteImport } from './routes/_app/users/$username/cars/$slug/index'
+import { Route as AppUsersUsernameCarsSlugEditRouteImport } from './routes/_app/users/$username/cars/$slug/edit'
 
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
@@ -197,11 +197,6 @@ const AppMeInventoryRoute = AppMeInventoryRouteImport.update({
   path: '/inventory',
   getParentRoute: () => AppMeRoute,
 } as any)
-const AppMeCarsRoute = AppMeCarsRouteImport.update({
-  id: '/cars',
-  path: '/cars',
-  getParentRoute: () => AppMeRoute,
-} as any)
 const AppUsersUsernameIndexRoute = AppUsersUsernameIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -218,11 +213,6 @@ const AppUsersUsernameCarsRoute = AppUsersUsernameCarsRouteImport.update({
   path: '/cars',
   getParentRoute: () => AppUsersUsernameRoute,
 } as any)
-const AppMeCarsNewRoute = AppMeCarsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AppMeCarsRoute,
-} as any)
 const AppUsersUsernameJourneysIndexRoute =
   AppUsersUsernameJourneysIndexRouteImport.update({
     id: '/',
@@ -235,11 +225,17 @@ const AppUsersUsernameCarsIndexRoute =
     path: '/',
     getParentRoute: () => AppUsersUsernameCarsRoute,
   } as any)
-const AppMeCarsSlugEditRoute = AppMeCarsSlugEditRouteImport.update({
-  id: '/$slug/edit',
-  path: '/$slug/edit',
-  getParentRoute: () => AppMeCarsRoute,
+const AppUsersUsernameCarsNewRoute = AppUsersUsernameCarsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppUsersUsernameCarsRoute,
 } as any)
+const AppUsersUsernameCarsSlugRoute =
+  AppUsersUsernameCarsSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AppUsersUsernameCarsRoute,
+  } as any)
 const AppUsersUsernameJourneysSlugIndexRoute =
   AppUsersUsernameJourneysSlugIndexRouteImport.update({
     id: '/$slug/',
@@ -248,9 +244,15 @@ const AppUsersUsernameJourneysSlugIndexRoute =
   } as any)
 const AppUsersUsernameCarsSlugIndexRoute =
   AppUsersUsernameCarsSlugIndexRouteImport.update({
-    id: '/$slug/',
-    path: '/$slug/',
-    getParentRoute: () => AppUsersUsernameCarsRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppUsersUsernameCarsSlugRoute,
+  } as any)
+const AppUsersUsernameCarsSlugEditRoute =
+  AppUsersUsernameCarsSlugEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => AppUsersUsernameCarsSlugRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -272,7 +274,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
-  '/me/cars': typeof AppMeCarsRouteWithChildren
   '/me/inventory': typeof AppMeInventoryRoute
   '/me/notifications': typeof AppMeNotificationsRoute
   '/me/settings': typeof AppMeSettingsRoute
@@ -282,13 +283,14 @@ export interface FileRoutesByFullPath {
   '/cars/': typeof AppCarsIndexRoute
   '/journeys/': typeof AppJourneysIndexRoute
   '/me/': typeof AppMeIndexRoute
-  '/me/cars/new': typeof AppMeCarsNewRoute
   '/users/$username/cars': typeof AppUsersUsernameCarsRouteWithChildren
   '/users/$username/journeys': typeof AppUsersUsernameJourneysRouteWithChildren
   '/users/$username/': typeof AppUsersUsernameIndexRoute
-  '/me/cars/$slug/edit': typeof AppMeCarsSlugEditRoute
+  '/users/$username/cars/$slug': typeof AppUsersUsernameCarsSlugRouteWithChildren
+  '/users/$username/cars/new': typeof AppUsersUsernameCarsNewRoute
   '/users/$username/cars/': typeof AppUsersUsernameCarsIndexRoute
   '/users/$username/journeys/': typeof AppUsersUsernameJourneysIndexRoute
+  '/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
   '/users/$username/cars/$slug/': typeof AppUsersUsernameCarsSlugIndexRoute
   '/users/$username/journeys/$slug/': typeof AppUsersUsernameJourneysSlugIndexRoute
 }
@@ -308,7 +310,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
-  '/me/cars': typeof AppMeCarsRouteWithChildren
   '/me/inventory': typeof AppMeInventoryRoute
   '/me/notifications': typeof AppMeNotificationsRoute
   '/me/settings': typeof AppMeSettingsRoute
@@ -317,11 +318,11 @@ export interface FileRoutesByTo {
   '/cars': typeof AppCarsIndexRoute
   '/journeys': typeof AppJourneysIndexRoute
   '/me': typeof AppMeIndexRoute
-  '/me/cars/new': typeof AppMeCarsNewRoute
   '/users/$username': typeof AppUsersUsernameIndexRoute
-  '/me/cars/$slug/edit': typeof AppMeCarsSlugEditRoute
+  '/users/$username/cars/new': typeof AppUsersUsernameCarsNewRoute
   '/users/$username/cars': typeof AppUsersUsernameCarsIndexRoute
   '/users/$username/journeys': typeof AppUsersUsernameJourneysIndexRoute
+  '/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
   '/users/$username/cars/$slug': typeof AppUsersUsernameCarsSlugIndexRoute
   '/users/$username/journeys/$slug': typeof AppUsersUsernameJourneysSlugIndexRoute
 }
@@ -348,7 +349,6 @@ export interface FileRoutesById {
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_marketing/': typeof MarketingIndexRoute
-  '/_app/me/cars': typeof AppMeCarsRouteWithChildren
   '/_app/me/inventory': typeof AppMeInventoryRoute
   '/_app/me/notifications': typeof AppMeNotificationsRoute
   '/_app/me/settings': typeof AppMeSettingsRoute
@@ -358,13 +358,14 @@ export interface FileRoutesById {
   '/_app/cars/': typeof AppCarsIndexRoute
   '/_app/journeys/': typeof AppJourneysIndexRoute
   '/_app/me/': typeof AppMeIndexRoute
-  '/_app/me/cars/new': typeof AppMeCarsNewRoute
   '/_app/users/$username/cars': typeof AppUsersUsernameCarsRouteWithChildren
   '/_app/users/$username/journeys': typeof AppUsersUsernameJourneysRouteWithChildren
   '/_app/users/$username/': typeof AppUsersUsernameIndexRoute
-  '/_app/me/cars/$slug/edit': typeof AppMeCarsSlugEditRoute
+  '/_app/users/$username/cars/$slug': typeof AppUsersUsernameCarsSlugRouteWithChildren
+  '/_app/users/$username/cars/new': typeof AppUsersUsernameCarsNewRoute
   '/_app/users/$username/cars/': typeof AppUsersUsernameCarsIndexRoute
   '/_app/users/$username/journeys/': typeof AppUsersUsernameJourneysIndexRoute
+  '/_app/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
   '/_app/users/$username/cars/$slug/': typeof AppUsersUsernameCarsSlugIndexRoute
   '/_app/users/$username/journeys/$slug/': typeof AppUsersUsernameJourneysSlugIndexRoute
 }
@@ -389,7 +390,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/verify-email'
-    | '/me/cars'
     | '/me/inventory'
     | '/me/notifications'
     | '/me/settings'
@@ -399,13 +399,14 @@ export interface FileRouteTypes {
     | '/cars/'
     | '/journeys/'
     | '/me/'
-    | '/me/cars/new'
     | '/users/$username/cars'
     | '/users/$username/journeys'
     | '/users/$username/'
-    | '/me/cars/$slug/edit'
+    | '/users/$username/cars/$slug'
+    | '/users/$username/cars/new'
     | '/users/$username/cars/'
     | '/users/$username/journeys/'
+    | '/users/$username/cars/$slug/edit'
     | '/users/$username/cars/$slug/'
     | '/users/$username/journeys/$slug/'
   fileRoutesByTo: FileRoutesByTo
@@ -425,7 +426,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/verify-email'
-    | '/me/cars'
     | '/me/inventory'
     | '/me/notifications'
     | '/me/settings'
@@ -434,11 +434,11 @@ export interface FileRouteTypes {
     | '/cars'
     | '/journeys'
     | '/me'
-    | '/me/cars/new'
     | '/users/$username'
-    | '/me/cars/$slug/edit'
+    | '/users/$username/cars/new'
     | '/users/$username/cars'
     | '/users/$username/journeys'
+    | '/users/$username/cars/$slug/edit'
     | '/users/$username/cars/$slug'
     | '/users/$username/journeys/$slug'
   id:
@@ -464,7 +464,6 @@ export interface FileRouteTypes {
     | '/_auth/signup'
     | '/_auth/verify-email'
     | '/_marketing/'
-    | '/_app/me/cars'
     | '/_app/me/inventory'
     | '/_app/me/notifications'
     | '/_app/me/settings'
@@ -474,13 +473,14 @@ export interface FileRouteTypes {
     | '/_app/cars/'
     | '/_app/journeys/'
     | '/_app/me/'
-    | '/_app/me/cars/new'
     | '/_app/users/$username/cars'
     | '/_app/users/$username/journeys'
     | '/_app/users/$username/'
-    | '/_app/me/cars/$slug/edit'
+    | '/_app/users/$username/cars/$slug'
+    | '/_app/users/$username/cars/new'
     | '/_app/users/$username/cars/'
     | '/_app/users/$username/journeys/'
+    | '/_app/users/$username/cars/$slug/edit'
     | '/_app/users/$username/cars/$slug/'
     | '/_app/users/$username/journeys/$slug/'
   fileRoutesById: FileRoutesById
@@ -704,13 +704,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMeInventoryRouteImport
       parentRoute: typeof AppMeRoute
     }
-    '/_app/me/cars': {
-      id: '/_app/me/cars'
-      path: '/cars'
-      fullPath: '/me/cars'
-      preLoaderRoute: typeof AppMeCarsRouteImport
-      parentRoute: typeof AppMeRoute
-    }
     '/_app/users/$username/': {
       id: '/_app/users/$username/'
       path: '/'
@@ -732,13 +725,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsersUsernameCarsRouteImport
       parentRoute: typeof AppUsersUsernameRoute
     }
-    '/_app/me/cars/new': {
-      id: '/_app/me/cars/new'
-      path: '/new'
-      fullPath: '/me/cars/new'
-      preLoaderRoute: typeof AppMeCarsNewRouteImport
-      parentRoute: typeof AppMeCarsRoute
-    }
     '/_app/users/$username/journeys/': {
       id: '/_app/users/$username/journeys/'
       path: '/'
@@ -753,12 +739,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsersUsernameCarsIndexRouteImport
       parentRoute: typeof AppUsersUsernameCarsRoute
     }
-    '/_app/me/cars/$slug/edit': {
-      id: '/_app/me/cars/$slug/edit'
-      path: '/$slug/edit'
-      fullPath: '/me/cars/$slug/edit'
-      preLoaderRoute: typeof AppMeCarsSlugEditRouteImport
-      parentRoute: typeof AppMeCarsRoute
+    '/_app/users/$username/cars/new': {
+      id: '/_app/users/$username/cars/new'
+      path: '/new'
+      fullPath: '/users/$username/cars/new'
+      preLoaderRoute: typeof AppUsersUsernameCarsNewRouteImport
+      parentRoute: typeof AppUsersUsernameCarsRoute
+    }
+    '/_app/users/$username/cars/$slug': {
+      id: '/_app/users/$username/cars/$slug'
+      path: '/$slug'
+      fullPath: '/users/$username/cars/$slug'
+      preLoaderRoute: typeof AppUsersUsernameCarsSlugRouteImport
+      parentRoute: typeof AppUsersUsernameCarsRoute
     }
     '/_app/users/$username/journeys/$slug/': {
       id: '/_app/users/$username/journeys/$slug/'
@@ -769,10 +762,17 @@ declare module '@tanstack/react-router' {
     }
     '/_app/users/$username/cars/$slug/': {
       id: '/_app/users/$username/cars/$slug/'
-      path: '/$slug'
+      path: '/'
       fullPath: '/users/$username/cars/$slug/'
       preLoaderRoute: typeof AppUsersUsernameCarsSlugIndexRouteImport
-      parentRoute: typeof AppUsersUsernameCarsRoute
+      parentRoute: typeof AppUsersUsernameCarsSlugRoute
+    }
+    '/_app/users/$username/cars/$slug/edit': {
+      id: '/_app/users/$username/cars/$slug/edit'
+      path: '/edit'
+      fullPath: '/users/$username/cars/$slug/edit'
+      preLoaderRoute: typeof AppUsersUsernameCarsSlugEditRouteImport
+      parentRoute: typeof AppUsersUsernameCarsSlugRoute
     }
   }
 }
@@ -800,22 +800,7 @@ const AppJourneysRouteWithChildren = AppJourneysRoute._addFileChildren(
   AppJourneysRouteChildren,
 )
 
-interface AppMeCarsRouteChildren {
-  AppMeCarsNewRoute: typeof AppMeCarsNewRoute
-  AppMeCarsSlugEditRoute: typeof AppMeCarsSlugEditRoute
-}
-
-const AppMeCarsRouteChildren: AppMeCarsRouteChildren = {
-  AppMeCarsNewRoute: AppMeCarsNewRoute,
-  AppMeCarsSlugEditRoute: AppMeCarsSlugEditRoute,
-}
-
-const AppMeCarsRouteWithChildren = AppMeCarsRoute._addFileChildren(
-  AppMeCarsRouteChildren,
-)
-
 interface AppMeRouteChildren {
-  AppMeCarsRoute: typeof AppMeCarsRouteWithChildren
   AppMeInventoryRoute: typeof AppMeInventoryRoute
   AppMeNotificationsRoute: typeof AppMeNotificationsRoute
   AppMeSettingsRoute: typeof AppMeSettingsRoute
@@ -824,7 +809,6 @@ interface AppMeRouteChildren {
 }
 
 const AppMeRouteChildren: AppMeRouteChildren = {
-  AppMeCarsRoute: AppMeCarsRouteWithChildren,
   AppMeInventoryRoute: AppMeInventoryRoute,
   AppMeNotificationsRoute: AppMeNotificationsRoute,
   AppMeSettingsRoute: AppMeSettingsRoute,
@@ -834,14 +818,32 @@ const AppMeRouteChildren: AppMeRouteChildren = {
 
 const AppMeRouteWithChildren = AppMeRoute._addFileChildren(AppMeRouteChildren)
 
-interface AppUsersUsernameCarsRouteChildren {
-  AppUsersUsernameCarsIndexRoute: typeof AppUsersUsernameCarsIndexRoute
+interface AppUsersUsernameCarsSlugRouteChildren {
+  AppUsersUsernameCarsSlugEditRoute: typeof AppUsersUsernameCarsSlugEditRoute
   AppUsersUsernameCarsSlugIndexRoute: typeof AppUsersUsernameCarsSlugIndexRoute
 }
 
+const AppUsersUsernameCarsSlugRouteChildren: AppUsersUsernameCarsSlugRouteChildren =
+  {
+    AppUsersUsernameCarsSlugEditRoute: AppUsersUsernameCarsSlugEditRoute,
+    AppUsersUsernameCarsSlugIndexRoute: AppUsersUsernameCarsSlugIndexRoute,
+  }
+
+const AppUsersUsernameCarsSlugRouteWithChildren =
+  AppUsersUsernameCarsSlugRoute._addFileChildren(
+    AppUsersUsernameCarsSlugRouteChildren,
+  )
+
+interface AppUsersUsernameCarsRouteChildren {
+  AppUsersUsernameCarsSlugRoute: typeof AppUsersUsernameCarsSlugRouteWithChildren
+  AppUsersUsernameCarsNewRoute: typeof AppUsersUsernameCarsNewRoute
+  AppUsersUsernameCarsIndexRoute: typeof AppUsersUsernameCarsIndexRoute
+}
+
 const AppUsersUsernameCarsRouteChildren: AppUsersUsernameCarsRouteChildren = {
+  AppUsersUsernameCarsSlugRoute: AppUsersUsernameCarsSlugRouteWithChildren,
+  AppUsersUsernameCarsNewRoute: AppUsersUsernameCarsNewRoute,
   AppUsersUsernameCarsIndexRoute: AppUsersUsernameCarsIndexRoute,
-  AppUsersUsernameCarsSlugIndexRoute: AppUsersUsernameCarsSlugIndexRoute,
 }
 
 const AppUsersUsernameCarsRouteWithChildren =

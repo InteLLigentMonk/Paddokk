@@ -58,6 +58,9 @@ AssemblyInfo.cs
 Behaviours/
  TransactionBehaviour.cs
  ValidationBehaviour.cs
+Common/
+ SlugGenerator.cs
+ UsernameGenerator.cs
 Features/CarImages/
  CarImageMapping.cs
  Commands/DeleteCarImage/
@@ -130,9 +133,15 @@ Features/Cars/
  Queries/GetUserCarById/
   GetUserCarByIdHandler.cs
   GetUserCarByIdQuery.cs
+ Queries/GetUserCarBySlug/
+  GetUserCarBySlugHandler.cs
+  GetUserCarBySlugQuery.cs
  Queries/GetUserCars/
   GetUserCarsHandler.cs
   GetUserCarsQuery.cs
+ Queries/GetUserCarsByUsername/
+  GetUserCarsByUsernameHandler.cs
+  GetUserCarsByUsernameQuery.cs
  Queries/SearchCars/
   SearchCarsHandler.cs
   SearchCarsQuery.cs
@@ -173,6 +182,9 @@ Features/Journeys/Commands/DeleteJourney/
 Features/Journeys/Commands/DeleteJourneyPost/
  DeleteJourneyPostCommand.cs
  DeleteJourneyPostHandler.cs
+Features/Journeys/Commands/DeleteJourneyPostImage/
+ DeleteJourneyPostImageCommand.cs
+ DeleteJourneyPostImageHandler.cs
 Features/Journeys/Commands/LikeJourney/
  LikeJourneyCommand.cs
  LikeJourneyHandler.cs
@@ -198,6 +210,9 @@ Features/Journeys/Commands/UpdateJourneyPost/
 Features/Journeys/Commands/UploadJourneyCoverImage/
  UploadJourneyCoverImageCommand.cs
  UploadJourneyCoverImageHandler.cs
+Features/Journeys/Commands/UploadJourneyPostImage/
+ UploadJourneyPostImageCommand.cs
+ UploadJourneyPostImageHandler.cs
 Features/Journeys/
  JourneyMapping.cs
  Queries/CanCreateJourney/
@@ -213,6 +228,9 @@ Features/Journeys/
  Queries/GetJourneyById/
   GetJourneyByIdHandler.cs
   GetJourneyByIdQuery.cs
+ Queries/GetJourneyBySlug/
+  GetJourneyBySlugHandler.cs
+  GetJourneyBySlugQuery.cs
  Queries/GetJourneyPostById/
   GetJourneyPostByIdHandler.cs
   GetJourneyPostByIdQuery.cs
@@ -225,12 +243,18 @@ Features/Journeys/
  Queries/GetUserJourneys/
   GetUserJourneysHandler.cs
   GetUserJourneysQuery.cs
+ Queries/GetUserJourneysByUsername/
+  GetUserJourneysByUsernameHandler.cs
+  GetUserJourneysByUsernameQuery.cs
  Queries/GetUserJourneyStats/
   GetUserJourneyStatsHandler.cs
   GetUserJourneyStatsQuery.cs
  Queries/SearchJourneys/
   SearchJourneysHandler.cs
   SearchJourneysQuery.cs
+Features/Users/Commands/EnsureUserExists/
+ EnsureUserExistsCommand.cs
+ EnsureUserExistsHandler.cs
 Features/Users/Commands/UpdateUser/
  UpdateUserCommand.cs
  UpdateUserCommandValidator.cs
@@ -241,12 +265,16 @@ Features/Users/Queries/GetUserByEmail/
 Features/Users/Queries/GetUserById/
  GetUserByIdHandler.cs
  GetUserByIdQuery.cs
+Features/Users/Queries/GetUserByUsername/
+ GetUserByUsernameHandler.cs
+ GetUserByUsernameQuery.cs
 Features/Users/UserMapping.cs
 Interfaces/
  IActorResolver.cs
  ICarRepository.cs
  ICommand.cs
  ICommentRepository.cs
+ IHtmlSanitizationService.cs
  IImageRepository.cs
  IImageService.cs
  IJourneyRepository.cs
@@ -299,10 +327,12 @@ obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  Paddokk.Core.AssemblyInfo.cs
  Paddokk.Core.GlobalUsings.g.cs
-Services/ImageService.cs
+Services/
+ HtmlSanitizationService.cs
+ ImageService.cs
 
 [metadataReferences]
-<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.6/ref/net10.0/
+<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.7/ref/net10.0/
  Microsoft.AspNetCore.Antiforgery.dll
  Microsoft.AspNetCore.Authentication.Abstractions.dll
  Microsoft.AspNetCore.Authentication.BearerToken.dll
@@ -443,7 +473,7 @@ Services/ImageService.cs
  System.Formats.Cbor.dll
  System.Security.Cryptography.Xml.dll
  System.Threading.RateLimiting.dll
-<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.6/ref/net10.0/
+<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.7/ref/net10.0/
  Microsoft.CSharp.dll
  Microsoft.VisualBasic.Core.dll
  Microsoft.VisualBasic.dll
@@ -612,10 +642,13 @@ Services/ImageService.cs
  System.Xml.XPath.XDocument.dll
  WindowsBase.dll
 <NUGET>/
+ anglesharp.css/0.17.0/lib/net7.0/AngleSharp.Css.dll
+ anglesharp/0.17.1/lib/netstandard2.0/AngleSharp.dll
  azure.core/1.50.0/lib/net8.0/Azure.Core.dll
  azure.storage.blobs/12.27.0/lib/net10.0/Azure.Storage.Blobs.dll
  azure.storage.common/12.26.0/lib/net10.0/Azure.Storage.Common.dll
  fluentvalidation/11.11.0/lib/net8.0/FluentValidation.dll
+ htmlsanitizer/9.0.892/lib/net8.0/HtmlSanitizer.dll
  mediatr.contracts/2.0.1/lib/netstandard2.0/MediatR.Contracts.dll
  mediatr/12.4.1/lib/net6.0/MediatR.dll
  microsoft.bcl.asyncinterfaces/8.0.0/lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll
@@ -625,7 +658,7 @@ Services/ImageService.cs
  system.memory.data/8.0.1/lib/net8.0/System.Memory.Data.dll
 
 [analyzerReferences]
-<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.6/analyzers/dotnet/cs/
+<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.7/analyzers/dotnet/cs/
  Microsoft.AspNetCore.App.Analyzers.dll
  Microsoft.AspNetCore.App.CodeFixes.dll
  Microsoft.AspNetCore.App.SourceGenerators.dll
@@ -633,18 +666,18 @@ Services/ImageService.cs
  Microsoft.Extensions.Logging.Generators.dll
  Microsoft.Extensions.Options.SourceGeneration.dll
  Microsoft.Extensions.Validation.ValidationsGenerator.dll
-<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.6/analyzers/dotnet/cs/
+<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.7/analyzers/dotnet/cs/
  Microsoft.Interop.ComInterfaceGenerator.dll
  Microsoft.Interop.JavaScript.JSImportGenerator.dll
  Microsoft.Interop.LibraryImportGenerator.dll
  Microsoft.Interop.SourceGeneration.dll
  System.Text.Json.SourceGeneration.dll
  System.Text.RegularExpressions.Generator.dll
-<DOTNET>/sdk/10.0.202/Sdks/Microsoft.NET.Sdk/analyzers/
+<DOTNET>/sdk/10.0.203/Sdks/Microsoft.NET.Sdk/analyzers/
  Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
  Microsoft.CodeAnalysis.NetAnalyzers.dll
 <NUGET>/system.clientmodel/1.8.0/analyzers/dotnet/cs/System.ClientModel.SourceGeneration.dll
 
 [analyzerConfigFiles]
-<DOTNET>/sdk/10.0.202/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
+<DOTNET>/sdk/10.0.203/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
 obj/Debug/net10.0/Paddokk.Core.GeneratedMSBuildEditorConfig.editorconfig

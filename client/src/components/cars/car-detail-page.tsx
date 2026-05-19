@@ -18,7 +18,7 @@ import {
 import { Carousel } from "@mantine/carousel";
 import { Image } from "@mantine/core";
 import { Edit, X, Check } from "lucide-react";
-import { useRouter } from "@tanstack/react-router";
+import { useRouter, useNavigate } from "@tanstack/react-router";
 import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
@@ -76,6 +76,17 @@ export function CarDetailPage({
   const [primaryId, setPrimaryId] = useState<PrimaryId>(initialPrimaryId);
 
   const router = useRouter();
+  const navigate = useNavigate();
+
+  const exitEditMode = () => {
+    setIsEditing(false);
+    if (startInEditMode) {
+      navigate({
+        to: "/users/$username/cars/$slug",
+        params: { username: car.ownerUsername, slug: car.slug },
+      });
+    }
+  };
   const notifications = useNotifications();
 
   useEffect(() => {
@@ -108,7 +119,7 @@ export function CarDetailPage({
     setDeletedImageIds([]);
     setReorderedIds(null);
     setPrimaryId(initialPrimaryId);
-    setIsEditing(false);
+    exitEditMode();
   };
 
   const handleSave = async () => {
@@ -150,7 +161,7 @@ export function CarDetailPage({
 
       await router.invalidate();
       notifications.success({ message: "Car updated successfully" });
-      setIsEditing(false);
+      exitEditMode();
     } catch {
       notifications.error({ message: "Failed to save changes" });
     } finally {
@@ -176,7 +187,7 @@ export function CarDetailPage({
   return (
     <Container size="lg" py="xl">
       <Box mb="xl">
-        <PageBreadcrumbs current={displayName} />
+        <PageBreadcrumbs />
       </Box>
 
       <Group justify="space-between" mb="lg" align="flex-start">

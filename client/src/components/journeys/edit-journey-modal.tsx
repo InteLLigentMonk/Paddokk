@@ -72,7 +72,12 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
         }
 
         const defaultChanged = isDefault && Number(value.status) !== Number(journey.status) && Number(value.status) !== 1
-        queryClient.invalidateQueries({ queryKey: ["user-journeys"] })
+        queryClient.invalidateQueries({
+          predicate: (q) => {
+            const key = q.queryKey[0]
+            return key === "user-journeys" || key === "user-journeys-by-username"
+          },
+        })
         queryClient.invalidateQueries({ queryKey: ["journey-detail", journeyId] })
         queryClient.invalidateQueries({ queryKey: ["default-active-journey"] })
         notifications.success({ message: defaultChanged ? "Aktiv resa uppdaterad" : "Journey updated!" })

@@ -1,11 +1,13 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Container, Stack, Title, Text, Avatar, Group } from "@mantine/core";
-import { getUserByUsernameFn } from "@/lib/api/users.server";
+import { userByUsernameQueryOptions } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app/users/$username/")({
-  loader: async ({ params }) => {
+  loader: async ({ params, context: { queryClient } }) => {
     try {
-      return await getUserByUsernameFn({ data: { username: params.username } });
+      return await queryClient.ensureQueryData(
+        userByUsernameQueryOptions(params.username),
+      );
     } catch {
       throw notFound();
     }
