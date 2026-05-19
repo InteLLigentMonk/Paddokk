@@ -64,7 +64,7 @@ public sealed class CreateUserCarHandler(
             }
         }
 
-        var searchText = BuildSearchText(makeName, modelName, generationName, request.CustomBuildName, request.Nickname);
+        var searchText = CarSearchTextBuilder.Build(makeName, modelName, generationName, request.CustomBuildName, request.Nickname, request.Year);
         var isPrimary = request.IsPrimary || currentCount == 0;
 
         var slugSource = BuildSlugSource(request, makeName, modelName);
@@ -101,17 +101,6 @@ public sealed class CreateUserCarHandler(
         return Result<UserCarDto>.Success(CarMapping.ToUserCarDto(created!));
     }
 
-    private static string BuildSearchText(
-        string? makeName,
-        string? modelName,
-        string? generationName,
-        string? customBuildName,
-        string? nickname)
-    {
-        var parts = new[] { makeName, modelName, generationName, customBuildName, nickname }
-            .Where(p => !string.IsNullOrWhiteSpace(p));
-        return string.Join(" ", parts);
-    }
 
     private static string BuildSlugSource(
         CreateUserCarCommand request,

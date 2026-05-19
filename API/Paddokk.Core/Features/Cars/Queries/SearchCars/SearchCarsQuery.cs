@@ -9,5 +9,6 @@ public record SearchCarsQuery(
     bool? IsPublic = null,
     CarSearchSort Sort = CarSearchSort.Newest,
     int Page = 1,
-    int PageSize = 24
+    int PageSize = 24,
+    string? ExcludePrincipalId = null
 ) : IQuery<Result<PagedUserCarsResponse>>;

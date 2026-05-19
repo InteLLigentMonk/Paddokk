@@ -3,10 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import type { CarSortKey } from "@/lib/api/cars.server";
 
 const SORT_OPTIONS: { value: CarSortKey; label: string }[] = [
-  { value: "Newest", label: "Nyast" },
-  { value: "Relevance", label: "Relevans" },
-  { value: "MostLiked", label: "Mest gillade" },
-  { value: "MostJourneys", label: "Mest resor" },
+  { value: "Newest", label: "Newest" },
+  { value: "Relevance", label: "Relevance" },
+  { value: "MostLiked", label: "Most Liked" },
+  { value: "MostJourneys", label: "Most Journeys" },
 ];
 
 interface CarsFilterBarProps {
@@ -27,10 +27,19 @@ export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
     });
   }
 
+  const effectiveSortKey: CarSortKey = sort ?? (terms.length > 0 ? "Relevance" : "Newest");
+
   return (
-    <Group gap="sm" wrap="nowrap" align="flex-start">
+    <Group
+      gap="sm"
+      wrap="nowrap"
+      bg="light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))"
+      p="sm"
+      align="flex-start"
+      style={{ position: "sticky", top: 0, zIndex: 100 }}
+    >
       <TagsInput
-        placeholder="Sök bilar... (tryck Enter eller komma)"
+        placeholder="Search by make, model, generation or year..."
         value={terms}
         onChange={(newTags) => updateSearch(newTags, sort)}
         splitChars={[",", " "]}
@@ -40,8 +49,10 @@ export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
       />
       <Select
         data={SORT_OPTIONS}
-        value={sort ?? "Newest"}
-        onChange={(val) => updateSearch(terms, (val as CarSortKey) ?? undefined)}
+        value={effectiveSortKey}
+        onChange={(val) =>
+          updateSearch(terms, (val as CarSortKey) ?? undefined)
+        }
         w={160}
         allowDeselect={false}
       />

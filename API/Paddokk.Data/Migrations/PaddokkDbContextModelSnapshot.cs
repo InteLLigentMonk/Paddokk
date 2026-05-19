@@ -751,8 +751,6 @@ namespace Paddokk.Data.Migrations
 
                     b.HasIndex("CarModelId");
 
-                    b.HasIndex("SearchText");
-
                     b.HasIndex("PrincipalId", "Slug")
                         .IsUnique();
 

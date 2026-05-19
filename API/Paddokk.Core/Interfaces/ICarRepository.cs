@@ -42,9 +42,9 @@ public interface ICarRepository
 
     Task<UserCar?> GetCarByIdAsync(int carId, CancellationToken cancellationToken);
 
-    Task<(List<UserCar> Cars, int Total)> SearchCarsAsync(IReadOnlyList<string> terms, bool? isPublic, CarSearchSort sort, int page, int pageSize, CancellationToken cancellationToken);
+    Task<(List<UserCar> Cars, int Total)> SearchCarsAsync(IReadOnlyList<string> terms, bool? isPublic, CarSearchSort sort, int page, int pageSize, string? excludePrincipalId, CancellationToken cancellationToken);
 
-    Task<GetCarsBrowseStatsResponse> GetBrowseStatsAsync(IReadOnlyList<string> terms, bool? isPublic, CancellationToken cancellationToken);
+    Task<GetCarsBrowseStatsResponse> GetBrowseStatsAsync(IReadOnlyList<string> terms, bool? isPublic, string? excludePrincipalId, CancellationToken cancellationToken);
 
     Task<UserCarLike?> GetCarLikeAsync(string userId, int carId, CancellationToken cancellationToken);
     Task CreateCarLikeAsync(UserCarLike like, CancellationToken cancellationToken);

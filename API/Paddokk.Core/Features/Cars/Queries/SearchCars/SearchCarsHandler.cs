@@ -16,6 +16,7 @@ public sealed class SearchCarsHandler(ICarRepository carRepository, IActorResolv
             request.Sort,
             request.Page,
             request.PageSize,
+            actor.IsAuthenticated ? actor.UserId : null,
             cancellationToken);
 
         var hasMore = (long)request.Page * request.PageSize < total;

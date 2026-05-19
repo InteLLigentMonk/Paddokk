@@ -233,16 +233,17 @@ public class CarRepository : ICarRepository
         CarSearchSort sort,
         int page,
         int pageSize,
+        string? excludePrincipalId,
         CancellationToken cancellationToken)
     {
-        var query = BuildSearchQuery(terms, isPublic);
+        var query = BuildSearchQuery(terms, isPublic, excludePrincipalId);
 
         var total = await query.CountAsync(cancellationToken);
 
         IOrderedQueryable<UserCar> ordered = sort switch
         {
             CarSearchSort.Relevance when terms.Count > 0 =>
-                query.OrderBy(c => EF.Functions.TrigramsSimilarityDistance(c.SearchText!, terms[0]))
+                query.OrderBy(c => EF.Functions.TrigramsWordSimilarityDistance(string.Join(" ", terms), c.SearchText!))
                      .ThenByDescending(c => c.CreatedAt),
             CarSearchSort.MostLiked =>
                 query.OrderByDescending(c => c.Likes.Count)
@@ -271,9 +272,10 @@ public class CarRepository : ICarRepository
     public async Task<GetCarsBrowseStatsResponse> GetBrowseStatsAsync(
         IReadOnlyList<string> terms,
         bool? isPublic,
+        string? excludePrincipalId,
         CancellationToken cancellationToken)
     {
-        var query = BuildSearchQuery(terms, isPublic);
+        var query = BuildSearchQuery(terms, isPublic, excludePrincipalId);
 
         return await query
             .GroupBy(_ => 1)
@@ -287,18 +289,21 @@ public class CarRepository : ICarRepository
             .FirstOrDefaultAsync(cancellationToken) ?? new GetCarsBrowseStatsResponse();
     }
 
-    private IQueryable<UserCar> BuildSearchQuery(IReadOnlyList<string> terms, bool? isPublic)
+    private IQueryable<UserCar> BuildSearchQuery(IReadOnlyList<string> terms, bool? isPublic, string? excludePrincipalId)
     {
         var query = _db.UserCars.Where(c => c.IsActive);
 
         if (isPublic.HasValue)
             query = query.Where(c => c.IsPublic == isPublic.Value);
 
+        if (!string.IsNullOrEmpty(excludePrincipalId))
+            query = query.Where(c => c.PrincipalId != excludePrincipalId);
+
         foreach (var term in terms.Where(t => !string.IsNullOrWhiteSpace(t)))
         {
             var captured = term;
             query = query.Where(c => c.SearchText != null &&
-                EF.Functions.TrigramsSimilarity(c.SearchText, captured) >= 0.2);
+                EF.Functions.TrigramsWordSimilarity(captured, c.SearchText) >= 0.2);
         }
 
         return query;

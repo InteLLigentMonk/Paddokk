@@ -25,13 +25,8 @@ function CardSkeleton() {
 export function CarsBrowseGrid({ terms, sort }: CarsBrowseGridProps) {
   const { ref, entry } = useIntersection({ root: null, threshold: 0.1 });
 
-  const {
-    data,
-    isLoading,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery(browseCarsInfiniteQueryOptions(terms, sort));
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteQuery(browseCarsInfiniteQueryOptions(terms, sort));
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -43,7 +38,7 @@ export function CarsBrowseGrid({ terms, sort }: CarsBrowseGridProps) {
 
   if (isLoading) {
     return (
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="md">
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
         {Array.from({ length: 8 }).map((_, i) => (
           <CardSkeleton key={i} />
         ))}
@@ -57,12 +52,14 @@ export function CarsBrowseGrid({ terms, sort }: CarsBrowseGridProps) {
 
   return (
     <>
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="md">
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
         {cars.map((car) => (
           <CarBrowseCard key={String(car.id)} car={car} />
         ))}
         {isFetchingNextPage &&
-          Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={`loading-${i}`} />)}
+          Array.from({ length: 4 }).map((_, i) => (
+            <CardSkeleton key={`loading-${i}`} />
+          ))}
       </SimpleGrid>
       <Box ref={ref} h={1} aria-hidden />
     </>

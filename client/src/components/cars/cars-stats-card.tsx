@@ -22,7 +22,13 @@ function StatItem({ value, label, isLoading }: StatItemProps) {
           {Number(value ?? 0).toLocaleString("sv-SE")}
         </Text>
       )}
-      <Text size="xs" c="dimmed" tt="uppercase" fw={500} style={{ letterSpacing: "0.05em" }}>
+      <Text
+        size="xs"
+        c="dimmed"
+        tt="uppercase"
+        fw={500}
+        style={{ letterSpacing: "0.05em" }}
+      >
         {label}
       </Text>
     </Stack>
@@ -35,10 +41,14 @@ export function CarsStatsCard({ terms }: CarsStatsCardProps) {
   return (
     <Paper withBorder radius="md" p="md">
       <Group justify="space-around" wrap="wrap" gap="md">
-        <StatItem value={data?.cars} label="Bilar" isLoading={isLoading} />
-        <StatItem value={data?.makes} label="Märken" isLoading={isLoading} />
-        <StatItem value={data?.owners} label="Ägare" isLoading={isLoading} />
-        <StatItem value={data?.journeys} label="Resor" isLoading={isLoading} />
+        <StatItem value={data?.cars} label="Cars" isLoading={isLoading} />
+        <StatItem value={data?.makes} label="Makes" isLoading={isLoading} />
+        <StatItem value={data?.owners} label="Owners" isLoading={isLoading} />
+        <StatItem
+          value={data?.journeys}
+          label="Journeys"
+          isLoading={isLoading}
+        />
       </Group>
     </Paper>
   );
