@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.19.0...v0.19.1) (2026-05-19)
+
+
+### Refactoring
+
+* consolidate route loaders and query caching with shared queryOptions ([#97](https://github.com/InteLLigentMonk/Paddokk/issues/97)) ([baf2dd4](https://github.com/InteLLigentMonk/Paddokk/commit/baf2dd478c11276e290df164ee0805458a49a9c5))
+
 ## [0.19.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.18.2...v0.19.0) (2026-05-08)
 
 
