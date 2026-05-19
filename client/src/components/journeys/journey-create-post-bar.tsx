@@ -1,4 +1,12 @@
-import { Avatar, Group, Paper, TextInput, ActionIcon } from "@mantine/core";
+import {
+  Avatar,
+  Group,
+  Paper,
+  TextInput,
+  ActionIcon,
+  Title,
+  Center,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { SendHorizonal } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -15,26 +23,40 @@ export function JourneyCreatePostBar({ journey }: JourneyCreatePostBarProps) {
 
   return (
     <>
-      <Paper withBorder p="sm" radius="md">
-        <Group gap="sm" wrap="nowrap">
-          <Avatar
-            src={user?.image ?? null}
-            radius="xl"
-            size="md"
-            alt={user?.name ?? "You"}
-          />
-          <TextInput
-            placeholder="Share an update..."
-            readOnly
-            onClick={open}
-            flex={1}
-            styles={{ input: { cursor: "pointer" } }}
-          />
-          <ActionIcon variant="filled" size="lg" radius="xl" onClick={open} aria-label="Create post">
-            <SendHorizonal size={18} />
-          </ActionIcon>
-        </Group>
-      </Paper>
+      <Center>
+        <Paper withBorder p="sm" radius="md" w={{ base: "100%", sm: 600 }}>
+          <Center>
+            <Title order={4} mb="xs">
+              Share an update
+            </Title>
+          </Center>
+          <Group gap="sm" wrap="nowrap">
+            <Avatar
+              src={user?.image ?? null}
+              radius="xl"
+              size="md"
+              alt={user?.name ?? "You"}
+            />
+            <TextInput
+              placeholder="Share an update..."
+              readOnly
+              miw={{ base: 100, sm: 400 }}
+              onClick={open}
+              flex={1}
+              styles={{ input: { cursor: "pointer" } }}
+            />
+            <ActionIcon
+              variant="filled"
+              size="lg"
+              radius="xl"
+              onClick={open}
+              aria-label="Create post"
+            >
+              <SendHorizonal size={18} />
+            </ActionIcon>
+          </Group>
+        </Paper>
+      </Center>
 
       <JourneyCreatePostModal
         journey={journey}
