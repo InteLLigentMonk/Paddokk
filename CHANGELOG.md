@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.21.2...v0.22.0) (2026-05-20)
+
+
+### Features
+
+* **car:** rebuild detail page hero + spec strip + sidebar ([#108](https://github.com/InteLLigentMonk/Paddokk/issues/108)) ([249a8fc](https://github.com/InteLLigentMonk/Paddokk/commit/249a8fc3b7407b46e3a5ec0b60b1c79964c12987))
+
 ## [0.21.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.21.1...v0.21.2) (2026-05-20)
 
 
