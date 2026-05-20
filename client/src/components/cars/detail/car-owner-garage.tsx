@@ -1,0 +1,138 @@
+import { Avatar, Button, Card, Divider, Group, Skeleton, Stack, Text } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { userCarsByUsernameQueryOptions } from "@/lib/api/users.queries";
+import { subscribeToUserCarFn, unsubscribeFromUserCarFn } from "@/lib/api/user-cars.server";
+import { useRouter } from "@tanstack/react-router";
+import { useNotifications } from "@/integrations/mantine";
+import type { UserCarDto } from "@/generated/api/schemas";
+import { useState } from "react";
+
+interface CarOwnerGarageProps {
+  car: UserCarDto;
+}
+
+export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
+  const router = useRouter();
+  const notifications = useNotifications();
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
+
+  const { data: ownerCars, isLoading } = useQuery(
+    userCarsByUsernameQueryOptions(car.ownerUsername),
+  );
+
+  const otherCars = ownerCars?.filter((c) => String(c.id) !== String(car.id)) ?? [];
+  const firstName = car.ownerUsername.split("_")[0] ?? car.ownerUsername;
+
+  const handleSubscribe = async () => {
+    setSubscribeLoading(true);
+    try {
+      if (car.isSubscribed) {
+        await unsubscribeFromUserCarFn({ data: { carId: Number(car.id) } });
+      } else {
+        await subscribeToUserCarFn({ data: { carId: Number(car.id) } });
+      }
+      await router.invalidate();
+    } catch {
+      notifications.error({ message: "Failed to update follow" });
+    } finally {
+      setSubscribeLoading(false);
+    }
+  };
+
+  return (
+    <Card withBorder radius="md" padding="md">
+      {/* Owner row */}
+      <Group justify="space-between" mb="sm">
+        <Link
+          to="/users/$username"
+          params={{ username: car.ownerUsername }}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Group gap="sm">
+            <Avatar src={car.ownerAvatarUrl} size={36} radius="xl" />
+            <div>
+              <Text fz={13} fw={600} lh={1.2}>
+                {car.ownerUsername}
+              </Text>
+              <Text fz={11} c="dimmed">
+                Owner
+              </Text>
+            </div>
+          </Group>
+        </Link>
+        {!car.isOwner && (
+          <Button
+            size="xs"
+            variant={car.isSubscribed ? "filled" : "outline"}
+            onClick={handleSubscribe}
+            loading={subscribeLoading}
+          >
+            {car.isSubscribed ? "Following" : "Follow"}
+          </Button>
+        )}
+      </Group>
+
+      {otherCars.length > 0 && (
+        <>
+          <Divider mb="sm" />
+          <Text ff="monospace" tt="uppercase" fz={10} fw={700} c="dimmed" lts="0.1em" mb={8}>
+            Also in {firstName}'s garage
+          </Text>
+          {isLoading ? (
+            <Stack gap={6}>
+              {[1, 2].map((i) => (
+                <Skeleton key={i} h={36} radius="sm" />
+              ))}
+            </Stack>
+          ) : (
+            <Stack gap={4}>
+              {otherCars.slice(0, 5).map((otherCar) => {
+                const name =
+                  otherCar.nickname ||
+                  (otherCar.isCustomBuild
+                    ? (otherCar.customBuildName ?? "Custom Build")
+                    : [otherCar.carMakeName, otherCar.carModelName].filter(Boolean).join(" "));
+                return (
+                  <Link
+                    key={String(otherCar.id)}
+                    to="/users/$username/cars/$slug"
+                    params={{ username: car.ownerUsername, slug: otherCar.slug }}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Group
+                      gap="sm"
+                      px={8}
+                      py={6}
+                      style={{
+                        borderRadius: "var(--mantine-radius-sm)",
+                        cursor: "pointer",
+                      }}
+                      className="hover-bg"
+                    >
+                      <Avatar
+                        src={otherCar.primaryImageUrl}
+                        size={28}
+                        radius="sm"
+                      />
+                      <div>
+                        <Text fz={12} fw={500} lh={1.2}>
+                          {name}
+                        </Text>
+                        {otherCar.year && (
+                          <Text fz={10} c="dimmed" ff="monospace">
+                            {String(otherCar.year)}
+                          </Text>
+                        )}
+                      </div>
+                    </Group>
+                  </Link>
+                );
+              })}
+            </Stack>
+          )}
+        </>
+      )}
+    </Card>
+  );
+}

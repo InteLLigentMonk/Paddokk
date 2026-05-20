@@ -4,6 +4,7 @@ import {
   currentUserQueryOptions,
   userCarBySlugQueryOptions,
   carImagesQueryOptions,
+  userCarsByUsernameQueryOptions,
 } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app/users/$username/cars/$slug/edit")({
@@ -16,9 +17,10 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug/edit")({
       const car = await queryClient.ensureQueryData(
         userCarBySlugQueryOptions(me.username, params.slug),
       );
-      const imagesResponse = await queryClient.ensureQueryData(
-        carImagesQueryOptions(Number(car.id)),
-      );
+      const [imagesResponse] = await Promise.all([
+        queryClient.ensureQueryData(carImagesQueryOptions(Number(car.id))),
+        queryClient.prefetchQuery(userCarsByUsernameQueryOptions(me.username)),
+      ]);
       return { car, images: imagesResponse?.images ?? [] };
     } catch {
       throw notFound();
@@ -29,5 +31,5 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug/edit")({
 
 function EditCarRoute() {
   const { car, images } = Route.useLoaderData();
-  return <CarDetailPage car={car} images={images} startInEditMode={true} />;
+  return <CarDetailPage car={car} images={images} />;
 }

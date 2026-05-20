@@ -1,416 +1,49 @@
-import { useState, useEffect } from "react";
-import {
-  Box,
-  Container,
-  Title,
-  Text,
-  Group,
-  Stack,
-  Button,
-  TextInput,
-  Badge,
-  Divider,
-  Paper,
-  SimpleGrid,
-  AspectRatio,
-} from "@mantine/core";
-import { Carousel } from "@mantine/carousel";
-import { Image } from "@mantine/core";
-import { Edit, X, Check } from "lucide-react";
-import { useRouter, useNavigate } from "@tanstack/react-router";
-import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
-import { useNotifications } from "@/integrations/mantine";
+import { Box, Container, Grid, Stack } from "@mantine/core";
 import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
-import { updateUserCarFn } from "@/lib/api/user-cars.server";
-import {
-  deleteCarImageFn,
-  updateCarImageFn,
-} from "@/lib/api/car-images.server";
-import {
-  carImagesUploadCarImage,
-  carImagesSetPrimaryImage,
-} from "@/generated/api/car-images/car-images";
-import type { EditCarImagesSectionProps } from "./edit-car-images-section";
-import { EditCarImagesSection } from "./edit-car-images-section";
-import { CarSpecsEditor } from "./car-specs-editor";
-import type { PendingImage } from "./car-form-stepper";
-
-type PrimaryId = EditCarImagesSectionProps["primaryId"];
+import { CarHero } from "./detail/car-hero";
+import { CarSpecStrip } from "./detail/car-spec-strip";
+import { CarActionBar } from "./detail/car-action-bar";
+import { CarPhotosSection } from "./detail/car-photos-section";
+import { CarVitalsCard } from "./detail/car-vitals-card";
+import { CarOwnerGarage } from "./detail/car-owner-garage";
 
 interface CarDetailPageProps {
   car: UserCarDto;
   images: CarImageDto[];
-  startInEditMode?: boolean;
 }
 
-export function CarDetailPage({
-  car,
-  images,
-  startInEditMode,
-}: CarDetailPageProps) {
-  const carAny = car as typeof car & {
-    isCustomBuild?: boolean;
-    customBuildName?: string | null;
-  };
-
-  const [isEditing, setIsEditing] = useState(startInEditMode ?? false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const [nickname, setNickname] = useState(car.nickname ?? "");
-  const [color, setColor] = useState(car.color ?? "");
-  const [specs, setSpecs] = useState("");
-  const [customBuildName, setCustomBuildName] = useState(
-    carAny.customBuildName ?? "",
-  );
-
-  const [existingImages, setExistingImages] = useState<CarImageDto[]>(images);
-  const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
-  const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
-  const [reorderedIds, setReorderedIds] = useState<number[] | null>(null);
-
-  const initialPrimaryId: PrimaryId = (() => {
-    const primary = images.find((img) => img.isPrimary);
-    return primary ? { type: "existing", id: Number(primary.id) } : null;
-  })();
-  const [primaryId, setPrimaryId] = useState<PrimaryId>(initialPrimaryId);
-
-  const router = useRouter();
-  const navigate = useNavigate();
-
-  const exitEditMode = () => {
-    setIsEditing(false);
-    if (startInEditMode) {
-      navigate({
-        to: "/users/$username/cars/$slug",
-        params: { username: car.ownerUsername, slug: car.slug },
-      });
-    }
-  };
-  const notifications = useNotifications();
-
-  useEffect(() => {
-    if (!isEditing) {
-      setExistingImages(images);
-      setPendingImages([]);
-      setDeletedImageIds([]);
-      setReorderedIds(null);
-      const primary = images.find((img) => img.isPrimary);
-      setPrimaryId(
-        primary ? { type: "existing", id: Number(primary.id) } : null,
-      );
-    }
-  }, [images]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const carId = Number(car.id);
-  const displayName =
-    car.nickname ||
-    (carAny.isCustomBuild
-      ? (carAny.customBuildName ?? "Custom Build")
-      : `${car.carMakeName} ${car.carModelName}`);
-
-  const handleCancelEdit = () => {
-    setNickname(car.nickname ?? "");
-    setColor(car.color ?? "");
-    setSpecs("");
-    setCustomBuildName(carAny.customBuildName ?? "");
-    setExistingImages(images);
-    setPendingImages([]);
-    setDeletedImageIds([]);
-    setReorderedIds(null);
-    setPrimaryId(initialPrimaryId);
-    exitEditMode();
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await updateUserCarFn({
-        data: {
-          carId,
-          customBuildName: carAny.isCustomBuild ? customBuildName : undefined,
-          nickname,
-          color,
-          isPrimary: car.isPrimary,
-        },
-      });
-
-      for (const id of deletedImageIds) {
-        await deleteCarImageFn({ data: { carId, imageId: id } });
-      }
-
-      for (const img of pendingImages) {
-        await carImagesUploadCarImage(carId, { File: img.file });
-      }
-
-      if (reorderedIds) {
-        for (let i = 0; i < reorderedIds.length; i++) {
-          await updateCarImageFn({
-            data: { carId, imageId: reorderedIds[i], sortOrder: i },
-          });
-        }
-      }
-
-      if (primaryId?.type === "existing") {
-        const originalPrimary = images.find((img) => img.isPrimary);
-        if (!originalPrimary || Number(originalPrimary.id) !== primaryId.id) {
-          await carImagesSetPrimaryImage(carId, primaryId.id);
-        }
-      }
-
-      await router.invalidate();
-      notifications.success({ message: "Car updated successfully" });
-      exitEditMode();
-    } catch {
-      notifications.error({ message: "Failed to save changes" });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDeleteExisting = (id: number) => {
-    setDeletedImageIds((prev) => [...prev, id]);
-    if (primaryId?.type === "existing" && primaryId.id === id) {
-      setPrimaryId(null);
-    }
-  };
-
-  const handleReorderExisting = (ids: number[]) => {
-    setReorderedIds(ids);
-    setExistingImages((prev) => {
-      const byId = Object.fromEntries(prev.map((img) => [Number(img.id), img]));
-      return ids.map((id) => byId[id]).filter(Boolean);
-    });
-  };
+export function CarDetailPage({ car, images }: CarDetailPageProps) {
+  const primaryImage = images.find((img) => img.isPrimary) ?? images[0];
 
   return (
-    <Container size="lg" py="xl">
-      <Box mb="xl">
-        <PageBreadcrumbs />
-      </Box>
+    <>
+      <CarHero car={car} primaryImage={primaryImage} />
+      <CarSpecStrip car={car} />
 
-      <Group justify="space-between" mb="lg" align="flex-start">
-        <Stack gap={4}>
-          <Title order={2}>{displayName}</Title>
-          <Text c="dimmed">
-            {carAny.isCustomBuild
-              ? "Custom Build"
-              : [
-                  car.carMakeName,
-                  car.carModelName,
-                  car.carGenerationName,
-                  String(car.year ?? ""),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-          </Text>
-        </Stack>
+      <Container size="xl" py="xl">
+        <Grid gap="xl" align="flex-start">
+          <Grid.Col span={{ base: 12, md: 8 }}>
+            <Stack gap={36}>
+              <CarActionBar car={car} />
+              <CarPhotosSection car={car} images={images} />
+            </Stack>
+          </Grid.Col>
 
-        {car.isOwner && (
-          <>
-            {!isEditing ? (
-              <Button
-                leftSection={<Edit size={16} />}
-                variant="subtle"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit
-              </Button>
-            ) : (
-              <Group>
-                <Button
-                  variant="subtle"
-                  leftSection={<X size={16} />}
-                  onClick={handleCancelEdit}
-                  disabled={isSaving}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  leftSection={<Check size={16} />}
-                  onClick={handleSave}
-                  loading={isSaving}
-                >
-                  Save
-                </Button>
-              </Group>
-            )}
-          </>
-        )}
-      </Group>
-
-      {isEditing ? (
-        <EditCarImagesSection
-          existingImages={existingImages}
-          pendingImages={pendingImages}
-          deletedImageIds={deletedImageIds}
-          primaryId={primaryId}
-          onPendingChange={setPendingImages}
-          onDeleteExisting={handleDeleteExisting}
-          onReorderExisting={handleReorderExisting}
-          onSetPrimary={setPrimaryId}
-          isSubmitting={isSaving}
-        />
-      ) : (
-        <CarImageCarousel images={images} displayName={displayName} />
-      )}
-
-      <Divider my="xl" />
-
-      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mb="xl">
-        {carAny.isCustomBuild ? (
-          <Paper withBorder p="md" radius="md">
-            <Text size="xs" c="dimmed" fw={500} mb={4}>
-              Build name
-            </Text>
-            {isEditing ? (
-              <TextInput
-                value={customBuildName}
-                onChange={(e) => setCustomBuildName(e.currentTarget.value)}
-                placeholder="e.g. SR20DET S13 kouki"
-                size="sm"
-                variant="unstyled"
-              />
-            ) : (
-              <Text>{carAny.customBuildName || "Custom Build"}</Text>
-            )}
-          </Paper>
-        ) : (
-          <>
-            <Paper withBorder p="md" radius="md">
-              <Text size="xs" c="dimmed" fw={500} mb={4}>
-                Make
-              </Text>
-              <Text>{car.carMakeName}</Text>
-            </Paper>
-            <Paper withBorder p="md" radius="md">
-              <Text size="xs" c="dimmed" fw={500} mb={4}>
-                Model
-              </Text>
-              <Text>{car.carModelName}</Text>
-            </Paper>
-            {car.carGenerationName && (
-              <Paper withBorder p="md" radius="md">
-                <Text size="xs" c="dimmed" fw={500} mb={4}>
-                  Generation
-                </Text>
-                <Text>{car.carGenerationName}</Text>
-              </Paper>
-            )}
-            <Paper withBorder p="md" radius="md">
-              <Text size="xs" c="dimmed" fw={500} mb={4}>
-                Year
-              </Text>
-              <Text>{String(car.year)}</Text>
-            </Paper>
-          </>
-        )}
-        <Paper withBorder p="md" radius="md">
-          <Text size="xs" c="dimmed" fw={500} mb={4}>
-            Nickname
-          </Text>
-          {isEditing ? (
-            <TextInput
-              value={nickname}
-              onChange={(e) => setNickname(e.currentTarget.value)}
-              placeholder="e.g. Drift Missile"
-              size="sm"
-              variant="unstyled"
-            />
-          ) : (
-            <Text c={car.nickname ? undefined : "dimmed"}>
-              {car.nickname || "None"}
-            </Text>
-          )}
-        </Paper>
-        <Paper withBorder p="md" radius="md">
-          <Text size="xs" c="dimmed" fw={500} mb={4}>
-            Color
-          </Text>
-          {isEditing ? (
-            <TextInput
-              value={color}
-              onChange={(e) => setColor(e.currentTarget.value)}
-              placeholder="e.g. Midnight Blue"
-              size="sm"
-              variant="unstyled"
-            />
-          ) : (
-            <Text c={car.color ? undefined : "dimmed"}>
-              {car.color || "Unknown"}
-            </Text>
-          )}
-        </Paper>
-        {Number(car.journeyCount) > 0 && (
-          <Paper withBorder p="md" radius="md">
-            <Text size="xs" c="dimmed" fw={500} mb={4}>
-              Journeys
-            </Text>
-            <Badge variant="light">{car.journeyCount}</Badge>
-          </Paper>
-        )}
-      </SimpleGrid>
-
-      <Stack gap="sm">
-        <Text fw={500}>Specs</Text>
-        {isEditing ? (
-          <CarSpecsEditor content={specs} onChange={setSpecs} />
-        ) : (
-          <Text c="dimmed" size="sm">
-            No specs added yet.
-          </Text>
-        )}
-      </Stack>
-    </Container>
-  );
-}
-
-interface CarImageCarouselProps {
-  images: CarImageDto[];
-  displayName: string;
-}
-
-function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
-  if (images.length === 0) {
-    return (
-      <AspectRatio ratio={16 / 9}>
-        <Image
-          src="https://placehold.co/800x450/e9ecef/495057?text=No+Photos"
-          alt={displayName}
-          radius="md"
-          fit="cover"
-        />
-      </AspectRatio>
-    );
-  }
-
-  if (images.length === 1) {
-    return (
-      <AspectRatio ratio={16 / 9}>
-        <Image
-          src={images[0].imageUrl}
-          alt={images[0].caption ?? displayName}
-          radius="md"
-          fit="cover"
-        />
-      </AspectRatio>
-    );
-  }
-
-  return (
-    <AspectRatio ratio={16 / 9}>
-      <Carousel withIndicators slideGap="md" emblaOptions={{ loop: true }}>
-        {images.map((img) => (
-          <Carousel.Slide key={String(img.id)}>
-            <Image
-              src={img.imageUrl}
-              alt={img.caption ?? displayName}
-              fit="contain"
-              bg="black"
-              radius="md"
-            />
-          </Carousel.Slide>
-        ))}
-      </Carousel>
-    </AspectRatio>
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <Box
+              style={{
+                position: "sticky",
+                top: 80,
+              }}
+            >
+              <Stack gap="md">
+                <CarVitalsCard car={car} />
+                <CarOwnerGarage car={car} />
+              </Stack>
+            </Box>
+          </Grid.Col>
+        </Grid>
+      </Container>
+    </>
   );
 }
