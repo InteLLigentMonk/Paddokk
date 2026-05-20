@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.21.0...v0.21.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* **auth:** clear session cache before redirect to ensure auth state updates ([#104](https://github.com/InteLLigentMonk/Paddokk/issues/104)) ([419059b](https://github.com/InteLLigentMonk/Paddokk/commit/419059b4755661b0692ec0a886233c6b3ff9abcb))
+
 ## [0.21.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.20.0...v0.21.0) (2026-05-19)
 
 
