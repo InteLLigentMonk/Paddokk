@@ -62,6 +62,33 @@ public class JourneyRepository : IJourneyRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<List<Journey>> GetCarJourneysAsync(
+        string username,
+        string carSlug,
+        string? currentUserId,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        return await _db.Journeys
+            .Include(j => j.User)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarGeneration)
+            .Include(j => j.Posts)
+            .Include(j => j.Subscriptions)
+            .Include(j => j.Likes)
+            .Where(j => j.User.Username == username
+                && j.UserCar.Slug == carSlug
+                && (j.PrincipalId == currentUserId
+                    || (j.IsPublic && j.UserCar.IsPublic)))
+            .OrderByDescending(j => j.Status == JourneyStatus.Active ? 1 : 0)
+            .ThenByDescending(j => j.UpdatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<Journey?> GetJourneyBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken)
     {
         return await _db.Journeys

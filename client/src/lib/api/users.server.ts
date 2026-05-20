@@ -7,6 +7,7 @@ import {
   usersGetUserCarBySlug,
   usersGetUserJourneysByUsername,
   usersGetJourneyBySlug,
+  usersGetCarJourneys,
 } from "@/generated/api/users/users";
 import type {
   UserDto,
@@ -25,6 +26,12 @@ const usernameSchema = z.object({ username: z.string() });
 const usernameSlugSchema = z.object({
   username: z.string(),
   slug: z.string(),
+});
+const carJourneysSchema = z.object({
+  username: z.string(),
+  carSlug: z.string(),
+  page: z.number().optional(),
+  pageSize: z.number().optional(),
 });
 
 export const getUserByUsernameFn = createServerFn({ method: "GET" })
@@ -60,4 +67,11 @@ export const getUserJourneyBySlugFn = createServerFn({ method: "GET" })
   .handler(async ({ data: { username, slug } }) => {
     const result = await usersGetJourneyBySlug(username, slug);
     return result.data as JourneyDto;
+  });
+
+export const getCarJourneysFn = createServerFn({ method: "GET" })
+  .inputValidator(carJourneysSchema)
+  .handler(async ({ data: { username, carSlug, page, pageSize } }) => {
+    const result = await usersGetCarJourneys(username, carSlug, { page, pageSize });
+    return result.data as JourneyDto[];
   });

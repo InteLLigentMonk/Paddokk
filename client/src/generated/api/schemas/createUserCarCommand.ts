@@ -34,7 +34,5 @@ export interface CreateUserCarCommand {
   nickname: string | null;
   /** @nullable */
   color: string | null;
-  /** @nullable */
-  description: string | null;
   isPrimary?: boolean;
 }

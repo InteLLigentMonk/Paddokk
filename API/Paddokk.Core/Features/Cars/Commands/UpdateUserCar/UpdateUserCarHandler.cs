@@ -2,13 +2,13 @@ using MediatR;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.DTOs.Car;
+using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Cars.Commands.UpdateUserCar;
 
 public sealed class UpdateUserCarHandler(
     ICarRepository carRepository,
-    IActorResolver actor,
-    IHtmlSanitizationService htmlSanitizer)
+    IActorResolver actor)
     : IRequestHandler<UpdateUserCarCommand, Result<UserCarDto>>
 {
     public async Task<Result<UserCarDto>> Handle(UpdateUserCarCommand request, CancellationToken cancellationToken)
@@ -26,8 +26,25 @@ public sealed class UpdateUserCarHandler(
         if (request.Color is not null)
             userCar.Color = string.IsNullOrEmpty(request.Color) ? null : request.Color;
 
-        if (request.Description is not null)
-            userCar.Description = string.IsNullOrEmpty(request.Description) ? null : htmlSanitizer.Sanitize(request.Description);
+        if (request.Region is not null)
+            userCar.Region = string.IsNullOrEmpty(request.Region) ? null : request.Region;
+
+        if (request.Drive is not null)
+            userCar.Drive = request.Drive;
+
+        if (request.Engine is not null)
+            userCar.Engine = string.IsNullOrEmpty(request.Engine) ? null : request.Engine;
+
+        if (request.OdometerKm.HasValue)
+            userCar.OdometerKm = request.OdometerKm;
+
+        if (request.OwnerNote is not null)
+            userCar.OwnerNote = string.IsNullOrEmpty(request.OwnerNote) ? null : request.OwnerNote;
+
+        if (request.SpecsByCategory is not null)
+            userCar.SpecsByCategory = request.SpecsByCategory
+                .Select(s => new CarSpecCategory { Category = s.Category, Items = s.Items })
+                .ToList();
 
         if (request.IsPrimary.HasValue)
             userCar.IsPrimary = request.IsPrimary.Value;
@@ -50,5 +67,4 @@ public sealed class UpdateUserCarHandler(
         var updated = await carRepository.GetUserCarByIdAsync(actor.UserId, request.CarId, cancellationToken);
         return Result<UserCarDto>.Success(CarMapping.ToUserCarDto(updated!));
     }
-
 }

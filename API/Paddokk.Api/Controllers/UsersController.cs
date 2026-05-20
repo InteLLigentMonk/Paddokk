@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Api.Extensions;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarBySlug;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarsByUsername;
+using Paddokk.Core.Features.Journeys.Queries.GetCarJourneys;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyBySlug;
 using Paddokk.Core.Features.Journeys.Queries.GetUserJourneysByUsername;
 using Paddokk.Core.Features.Users.Commands.UpdateUser;
@@ -108,6 +109,21 @@ public class UsersController(ISender sender) : ApiControllerBase
     public async Task<ActionResult<JourneyDto>> GetJourneyBySlug(string username, string slug, CancellationToken ct)
     {
         var result = await sender.Send(new GetJourneyBySlugQuery(username, slug), ct);
+        return OkOrError(result);
+    }
+
+    [HttpGet("by-username/{username}/cars/{carSlug}/journeys")]
+    [AllowAnonymous]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get journeys for a specific car (filtered by visibility)")]
+    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetCarJourneys(
+        string username,
+        string carSlug,
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5)
+    {
+        var result = await sender.Send(new GetCarJourneysQuery(username, carSlug, page, pageSize), ct);
         return OkOrError(result);
     }
 }

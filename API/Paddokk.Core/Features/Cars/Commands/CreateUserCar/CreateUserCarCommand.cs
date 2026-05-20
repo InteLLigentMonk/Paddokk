@@ -13,6 +13,5 @@ public record CreateUserCarCommand(
     int? Year,
     string? Nickname,
     string? Color,
-    string? Description,
     bool IsPrimary = false
 ) : ICommand<Result<UserCarDto>>;

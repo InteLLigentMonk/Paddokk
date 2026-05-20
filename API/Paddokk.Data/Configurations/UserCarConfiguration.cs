@@ -1,5 +1,7 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Data.Configurations;
@@ -13,8 +15,25 @@ public class UserCarConfiguration : IEntityTypeConfiguration<UserCar>
         builder.Property(e => e.IsPublic).HasDefaultValue(true);
         builder.Property(e => e.Nickname).HasMaxLength(100);
         builder.Property(e => e.Color).HasMaxLength(50);
-        builder.Property(e => e.Description).HasMaxLength(10000);
         builder.Property(e => e.CustomBuildName).HasMaxLength(200);
+        builder.Property(e => e.Region).HasMaxLength(64);
+        builder.Property(e => e.Engine).HasMaxLength(128);
+        builder.Property(e => e.OwnerNote).HasMaxLength(2000);
+        builder.Property(e => e.Drive).HasConversion<string>();
+
+        var specsConverter = new ValueConverter<List<CarSpecCategory>, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Deserialize<List<CarSpecCategory>>(v, (JsonSerializerOptions?)null) ?? new List<CarSpecCategory>());
+
+        var specsComparer = new Microsoft.EntityFrameworkCore.ChangeTracking.ValueComparer<List<CarSpecCategory>>(
+            (a, b) => JsonSerializer.Serialize(a, (JsonSerializerOptions?)null) == JsonSerializer.Serialize(b, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null).GetHashCode(),
+            v => JsonSerializer.Deserialize<List<CarSpecCategory>>(JsonSerializer.Serialize(v, (JsonSerializerOptions?)null), (JsonSerializerOptions?)null) ?? new List<CarSpecCategory>());
+
+        builder.Property(e => e.SpecsByCategory)
+            .HasColumnType("jsonb")
+            .HasConversion(specsConverter, specsComparer)
+            .HasDefaultValueSql("'[]'::jsonb");
 
         builder.HasIndex(e => new { e.PrincipalId, e.Slug }).IsUnique();
 

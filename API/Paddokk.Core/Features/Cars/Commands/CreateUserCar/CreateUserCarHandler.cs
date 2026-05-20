@@ -11,7 +11,6 @@ public sealed class CreateUserCarHandler(
     ICarRepository carRepository,
     IUserRepository userRepository,
     IActorResolver actor,
-    IHtmlSanitizationService htmlSanitizer,
     SlugGenerator slugGenerator)
     : IRequestHandler<CreateUserCarCommand, Result<UserCarDto>>
 {
@@ -85,7 +84,6 @@ public sealed class CreateUserCarHandler(
             Year = request.Year,
             Nickname = request.Nickname,
             Color = request.Color,
-            Description = htmlSanitizer.Sanitize(request.Description),
             SearchText = searchText,
             IsPrimary = isPrimary,
             CreatedAt = DateTime.UtcNow,

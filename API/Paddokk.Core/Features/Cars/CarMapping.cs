@@ -52,7 +52,16 @@ internal static class CarMapping
         CustomBuildName = car.CustomBuildName,
         Nickname = car.Nickname,
         Color = car.Color,
-        Description = car.Description,
+        Region = car.Region,
+        Drive = car.Drive,
+        Engine = car.Engine,
+        OdometerKm = car.OdometerKm,
+        OwnerNote = car.OwnerNote,
+        SpecsByCategory = car.SpecsByCategory.Select(s => new CarSpecCategoryDto
+        {
+            Category = s.Category,
+            Items = s.Items,
+        }).ToList(),
         PrimaryImageUrl = car.PrimaryImageUrl,
         IsPrimary = car.IsPrimary,
         CreatedAt = car.CreatedAt,
