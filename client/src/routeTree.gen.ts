@@ -44,6 +44,7 @@ import { Route as AppUsersUsernameJourneysRouteImport } from './routes/_app/user
 import { Route as AppUsersUsernameCarsRouteImport } from './routes/_app/users/$username/cars'
 import { Route as AppUsersUsernameJourneysIndexRouteImport } from './routes/_app/users/$username/journeys/index'
 import { Route as AppUsersUsernameCarsIndexRouteImport } from './routes/_app/users/$username/cars/index'
+import { Route as AppUsersUsernameJourneysSlugRouteImport } from './routes/_app/users/$username/journeys/$slug'
 import { Route as AppUsersUsernameCarsNewRouteImport } from './routes/_app/users/$username/cars/new'
 import { Route as AppUsersUsernameCarsSlugRouteImport } from './routes/_app/users/$username/cars/$slug'
 import { Route as AppUsersUsernameJourneysSlugIndexRouteImport } from './routes/_app/users/$username/journeys/$slug/index'
@@ -225,6 +226,12 @@ const AppUsersUsernameCarsIndexRoute =
     path: '/',
     getParentRoute: () => AppUsersUsernameCarsRoute,
   } as any)
+const AppUsersUsernameJourneysSlugRoute =
+  AppUsersUsernameJourneysSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AppUsersUsernameJourneysRoute,
+  } as any)
 const AppUsersUsernameCarsNewRoute = AppUsersUsernameCarsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -238,9 +245,9 @@ const AppUsersUsernameCarsSlugRoute =
   } as any)
 const AppUsersUsernameJourneysSlugIndexRoute =
   AppUsersUsernameJourneysSlugIndexRouteImport.update({
-    id: '/$slug/',
-    path: '/$slug/',
-    getParentRoute: () => AppUsersUsernameJourneysRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppUsersUsernameJourneysSlugRoute,
   } as any)
 const AppUsersUsernameCarsSlugIndexRoute =
   AppUsersUsernameCarsSlugIndexRouteImport.update({
@@ -288,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/users/$username/': typeof AppUsersUsernameIndexRoute
   '/users/$username/cars/$slug': typeof AppUsersUsernameCarsSlugRouteWithChildren
   '/users/$username/cars/new': typeof AppUsersUsernameCarsNewRoute
+  '/users/$username/journeys/$slug': typeof AppUsersUsernameJourneysSlugRouteWithChildren
   '/users/$username/cars/': typeof AppUsersUsernameCarsIndexRoute
   '/users/$username/journeys/': typeof AppUsersUsernameJourneysIndexRoute
   '/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
@@ -363,6 +371,7 @@ export interface FileRoutesById {
   '/_app/users/$username/': typeof AppUsersUsernameIndexRoute
   '/_app/users/$username/cars/$slug': typeof AppUsersUsernameCarsSlugRouteWithChildren
   '/_app/users/$username/cars/new': typeof AppUsersUsernameCarsNewRoute
+  '/_app/users/$username/journeys/$slug': typeof AppUsersUsernameJourneysSlugRouteWithChildren
   '/_app/users/$username/cars/': typeof AppUsersUsernameCarsIndexRoute
   '/_app/users/$username/journeys/': typeof AppUsersUsernameJourneysIndexRoute
   '/_app/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/users/$username/'
     | '/users/$username/cars/$slug'
     | '/users/$username/cars/new'
+    | '/users/$username/journeys/$slug'
     | '/users/$username/cars/'
     | '/users/$username/journeys/'
     | '/users/$username/cars/$slug/edit'
@@ -478,6 +488,7 @@ export interface FileRouteTypes {
     | '/_app/users/$username/'
     | '/_app/users/$username/cars/$slug'
     | '/_app/users/$username/cars/new'
+    | '/_app/users/$username/journeys/$slug'
     | '/_app/users/$username/cars/'
     | '/_app/users/$username/journeys/'
     | '/_app/users/$username/cars/$slug/edit'
@@ -739,6 +750,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsersUsernameCarsIndexRouteImport
       parentRoute: typeof AppUsersUsernameCarsRoute
     }
+    '/_app/users/$username/journeys/$slug': {
+      id: '/_app/users/$username/journeys/$slug'
+      path: '/$slug'
+      fullPath: '/users/$username/journeys/$slug'
+      preLoaderRoute: typeof AppUsersUsernameJourneysSlugRouteImport
+      parentRoute: typeof AppUsersUsernameJourneysRoute
+    }
     '/_app/users/$username/cars/new': {
       id: '/_app/users/$username/cars/new'
       path: '/new'
@@ -755,10 +773,10 @@ declare module '@tanstack/react-router' {
     }
     '/_app/users/$username/journeys/$slug/': {
       id: '/_app/users/$username/journeys/$slug/'
-      path: '/$slug'
+      path: '/'
       fullPath: '/users/$username/journeys/$slug/'
       preLoaderRoute: typeof AppUsersUsernameJourneysSlugIndexRouteImport
-      parentRoute: typeof AppUsersUsernameJourneysRoute
+      parentRoute: typeof AppUsersUsernameJourneysSlugRoute
     }
     '/_app/users/$username/cars/$slug/': {
       id: '/_app/users/$username/cars/$slug/'
@@ -849,16 +867,31 @@ const AppUsersUsernameCarsRouteChildren: AppUsersUsernameCarsRouteChildren = {
 const AppUsersUsernameCarsRouteWithChildren =
   AppUsersUsernameCarsRoute._addFileChildren(AppUsersUsernameCarsRouteChildren)
 
-interface AppUsersUsernameJourneysRouteChildren {
-  AppUsersUsernameJourneysIndexRoute: typeof AppUsersUsernameJourneysIndexRoute
+interface AppUsersUsernameJourneysSlugRouteChildren {
   AppUsersUsernameJourneysSlugIndexRoute: typeof AppUsersUsernameJourneysSlugIndexRoute
+}
+
+const AppUsersUsernameJourneysSlugRouteChildren: AppUsersUsernameJourneysSlugRouteChildren =
+  {
+    AppUsersUsernameJourneysSlugIndexRoute:
+      AppUsersUsernameJourneysSlugIndexRoute,
+  }
+
+const AppUsersUsernameJourneysSlugRouteWithChildren =
+  AppUsersUsernameJourneysSlugRoute._addFileChildren(
+    AppUsersUsernameJourneysSlugRouteChildren,
+  )
+
+interface AppUsersUsernameJourneysRouteChildren {
+  AppUsersUsernameJourneysSlugRoute: typeof AppUsersUsernameJourneysSlugRouteWithChildren
+  AppUsersUsernameJourneysIndexRoute: typeof AppUsersUsernameJourneysIndexRoute
 }
 
 const AppUsersUsernameJourneysRouteChildren: AppUsersUsernameJourneysRouteChildren =
   {
+    AppUsersUsernameJourneysSlugRoute:
+      AppUsersUsernameJourneysSlugRouteWithChildren,
     AppUsersUsernameJourneysIndexRoute: AppUsersUsernameJourneysIndexRoute,
-    AppUsersUsernameJourneysSlugIndexRoute:
-      AppUsersUsernameJourneysSlugIndexRoute,
   }
 
 const AppUsersUsernameJourneysRouteWithChildren =

@@ -6,6 +6,7 @@ import { AppSpotlight } from "@/components/common/app-spotlight";
 import { AppNavigation } from "@/components/navigation/app-navigation";
 import { AddCarModal } from "@/components/cars/add-car-modal";
 import { CreateJourneyModal } from "@/components/journeys/create-journey-modal";
+import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: ({ context }) => {
@@ -36,12 +37,14 @@ function AppLayout() {
       <Box
         component="main"
         style={{
+          position: "relative",
           flex: 1,
           minHeight: 0,
           overflowY: "auto",
           paddingLeft: isDesktop ? 72 : 0,
         }}
       >
+        <PageBreadcrumbs />
         <Outlet />
       </Box>
       <AddCarModal />

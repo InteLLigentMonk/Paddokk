@@ -26,7 +26,14 @@ export function PageBreadcrumbs({ current }: PageBreadcrumbsProps) {
   if (crumbs.length < 1) return null;
 
   return (
-    <Breadcrumbs separator={<ChevronRight size={14} />}>
+    <Breadcrumbs
+      p="sm"
+      separator={<ChevronRight size={14} />}
+      style={{
+        borderBottom:
+          "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-5))",
+      }}
+    >
       {crumbs.map((crumb, i) =>
         i < crumbs.length - 1 ? (
           <Anchor
