@@ -3,7 +3,6 @@ import {
   Stack,
   TextInput,
   NumberInput,
-  Textarea,
   Button,
   Group,
   Select,
@@ -115,14 +114,12 @@ export function CarForm({
       customBuildName,
       nickname,
       color,
-      description,
       isPrimary,
     }: {
       id: number;
       customBuildName: string;
       nickname: string;
       color: string;
-      description: string;
       isPrimary: boolean | null;
     }) =>
       userCarsUpdateUserCar(id, {
@@ -130,7 +127,6 @@ export function CarForm({
         customBuildName,
         nickname,
         color,
-        description,
         isPrimary,
       } as import("@/generated/api/schemas").UpdateUserCarCommand),
     onSuccess: () => {
@@ -161,7 +157,6 @@ export function CarForm({
         : new Date().getFullYear(),
       nickname: initialValues?.nickname ?? "",
       color: initialValues?.color ?? "",
-      description: initialValues?.description ?? "",
       isPrimary: initialValues?.isPrimary ?? false,
       primaryImage:
         (initialValues?.primaryImageUrl as File | string | undefined) ??
@@ -174,7 +169,6 @@ export function CarForm({
           customBuildName: value.customBuildName,
           nickname: value.nickname,
           color: value.color,
-          description: value.description,
           isPrimary: value.isPrimary ?? null,
         });
       } else {
@@ -187,7 +181,6 @@ export function CarForm({
           year: isCustomBuild ? null : value.year,
           nickname: value.nickname || null,
           color: value.color || null,
-          description: value.description || null,
           isPrimary: value.isPrimary,
         } as CreateUserCarCommand);
       }
@@ -386,20 +379,6 @@ export function CarForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
-              disabled={isLoading}
-            />
-          )}
-        </form.Field>
-
-        <form.Field name="description">
-          {(field) => (
-            <Textarea
-              label="Description"
-              placeholder="Tell us about your car..."
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-              minRows={3}
               disabled={isLoading}
             />
           )}

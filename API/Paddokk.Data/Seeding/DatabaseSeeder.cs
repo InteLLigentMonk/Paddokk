@@ -160,7 +160,7 @@ public static class DatabaseSeeder
                         IsPublic = faker.Random.Bool(0.85f),
                         IsCustomBuild = true,
                         CustomBuildName = build.Item1,
-                        Description = build.Item2,
+                        OwnerNote = build.Item2,
                         Nickname = nickname,
                         Color = faker.PickRandom(colors),
                         SearchText = CarSearchTextBuilder.Build(null, null, null, build.Item1, nickname, null),
@@ -197,7 +197,7 @@ public static class DatabaseSeeder
                         Nickname = nickname,
                         Color = faker.PickRandom(colors),
                         SearchText = CarSearchTextBuilder.Build(make.Name, model?.Name, generation?.Name, null, nickname, year),
-                        Description = faker.PickRandom(
+                        OwnerNote = faker.PickRandom(
                             "Stage 2 tune, full exhaust, coilovers.",
                             "Mostly stock, keeping it clean.",
                             "Long-term build project. Slowly adding mods.",

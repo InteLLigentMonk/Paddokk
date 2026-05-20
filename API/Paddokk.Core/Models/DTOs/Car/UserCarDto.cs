@@ -1,4 +1,12 @@
+using Paddokk.Core.Models.Entities;
+
 namespace Paddokk.Core.Models.DTOs.Car;
+
+public class CarSpecCategoryDto
+{
+    public required string Category { get; set; }
+    public required List<string> Items { get; set; }
+}
 
 public class UserCarDto
 {
@@ -25,7 +33,12 @@ public class UserCarDto
     // User Customization
     public string? Nickname { get; set; }
     public string? Color { get; set; }
-    public string? Description { get; set; }
+    public string? Region { get; set; }
+    public CarDriveType? Drive { get; set; }
+    public string? Engine { get; set; }
+    public int? OdometerKm { get; set; }
+    public string? OwnerNote { get; set; }
+    public required List<CarSpecCategoryDto> SpecsByCategory { get; set; }
     public string? PrimaryImageUrl { get; set; }
     public required bool IsPrimary { get; set; }
 

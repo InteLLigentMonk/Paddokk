@@ -10,7 +10,8 @@ import type {
   JourneyDto,
   UpdateUserCommand,
   UserCarDto,
-  UserDto
+  UserDto,
+  UsersGetCarJourneysParams
 } from '.././schemas';
 
 import { apiFetcher } from '../../../lib/api/client';
@@ -449,6 +450,64 @@ export const usersGetJourneyBySlug = async (username: string,
     slug: string, options?: RequestInit): Promise<usersGetJourneyBySlugResponse> => {
   
   return apiFetcher<usersGetJourneyBySlugResponse>(getUsersGetJourneyBySlugUrl(username,slug),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Get journeys for a specific car (filtered by visibility)
+ */
+export type usersGetCarJourneysResponse200 = {
+  data: JourneyDto[]
+  status: 200
+}
+
+export type usersGetCarJourneysResponse404 = {
+  data: ApiErrorResponse
+  status: 404
+}
+
+export type usersGetCarJourneysResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type usersGetCarJourneysResponseSuccess = (usersGetCarJourneysResponse200) & {
+  headers: Headers;
+};
+export type usersGetCarJourneysResponseError = (usersGetCarJourneysResponse404 | usersGetCarJourneysResponse500) & {
+  headers: Headers;
+};
+
+export type usersGetCarJourneysResponse = (usersGetCarJourneysResponseSuccess | usersGetCarJourneysResponseError)
+
+export const getUsersGetCarJourneysUrl = (username: string,
+    carSlug: string,
+    params?: UsersGetCarJourneysParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/Users/by-username/${username}/cars/${carSlug}/journeys?${stringifiedParams}` : `/api/v1/Users/by-username/${username}/cars/${carSlug}/journeys`
+}
+
+export const usersGetCarJourneys = async (username: string,
+    carSlug: string,
+    params?: UsersGetCarJourneysParams, options?: RequestInit): Promise<usersGetCarJourneysResponse> => {
+  
+  return apiFetcher<usersGetCarJourneysResponse>(getUsersGetCarJourneysUrl(username,carSlug,params),
   {      
     ...options,
     method: 'GET'

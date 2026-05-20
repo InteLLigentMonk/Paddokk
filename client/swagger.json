@@ -5836,6 +5836,111 @@
         },
         "security": [ ]
       }
+    },
+    "/api/v1/Users/by-username/{username}/cars/{carSlug}/journeys": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get journeys for a specific car (filtered by visibility)",
+        "operationId": "Users_GetCarJourneys",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "carSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - unexpected failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [ ]
+      }
     }
   },
   "components": {
@@ -5886,6 +5991,9 @@
             "type": "string"
           }
         }
+      },
+      "CarDriveType": {
+        "type": "integer"
       },
       "CarGenerationDto": {
         "required": [
@@ -6168,6 +6276,24 @@
       "CarSearchSort": {
         "type": "integer"
       },
+      "CarSpecCategoryDto": {
+        "required": [
+          "category",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "CommentsPagedResponse": {
         "required": [
           "comments",
@@ -6360,8 +6486,7 @@
           "carGenerationId",
           "year",
           "nickname",
-          "color",
-          "description"
+          "color"
         ],
         "type": "object",
         "properties": {
@@ -6417,12 +6542,6 @@
             ]
           },
           "color": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "description": {
             "type": [
               "null",
               "string"
@@ -7367,7 +7486,12 @@
           "customBuildName",
           "nickname",
           "color",
-          "description",
+          "region",
+          "drive",
+          "engine",
+          "odometerKm",
+          "ownerNote",
+          "specsByCategory",
           "isPrimary"
         ],
         "type": "object",
@@ -7398,11 +7522,51 @@
               "string"
             ]
           },
-          "description": {
+          "region": {
             "type": [
               "null",
               "string"
             ]
+          },
+          "drive": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CarDriveType"
+              }
+            ]
+          },
+          "engine": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "odometerKm": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ownerNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "specsByCategory": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CarSpecCategoryDto"
+            }
           },
           "isPrimary": {
             "type": [
@@ -7462,6 +7626,7 @@
           "slug",
           "isPublic",
           "isCustomBuild",
+          "specsByCategory",
           "isPrimary",
           "createdAt",
           "updatedAt",
@@ -7575,11 +7740,48 @@
               "string"
             ]
           },
-          "description": {
+          "region": {
             "type": [
               "null",
               "string"
             ]
+          },
+          "drive": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CarDriveType"
+              }
+            ]
+          },
+          "engine": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "odometerKm": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ownerNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "specsByCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CarSpecCategoryDto"
+            }
           },
           "primaryImageUrl": {
             "type": [

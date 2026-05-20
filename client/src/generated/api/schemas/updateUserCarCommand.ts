@@ -5,6 +5,8 @@
  * The automotive journey sharing platform API
  * OpenAPI spec version: v1
  */
+import type { CarDriveType } from './carDriveType';
+import type { CarSpecCategoryDto } from './carSpecCategoryDto';
 
 export interface UpdateUserCarCommand {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
@@ -16,7 +18,19 @@ export interface UpdateUserCarCommand {
   /** @nullable */
   color: string | null;
   /** @nullable */
-  description: string | null;
+  region: string | null;
+  drive: null | CarDriveType;
+  /** @nullable */
+  engine: string | null;
+  /**
+   * @nullable
+   * @pattern ^-?(?:0|[1-9]\d*)$
+   */
+  odometerKm: number | string | null;
+  /** @nullable */
+  ownerNote: string | null;
+  /** @nullable */
+  specsByCategory: CarSpecCategoryDto[] | null;
   /** @nullable */
   isPrimary: boolean | null;
 }

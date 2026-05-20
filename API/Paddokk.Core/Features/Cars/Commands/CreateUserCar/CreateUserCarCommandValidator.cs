@@ -36,9 +36,5 @@ public sealed class CreateUserCarCommandValidator : AbstractValidator<CreateUser
         RuleFor(x => x.Color)
             .MaximumLength(50).When(x => x.Color is not null)
             .WithMessage("Color cannot exceed 50 characters");
-
-        RuleFor(x => x.Description)
-            .MaximumLength(10000).When(x => x.Description is not null)
-            .WithMessage("Description cannot exceed 10000 characters");
     }
 }

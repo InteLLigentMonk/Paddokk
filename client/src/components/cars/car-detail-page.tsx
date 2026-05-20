@@ -12,7 +12,6 @@ import {
   Divider,
   Paper,
   SimpleGrid,
-  Typography,
   AspectRatio,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
@@ -59,7 +58,7 @@ export function CarDetailPage({
 
   const [nickname, setNickname] = useState(car.nickname ?? "");
   const [color, setColor] = useState(car.color ?? "");
-  const [specs, setSpecs] = useState(car.description ?? "");
+  const [specs, setSpecs] = useState("");
   const [customBuildName, setCustomBuildName] = useState(
     carAny.customBuildName ?? "",
   );
@@ -112,7 +111,7 @@ export function CarDetailPage({
   const handleCancelEdit = () => {
     setNickname(car.nickname ?? "");
     setColor(car.color ?? "");
-    setSpecs(car.description ?? "");
+    setSpecs("");
     setCustomBuildName(carAny.customBuildName ?? "");
     setExistingImages(images);
     setPendingImages([]);
@@ -131,7 +130,6 @@ export function CarDetailPage({
           customBuildName: carAny.isCustomBuild ? customBuildName : undefined,
           nickname,
           color,
-          description: specs,
           isPrimary: car.isPrimary,
         },
       });
@@ -356,12 +354,6 @@ export function CarDetailPage({
         <Text fw={500}>Specs</Text>
         {isEditing ? (
           <CarSpecsEditor content={specs} onChange={setSpecs} />
-        ) : car.description ? (
-          <Paper withBorder p="md" radius="md">
-            <Typography>
-              <div dangerouslySetInnerHTML={{ __html: car.description }} />
-            </Typography>
-          </Paper>
         ) : (
           <Text c="dimmed" size="sm">
             No specs added yet.

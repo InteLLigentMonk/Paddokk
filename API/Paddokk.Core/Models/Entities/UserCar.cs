@@ -2,6 +2,20 @@
 
 namespace Paddokk.Core.Models.Entities;
 
+public enum CarDriveType
+{
+    FWD,
+    RWD,
+    AWD,
+    FourWD,
+}
+
+public class CarSpecCategory
+{
+    public string Category { get; set; } = string.Empty;
+    public List<string> Items { get; set; } = [];
+}
+
 public class UserCar
 {
     public int Id { get; set; }
@@ -31,13 +45,25 @@ public class UserCar
 
     // User Customization
     [StringLength(100)]
-    public string? Nickname { get; set; } // "Drift Missile", "Daily"
+    public string? Nickname { get; set; }
 
     [StringLength(50)]
     public string? Color { get; set; }
 
-    [StringLength(10000)]
-    public string? Description { get; set; }
+    [StringLength(64)]
+    public string? Region { get; set; }
+
+    public CarDriveType? Drive { get; set; }
+
+    [StringLength(128)]
+    public string? Engine { get; set; }
+
+    public int? OdometerKm { get; set; }
+
+    [StringLength(2000)]
+    public string? OwnerNote { get; set; }
+
+    public List<CarSpecCategory> SpecsByCategory { get; set; } = [];
 
     public string? PrimaryImageUrl { get; set; }
     public bool IsPrimary { get; set; }

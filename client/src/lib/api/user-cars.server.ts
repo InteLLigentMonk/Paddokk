@@ -15,6 +15,11 @@ import type { UserCarsResponse, UserCarDto, CreateUserCarCommand } from "@/gener
 
 const carIdSchema = z.object({ carId: z.coerce.number() });
 
+const carSpecCategorySchema = z.object({
+  category: z.string(),
+  items: z.array(z.string()),
+});
+
 const createUserCarSchema = z.object({
   isCustomBuild: z.boolean().default(false),
   customBuildName: z.string().nullable().optional(),
@@ -24,7 +29,6 @@ const createUserCarSchema = z.object({
   year: z.coerce.number().nullable().optional(),
   nickname: z.string().nullable().optional(),
   color: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
   isPrimary: z.boolean().optional(),
 });
 
@@ -33,7 +37,12 @@ const updateUserCarSchema = z.object({
   customBuildName: z.string().nullable().optional(),
   nickname: z.string().nullable().optional(),
   color: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
+  region: z.string().nullable().optional(),
+  drive: z.number().nullable().optional(),
+  engine: z.string().nullable().optional(),
+  odometerKm: z.coerce.number().nullable().optional(),
+  ownerNote: z.string().nullable().optional(),
+  specsByCategory: z.array(carSpecCategorySchema).nullable().optional(),
   isPrimary: z.boolean().nullable().optional(),
 });
 
@@ -60,13 +69,18 @@ export const createUserCarFn = createServerFn({ method: "POST" })
 
 export const updateUserCarFn = createServerFn({ method: "POST" })
   .inputValidator(updateUserCarSchema)
-  .handler(async ({ data: { carId, customBuildName, nickname, color, description, isPrimary } }) => {
+  .handler(async ({ data: { carId, customBuildName, nickname, color, region, drive, engine, odometerKm, ownerNote, specsByCategory, isPrimary } }) => {
     const result = await userCarsUpdateUserCar(carId, {
       carId,
       customBuildName: customBuildName ?? null,
       nickname: nickname ?? null,
       color: color ?? null,
-      description: description ?? null,
+      region: region ?? null,
+      drive: drive ?? null,
+      engine: engine ?? null,
+      odometerKm: odometerKm ?? null,
+      ownerNote: ownerNote ?? null,
+      specsByCategory: specsByCategory ?? null,
       isPrimary: isPrimary ?? null,
     } as import("@/generated/api/schemas").UpdateUserCarCommand);
     return result.data as UserCarDto;
