@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.21.1...v0.21.2) (2026-05-20)
+
+
+### Maintenance
+
+* **car:** add spec/vital fields + GetCarJourneys endpoint ([#106](https://github.com/InteLLigentMonk/Paddokk/issues/106)) ([c074ac7](https://github.com/InteLLigentMonk/Paddokk/commit/c074ac714ecf1a356312ac028af33d983c8c98e2))
+
 ## [0.21.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.21.0...v0.21.1) (2026-05-20)
 
 
