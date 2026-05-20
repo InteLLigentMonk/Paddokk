@@ -78,8 +78,6 @@ function JourneyDetailPage() {
   return (
     <Container size="lg" py="xl">
       <Stack gap="xl">
-        <PageBreadcrumbs current={journey?.title ?? "Journey"} />
-
         {journeyError && (
           <Alert icon={<AlertCircle size={16} />} title="Error" color="red">
             Could not load journey. Please try again.
