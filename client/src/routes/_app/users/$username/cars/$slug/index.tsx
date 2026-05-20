@@ -1,9 +1,11 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { CarDetailPage } from "@/components/cars/car-detail-page";
 import {
   userCarBySlugQueryOptions,
   carImagesQueryOptions,
   userCarsByUsernameQueryOptions,
+  carJourneysQueryOptions,
 } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app/users/$username/cars/$slug/")({
@@ -12,11 +14,11 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug/")({
       const car = await queryClient.ensureQueryData(
         userCarBySlugQueryOptions(params.username, params.slug),
       );
-      const [imagesResponse] = await Promise.all([
+      await Promise.all([
         queryClient.ensureQueryData(carImagesQueryOptions(Number(car.id))),
         queryClient.prefetchQuery(userCarsByUsernameQueryOptions(params.username)),
+        queryClient.prefetchQuery(carJourneysQueryOptions(params.username, params.slug)),
       ]);
-      return { car, images: imagesResponse?.images ?? [] };
     } catch {
       throw notFound();
     }
@@ -25,6 +27,14 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug/")({
 });
 
 function UserCarDetailRoute() {
-  const { car, images } = Route.useLoaderData();
-  return <CarDetailPage car={car} images={images} />;
+  const { username, slug } = Route.useParams();
+
+  const { data: car } = useQuery(userCarBySlugQueryOptions(username, slug));
+  const { data: imagesResponse } = useQuery(
+    carImagesQueryOptions(Number(car?.id ?? 0)),
+  );
+
+  if (!car) return null;
+
+  return <CarDetailPage car={car} images={imagesResponse?.images ?? []} />;
 }

@@ -105,13 +105,13 @@
 
 @font-face {
   font-family: "Yapari";
-  src: url("/fonts/Yapari/YapariTrial-Wide.ttf") format("truetype");
+  src: url("/fonts/Yapari/YapariTrial-Regular.ttf") format("truetype");
   font-weight: 400;
 }
 
 @font-face {
   font-family: "Yapari";
-  src: url("/fonts/Yapari/YapariTrial-MediumWide.ttf") format("truetype");
+  src: url("/fonts/Yapari/YapariTrial-Medium.ttf") format("truetype");
   font-weight: 500;
 }
 

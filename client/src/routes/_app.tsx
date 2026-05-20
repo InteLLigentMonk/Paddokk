@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { Box, ScrollArea } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { AppHeader } from "@/components/common/app-header";
 import { AppSpotlight } from "@/components/common/app-spotlight";
@@ -42,11 +42,7 @@ function AppLayout() {
           paddingLeft: isDesktop ? 72 : 0,
         }}
       >
-        <ScrollArea
-          h={{ base: "calc(100dvh - 65px - 64px)", md: "calc(100dvh - 65px)" }}
-        >
-          <Outlet />
-        </ScrollArea>
+        <Outlet />
       </Box>
       <AddCarModal />
       <CreateJourneyModal />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Card,
+  ColorSwatch,
   Text,
   Stack,
   Group,
@@ -10,26 +11,48 @@ import {
   NumberInput,
   Button,
 } from "@mantine/core";
-import { Edit, Check, X } from "lucide-react";
-import { useRouter } from "@tanstack/react-router";
+import {
+  Edit,
+  Check,
+  X,
+  MapPin,
+  Compass,
+  Clock,
+  Gauge,
+  PaletteIcon,
+} from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { updateUserCarFn } from "@/lib/api/user-cars.server";
+import {
+  CarColorSwatchInput,
+  colorLabelFromHex,
+} from "./car-color-swatch-input";
 
 interface VitalsRowProps {
   label: string;
   value: string | null | undefined;
+  icon?: React.ReactNode;
 }
 
-function VitalsRow({ label, value }: VitalsRowProps) {
+function VitalsRow({ label, value, icon }: VitalsRowProps) {
   return (
-    <Group justify="space-between" gap="xs">
-      <Text ff="monospace" tt="uppercase" fz={10} fw={700} c="dimmed" lts="0.1em">
-        {label}
-      </Text>
-      <Text fz={13} fw={500} c={value ? undefined : "dimmed"} ta="right" style={{ flex: 1, textAlign: "right" }}>
-        {value ?? "—"}
-      </Text>
+    <Group gap="md">
+      {icon && icon}
+      <Stack gap={0}>
+        <Text
+          ff="monospace"
+          tt="uppercase"
+          fz={10}
+          fw={700}
+          c="dimmed"
+          lts="0.1em"
+        >
+          {label}
+        </Text>
+        <Text c={value ? undefined : "dimmed"}>{value ?? "—"}</Text>
+      </Stack>
     </Group>
   );
 }
@@ -39,11 +62,12 @@ interface CarVitalsCardProps {
 }
 
 export function CarVitalsCard({ car }: CarVitalsCardProps) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const notifications = useNotifications();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [region, setRegion] = useState(car.region ?? "");
+  const [color, setColor] = useState(car.color ?? null);
   const [odometerKm, setOdometerKm] = useState<number | string>(
     car.odometerKm != null ? Number(car.odometerKm) : "",
   );
@@ -54,7 +78,10 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
     day: "numeric",
   });
 
-  const odoDisplay = car.odometerKm != null ? `${Number(car.odometerKm).toLocaleString()} km` : null;
+  const odoDisplay =
+    car.odometerKm != null
+      ? `${Number(car.odometerKm).toLocaleString()} km`
+      : null;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -63,10 +90,11 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
         data: {
           carId: Number(car.id),
           region: region || null,
+          color: color,
           odometerKm: odometerKm !== "" ? Number(odometerKm) : null,
         },
       });
-      await router.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
       notifications.success({ message: "Vitals updated" });
       setIsEditing(false);
     } catch {
@@ -78,6 +106,7 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
 
   const handleCancel = () => {
     setRegion(car.region ?? "");
+    setColor(car.color ?? null);
     setOdometerKm(car.odometerKm != null ? Number(car.odometerKm) : "");
     setIsEditing(false);
   };
@@ -89,7 +118,11 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
           Vitals
         </Text>
         {car.isOwner && !isEditing && (
-          <ActionIcon variant="subtle" size="sm" onClick={() => setIsEditing(true)}>
+          <ActionIcon
+            variant="subtle"
+            size="sm"
+            onClick={() => setIsEditing(true)}
+          >
             <Edit size={14} />
           </ActionIcon>
         )}
@@ -98,6 +131,7 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
 
       {isEditing ? (
         <Stack gap="sm">
+          <CarColorSwatchInput value={color} onChange={setColor} />
           <TextInput
             label="Based (region)"
             value={region}
@@ -114,20 +148,70 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
             size="xs"
           />
           <Group gap="xs">
-            <Button size="xs" onClick={handleSave} loading={isSaving} leftSection={<Check size={12} />}>
+            <Button
+              size="xs"
+              onClick={handleSave}
+              loading={isSaving}
+              leftSection={<Check size={12} />}
+            >
               Save
             </Button>
-            <Button size="xs" variant="subtle" onClick={handleCancel} disabled={isSaving} leftSection={<X size={12} />}>
+            <Button
+              size="xs"
+              variant="subtle"
+              onClick={handleCancel}
+              disabled={isSaving}
+              leftSection={<X size={12} />}
+            >
               Cancel
             </Button>
           </Group>
         </Stack>
       ) : (
         <Stack gap={8}>
-          <VitalsRow label="Based" value={car.region} />
-          <VitalsRow label="Odometer" value={odoDisplay} />
-          <VitalsRow label="On Paddokk" value={joinedAt} />
-          <VitalsRow label="Journeys" value={String(Number(car.journeyCount))} />
+          {car.color && (
+            <Group gap="md">
+              <PaletteIcon size={14} />
+              <Stack gap={0}>
+                <Text
+                  ff="monospace"
+                  tt="uppercase"
+                  fz={10}
+                  fw={700}
+                  c="dimmed"
+                  lts="0.1em"
+                >
+                  Color
+                </Text>
+                <Group gap={6} justify="flex-end">
+                  <ColorSwatch color={car.color ?? "#888"} size={14} />
+                  <Text fz={13} fw={500} ta="right">
+                    {colorLabelFromHex(car.color) ?? car.color}
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+          )}
+          <VitalsRow
+            label="Based"
+            value={car.region}
+            icon={<MapPin size={14} />}
+          />
+          <VitalsRow
+            label="Odometer"
+            value={odoDisplay}
+            icon={<Gauge size={14} />}
+          />
+          <VitalsRow
+            label="On Paddokk since"
+            value={joinedAt}
+            icon={<Clock size={14} />}
+          />
+          <VitalsRow
+            label="Journeys"
+            value={String(Number(car.journeyCount))}
+            icon={<Compass size={14} />}
+          />
         </Stack>
       )}
     </Card>
