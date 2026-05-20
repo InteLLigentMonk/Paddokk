@@ -54,7 +54,8 @@ export function useAuth() {
         message: "Welcome back!",
       });
 
-      // Navigate to app dashboard
+      // Remove stale auth cache so beforeLoad fetches a fresh authenticated session
+      queryClient.removeQueries({ queryKey: ["auth-session"] });
       navigate({ to: "/dashboard" });
 
       return { success: true };
@@ -101,7 +102,8 @@ export function useAuth() {
           "Account created! Please check your email to verify your account.",
       });
 
-      // Navigate to app dashboard
+      // Remove stale auth cache so beforeLoad fetches a fresh authenticated session
+      queryClient.removeQueries({ queryKey: ["auth-session"] });
       navigate({ to: "/dashboard" });
 
       return { success: true };
@@ -127,9 +129,9 @@ export function useAuth() {
         message: "You've been signed out",
       });
 
-      // Navigate first so authenticated routes unmount their queries before
-      // we wipe the cache — otherwise the still-mounted observers would
-      // immediately refetch without a session and trigger 401s on the API.
+      // Remove stale auth cache before navigating so beforeLoad fetches a fresh
+      // (null) session — otherwise the 5-min staleTime keeps isAuthenticated=true.
+      queryClient.removeQueries({ queryKey: ["auth-session"] });
       await navigate({ to: "/" });
       queryClient.clear();
 
