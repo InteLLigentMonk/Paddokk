@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.23.0...v0.24.0) (2026-05-20)
+
+
+### Features
+
+* **breadcrumbs:** move breadcrumbs to persistent app layout ([#112](https://github.com/InteLLigentMonk/Paddokk/issues/112)) ([057d389](https://github.com/InteLLigentMonk/Paddokk/commit/057d389afba3e0d0f9cceb47a58cd414d5ebbd0a))
+
 ## [0.23.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.22.0...v0.23.0) (2026-05-20)
 
 
