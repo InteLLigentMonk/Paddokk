@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.22.0...v0.23.0) (2026-05-20)
+
+
+### Features
+
+* **car:** per-section inline editing on car detail page ([#110](https://github.com/InteLLigentMonk/Paddokk/issues/110)) ([73666bc](https://github.com/InteLLigentMonk/Paddokk/commit/73666bc21e8b8bbc5b8cccc8643e091e821b3d6d))
+
 ## [0.22.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.21.2...v0.22.0) (2026-05-20)
 
 
