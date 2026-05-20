@@ -20,6 +20,11 @@ export const theme = createTheme({
   },
   primaryColor: "myColor",
   primaryShade: { light: 6, dark: 7 },
+  fontSizes: {
+    d3: "2.75rem",
+    d2: "3.5rem",
+    d1: "4.75rem",
+  },
   fontFamily: "Rajdhani, sans-serif",
   headings: {
     fontFamily: "BaseNeue, sans-serif",

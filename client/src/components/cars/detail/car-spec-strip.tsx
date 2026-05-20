@@ -10,7 +10,7 @@ import {
   SimpleGrid,
 } from "@mantine/core";
 import { Edit, Check, X } from "lucide-react";
-import { useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { updateUserCarFn } from "@/lib/api/user-cars.server";
@@ -25,11 +25,34 @@ interface StripCellProps {
 
 function StripCell({ label, value }: StripCellProps) {
   return (
-    <Box px={20} py={14} style={{ borderRight: "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))" }}>
-      <Text ff="monospace" tt="uppercase" fz={10} fw={700} c="dimmed" lts="0.12em" mb={4}>
+    <Box
+      px={20}
+      py={14}
+      style={{
+        borderRight:
+          "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+        borderBottom:
+          "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+      }}
+    >
+      <Text
+        ff="monospace"
+        tt="uppercase"
+        fz={10}
+        fw={700}
+        c="dimmed"
+        lts="0.12em"
+        mb={4}
+      >
         {label}
       </Text>
-      <Text ff="Yapari" fz={18} fw={400} lh={1.1} c={value ? undefined : "dimmed"}>
+      <Text
+        ff="Yapari"
+        fz={18}
+        fw={400}
+        lh={1.1}
+        c={value ? undefined : "dimmed"}
+      >
         {value ?? "—"}
       </Text>
     </Box>
@@ -41,18 +64,26 @@ interface CarSpecStripProps {
 }
 
 export function CarSpecStrip({ car }: CarSpecStripProps) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const notifications = useNotifications();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [region, setRegion] = useState(car.region ?? "");
-  const [drive, setDrive] = useState<number | null>(car.drive != null ? (car.drive as number) : null);
+  const [drive, setDrive] = useState<number | null>(
+    car.drive != null ? (car.drive as number) : null,
+  );
   const [engine, setEngine] = useState(car.engine ?? "");
-  const [odometerKm, setOdometerKm] = useState<number | string>(car.odometerKm != null ? Number(car.odometerKm) : "");
+  const [odometerKm, setOdometerKm] = useState<number | string>(
+    car.odometerKm != null ? Number(car.odometerKm) : "",
+  );
 
   const era = eraFromYear(car.year);
-  const driveLabel = car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
-  const odoDisplay = car.odometerKm != null ? `${Number(car.odometerKm).toLocaleString()} km` : null;
+  const driveLabel =
+    car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
+  const odoDisplay =
+    car.odometerKm != null
+      ? `${Number(car.odometerKm).toLocaleString()} km`
+      : null;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -66,7 +97,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
           odometerKm: odometerKm !== "" ? Number(odometerKm) : null,
         },
       });
-      await router.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
       notifications.success({ message: "Specs updated" });
       setIsEditing(false);
     } catch {
@@ -90,8 +121,10 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
         px={{ base: 20, md: 36 }}
         py={16}
         style={{
-          background: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7))",
-          borderBottom: "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+          background:
+            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7))",
+          borderBottom:
+            "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
         }}
       >
         <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm" mb={12}>
@@ -120,10 +153,21 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
           />
         </SimpleGrid>
         <Group gap="xs">
-          <Button size="xs" onClick={handleSave} loading={isSaving} leftSection={<Check size={13} />}>
+          <Button
+            size="xs"
+            onClick={handleSave}
+            loading={isSaving}
+            leftSection={<Check size={13} />}
+          >
             Save
           </Button>
-          <Button size="xs" variant="subtle" onClick={handleCancel} disabled={isSaving} leftSection={<X size={13} />}>
+          <Button
+            size="xs"
+            variant="subtle"
+            onClick={handleCancel}
+            disabled={isSaving}
+            leftSection={<X size={13} />}
+          >
             Cancel
           </Button>
         </Group>
@@ -132,15 +176,21 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
   }
 
   return (
-    <Box
-      style={{
-        background: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7))",
-        borderBottom: "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
-        overflowX: "auto",
-      }}
-    >
-      <Group gap={0} align="stretch" wrap="nowrap" style={{ minWidth: "min-content" }}>
-        <StripCell label="Year" value={car.year != null ? String(car.year) : null} />
+    <Box>
+      <SimpleGrid
+        cols={{ base: 1, sm: 3, lg: 6 }}
+        style={{
+          position: "relative",
+          minWidth: "min-content",
+          borderBottom:
+            "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+        }}
+        spacing={0}
+      >
+        <StripCell
+          label="Year"
+          value={car.year != null ? String(car.year) : null}
+        />
         <StripCell label="Era" value={era} />
         <StripCell label="Region" value={car.region} />
         <StripCell label="Drive" value={driveLabel} />
@@ -148,13 +198,28 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
         <StripCell label="Odometer" value={odoDisplay} />
 
         {car.isOwner && (
-          <Box px={12} py={14} style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
-            <ActionIcon variant="subtle" size="sm" onClick={() => setIsEditing(true)}>
+          <Box
+            px={12}
+            py={14}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              marginLeft: "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <ActionIcon
+              variant="subtle"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+            >
               <Edit size={14} />
             </ActionIcon>
           </Box>
         )}
-      </Group>
+      </SimpleGrid>
     </Box>
   );
 }

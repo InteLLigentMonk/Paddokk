@@ -1,19 +1,31 @@
-import { Avatar, Button, Card, Divider, Group, Skeleton, Stack, Text } from "@mantine/core";
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Group,
+  Skeleton,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { userCarsByUsernameQueryOptions } from "@/lib/api/users.queries";
-import { subscribeToUserCarFn, unsubscribeFromUserCarFn } from "@/lib/api/user-cars.server";
-import { useRouter } from "@tanstack/react-router";
+import {
+  subscribeToUserCarFn,
+  unsubscribeFromUserCarFn,
+} from "@/lib/api/user-cars.server";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { useState } from "react";
+import { Bell } from "lucide-react";
 
 interface CarOwnerGarageProps {
   car: UserCarDto;
 }
 
 export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const notifications = useNotifications();
   const [subscribeLoading, setSubscribeLoading] = useState(false);
 
@@ -21,7 +33,8 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
     userCarsByUsernameQueryOptions(car.ownerUsername),
   );
 
-  const otherCars = ownerCars?.filter((c) => String(c.id) !== String(car.id)) ?? [];
+  const otherCars =
+    ownerCars?.filter((c) => String(c.id) !== String(car.id)) ?? [];
   const firstName = car.ownerUsername.split("_")[0] ?? car.ownerUsername;
 
   const handleSubscribe = async () => {
@@ -32,7 +45,7 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
       } else {
         await subscribeToUserCarFn({ data: { carId: Number(car.id) } });
       }
-      await router.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
     } catch {
       notifications.error({ message: "Failed to update follow" });
     } finally {
@@ -63,8 +76,21 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
         </Link>
         {!car.isOwner && (
           <Button
-            size="xs"
-            variant={car.isSubscribed ? "filled" : "outline"}
+            variant="subtle"
+            color="light-dark(var(--mantine-color-dark-7), var(--mantine-color-gray-3))"
+            bd="1px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-5))"
+            size="sm"
+            leftSection={
+              <Bell
+                size={14}
+                fill={car.isSubscribed ? "var(--mantine-color-blue-5)" : "none"}
+                stroke={
+                  car.isSubscribed
+                    ? "var(--mantine-color-blue-5)"
+                    : "currentColor"
+                }
+              />
+            }
             onClick={handleSubscribe}
             loading={subscribeLoading}
           >
@@ -76,7 +102,15 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
       {otherCars.length > 0 && (
         <>
           <Divider mb="sm" />
-          <Text ff="monospace" tt="uppercase" fz={10} fw={700} c="dimmed" lts="0.1em" mb={8}>
+          <Text
+            ff="monospace"
+            tt="uppercase"
+            fz={10}
+            fw={700}
+            c="dimmed"
+            lts="0.1em"
+            mb={8}
+          >
             Also in {firstName}'s garage
           </Text>
           {isLoading ? (
@@ -92,12 +126,17 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
                   otherCar.nickname ||
                   (otherCar.isCustomBuild
                     ? (otherCar.customBuildName ?? "Custom Build")
-                    : [otherCar.carMakeName, otherCar.carModelName].filter(Boolean).join(" "));
+                    : [otherCar.carMakeName, otherCar.carModelName]
+                        .filter(Boolean)
+                        .join(" "));
                 return (
                   <Link
                     key={String(otherCar.id)}
                     to="/users/$username/cars/$slug"
-                    params={{ username: car.ownerUsername, slug: otherCar.slug }}
+                    params={{
+                      username: car.ownerUsername,
+                      slug: otherCar.slug,
+                    }}
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
                     <Group

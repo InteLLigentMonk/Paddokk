@@ -1,10 +1,9 @@
-import { Avatar, Badge, Box, Group, Text } from "@mantine/core";
+import { Avatar, Badge, Box, Group, Text, Title } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
-import { MapPin, Zap } from "lucide-react";
+import { DotIcon, MapPin, Zap } from "lucide-react";
 import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
 import { DRIVE_LABELS } from "./car-drive-select";
-import { colorHexFromLabel } from "./car-color-swatch-input";
-import { eraFromYear } from "./era";
+import { colorLabelFromHex } from "./car-color-swatch-input";
 
 interface CarHeroProps {
   car: UserCarDto;
@@ -13,15 +12,15 @@ interface CarHeroProps {
 
 export function CarHero({ car, primaryImage }: CarHeroProps) {
   const imageUrl = primaryImage?.imageUrl ?? car.primaryImageUrl;
-  const era = eraFromYear(car.year);
   const drive = car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
-  const colorHex = colorHexFromLabel(car.color);
+  const colorHex = car.color ?? null;
+  const colorLabel = colorLabelFromHex(car.color);
 
-  const displayName =
-    car.nickname ||
-    (car.isCustomBuild
-      ? (car.customBuildName ?? "Custom Build")
-      : [car.carMakeName, car.carModelName].filter(Boolean).join(" "));
+  const mainTitle = car.isCustomBuild
+    ? (car.customBuildName ?? "Custom Build")
+    : [car.carMakeName, car.carModelName, car.carGenerationName]
+        .filter(Boolean)
+        .join(" ");
 
   return (
     <Box
@@ -49,13 +48,13 @@ export function CarHero({ car, primaryImage }: CarHeroProps) {
       {/* Yellow hash-stripe accent top-left */}
       <Box
         pos="absolute"
-        top={0}
+        top={30}
         left={0}
-        w={8}
-        h="100%"
+        w={150}
+        h={12}
         style={{
           backgroundImage:
-            "repeating-linear-gradient(45deg, var(--mantine-color-myColor-6) 0 6px, transparent 6px 12px)",
+            "repeating-linear-gradient(45deg, var(--mantine-primary-color-6) 0 6px, black 6px 12px)",
           zIndex: 2,
         }}
       />
@@ -86,133 +85,184 @@ export function CarHero({ car, primaryImage }: CarHeroProps) {
       </Box>
 
       {/* Bottom title block */}
-      <Box pos="absolute" bottom={0} left={0} right={0} px={{ base: 20, md: 36 }} pb={28} style={{ zIndex: 3 }}>
-        {/* Metadata row */}
-        <Group gap={8} mb={8} wrap="wrap">
-          {car.year && (
-            <Text
-              ff="monospace"
-              fz={12}
-              fw={700}
-              c="rgba(255,255,255,0.7)"
-              tt="uppercase"
-              lts="0.1em"
-            >
-              {String(car.year)}
-            </Text>
-          )}
-          {car.region && (
-            <Badge
-              variant="outline"
-              color="gray.3"
-              size="sm"
-              leftSection={<MapPin size={10} />}
-              style={{ borderColor: "rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.8)" }}
-            >
-              {car.region}
-            </Badge>
-          )}
-          {drive && (
-            <Badge
-              variant="outline"
-              color="gray.3"
-              size="sm"
-              leftSection={<Zap size={10} />}
-              style={{ borderColor: "rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.8)" }}
-            >
-              {drive}
-              {car.engine ? ` · ${car.engine}` : ""}
-            </Badge>
-          )}
-          {!drive && car.engine && (
-            <Badge
-              variant="outline"
-              color="gray.3"
-              size="sm"
-              leftSection={<Zap size={10} />}
-              style={{ borderColor: "rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.8)" }}
-            >
-              {car.engine}
-            </Badge>
-          )}
-        </Group>
-
-        {/* Main title */}
-        <Text
-          component="h1"
-          m={0}
-          c="white"
-          lh={1.05}
-          style={{
-            fontSize: "clamp(40px, 6vw, 76px)",
-            fontFamily: "Yapari",
-            fontWeight: 400,
-          }}
-        >
-          {displayName}
-        </Text>
-
-        {/* Sub-line: nickname + color swatch + era */}
-        <Group gap={10} mt={8} align="center" wrap="wrap">
-          {car.nickname && (car.isCustomBuild ? car.customBuildName : null) && (
-            <Text fz={14} c="rgba(255,255,255,0.65)">
-              {car.isCustomBuild ? car.customBuildName : null}
-            </Text>
-          )}
-          {colorHex && (
-            <Group gap={5} align="center">
-              <Box
-                w={12}
-                h={12}
-                style={{
-                  borderRadius: "50%",
-                  background: colorHex,
-                  border: "1.5px solid rgba(255,255,255,0.4)",
-                  flexShrink: 0,
-                }}
-              />
-              <Text fz={12} c="rgba(255,255,255,0.65)">
-                {car.color}
-              </Text>
+      <Box
+        pos="absolute"
+        bottom={0}
+        left={0}
+        right={0}
+        px={{ base: 20, md: 36 }}
+        pb={28}
+        style={{ zIndex: 3 }}
+      >
+        <Group align="flex-end" justify="space-between" wrap="nowrap">
+          {/* Left: metadata + title + sub-line */}
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            {/* Metadata row */}
+            <Group gap={8} mb={8} wrap="wrap">
+              {car.year && (
+                <Text
+                  ff="monospace"
+                  fz={12}
+                  fw={700}
+                  c="var(--mantine-primary-color-5)"
+                  tt="uppercase"
+                  lts="0.1em"
+                >
+                  {String(car.year)}
+                </Text>
+              )}
+              {car.year && (car.region || car.engine || drive) && (
+                <DotIcon color="var(--mantine-color-gray-3" />
+              )}
+              {car.region && (
+                <Badge
+                  variant="default"
+                  c="var(--mantine-color-gray-2)"
+                  bg="rgba(from var(--mantine-color-white) r g b / 0.2)"
+                  bd={0}
+                  size="md"
+                  leftSection={<MapPin size={12} />}
+                >
+                  {car.region}
+                </Badge>
+              )}
+              {drive && (
+                <Badge
+                  variant="default"
+                  c="var(--mantine-color-gray-2)"
+                  bg="rgba(from var(--mantine-color-white) r g b / 0.2)"
+                  bd={0}
+                  size="md"
+                  leftSection={<Zap size={10} />}
+                >
+                  {drive}
+                  {car.engine ? ` · ${car.engine}` : ""}
+                </Badge>
+              )}
+              {!drive && car.engine && (
+                <Badge
+                  variant="default"
+                  c="var(--mantine-color-gray-2)"
+                  bg="rgba(from var(--mantine-color-white) r g b / 0.2)"
+                  bd={0}
+                  size="md"
+                  leftSection={<Zap size={10} />}
+                >
+                  {car.engine}
+                </Badge>
+              )}
             </Group>
-          )}
-          {!colorHex && car.color && (
-            <Text fz={12} c="rgba(255,255,255,0.65)">
-              {car.color}
-            </Text>
-          )}
-          {era && (
-            <Text
-              ff="monospace"
-              fz={10}
-              fw={700}
-              tt="uppercase"
-              lts="0.12em"
-              c="rgba(255,255,255,0.5)"
-            >
-              {era}
-            </Text>
-          )}
-        </Group>
 
-        {/* Hero stats */}
-        <Group gap={24} mt={14}>
-          <Box>
-            <Text ff="monospace" fz={20} fw={700} c="white" lh={1}>
-              {Number(car.journeyCount)}
-            </Text>
-            <Text ff="monospace" fz={10} tt="uppercase" lts="0.1em" c="rgba(255,255,255,0.5)">
-              Journeys
-            </Text>
+            {/* Main title */}
+            <Title
+              order={1}
+              fz={{ base: "d3", md: "d2", lg: "d1" }}
+              c="white"
+              lh={1.05}
+            >
+              {mainTitle}
+            </Title>
+
+            {/* Sub-line: nickname (replaces era) + color swatch */}
+            <Group gap={10} mt={8} align="center" wrap="wrap">
+              {car.nickname && (
+                <Text fz="lg" c="var(--mantine-color-gray-4)" ta="center">
+                  "{car.nickname}"
+                </Text>
+              )}
+              {colorHex && (
+                <Group gap={5} align="center">
+                  <Box
+                    w={18}
+                    h={18}
+                    style={{
+                      borderRadius: "50%",
+                      background: colorHex,
+                      border: "2px solid var(--mantine-color-white)",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Text fz={12} c="var(--mantine-color-gray-4)">
+                    {colorLabel ?? car.color}
+                  </Text>
+                </Group>
+              )}
+              {!colorHex && car.color && (
+                <Text fz={12} c="var(--mantine-color-gray-4)">
+                  {car.color}
+                </Text>
+              )}
+            </Group>
+
+            {/* Stats on mobile */}
+            <Group gap={24} mt={14} hiddenFrom="md">
+              <Box>
+                <Text ff="monospace" fz={20} fw={700} c="white" lh={1}>
+                  {Number(car.journeyCount)}
+                </Text>
+                <Text
+                  ff="monospace"
+                  fz={10}
+                  tt="uppercase"
+                  lts="0.1em"
+                  c="rgba(255,255,255,0.5)"
+                >
+                  Journeys
+                </Text>
+              </Box>
+              <Box>
+                <Text ff="monospace" fz={20} fw={700} c="white" lh={1}>
+                  {Number(car.likeCount)}
+                </Text>
+                <Text
+                  ff="monospace"
+                  fz={10}
+                  tt="uppercase"
+                  lts="0.1em"
+                  c="rgba(255,255,255,0.5)"
+                >
+                  Likes
+                </Text>
+              </Box>
+            </Group>
           </Box>
-          <Box>
-            <Text ff="monospace" fz={20} fw={700} c="white" lh={1}>
-              {Number(car.likeCount)}
-            </Text>
-            <Text ff="monospace" fz={10} tt="uppercase" lts="0.1em" c="rgba(255,255,255,0.5)">
-              Likes
-            </Text>
-          </Box>
+
+          {/* Stats on md+ — right side */}
+          <Group
+            gap={32}
+            visibleFrom="md"
+            align="flex-end"
+            style={{ flexShrink: 0 }}
+          >
+            <Box ta="right">
+              <Text ff="Yapari" fz="d3" c="white" lh={1}>
+                {Number(car.journeyCount)}
+              </Text>
+              <Text
+                ff="monospace"
+                fz={10}
+                tt="uppercase"
+                lts="0.1em"
+                c="var(--mantine-color-gray-5)"
+              >
+                Journeys
+              </Text>
+            </Box>
+            <Box ta="right">
+              <Text ff="Yapari" fz="d3" c="white" lh={1}>
+                {Number(car.likeCount)}
+              </Text>
+              <Text
+                ff="monospace"
+                fz={10}
+                tt="uppercase"
+                lts="0.1em"
+                c="var(--mantine-color-gray-5)"
+              >
+                Likes
+              </Text>
+            </Box>
+          </Group>
         </Group>
       </Box>
     </Box>
