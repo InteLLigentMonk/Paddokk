@@ -78,7 +78,7 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
           <Button
             variant="subtle"
             color="light-dark(var(--mantine-color-dark-7), var(--mantine-color-gray-3))"
-            bd="1px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-5))"
+            bd="1px solid var(--mantine-color-default-border)"
             size="sm"
             leftSection={
               <Bell
