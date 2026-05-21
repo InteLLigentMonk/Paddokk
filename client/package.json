@@ -3,6 +3,7 @@
   "version": "0.26.1",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "pnpm run api:generate && vite dev --port 3000 --host",
     "build": "pnpm run api:generate && vite build",
