@@ -29,6 +29,7 @@ import {
   CarColorSwatchInput,
   colorLabelFromHex,
 } from "./car-color-swatch-input";
+import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface VitalsRowProps {
   label: string;
@@ -78,10 +79,7 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
     day: "numeric",
   });
 
-  const odoDisplay =
-    car.odometerKm != null
-      ? `${Number(car.odometerKm).toLocaleString()} km`
-      : null;
+  const odoDisplay = `${formatNumber(car.odometerKm)} km`;
 
   const handleSave = async () => {
     setIsSaving(true);

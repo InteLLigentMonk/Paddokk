@@ -17,6 +17,7 @@ import { updateUserCarFn } from "@/lib/api/user-cars.server";
 import { eraFromYear } from "./era";
 import { DRIVE_LABELS } from "./car-drive-select";
 import { CarDriveSelect } from "./car-drive-select";
+import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface StripCellProps {
   label: string;
@@ -29,10 +30,8 @@ function StripCell({ label, value }: StripCellProps) {
       px={20}
       py={14}
       style={{
-        borderRight:
-          "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
-        borderBottom:
-          "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+        borderBottom: "1px solid var(--mantine-color-default-border)",
+        borderRight: "1px solid var(--mantine-color-default-border)",
       }}
     >
       <Text
@@ -80,10 +79,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
   const era = eraFromYear(car.year);
   const driveLabel =
     car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
-  const odoDisplay =
-    car.odometerKm != null
-      ? `${Number(car.odometerKm).toLocaleString()} km`
-      : null;
+  const odoDisplay = `${formatNumber(car.odometerKm)} km`;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -176,16 +172,15 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
   }
 
   return (
-    <Box>
+    <Box
+      style={{
+        overflowX: "auto",
+      }}
+    >
       <SimpleGrid
-        cols={{ base: 1, sm: 3, lg: 6 }}
-        style={{
-          position: "relative",
-          minWidth: "min-content",
-          borderBottom:
-            "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
-        }}
+        cols={{ base: 2, sm: 3, lg: 6 }}
         spacing={0}
+        style={{ position: "relative", minWidth: "min-content" }}
       >
         <StripCell
           label="Year"
@@ -198,18 +193,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
         <StripCell label="Odometer" value={odoDisplay} />
 
         {car.isOwner && (
-          <Box
-            px={12}
-            py={14}
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              marginLeft: "auto",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+          <Box style={{ position: "absolute", right: 8, top: 8 }}>
             <ActionIcon
               variant="subtle"
               size="sm"

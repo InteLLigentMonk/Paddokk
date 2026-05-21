@@ -27,14 +27,14 @@ export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
     });
   }
 
-  const effectiveSortKey: CarSortKey = sort ?? (terms.length > 0 ? "Relevance" : "Newest");
+  const effectiveSortKey: CarSortKey =
+    sort ?? (terms.length > 0 ? "Relevance" : "Newest");
 
   return (
     <Group
       gap="sm"
       wrap="nowrap"
       bg="light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))"
-      p="sm"
       align="flex-start"
       style={{ position: "sticky", top: 0, zIndex: 100 }}
     >
