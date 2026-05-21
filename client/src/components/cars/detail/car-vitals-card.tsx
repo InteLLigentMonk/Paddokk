@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   Card,
   ColorSwatch,
@@ -24,7 +24,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
-import { updateUserCarFn } from "@/lib/api/user-cars.server";
+import { updateUserCarFn } from "@/lib/api/user-cars";
 import {
   CarColorSwatchInput,
   colorLabelFromHex,
@@ -52,7 +52,7 @@ function VitalsRow({ label, value, icon }: VitalsRowProps) {
         >
           {label}
         </Text>
-        <Text c={value ? undefined : "dimmed"}>{value ?? "—"}</Text>
+        <Text c={value ? undefined : "dimmed"}>{value ?? "â€”"}</Text>
       </Stack>
     </Group>
   );

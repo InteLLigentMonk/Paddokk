@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Group, Button, Text } from "@mantine/core";
 import { Heart, Bell, Share2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ import {
   unlikeUserCarFn,
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
-} from "@/lib/api/user-cars.server";
+} from "@/lib/api/user-cars";
 
 interface CarActionBarProps {
   car: UserCarDto;

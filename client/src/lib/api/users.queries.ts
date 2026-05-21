@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+﻿import { queryOptions } from "@tanstack/react-query";
 import {
   getCurrentUserFn,
   getUserByUsernameFn,
@@ -7,8 +7,8 @@ import {
   getUserJourneysByUsernameFn,
   getUserJourneyBySlugFn,
   getCarJourneysFn,
-} from "./users.server";
-import { getCarImagesFn } from "./car-images.server";
+} from "./users";
+import { getCarImagesFn } from "./car-images";
 
 export const currentUserQueryOptions = () =>
   queryOptions({

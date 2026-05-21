@@ -1,5 +1,5 @@
-import { queryOptions } from "@tanstack/react-query";
-import { getAuthSession } from "@/lib/auth-session.server";
+﻿import { queryOptions } from "@tanstack/react-query";
+import { getAuthSession } from "@/lib/auth-session";
 
 export const authSessionQueryOptions = () =>
   queryOptions({

@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { jwt } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
-import { db } from "./db";
+import { db } from "./db/index.server";
 import * as schema from "./db/schema";
 
 export const auth = betterAuth({

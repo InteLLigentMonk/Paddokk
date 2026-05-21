@@ -1,4 +1,4 @@
-import {
+﻿import {
   infiniteQueryOptions,
   queryOptions,
   useMutation,
@@ -14,8 +14,8 @@ import {
   subscribeToJourneyFn,
   unlikeJourneyFn,
   unsubscribeFromJourneyFn
-} from "./journeys.server";
-import type {JourneySortKey} from "./journeys.server";
+} from "./journeys";
+import type {JourneySortKey} from "./journeys";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedJourneysResponse } from "@/generated/api/schemas";
 
@@ -90,7 +90,7 @@ export function useToggleJourneyLike(journeyId: number) {
       });
       notifications.show({
         color: "red",
-        message: "Kunde inte uppdatera gillamarkering. Försök igen.",
+        message: "Kunde inte uppdatera gillamarkering. FÃ¶rsÃ¶k igen.",
       });
     },
     onSettled: () => {
@@ -131,7 +131,7 @@ export function useToggleJourneySubscription(journeyId: number) {
       });
       notifications.show({
         color: "red",
-        message: "Kunde inte uppdatera prenumeration. Försök igen.",
+        message: "Kunde inte uppdatera prenumeration. FÃ¶rsÃ¶k igen.",
       });
     },
     onSettled: () => {

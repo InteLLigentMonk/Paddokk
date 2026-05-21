@@ -1,3 +1,4 @@
+import { createIsomorphicFn } from "@tanstack/react-start";
 import { ApiError } from "./api-error";
 
 export type ErrorType<_TError> = ApiError;
@@ -6,13 +7,13 @@ export type BodyType<TData> = TData;
 const apiUrl = import.meta.env.VITE_API_URL;
 if (!apiUrl) throw new Error("VITE_API_URL is required");
 
-const getAuthToken = async (): Promise<string | null> => {
-  if (typeof window === "undefined") {
+const getAuthToken = createIsomorphicFn()
+  .server(async (): Promise<string | null> => {
     try {
-      const [{ getRequestHeaders }, { auth }] = await Promise.all([
-        import("@tanstack/react-start/server"),
-        import("@/lib/auth"),
-      ]);
+      const { getRequestHeaders } = await import(
+        "@tanstack/react-start/server"
+      );
+      const { auth } = await import("@/lib/auth.server");
       const baseUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
       const res = await auth.handler(
         new Request(`${baseUrl}/api/auth/token`, {
@@ -25,17 +26,16 @@ const getAuthToken = async (): Promise<string | null> => {
     } catch {
       return null;
     }
-  }
-
-  // Client: use Better Auth client JWT plugin
-  try {
-    const { authClient } = await import("@/lib/auth-client");
-    const { data } = await authClient.token();
-    return data?.token ?? null;
-  } catch {
-    return null;
-  }
-};
+  })
+  .client(async (): Promise<string | null> => {
+    try {
+      const { authClient } = await import("@/lib/auth-client");
+      const { data } = await authClient.token();
+      return data?.token ?? null;
+    } catch {
+      return null;
+    }
+  });
 
 const normalizeHeaders = (incoming: HeadersInit): Record<string, string> => {
   if (incoming instanceof Headers) return Object.fromEntries(incoming);

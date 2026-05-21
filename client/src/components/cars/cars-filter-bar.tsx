@@ -1,6 +1,6 @@
-import { Group, Select, TagsInput } from "@mantine/core";
+﻿import { Group, Select, TagsInput } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
-import type { CarSortKey } from "@/lib/api/cars.server";
+import type { CarSortKey } from "@/lib/api/cars";
 
 const SORT_OPTIONS: { value: CarSortKey; label: string }[] = [
   { value: "Newest", label: "Newest" },

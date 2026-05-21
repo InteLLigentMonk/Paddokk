@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   Box,
   Group,
@@ -13,7 +13,7 @@ import { Edit, Check, X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
-import { updateUserCarFn } from "@/lib/api/user-cars.server";
+import { updateUserCarFn } from "@/lib/api/user-cars";
 import { eraFromYear } from "./era";
 import { DRIVE_LABELS } from "./car-drive-select";
 import { CarDriveSelect } from "./car-drive-select";
@@ -53,7 +53,7 @@ function StripCell({ label, value }: StripCellProps) {
         c={value ? undefined : "dimmed"}
         style={{ overflowWrap: "break-word" }}
       >
-        {value ?? "—"}
+        {value ?? "â€”"}
       </Text>
     </Box>
   );

@@ -1,4 +1,4 @@
-import {
+﻿import {
   infiniteQueryOptions,
   queryOptions,
   useMutation,
@@ -11,13 +11,13 @@ import {
   getCarsBrowseStatsFn,
   CAR_SEARCH_SORT,
   type CarSortKey,
-} from "./cars.server";
+} from "./cars";
 import {
   likeUserCarFn,
   unlikeUserCarFn,
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
-} from "./user-cars.server";
+} from "./user-cars";
 import type { PagedUserCarsResponse } from "@/generated/api/schemas";
 
 const PAGE_SIZE = 24;
@@ -91,7 +91,7 @@ export function useToggleCarLike(carId: number) {
       });
       notifications.show({
         color: "red",
-        message: "Kunde inte uppdatera gillamarkering. Försök igen.",
+        message: "Kunde inte uppdatera gillamarkering. FÃ¶rsÃ¶k igen.",
       });
     },
     onSettled: () => {
@@ -132,7 +132,7 @@ export function useToggleCarSubscription(carId: number) {
       });
       notifications.show({
         color: "red",
-        message: "Kunde inte uppdatera prenumeration. Försök igen.",
+        message: "Kunde inte uppdatera prenumeration. FÃ¶rsÃ¶k igen.",
       });
     },
     onSettled: () => {

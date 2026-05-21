@@ -1,4 +1,4 @@
-import {
+﻿import {
   Avatar,
   Button,
   Card,
@@ -14,7 +14,7 @@ import { userCarsByUsernameQueryOptions } from "@/lib/api/users.queries";
 import {
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
-} from "@/lib/api/user-cars.server";
+} from "@/lib/api/user-cars";
 import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import {
+﻿import {
   queryOptions,
   useInfiniteQuery,
   useMutation,
@@ -12,7 +12,7 @@ import {
   deleteCommentFn,
   replyToCommentFn,
   createJourneyPostFn,
-} from "@/lib/api/journey-detail.server";
+} from "@/lib/api/journey-detail";
 
 const POSTS_PAGE_SIZE = 20;
 

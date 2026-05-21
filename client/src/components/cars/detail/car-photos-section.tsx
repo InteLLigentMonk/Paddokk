@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Box, ActionIcon } from "@mantine/core";
 import { Edit } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
@@ -9,7 +9,7 @@ import { EditCarImagesSection } from "@/components/cars/edit-car-images-section"
 import {
   deleteCarImageFn,
   updateCarImageFn,
-} from "@/lib/api/car-images.server";
+} from "@/lib/api/car-images";
 import {
   carImagesUploadCarImage,
   carImagesSetPrimaryImage,

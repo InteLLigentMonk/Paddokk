@@ -1,4 +1,4 @@
-import {
+﻿import {
   Card,
   Image,
   Stack,
@@ -20,7 +20,7 @@ import {
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
   updateUserCarFn,
-} from "@/lib/api/user-cars.server";
+} from "@/lib/api/user-cars";
 import { useNotifications } from "@/integrations/mantine";
 
 interface CarCardProps {
@@ -127,7 +127,7 @@ export function CarCard({ car }: CarCardProps) {
             <Text size="sm" c="dimmed">
               {carAny.isCustomBuild
                 ? "Custom Build"
-                : `${car.year}${car.carGenerationName ? ` • ${car.carGenerationName}` : ""}`}
+                : `${car.year}${car.carGenerationName ? ` â€¢ ${car.carGenerationName}` : ""}`}
             </Text>
             {car.nickname && (
               <Text size="sm" c="dimmed" lineClamp={1}>

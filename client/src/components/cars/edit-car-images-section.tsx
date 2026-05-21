@@ -1,4 +1,4 @@
-import {
+﻿import {
   Badge,
   Group,
   Stack,
@@ -29,7 +29,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useQuery } from "@tanstack/react-query";
-import { getImageLimitsFn } from "@/lib/api/limits.server";
+import { getImageLimitsFn } from "@/lib/api/limits";
 import { useNotifications } from "@/integrations/mantine";
 import { CarImagePreview } from "./car-image-preview";
 import type { PendingImage } from "./car-form-stepper";
