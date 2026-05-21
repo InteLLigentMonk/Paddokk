@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.24.0...v0.24.1) (2026-05-21)
+
+
+### Refactoring
+
+* **car:** polish car UI and extract number formatter utility ([#114](https://github.com/InteLLigentMonk/Paddokk/issues/114)) ([b52cdd4](https://github.com/InteLLigentMonk/Paddokk/commit/b52cdd45b0b8284401876407435a7fe49c7548e4))
+
 ## [0.24.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.23.0...v0.24.0) (2026-05-20)
 
 
