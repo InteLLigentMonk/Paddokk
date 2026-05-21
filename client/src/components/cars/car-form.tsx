@@ -1,29 +1,30 @@
 import { useForm } from "@tanstack/react-form";
 import {
-  Stack,
-  TextInput,
-  NumberInput,
   Button,
-  Group,
-  Select,
   Checkbox,
+  
+  Group,
+  NumberInput,
+  Select,
+  Stack,
   Switch,
-  type ComboboxItem,
+  TextInput
 } from "@mantine/core";
-import { useState, useEffect, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CarImageUpload } from "./car-image-upload";
+import type {ComboboxItem} from "@mantine/core";
+import type { CreateUserCarCommand, UpdateUserCarCommand, UserCarDto } from "@/generated/api/schemas";
 import {
+  carsGetCarGenerations,
   carsGetCarMakes,
   carsGetCarModels,
-  carsGetCarGenerations,
 } from "@/generated/api/cars/cars";
 import {
   userCarsCreateUserCar,
   userCarsUpdateUserCar,
 } from "@/generated/api/user-cars/user-cars";
-import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas";
 import { useNotifications } from "@/integrations/mantine";
-import { CarImageUpload } from "./car-image-upload";
 
 interface CarFormProps {
   initialValues?: UserCarDto;
@@ -73,12 +74,12 @@ export function CarForm({
   const generations =
     generationsData?.status === 200 ? generationsData.data.generations : [];
 
-  const makesSelectData: ComboboxItem[] = useMemo(
+  const makesSelectData: Array<ComboboxItem> = useMemo(
     () =>
       makes.map((make) => ({ value: make.id.toString(), label: make.name })),
     [makes],
   );
-  const modelsSelectData: ComboboxItem[] = useMemo(
+  const modelsSelectData: Array<ComboboxItem> = useMemo(
     () =>
       models.map((model) => ({
         value: model.id.toString(),
@@ -86,7 +87,7 @@ export function CarForm({
       })),
     [models],
   );
-  const generationsSelectData: ComboboxItem[] = useMemo(
+  const generationsSelectData: Array<ComboboxItem> = useMemo(
     () =>
       generations.map((gen) => ({ value: gen.id.toString(), label: gen.name })),
     [generations],
@@ -128,7 +129,7 @@ export function CarForm({
         nickname,
         color,
         isPrimary,
-      } as import("@/generated/api/schemas").UpdateUserCarCommand),
+      } as UpdateUserCarCommand),
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (q) => {
@@ -165,11 +166,11 @@ export function CarForm({
     onSubmit: async ({ value }) => {
       if (isEditing) {
         await editMutation.mutateAsync({
-          id: carId!,
+          id: carId,
           customBuildName: value.customBuildName,
           nickname: value.nickname,
           color: value.color,
-          isPrimary: value.isPrimary ?? null,
+          isPrimary: value.isPrimary,
         });
       } else {
         await addMutation.mutateAsync({
@@ -245,7 +246,7 @@ export function CarForm({
               <TextInput
                 label="Build name"
                 placeholder="e.g. SR20DET S13, AE86 with 4AGE, custom turbo build"
-                value={field.state.value ?? ""}
+                value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 required
@@ -349,7 +350,7 @@ export function CarForm({
             {(field) => (
               <TextInput
                 label="Build name"
-                value={field.state.value ?? ""}
+                value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 disabled={isLoading}

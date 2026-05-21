@@ -4,25 +4,26 @@
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import type { InfiniteData } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import {
-  searchCarsFn,
-  getCarsBrowseStatsFn,
   CAR_SEARCH_SORT,
-  type CarSortKey,
+  
+  getCarsBrowseStatsFn,
+  searchCarsFn
 } from "./cars";
 import {
   likeUserCarFn,
-  unlikeUserCarFn,
   subscribeToUserCarFn,
+  unlikeUserCarFn,
   unsubscribeFromUserCarFn,
 } from "./user-cars";
+import type {CarSortKey} from "./cars";
+import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedUserCarsResponse } from "@/generated/api/schemas";
 
 const PAGE_SIZE = 24;
 
-export const browseCarsInfiniteQueryOptions = (terms: string[], sort: number) =>
+export const browseCarsInfiniteQueryOptions = (terms: Array<string>, sort: number) =>
   infiniteQueryOptions({
     queryKey: ["browse-cars", { terms, sort }] as const,
     queryFn: ({ pageParam }) =>
@@ -31,10 +32,10 @@ export const browseCarsInfiniteQueryOptions = (terms: string[], sort: number) =>
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
-      lastPage?.hasMore ? allPages.length + 1 : undefined,
+      lastPage.hasMore ? allPages.length + 1 : undefined,
   });
 
-export const browseCarsStatsQueryOptions = (terms: string[]) =>
+export const browseCarsStatsQueryOptions = (terms: Array<string>) =>
   queryOptions({
     queryKey: ["browse-cars-stats", { terms }] as const,
     queryFn: () => getCarsBrowseStatsFn({ data: { terms, isPublic: true } }),

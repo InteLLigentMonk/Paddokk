@@ -1,19 +1,19 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  Anchor,
+  AspectRatio,
+  Button,
   Card,
   Group,
-  Stack,
-  Button,
-  Anchor,
   Image,
-  AspectRatio,
+  Stack,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
-import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
-import type { JourneyPostDto } from "@/generated/api/schemas";
-import { OwnerLink } from "@/components/common/owner-link";
+import { ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
 import { PostImageModal } from "./journey-post-image-modal";
+import type { JourneyPostDto } from "@/generated/api/schemas";
+import { OwnerLink } from "@/components/common/owner-link";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("sv-SE", {
@@ -166,7 +166,7 @@ export function JourneyPostCard({ post }: JourneyPostCardProps) {
         <Card.Section withBorder inheritPadding py="sm">
           <PostHeader post={post} />
         </Card.Section>
-        {post.images && (
+        {post.images.length > 0 && (
           <Card.Section>
             <PostImages images={post.images} onImageClick={setLightboxIndex} />
           </Card.Section>

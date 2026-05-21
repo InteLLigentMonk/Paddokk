@@ -4,7 +4,7 @@ import { browseCarsStatsQueryOptions } from "@/lib/api/cars.queries";
 import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface CarsStatsCardProps {
-  terms: string[];
+  terms: Array<string>;
 }
 
 interface StatItemProps {

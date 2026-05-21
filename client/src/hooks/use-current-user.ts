@@ -12,6 +12,6 @@ export function useCurrentUser() {
   const { data: session } = useSession();
   return useQuery({
     ...currentUserQueryOptions(),
-    enabled: !!session?.user?.id,
+    enabled: !!session?.user.id,
   });
 }

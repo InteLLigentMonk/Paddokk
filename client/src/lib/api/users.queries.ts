@@ -1,12 +1,12 @@
 ﻿import { queryOptions } from "@tanstack/react-query";
 import {
+  getCarJourneysFn,
   getCurrentUserFn,
   getUserByUsernameFn,
-  getUserCarsByUsernameFn,
   getUserCarBySlugFn,
-  getUserJourneysByUsernameFn,
+  getUserCarsByUsernameFn,
   getUserJourneyBySlugFn,
-  getCarJourneysFn,
+  getUserJourneysByUsernameFn,
 } from "./users";
 import { getCarImagesFn } from "./car-images";
 

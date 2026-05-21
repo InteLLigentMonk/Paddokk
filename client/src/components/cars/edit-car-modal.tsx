@@ -1,9 +1,9 @@
-import { Modal, Loader, Center } from '@mantine/core'
+import { Center, Loader, Modal } from '@mantine/core'
 import { useStore } from '@tanstack/react-store'
-import { carsPageStore, closeEditCarModal } from '@/lib/stores/cars-page-store'
-import { userCarsGetUserCar } from '@/generated/api/user-cars/user-cars'
 import { useQuery } from '@tanstack/react-query'
 import { CarForm } from './car-form'
+import { carsPageStore, closeEditCarModal } from '@/lib/stores/cars-page-store'
+import { userCarsGetUserCar } from '@/generated/api/user-cars/user-cars'
 
 export function EditCarModal() {
   const editCarState = useStore(carsPageStore, (state) => state.modals.editCar)

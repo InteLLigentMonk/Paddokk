@@ -1,14 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { CreateJourneyCommand, JourneyDto } from "@/generated/api/schemas";
 import {
-  userJourneysGetUserJourneys,
-  userJourneysGetDefaultActiveJourney,
-  userJourneysDeleteJourney,
-  userJourneysUpdateJourney,
-  userJourneysSetDefaultActiveJourney,
   userJourneysCreateJourney,
+  userJourneysDeleteJourney,
+  userJourneysGetDefaultActiveJourney,
+  userJourneysGetUserJourneys,
+  userJourneysSetDefaultActiveJourney,
+  userJourneysUpdateJourney,
 } from "@/generated/api/user-journeys/user-journeys";
-import type { JourneyDto, CreateJourneyCommand } from "@/generated/api/schemas";
 
 const journeyIdSchema = z.object({ journeyId: z.coerce.number() });
 
@@ -43,7 +43,7 @@ const updateJourneySchema = z.object({
 export const getUserJourneysFn = createServerFn({ method: "GET" }).handler(
   async () => {
     const result = await userJourneysGetUserJourneys();
-    return result.data as JourneyDto[];
+    return result.data as Array<JourneyDto>;
   },
 );
 
@@ -51,7 +51,7 @@ export const getDefaultActiveJourneyFn = createServerFn({ method: "GET" }).handl
   async () => {
     try {
       const result = await userJourneysGetDefaultActiveJourney();
-      return result.status === 200 ? (result.data as JourneyDto) : null;
+      return result.status === 200 ? (result.data) : null;
     } catch {
       return null;
     }

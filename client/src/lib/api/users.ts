@@ -1,19 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-  usersGetCurrentUser,
-  usersGetUserByUsername,
-  usersGetUserCarsByUsername,
-  usersGetUserCarBySlug,
-  usersGetUserJourneysByUsername,
-  usersGetJourneyBySlug,
-  usersGetCarJourneys,
-} from "@/generated/api/users/users";
 import type {
-  UserDto,
-  UserCarDto,
   JourneyDto,
+  UserCarDto,
+  UserDto,
 } from "@/generated/api/schemas";
+import {
+  usersGetCarJourneys,
+  usersGetCurrentUser,
+  usersGetJourneyBySlug,
+  usersGetUserByUsername,
+  usersGetUserCarBySlug,
+  usersGetUserCarsByUsername,
+  usersGetUserJourneysByUsername,
+} from "@/generated/api/users/users";
 
 export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -45,7 +45,7 @@ export const getUserCarsByUsernameFn = createServerFn({ method: "GET" })
   .inputValidator(usernameSchema)
   .handler(async ({ data: { username } }) => {
     const result = await usersGetUserCarsByUsername(username);
-    return result.data as UserCarDto[];
+    return result.data as Array<UserCarDto>;
   });
 
 export const getUserCarBySlugFn = createServerFn({ method: "GET" })
@@ -59,7 +59,7 @@ export const getUserJourneysByUsernameFn = createServerFn({ method: "GET" })
   .inputValidator(usernameSchema)
   .handler(async ({ data: { username } }) => {
     const result = await usersGetUserJourneysByUsername(username);
-    return result.data as JourneyDto[];
+    return result.data as Array<JourneyDto>;
   });
 
 export const getUserJourneyBySlugFn = createServerFn({ method: "GET" })
@@ -73,5 +73,5 @@ export const getCarJourneysFn = createServerFn({ method: "GET" })
   .inputValidator(carJourneysSchema)
   .handler(async ({ data: { username, carSlug, page, pageSize } }) => {
     const result = await usersGetCarJourneys(username, carSlug, { page, pageSize });
-    return result.data as JourneyDto[];
+    return result.data as Array<JourneyDto>;
   });

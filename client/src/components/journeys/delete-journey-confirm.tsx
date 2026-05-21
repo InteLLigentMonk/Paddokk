@@ -1,9 +1,9 @@
-﻿import { Modal, Text, Button, Group, Stack } from "@mantine/core";
+﻿import { Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { useStore } from "@tanstack/react-store";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  journeysPageStore,
   closeDeleteJourneyConfirm,
+  journeysPageStore,
 } from "@/lib/stores/journeys-page-store";
 import { userJourneysGetUserJourney } from "@/generated/api/user-journeys/user-journeys";
 import { deleteUserJourneyFn, getDefaultActiveJourneyFn } from "@/lib/api/user-journeys";

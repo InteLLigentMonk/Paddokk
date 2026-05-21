@@ -1,22 +1,22 @@
 ﻿import { useState } from "react";
 import {
-  Box,
-  Group,
-  Text,
   ActionIcon,
-  TextInput,
-  NumberInput,
+  Box,
   Button,
+  Group,
+  NumberInput,
   SimpleGrid,
+  Text,
+  TextInput,
 } from "@mantine/core";
-import { Edit, Check, X } from "lucide-react";
+import { Check, Edit, X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNotifications } from "@/integrations/mantine";
+import { eraFromYear } from "./era";
+import { CarDriveSelect, DRIVE_LABELS  } from "./car-drive-select";
+
 import type { UserCarDto } from "@/generated/api/schemas";
 import { updateUserCarFn } from "@/lib/api/user-cars";
-import { eraFromYear } from "./era";
-import { DRIVE_LABELS } from "./car-drive-select";
-import { CarDriveSelect } from "./car-drive-select";
+import { useNotifications } from "@/integrations/mantine";
 import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface StripCellProps {
@@ -71,7 +71,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [region, setRegion] = useState(car.region ?? "");
   const [drive, setDrive] = useState<number | null>(
-    car.drive != null ? (car.drive as number) : null,
+    car.drive != null ? (car.drive) : null,
   );
   const [engine, setEngine] = useState(car.engine ?? "");
   const [odometerKm, setOdometerKm] = useState<number | string>(
@@ -80,7 +80,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
 
   const era = eraFromYear(car.year);
   const driveLabel =
-    car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
+    car.drive != null ? DRIVE_LABELS[car.drive] : null;
   const odoDisplay = `${formatNumber(car.odometerKm)} km`;
 
   const handleSave = async () => {
@@ -107,7 +107,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
 
   const handleCancel = () => {
     setRegion(car.region ?? "");
-    setDrive(car.drive != null ? (car.drive as number) : null);
+    setDrive(car.drive != null ? (car.drive) : null);
     setEngine(car.engine ?? "");
     setOdometerKm(car.odometerKm != null ? Number(car.odometerKm) : "");
     setIsEditing(false);

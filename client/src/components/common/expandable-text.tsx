@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from "react";
-import { Stack, Text, Anchor } from "@mantine/core";
+import { useEffect, useRef, useState } from "react";
+import { Anchor, Stack, Text } from "@mantine/core";
 
 interface ExpandableTextProps {
   text: string;

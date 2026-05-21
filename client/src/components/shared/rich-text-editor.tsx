@@ -15,8 +15,8 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
       TiptapLink.configure({ openOnClick: false }),
     ],
     content,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+    onUpdate: ({ editor: instance }) => {
+      onChange(instance.getHTML())
     },
   })
 

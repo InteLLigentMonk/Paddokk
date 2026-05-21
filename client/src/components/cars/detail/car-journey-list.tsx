@@ -1,6 +1,6 @@
 import {
-  Box,
   Badge,
+  Box,
   Button,
   Group,
   Image,
@@ -14,8 +14,8 @@ import { Heart, MessageSquare, Plus } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { carJourneysQueryOptions } from "@/lib/api/users.queries";
 import { CarSectionHead } from "./car-section-head";
+import { carJourneysQueryOptions } from "@/lib/api/users.queries";
 
 const CATEGORY_LABELS: Record<number, string> = {
   1: "Build & Mods",

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
-import { Group, Text, rem, Image, Stack, CloseButton, Box } from '@mantine/core'
-import { Upload, Image as ImageIcon, X } from 'lucide-react'
+import { Box, CloseButton, Group, Image, Stack, Text, rem } from '@mantine/core'
+import { Image as ImageIcon, Upload, X } from 'lucide-react'
 import { useNotifications } from '@/integrations/mantine'
 
 interface CarImageUploadProps {

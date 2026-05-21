@@ -1,9 +1,12 @@
 ﻿import { useState } from "react";
-import { Box, ActionIcon } from "@mantine/core";
+import { ActionIcon, Box } from "@mantine/core";
 import { Edit } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
+import { CarSectionHead } from "./car-section-head";
+import type { CarImageDto, UserCarDto } from "@/generated/api/schemas";
+import type { EditCarImagesSectionProps } from "@/components/cars/edit-car-images-section";
+import type { PendingImage } from "@/components/cars/car-form-stepper";
 import { useNotifications } from "@/integrations/mantine";
-import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
 import { CarImageCarousel } from "@/components/cars/car-image-carousel";
 import { EditCarImagesSection } from "@/components/cars/edit-car-images-section";
 import {
@@ -11,18 +14,15 @@ import {
   updateCarImageFn,
 } from "@/lib/api/car-images";
 import {
-  carImagesUploadCarImage,
   carImagesSetPrimaryImage,
+  carImagesUploadCarImage,
 } from "@/generated/api/car-images/car-images";
-import type { EditCarImagesSectionProps } from "@/components/cars/edit-car-images-section";
-import type { PendingImage } from "@/components/cars/car-form-stepper";
-import { CarSectionHead } from "./car-section-head";
 
 type PrimaryId = EditCarImagesSectionProps["primaryId"];
 
 interface CarPhotosSectionProps {
   car: UserCarDto;
-  images: CarImageDto[];
+  images: Array<CarImageDto>;
 }
 
 export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
@@ -31,10 +31,10 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [existingImages, setExistingImages] = useState<CarImageDto[]>(images);
-  const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
-  const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
-  const [reorderedIds, setReorderedIds] = useState<number[] | null>(null);
+  const [existingImages, setExistingImages] = useState<Array<CarImageDto>>(images);
+  const [pendingImages, setPendingImages] = useState<Array<PendingImage>>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<Array<number>>([]);
+  const [reorderedIds, setReorderedIds] = useState<Array<number> | null>(null);
 
   const initialPrimaryId: PrimaryId = (() => {
     const primary = images.find((img) => img.isPrimary);

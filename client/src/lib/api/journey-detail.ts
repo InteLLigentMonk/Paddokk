@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { journeysGetJourney, journeysGetJourneyPosts, journeysCreateJourneyPost } from "@/generated/api/journeys/journeys";
+import type { CommentsPagedResponse, JourneyDto, JourneyPostDto } from "@/generated/api/schemas";
+import { journeysCreateJourneyPost, journeysGetJourney, journeysGetJourneyPosts } from "@/generated/api/journeys/journeys";
 import {
-  postCommentsGetPostComments,
   postCommentsCreateComment,
+  postCommentsGetPostComments,
 } from "@/generated/api/post-comments/post-comments";
 import { commentsDeleteComment } from "@/generated/api/comments/comments";
-import type { JourneyDto, JourneyPostDto, CommentsPagedResponse } from "@/generated/api/schemas";
 
 const journeyIdSchema = z.object({ journeyId: z.coerce.number() });
 
@@ -43,7 +43,7 @@ export const getJourneyPostsFn = createServerFn({ method: "GET" })
   .inputValidator(journeyPostsSchema)
   .handler(async ({ data: { journeyId, skip, take } }) => {
     const result = await journeysGetJourneyPosts(journeyId, { skip, take });
-    return result.data as JourneyPostDto[];
+    return result.data as Array<JourneyPostDto>;
   });
 
 export const getPostCommentsFn = createServerFn({ method: "GET" })

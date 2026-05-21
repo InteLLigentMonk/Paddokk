@@ -1,19 +1,19 @@
 import { useState } from "react";
 import {
+  Anchor,
+  Badge,
   Box,
+  Button,
+  Collapse,
+  Divider,
   Group,
+  Image,
+  Paper,
   Stack,
   Text,
   Title,
-  Badge,
-  Image,
-  Paper,
-  Divider,
-  Collapse,
-  Anchor,
-  Button,
 } from "@mantine/core";
-import { MessageSquare, Heart, Bell } from "lucide-react";
+import { Bell, Heart, MessageSquare } from "lucide-react";
 import type { JourneyActivityTier, JourneyDto } from "@/generated/api/schemas";
 import { OwnerLink } from "@/components/common/owner-link";
 

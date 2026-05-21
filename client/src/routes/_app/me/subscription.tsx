@@ -1,14 +1,14 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
-  Container,
-  Title,
-  Text,
-  Stack,
+  Badge,
   Button,
   Card,
-  SimpleGrid,
-  Badge,
+  Container,
   List,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
 } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
@@ -17,8 +17,8 @@ import { notify } from "@/integrations/mantine";
 export const Route = createFileRoute("/_app/me/subscription")({
   staticData: { breadcrumb: "Subscription" },
   validateSearch: (search?): { reason?: string; from?: string } => ({
-    reason: (search?.reason as string) ?? undefined,
-    from: (search?.from as string) ?? undefined,
+    reason: search?.reason as string | undefined,
+    from: search?.from as string | undefined,
   }),
   component: SubscriptionPage,
 });

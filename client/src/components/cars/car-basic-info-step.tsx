@@ -2,8 +2,8 @@ import { useMemo, useState } from "react"
 import { Button, Group, NumberInput, Select, Stack, Switch, TextInput } from "@mantine/core"
 import { useForm } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-import { carsGetCarMakes, carsGetCarModels, carsGetCarGenerations } from "@/generated/api/cars/cars"
 import type { CarBasicFormData } from "./car-form-stepper"
+import { carsGetCarGenerations, carsGetCarMakes, carsGetCarModels } from "@/generated/api/cars/cars"
 
 interface CarBasicInfoStepProps {
   initialData: CarBasicFormData | null
@@ -108,7 +108,7 @@ export function CarBasicInfoStep({ initialData, onNext, onCancel }: CarBasicInfo
   }, [generations, selectedGenerationId])
 
   const isStandardValid = (selectedMakeId ?? 0) > 0 && (selectedModelId ?? 0) > 0
-  const isCustomValid = (customBuildName?.trim().length ?? 0) > 0
+  const isCustomValid = customBuildName.trim().length > 0
 
   return (
     <form
@@ -130,14 +130,14 @@ export function CarBasicInfoStep({ initialData, onNext, onCancel }: CarBasicInfo
             name="customBuildName"
             validators={{
               onChange: ({ value }) =>
-                !value?.trim() ? "Custom build name is required" : undefined,
+                !value.trim() ? "Custom build name is required" : undefined,
             }}
           >
             {(field) => (
               <TextInput
                 label="Build name"
                 placeholder="e.g. SR20DET S13, AE86 with 4AGE, custom turbo build"
-                value={field.state.value ?? ""}
+                value={field.state.value}
                 onChange={(e) => {
                   field.handleChange(e.target.value)
                   setCustomBuildName(e.target.value)
@@ -271,7 +271,7 @@ export function CarBasicInfoStep({ initialData, onNext, onCancel }: CarBasicInfo
             <TextInput
               label="Nickname (optional)"
               placeholder="Enter nickname"
-              value={field.state.value ?? ""}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
             />
           )}
@@ -282,7 +282,7 @@ export function CarBasicInfoStep({ initialData, onNext, onCancel }: CarBasicInfo
             <TextInput
               label="Color (optional)"
               placeholder="Enter color"
-              value={field.state.value ?? ""}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
             />
           )}

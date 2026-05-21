@@ -1,15 +1,15 @@
-﻿import { Container, Stack, Title, Text } from "@mantine/core";
-import { Route } from "@/routes/_app/cars/index";
-import { sortKeyToNumber } from "@/lib/api/cars.queries";
-import type { CarSortKey } from "@/lib/api/cars";
+﻿import { Container, Stack, Text, Title } from "@mantine/core";
 import { CarsStatsCard } from "./cars-stats-card";
 import { CarsFilterBar } from "./cars-filter-bar";
 import { CarsBrowseGrid } from "./cars-browse-grid";
+import type { CarSortKey } from "@/lib/api/cars";
+import { sortKeyToNumber } from "@/lib/api/cars.queries";
+import { Route } from "@/routes/_app/cars/index";
 
 export function CarsBrowsePage() {
   const { q, sort } = Route.useSearch();
   const terms = q ?? [];
-  const sortKey = sort as CarSortKey | undefined;
+  const sortKey = sort;
   const sortNum = sortKeyToNumber(sortKey, terms.length > 0);
 
   return (

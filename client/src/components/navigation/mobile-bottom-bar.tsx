@@ -2,8 +2,8 @@ import { Box, Group } from '@mantine/core'
 import { Menu } from 'lucide-react'
 import { NavItem } from './nav-item'
 import { FABMenu } from './fab-menu'
-import { navigationConfig } from '@/data/navigation/app-navigation'
 import type { NavItem as NavItemType } from '@/data/navigation/types'
+import { navigationConfig } from '@/data/navigation/app-navigation'
 
 const MORE_ITEM: NavItemType = {
   id: 'more',

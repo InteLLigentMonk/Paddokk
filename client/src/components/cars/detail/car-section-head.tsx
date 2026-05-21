@@ -1,4 +1,5 @@
-import { Group, Text, type GroupProps } from "@mantine/core";
+import { Group,  Text } from "@mantine/core";
+import type {GroupProps} from "@mantine/core";
 import type { ReactNode } from "react";
 
 interface CarSectionHeadProps {

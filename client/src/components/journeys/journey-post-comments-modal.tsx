@@ -1,15 +1,15 @@
 import {
-  Modal,
+  Box,
+  Divider,
   Group,
+  Image,
+  Modal,
   Stack,
   Text,
-  Image,
-  Divider,
-  Box,
 } from "@mantine/core";
+import { JourneyPostComments } from "./journey-post-comments";
 import type { JourneyPostDto } from "@/generated/api/schemas";
 import { OwnerLink } from "@/components/common/owner-link";
-import { JourneyPostComments } from "./journey-post-comments";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("sv-SE", {

@@ -19,8 +19,8 @@ export interface NavItem {
 }
 
 export interface NavConfig {
-  me: NavItem[];
-  discover: NavItem[];
-  tools: NavItem[];
-  fabActions: NavItem[];
+  me: Array<NavItem>;
+  discover: Array<NavItem>;
+  tools: Array<NavItem>;
+  fabActions: Array<NavItem>;
 }

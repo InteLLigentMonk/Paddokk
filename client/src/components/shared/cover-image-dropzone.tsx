@@ -1,6 +1,6 @@
 import { ActionIcon, AspectRatio, Box, Group, Image, Text } from "@mantine/core"
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
-import { Upload, Image as ImageIcon, X } from "lucide-react"
+import { Image as ImageIcon, Upload, X } from "lucide-react"
 
 interface CoverImageDropzoneProps {
   previewUrl: string | null
@@ -8,9 +8,9 @@ interface CoverImageDropzoneProps {
 }
 
 export function CoverImageDropzone({ previewUrl, onChange }: CoverImageDropzoneProps) {
-  const handleDrop = (files: File[]) => {
+  const handleDrop = (files: Array<File>) => {
+    if (files.length === 0) return
     const file = files[0]
-    if (!file) return
     if (previewUrl) URL.revokeObjectURL(previewUrl)
     onChange(file, URL.createObjectURL(file))
   }

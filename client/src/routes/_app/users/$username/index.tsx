@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { Container, Stack, Title, Text, Avatar, Group } from "@mantine/core";
+import { Avatar, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { userByUsernameQueryOptions } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app/users/$username/")({
@@ -28,7 +28,7 @@ function UserProfilePage() {
       <Stack gap="xl">
         <Group gap="lg" align="center">
           <Avatar src={user.avatarUrl ?? undefined} size={96} radius="xl">
-            {user.firstName?.[0] ?? user.username[0]}
+            {user.firstName.charAt(0) || user.username.charAt(0)}
           </Avatar>
           <Stack gap={4}>
             <Title order={2}>{user.displayName}</Title>

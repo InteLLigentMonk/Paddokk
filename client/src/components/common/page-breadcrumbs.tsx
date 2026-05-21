@@ -10,7 +10,7 @@ export function PageBreadcrumbs({ current }: PageBreadcrumbsProps) {
   const matches = useMatches();
   const parentCrumbs = matches
     .map((m) => {
-      const raw = m.staticData?.breadcrumb;
+      const raw = m.staticData.breadcrumb;
       if (typeof raw === "string") return { label: raw, pathname: m.pathname };
       if (typeof raw === "function") {
         return { label: raw(m.loaderData), pathname: m.pathname };

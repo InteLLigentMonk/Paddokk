@@ -1,7 +1,7 @@
-import { Drawer, Stack, Title, Group, Text, UnstyledButton } from '@mantine/core'
+import { Drawer, Group, Stack, Text, Title, UnstyledButton } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
-import { navigationConfig } from '@/data/navigation/app-navigation'
 import type { NavItem } from '@/data/navigation/types'
+import { navigationConfig } from '@/data/navigation/app-navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const
@@ -27,7 +27,7 @@ function DrawerNavItem({ item, onClose }: { item: NavItem; onClose: () => void }
   return (
     <UnstyledButton
       component={Link}
-      to={resolvedHref!}
+      to={resolvedHref}
       onClick={onClose}
       style={{
         padding: '12px 16px',

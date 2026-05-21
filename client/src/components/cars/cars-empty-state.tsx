@@ -1,4 +1,4 @@
-import { Stack, Text, Button, Box } from '@mantine/core'
+import { Box, Button, Stack, Text } from '@mantine/core'
 import { Car } from 'lucide-react'
 
 interface CarsEmptyStateProps {

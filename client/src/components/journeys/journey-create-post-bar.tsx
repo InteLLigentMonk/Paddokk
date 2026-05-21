@@ -1,17 +1,17 @@
 import {
+  ActionIcon,
   Avatar,
+  Center,
   Group,
   Paper,
   TextInput,
-  ActionIcon,
   Title,
-  Center,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { SendHorizonal } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import type { JourneyDto } from "@/generated/api/schemas";
 import { JourneyCreatePostModal } from "./journey-create-post-modal";
+import type { JourneyDto } from "@/generated/api/schemas";
+import { useAuth } from "@/hooks/use-auth";
 
 interface JourneyCreatePostBarProps {
   journey: JourneyDto;

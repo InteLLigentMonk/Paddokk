@@ -1,30 +1,30 @@
 ﻿import { useState } from "react";
 import {
-  Modal,
-  Stack,
-  Group,
-  Button,
+  ActionIcon,
   Badge,
   Box,
+  Button,
+  Group,
   Image,
-  TextInput,
-  ActionIcon,
-  Text,
   Loader,
+  Modal,
   SimpleGrid,
+  Stack,
+  Text,
+  TextInput,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { X, Upload, Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, Upload, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import type { JourneyDto } from "@/generated/api/schemas";
 import { useNotifications } from "@/integrations/mantine";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { useCreateJourneyPost } from "@/hooks/use-journey-detail";
 import { getImageLimitsFn } from "@/lib/api/limits";
 import {
-  journeysUploadJourneyPostImage,
   journeysDeleteJourneyPostImage,
+  journeysUploadJourneyPostImage,
 } from "@/generated/api/journeys/journeys";
-import type { JourneyDto } from "@/generated/api/schemas";
 
 const SUBSCRIPTION_TIER_LABELS: Record<number, string> = {
   0: "Free",
@@ -57,7 +57,7 @@ export function JourneyCreatePostModal({
   const notifications = useNotifications();
   const [content, setContent] = useState("");
   const [editorKey, setEditorKey] = useState(0);
-  const [images, setImages] = useState<UploadedImage[]>([]);
+  const [images, setImages] = useState<Array<UploadedImage>>([]);
 
   const journeyId = Number(journey.id);
 
@@ -82,7 +82,7 @@ export function JourneyCreatePostModal({
     setImages([]);
   };
 
-  const cleanupImages = async (toClean: UploadedImage[]) => {
+  const cleanupImages = async (toClean: Array<UploadedImage>) => {
     const uploaded = toClean.filter((img) => img.imageUrl && !img.isUploading);
     await Promise.all(
       uploaded.map((img) =>
@@ -101,7 +101,7 @@ export function JourneyCreatePostModal({
     onClose();
   };
 
-  const handleDrop = async (files: File[]) => {
+  const handleDrop = (files: Array<File>) => {
     const remaining = maxImages - images.length;
     const toUpload = files.slice(0, remaining);
 
@@ -145,7 +145,7 @@ export function JourneyCreatePostModal({
     }
   };
 
-  const handleRemoveImage = async (tempId: string) => {
+  const handleRemoveImage = (tempId: string) => {
     const image = images.find((img) => img.tempId === tempId);
     setImages((prev) =>
       prev
@@ -281,7 +281,7 @@ export function JourneyCreatePostModal({
             }
             maxSize={10 * 1024 * 1024}
             accept={IMAGE_MIME_TYPE}
-            disabled={!canAddMoreImages || isPending}
+            disabled={isPending}
           >
             <Group
               justify="center"

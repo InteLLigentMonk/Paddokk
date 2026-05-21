@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using NSubstitute;
 using Paddokk.Core.Features.Cars.Queries.SearchCars;
 using Paddokk.Core.Interfaces;
@@ -41,6 +41,7 @@ public class SearchCarsHandlerTests
             CarSearchSort.Newest,
             1,
             24,
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -60,6 +61,7 @@ public class SearchCarsHandlerTests
             Arg.Any<CarSearchSort>(),
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -78,6 +80,7 @@ public class SearchCarsHandlerTests
             Arg.Any<CarSearchSort>(),
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -96,6 +99,7 @@ public class SearchCarsHandlerTests
             CarSearchSort.MostLiked,
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -114,6 +118,7 @@ public class SearchCarsHandlerTests
             CarSearchSort.MostJourneys,
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -132,6 +137,7 @@ public class SearchCarsHandlerTests
             CarSearchSort.Relevance,
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -177,6 +183,7 @@ public class SearchCarsHandlerTests
             Arg.Any<CarSearchSort>(),
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
@@ -204,6 +211,7 @@ public class SearchCarsHandlerTests
             Arg.Any<CarSearchSort>(),
             Arg.Any<int>(),
             Arg.Any<int>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>())
             .Returns((cars, total));
     }

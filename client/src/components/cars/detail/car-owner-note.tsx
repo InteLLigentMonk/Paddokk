@@ -1,16 +1,16 @@
 import {
+  ActionIcon,
   Avatar,
   Box,
+  Button,
   Group,
+  Paper,
   Text,
   Textarea,
-  Button,
-  ActionIcon,
-  Paper,
 } from "@mantine/core";
-import { Edit, Check, X } from "lucide-react";
-import type { UserCarDto } from "@/generated/api/schemas";
+import { Check, Edit, X } from "lucide-react";
 import { useSectionEdit } from "./use-section-edit";
+import type { UserCarDto } from "@/generated/api/schemas";
 
 interface CarOwnerNoteProps {
   car: UserCarDto;

@@ -8,11 +8,12 @@ namespace Paddokk.Tests.Features.Cars.Queries;
 public class GetCarsBrowseStatsHandlerTests
 {
     private readonly ICarRepository _carRepo = Substitute.For<ICarRepository>();
+    private readonly IActorResolver _actor = Substitute.For<IActorResolver>();
     private readonly GetCarsBrowseStatsHandler _handler;
 
     public GetCarsBrowseStatsHandlerTests()
     {
-        _handler = new GetCarsBrowseStatsHandler(_carRepo);
+        _handler = new GetCarsBrowseStatsHandler(_carRepo, _actor);
     }
 
     [Fact]
@@ -22,6 +23,7 @@ public class GetCarsBrowseStatsHandlerTests
         _carRepo.GetBrowseStatsAsync(
             Arg.Is<IReadOnlyList<string>>(t => t.Count == 0),
             true,
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>())
             .Returns(expected);
 
@@ -43,6 +45,7 @@ public class GetCarsBrowseStatsHandlerTests
         _carRepo.GetBrowseStatsAsync(
             Arg.Is<IReadOnlyList<string>>(t => t.Count == 2 && t[0] == "bmw" && t[1] == "e30"),
             Arg.Any<bool?>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>())
             .Returns(expected);
 
@@ -60,6 +63,7 @@ public class GetCarsBrowseStatsHandlerTests
         _carRepo.GetBrowseStatsAsync(
             Arg.Any<IReadOnlyList<string>>(),
             Arg.Any<bool?>(),
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>())
             .Returns(new GetCarsBrowseStatsResponse());
 

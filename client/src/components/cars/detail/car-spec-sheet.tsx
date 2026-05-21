@@ -1,19 +1,19 @@
 import {
+  ActionIcon,
   Box,
   Button,
   Divider,
+  Flex,
   Group,
-  ActionIcon,
+  Paper,
   Stack,
   Text,
   TextInput,
-  Paper,
-  Flex,
 } from "@mantine/core";
-import { Edit, Check, X, Plus, Trash2, DotIcon } from "lucide-react";
-import type { UserCarDto, CarSpecCategoryDto } from "@/generated/api/schemas";
+import { Check, DotIcon, Edit, Plus, Trash2, X } from "lucide-react";
 import { CarSectionHead } from "./car-section-head";
 import { useSectionEdit } from "./use-section-edit";
+import type { CarSpecCategoryDto, UserCarDto } from "@/generated/api/schemas";
 
 interface CarSpecSheetProps {
   car: UserCarDto;
@@ -158,9 +158,9 @@ function EditableCategoryGroup({
 }
 
 export function CarSpecSheet({ car }: CarSpecSheetProps) {
-  const specs = car.specsByCategory ?? [];
+  const specs = car.specsByCategory;
   const { isEditing, draft, setDraft, start, cancel, save, isSaving } =
-    useSectionEdit<CarSpecCategoryDto[]>(specs, Number(car.id));
+    useSectionEdit<Array<CarSpecCategoryDto>>(specs, Number(car.id));
 
   const addCategory = () => {
     setDraft([...draft, { category: "", items: [""] }]);

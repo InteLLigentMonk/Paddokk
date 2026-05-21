@@ -1,23 +1,23 @@
 ﻿import {
-  Card,
-  Image,
-  Stack,
-  Group,
-  Text,
   ActionIcon,
-  Menu,
-  Badge,
   AspectRatio,
+  Badge,
+  Card,
+  Group,
+  Image,
+  Menu,
+  Stack,
+  Text,
 } from "@mantine/core";
-import { MoreVertical, Edit, Trash, Heart, Bell, Star } from "lucide-react";
+import { Bell, Edit, Heart, MoreVertical, Star, Trash } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { openDeleteCarConfirm } from "@/lib/stores/cars-page-store";
 import {
   likeUserCarFn,
-  unlikeUserCarFn,
   subscribeToUserCarFn,
+  unlikeUserCarFn,
   unsubscribeFromUserCarFn,
   updateUserCarFn,
 } from "@/lib/api/user-cars";

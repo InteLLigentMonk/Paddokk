@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from "react";
+﻿import { useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Badge,
@@ -16,8 +16,8 @@ import { useStore } from "@tanstack/react-store";
 import { useForm } from "@tanstack/react-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  journeysPageStore,
   closeCreateJourneyModal,
+  journeysPageStore,
 } from "@/lib/stores/journeys-page-store";
 import { useCanAddJourney } from "@/hooks/use-can-add-journey";
 import { createJourneyFn } from "@/lib/api/user-journeys";
@@ -94,7 +94,7 @@ export function CreateJourneyModal() {
   );
 
   const primaryCarId = useMemo(
-    () => cars.find((c) => c.isPrimary)?.id ?? cars[0]?.id ?? null,
+    () => cars.find((c) => c.isPrimary)?.id ?? cars[0]?.id,
     [cars],
   );
 
@@ -194,7 +194,7 @@ export function CreateJourneyModal() {
             name="title"
             validators={{
               onChange: ({ value }) => {
-                if (!value?.trim()) return "Title is required";
+                if (!value.trim()) return "Title is required";
                 if (value.trim().length < 3)
                   return "Title must be at least 3 characters";
                 return undefined;

@@ -1,40 +1,40 @@
 ﻿import {
-  Card,
-  Image,
-  Stack,
-  Group,
-  Text,
   ActionIcon,
-  Menu,
-  Badge,
   AspectRatio,
+  Badge,
+  Card,
+  Group,
+  Image,
+  Menu,
+  Stack,
+  Text,
 } from "@mantine/core";
 import {
-  MoreVertical,
-  Edit,
-  Trash,
-  Heart,
   Bell,
-  MessageSquare,
   CheckCircle,
+  Edit,
   Eye,
   EyeOff,
+  Heart,
+  MessageSquare,
+  MoreVertical,
   Star,
+  Trash,
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
+  JourneyActivityTier,
   JourneyDto,
   JourneyStatus,
-  JourneyActivityTier,
 } from "@/generated/api/schemas";
 import {
-  openEditJourneyModal,
   openDeleteJourneyConfirm,
+  openEditJourneyModal,
 } from "@/lib/stores/journeys-page-store";
 import {
-  updateJourneyFn,
   setDefaultActiveJourneyFn,
+  updateJourneyFn,
 } from "@/lib/api/user-journeys";
 import { useNotifications } from "@/integrations/mantine";
 
