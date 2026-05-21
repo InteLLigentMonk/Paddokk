@@ -17,6 +17,7 @@ import { updateUserCarFn } from "@/lib/api/user-cars.server";
 import { eraFromYear } from "./era";
 import { DRIVE_LABELS } from "./car-drive-select";
 import { CarDriveSelect } from "./car-drive-select";
+import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface StripCellProps {
   label: string;
@@ -29,10 +30,8 @@ function StripCell({ label, value }: StripCellProps) {
       px={20}
       py={14}
       style={{
-        borderRight:
-          "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
-        borderBottom:
-          "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+        borderBottom: "1px solid var(--mantine-color-default-border)",
+        borderRight: "1px solid var(--mantine-color-default-border)",
       }}
     >
       <Text
@@ -52,6 +51,7 @@ function StripCell({ label, value }: StripCellProps) {
         fw={400}
         lh={1.1}
         c={value ? undefined : "dimmed"}
+        style={{ overflowWrap: "break-word" }}
       >
         {value ?? "—"}
       </Text>
@@ -66,6 +66,7 @@ interface CarSpecStripProps {
 export function CarSpecStrip({ car }: CarSpecStripProps) {
   const queryClient = useQueryClient();
   const notifications = useNotifications();
+
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [region, setRegion] = useState(car.region ?? "");
@@ -80,10 +81,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
   const era = eraFromYear(car.year);
   const driveLabel =
     car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
-  const odoDisplay =
-    car.odometerKm != null
-      ? `${Number(car.odometerKm).toLocaleString()} km`
-      : null;
+  const odoDisplay = `${formatNumber(car.odometerKm)} km`;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -118,16 +116,12 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
   if (isEditing) {
     return (
       <Box
-        px={{ base: 20, md: 36 }}
-        py={16}
+        p="md"
         style={{
-          background:
-            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7))",
-          borderBottom:
-            "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
+          borderBottom: "1px solid var(--mantine-color-default-border)",
         }}
       >
-        <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm" mb={12}>
+        <SimpleGrid cols={{ base: 2, md: 5 }} spacing="md">
           <TextInput
             label="Region"
             value={region}
@@ -151,41 +145,40 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
             placeholder="e.g. 145000"
             size="sm"
           />
+          <Group gap="xs" align="flex-end" wrap="nowrap" miw="max-content">
+            <Button
+              size="sm"
+              onClick={handleSave}
+              loading={isSaving}
+              leftSection={<Check size={13} />}
+            >
+              Save
+            </Button>
+            <Button
+              size="sm"
+              variant="subtle"
+              onClick={handleCancel}
+              disabled={isSaving}
+              leftSection={<X size={13} />}
+            >
+              Cancel
+            </Button>
+          </Group>
         </SimpleGrid>
-        <Group gap="xs">
-          <Button
-            size="xs"
-            onClick={handleSave}
-            loading={isSaving}
-            leftSection={<Check size={13} />}
-          >
-            Save
-          </Button>
-          <Button
-            size="xs"
-            variant="subtle"
-            onClick={handleCancel}
-            disabled={isSaving}
-            leftSection={<X size={13} />}
-          >
-            Cancel
-          </Button>
-        </Group>
       </Box>
     );
   }
 
   return (
-    <Box>
+    <Box
+      style={{
+        overflowX: "auto",
+      }}
+    >
       <SimpleGrid
-        cols={{ base: 1, sm: 3, lg: 6 }}
-        style={{
-          position: "relative",
-          minWidth: "min-content",
-          borderBottom:
-            "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5))",
-        }}
+        cols={{ base: 2, sm: 3, lg: 6 }}
         spacing={0}
+        style={{ position: "relative", minWidth: "min-content" }}
       >
         <StripCell
           label="Year"
@@ -198,18 +191,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
         <StripCell label="Odometer" value={odoDisplay} />
 
         {car.isOwner && (
-          <Box
-            px={12}
-            py={14}
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              marginLeft: "auto",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+          <Box style={{ position: "absolute", right: 8, top: 8 }}>
             <ActionIcon
               variant="subtle"
               size="sm"

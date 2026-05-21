@@ -28,7 +28,9 @@
       "Bash(git stash:*)",
       "mcp__plugin_playwright_playwright__*",
       "Skill(git-workflow)",
-      "Skill(git-workflow:*)"
+      "Skill(git-workflow:*)",
+      "Skill(new-api-feature)",
+      "Skill(new-api-feature:*)"
     ]
   },
   "hooks": {

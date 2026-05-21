@@ -23,7 +23,7 @@ export function PageBreadcrumbs({ current }: PageBreadcrumbsProps) {
     ? [...parentCrumbs, { label: current, pathname: "" }]
     : parentCrumbs;
 
-  if (crumbs.length < 1) return null;
+  if (crumbs.length < 2) return null;
 
   return (
     <Breadcrumbs

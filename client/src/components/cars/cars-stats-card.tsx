@@ -1,6 +1,7 @@
-import { Group, Paper, Skeleton, Stack, Text } from "@mantine/core";
+import { Paper, SimpleGrid, Skeleton, Stack, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { browseCarsStatsQueryOptions } from "@/lib/api/cars.queries";
+import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface CarsStatsCardProps {
   terms: string[];
@@ -10,18 +11,20 @@ interface StatItemProps {
   value: number | string | undefined;
   label: string;
   isLoading: boolean;
+  lastStat?: boolean;
 }
 
-function StatItem({ value, label, isLoading }: StatItemProps) {
+function StatItem({ value, label, isLoading, lastStat }: StatItemProps) {
   return (
-    <Stack gap={2} align="center">
-      {isLoading ? (
-        <Skeleton height={28} width={48} />
-      ) : (
-        <Text size="xl" fw={700} lh={1}>
-          {Number(value ?? 0).toLocaleString("sv-SE")}
-        </Text>
-      )}
+    <Stack
+      p="md"
+      gap={2}
+      style={{
+        borderRight: lastStat
+          ? ""
+          : "1px solid var(--mantine-color-default-border",
+      }}
+    >
       <Text
         size="xs"
         c="dimmed"
@@ -31,6 +34,18 @@ function StatItem({ value, label, isLoading }: StatItemProps) {
       >
         {label}
       </Text>
+      {isLoading ? (
+        <Skeleton height={28} width={48} />
+      ) : (
+        <Text
+          size="clamp(12px, 2.5vw, var(--mantine-font-size-d3))"
+          ff="Yapari"
+          fw={700}
+          lh={1}
+        >
+          {formatNumber(value)}
+        </Text>
+      )}
     </Stack>
   );
 }
@@ -39,8 +54,14 @@ export function CarsStatsCard({ terms }: CarsStatsCardProps) {
   const { data, isLoading } = useQuery(browseCarsStatsQueryOptions(terms));
 
   return (
-    <Paper withBorder radius="md" p="md">
-      <Group justify="space-around" wrap="wrap" gap="md">
+    <Paper
+      bdrs={0}
+      style={{
+        borderBlock: "1px solid var(--mantine-color-default-border)",
+      }}
+      // visibleFrom="sm"
+    >
+      <SimpleGrid cols={4} spacing={0}>
         <StatItem value={data?.cars} label="Cars" isLoading={isLoading} />
         <StatItem value={data?.makes} label="Makes" isLoading={isLoading} />
         <StatItem value={data?.owners} label="Owners" isLoading={isLoading} />
@@ -48,8 +69,9 @@ export function CarsStatsCard({ terms }: CarsStatsCardProps) {
           value={data?.journeys}
           label="Journeys"
           isLoading={isLoading}
+          lastStat
         />
-      </Group>
+      </SimpleGrid>
     </Paper>
   );
 }
