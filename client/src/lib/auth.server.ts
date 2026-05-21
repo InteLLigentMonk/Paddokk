@@ -5,11 +5,17 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "./db/index.server";
 import * as schema from "./db/schema";
 
+const trustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS
+  ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((o) => o.trim())
+  : [];
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
+
+  trustedOrigins,
 
   emailAndPassword: {
     enabled: true,
