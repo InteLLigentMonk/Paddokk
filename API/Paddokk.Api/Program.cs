@@ -55,7 +55,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddOpenApiWithJwt();
 
 // CORS
-builder.Services.AddCorsPolicy();
+builder.Services.AddCorsPolicy(builder.Configuration);
 
 // Health checks
 builder.Services.AddHealthChecks()
@@ -107,7 +107,7 @@ if (app.Environment.IsProduction())
     app.UseHttpsRedirection();
 }
 
-app.UseCors("AllowNextJsApp");
+app.UseCors("FrontendPolicy");
 
 app.UseRateLimiter();
 
