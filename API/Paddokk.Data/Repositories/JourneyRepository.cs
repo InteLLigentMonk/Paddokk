@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Features.Journeys.Queries.GetJourneysBrowseStats;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.DTOs.Journey;
 using Paddokk.Core.Models.Entities;
@@ -105,9 +106,30 @@ public class JourneyRepository : IJourneyRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<List<Journey>> SearchJourneysAsync(JourneySearchRequest request, CancellationToken cancellationToken)
+    public async Task<(List<Journey> Journeys, int Total)> SearchJourneysAsync(JourneySearchRequest request, CancellationToken cancellationToken)
     {
-        var query = _db.Journeys
+        var query = BuildSearchQuery(request);
+
+        var total = await query.CountAsync(cancellationToken);
+
+        var searchTerm = string.Join(" ", request.Terms.Where(t => !string.IsNullOrWhiteSpace(t)));
+
+        IOrderedQueryable<Journey> ordered = request.SortBy switch
+        {
+            JourneySortBy.Newest => query.OrderByDescending(j => j.CreatedAt),
+            JourneySortBy.MostLiked => query.OrderByDescending(j => j.Likes.Count)
+                .ThenByDescending(j => j.UpdatedAt),
+            JourneySortBy.MostSubscribed => query.OrderByDescending(j => j.Subscriptions.Count(s => s.IsActive))
+                .ThenByDescending(j => j.UpdatedAt),
+            JourneySortBy.RecentlyCompleted => query.Where(j => j.Status == JourneyStatus.Completed && j.CompletedAt != null)
+                .OrderByDescending(j => j.CompletedAt),
+            JourneySortBy.Relevance when !string.IsNullOrWhiteSpace(searchTerm) =>
+                query.OrderBy(j => EF.Functions.TrigramsWordSimilarityDistance(searchTerm, j.SearchText!))
+                    .ThenByDescending(j => j.UpdatedAt),
+            _ => query.OrderByDescending(j => j.UpdatedAt)
+        };
+
+        var journeys = await ordered
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -115,18 +137,64 @@ public class JourneyRepository : IJourneyRepository
             .Include(j => j.Posts)
             .Include(j => j.Subscriptions)
             .Include(j => j.Likes)
-            .Where(j => j.IsPublic && j.UserCar.IsPublic)
-            .AsQueryable();
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToListAsync(cancellationToken);
 
-        if (!string.IsNullOrEmpty(request.Query))
-            query = query.Where(j => j.Title.Contains(request.Query) ||
-               (j.Description != null && j.Description.Contains(request.Query)));
+        return (journeys, total);
+    }
+
+    public async Task<GetJourneysBrowseStatsResponse> GetBrowseStatsAsync(
+        JourneySearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = BuildSearchQuery(request);
+
+        var stats = await query
+            .GroupBy(_ => 1)
+            .Select(g => new GetJourneysBrowseStatsResponse
+            {
+                Journeys = g.Count(),
+                Owners = g.Select(j => j.PrincipalId).Distinct().Count(),
+                Posts = g.Sum(j => j.Posts.Count),
+                Categories = g.Select(j => j.Category).Distinct().Count()
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return stats ?? new GetJourneysBrowseStatsResponse
+        {
+            Journeys = 0,
+            Owners = 0,
+            Posts = 0,
+            Categories = 0
+        };
+    }
+
+    public async Task<UserCar?> GetUserCarAsync(int userCarId, CancellationToken cancellationToken)
+    {
+        return await _db.UserCars
+            .Include(c => c.CarMake)
+            .Include(c => c.CarModel)
+            .FirstOrDefaultAsync(c => c.Id == userCarId, cancellationToken);
+    }
+
+    private IQueryable<Journey> BuildSearchQuery(JourneySearchRequest request)
+    {
+        var query = _db.Journeys
+            .Where(j => j.IsPublic && j.UserCar.IsPublic);
+
+        foreach (var term in request.Terms.Where(t => !string.IsNullOrWhiteSpace(t)))
+        {
+            var captured = term;
+            query = query.Where(j => j.SearchText != null &&
+                EF.Functions.TrigramsWordSimilarity(captured, j.SearchText) >= 0.5);
+        }
 
         if (request.Category.HasValue)
             query = query.Where(j => j.Category == request.Category);
 
         if (request.CarGroup.HasValue)
-            query = query.Where(j => j.UserCar.CarMake.Group == request.CarGroup);
+            query = query.Where(j => j.UserCar.CarMake != null && j.UserCar.CarMake.Group == request.CarGroup);
 
         if (request.CarMakeId.HasValue)
             query = query.Where(j => j.UserCar.CarMakeId == request.CarMakeId);
@@ -137,20 +205,7 @@ public class JourneyRepository : IJourneyRepository
         if (request.Status.HasValue)
             query = query.Where(j => j.Status == request.Status);
 
-        query = request.SortBy switch
-        {
-            JourneySortBy.Newest => query.OrderByDescending(j => j.CreatedAt),
-            JourneySortBy.MostLiked => query.OrderByDescending(j => j.Likes.Count),
-            JourneySortBy.MostSubscribed => query.OrderByDescending(j => j.Subscriptions.Count(s => s.IsActive)),
-            JourneySortBy.RecentlyCompleted => query.Where(j => j.Status == JourneyStatus.Completed)
-            .OrderByDescending(j => j.CompletedAt),
-            _ => query.OrderByDescending(j => j.UpdatedAt)
-        };
-
-        return await query
-            .Skip(request.Skip)
-            .Take(request.Take)
-            .ToListAsync(cancellationToken);
+        return query;
     }
 
     public Task<int> GetUserJourneyCountAsync(string userId, CancellationToken cancellationToken)

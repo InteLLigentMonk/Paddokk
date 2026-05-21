@@ -9,8 +9,8 @@ public sealed class GetTrendingJourneysHandler(IJourneyRepository journeyReposit
 {
     public async Task<IEnumerable<JourneyDto>> Handle(GetTrendingJourneysQuery request, CancellationToken cancellationToken)
     {
-        var search = new JourneySearchRequest { SortBy = JourneySortBy.RecentActivity, Take = 10 };
-        var journeys = await journeyRepository.SearchJourneysAsync(search, cancellationToken);
+        var search = new JourneySearchRequest { SortBy = JourneySortBy.RecentActivity, PageSize = 10 };
+        var (journeys, _) = await journeyRepository.SearchJourneysAsync(search, cancellationToken);
         var currentUserId = actor.IsAuthenticated ? actor.UserId : null;
         return journeys.Select(j => JourneyMapping.ToJourneyDto(j, currentUserId));
     }

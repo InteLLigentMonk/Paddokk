@@ -16,6 +16,7 @@ using Paddokk.Core.Features.Journeys.Queries.GetFeaturedJourneys;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyById;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyPostById;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyPosts;
+using Paddokk.Core.Features.Journeys.Queries.GetJourneysBrowseStats;
 using Paddokk.Core.Features.Journeys.Queries.GetTrendingJourneys;
 using Paddokk.Core.Features.Journeys.Queries.SearchJourneys;
 using Paddokk.Core.Models.DTOs.Image;
@@ -30,11 +31,21 @@ public class JourneysController(ISender sender) : ApiControllerBase
     [HttpGet]
     [EnableRateLimiting("reads")]
     [EndpointSummary("Search and browse journeys with filtering")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> SearchJourneys(
+    public async Task<ActionResult<PagedJourneysResponse>> SearchJourneys(
         [FromQuery] JourneySearchRequest request, CancellationToken ct)
     {
         var result = await sender.Send(new SearchJourneysQuery(request), ct);
-        return Ok(result);
+        return OkOrError(result);
+    }
+
+    [HttpGet("browse-stats")]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Aggregate stats for the journeys browse page (respects search filters)")]
+    public async Task<ActionResult<GetJourneysBrowseStatsResponse>> GetBrowseStats(
+        [FromQuery] JourneySearchRequest request, CancellationToken ct)
+    {
+        var result = await sender.Send(new GetJourneysBrowseStatsQuery(request), ct);
+        return OkOrError(result);
     }
 
     [HttpGet("{journeyId}")]

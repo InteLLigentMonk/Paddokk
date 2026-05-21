@@ -9,12 +9,15 @@ import type {
   ApiErrorResponse,
   CreateJourneyPostCommand,
   DeleteJourneyPostImageCommand,
+  GetJourneysBrowseStatsResponse,
   ImageUploadDto,
   JourneyDto,
   JourneyPostDto,
+  JourneysGetBrowseStatsParams,
   JourneysGetJourneyPostsParams,
   JourneysSearchJourneysParams,
   JourneysUploadJourneyPostImageBody,
+  PagedJourneysResponse,
   UpdateJourneyPostCommand
 } from '.././schemas';
 
@@ -24,7 +27,7 @@ import { apiFetcher } from '../../../lib/api/client';
  * @summary Search and browse journeys with filtering
  */
 export type journeysSearchJourneysResponse200 = {
-  data: JourneyDto[]
+  data: PagedJourneysResponse
   status: 200
 }
 
@@ -60,6 +63,55 @@ export const getJourneysSearchJourneysUrl = (params?: JourneysSearchJourneysPara
 export const journeysSearchJourneys = async (params?: JourneysSearchJourneysParams, options?: RequestInit): Promise<journeysSearchJourneysResponse> => {
   
   return apiFetcher<journeysSearchJourneysResponse>(getJourneysSearchJourneysUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+/**
+ * @summary Aggregate stats for the journeys browse page (respects search filters)
+ */
+export type journeysGetBrowseStatsResponse200 = {
+  data: GetJourneysBrowseStatsResponse
+  status: 200
+}
+
+export type journeysGetBrowseStatsResponse500 = {
+  data: ApiErrorResponse
+  status: 500
+}
+    
+export type journeysGetBrowseStatsResponseSuccess = (journeysGetBrowseStatsResponse200) & {
+  headers: Headers;
+};
+export type journeysGetBrowseStatsResponseError = (journeysGetBrowseStatsResponse500) & {
+  headers: Headers;
+};
+
+export type journeysGetBrowseStatsResponse = (journeysGetBrowseStatsResponseSuccess | journeysGetBrowseStatsResponseError)
+
+export const getJourneysGetBrowseStatsUrl = (params?: JourneysGetBrowseStatsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/journeys/browse-stats?${stringifiedParams}` : `/api/v1/journeys/browse-stats`
+}
+
+export const journeysGetBrowseStats = async (params?: JourneysGetBrowseStatsParams, options?: RequestInit): Promise<journeysGetBrowseStatsResponse> => {
+  
+  return apiFetcher<journeysGetBrowseStatsResponse>(getJourneysGetBrowseStatsUrl(params),
   {      
     ...options,
     method: 'GET'

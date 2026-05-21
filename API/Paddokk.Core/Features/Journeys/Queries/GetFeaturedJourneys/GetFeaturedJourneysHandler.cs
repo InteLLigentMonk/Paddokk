@@ -9,8 +9,8 @@ public sealed class GetFeaturedJourneysHandler(IJourneyRepository journeyReposit
 {
     public async Task<IEnumerable<JourneyDto>> Handle(GetFeaturedJourneysQuery request, CancellationToken cancellationToken)
     {
-        var search = new JourneySearchRequest { SortBy = JourneySortBy.MostLiked, Take = 10 };
-        var journeys = await journeyRepository.SearchJourneysAsync(search, cancellationToken);
+        var search = new JourneySearchRequest { SortBy = JourneySortBy.MostLiked, PageSize = 10 };
+        var (journeys, _) = await journeyRepository.SearchJourneysAsync(search, cancellationToken);
         var currentUserId = actor.IsAuthenticated ? actor.UserId : null;
         return journeys.Select(j => JourneyMapping.ToJourneyDto(j, currentUserId));
     }

@@ -1,4 +1,5 @@
 using MediatR;
+using Paddokk.Core.Features.Journeys;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.DTOs.Journey;
@@ -41,6 +42,14 @@ public sealed class UpdateJourneyHandler(IJourneyRepository journeyRepository, I
         if (request.IsPublic.HasValue)
             journey.IsPublic = request.IsPublic.Value;
 
+        journey.SearchText = JourneySearchTextBuilder.Build(
+            journey.Title,
+            journey.Description,
+            journey.UserCar.CarMake?.Name,
+            journey.UserCar.CarModel?.Name,
+            journey.UserCar.Nickname,
+            journey.User.Username,
+            journey.User.DisplayName);
         journey.UpdatedAt = DateTime.UtcNow;
 
         await journeyRepository.UpdateJourneyAsync(journey, cancellationToken);
