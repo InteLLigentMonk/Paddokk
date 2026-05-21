@@ -1,21 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Stack, Title, Text } from "@mantine/core";
-import JourneyFilterBar from "@/components/journeys/journey-filter-bar";
+import { z } from "zod";
+import { JourneysBrowsePage } from "@/components/journeys/journeys-browse-page";
+import {
+  browseJourneysInfiniteQueryOptions,
+  browseJourneysStatsQueryOptions,
+  sortKeyToNumber,
+} from "@/lib/api/journeys.queries";
 
-export const Route = createFileRoute("/_app/journeys/")({
-  component: JourneysHubPage,
+const searchSchema = z.object({
+  q: z.array(z.string().min(1)).max(10).optional(),
+  sort: z
+    .enum(["RecentActivity", "Newest", "MostLiked", "MostSubscribed", "RecentlyCompleted"])
+    .optional(),
 });
 
-function JourneysHubPage() {
-  return (
-    <Container size="lg" py="xl">
-      <Stack gap="md">
-        <Title order={1}>Journeys</Title>
-        <Text c="dimmed">
-          Trending journeys and updates from people you follow — coming soon.
-        </Text>
-        <JourneyFilterBar />
-      </Stack>
-    </Container>
-  );
-}
+export const Route = createFileRoute("/_app/journeys/")({
+  validateSearch: searchSchema,
+  loaderDeps: ({ search }) => ({ q: search.q ?? [], sort: search.sort }),
+  loader: async ({ deps, context: { queryClient } }) => {
+    const sortNum = sortKeyToNumber(deps.sort, deps.q.length > 0);
+    await Promise.all([
+      queryClient.prefetchInfiniteQuery(browseJourneysInfiniteQueryOptions(deps.q, sortNum)),
+      queryClient.ensureQueryData(browseJourneysStatsQueryOptions(deps.q)),
+    ]);
+  },
+  component: () => <JourneysBrowsePage />,
+});

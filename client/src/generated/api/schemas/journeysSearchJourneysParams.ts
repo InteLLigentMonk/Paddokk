@@ -11,7 +11,7 @@ import type { JourneySortBy } from './journeySortBy';
 import type { JourneyStatus } from './journeyStatus';
 
 export type JourneysSearchJourneysParams = {
-Query?: string;
+Terms?: string[];
 Category?: JourneyCategory;
 CarGroup?: CarGroup;
 /**
@@ -27,9 +27,9 @@ SortBy?: JourneySortBy;
 /**
  * @pattern ^-?(?:0|[1-9]\d*)$
  */
-Skip?: number | string;
+Page?: number | string;
 /**
  * @pattern ^-?(?:0|[1-9]\d*)$
  */
-Take?: number | string;
+PageSize?: number | string;
 };

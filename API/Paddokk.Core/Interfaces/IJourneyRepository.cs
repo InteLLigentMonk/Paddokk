@@ -1,4 +1,5 @@
-﻿using Paddokk.Core.Models.DTOs.Journey;
+﻿using Paddokk.Core.Features.Journeys.Queries.GetJourneysBrowseStats;
+using Paddokk.Core.Models.DTOs.Journey;
 using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Interfaces;
@@ -11,8 +12,11 @@ public interface IJourneyRepository
     Task<List<Journey>> GetCarJourneysAsync(string username, string carSlug, string? currentUserId, int page, int pageSize, CancellationToken cancellationToken);
     Task<Journey?> GetJourneyByIdAsync(int journeyId, CancellationToken cancellationToken);
     Task<Journey?> GetJourneyBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken);
-    Task<List<Journey>> SearchJourneysAsync(JourneySearchRequest request, CancellationToken cancellationToken);
+    Task<(List<Journey> Journeys, int Total)> SearchJourneysAsync(JourneySearchRequest request, CancellationToken cancellationToken);
+    Task<GetJourneysBrowseStatsResponse> GetBrowseStatsAsync(JourneySearchRequest request, CancellationToken cancellationToken);
     Task<int> GetUserJourneyCountAsync(string userId, CancellationToken cancellationToken);
+
+    Task<UserCar?> GetUserCarAsync(int userCarId, CancellationToken cancellationToken);
 
     // Journey mutations
     Task<int> CreateJourneyAsync(Journey journey, CancellationToken cancellationToken);
