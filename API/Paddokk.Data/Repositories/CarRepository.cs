@@ -303,7 +303,7 @@ public class CarRepository : ICarRepository
         {
             var captured = term;
             query = query.Where(c => c.SearchText != null &&
-                EF.Functions.TrigramsWordSimilarity(captured, c.SearchText) >= 0.2);
+                EF.Functions.TrigramsWordSimilarity(captured, c.SearchText) >= 0.5);
         }
 
         return query;

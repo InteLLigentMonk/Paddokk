@@ -6,5 +6,6 @@ public enum JourneySortBy
     Newest = 2,
     MostLiked = 3,
     MostSubscribed = 4,
-    RecentlyCompleted = 5
+    RecentlyCompleted = 5,
+    Relevance = 6
 }

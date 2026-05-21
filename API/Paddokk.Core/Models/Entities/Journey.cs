@@ -42,6 +42,8 @@ public class Journey
 
     public bool IsPublic { get; set; } = true;
 
+    public string? SearchText { get; set; }
+
     // Computed Properties (not mapped to database)
     public int PostCount => Posts?.Count ?? 0;
     public int SubscriberCount => Subscriptions?.Count(s => s.IsActive) ?? 0;

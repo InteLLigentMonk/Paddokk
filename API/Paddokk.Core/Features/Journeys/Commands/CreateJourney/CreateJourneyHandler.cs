@@ -38,17 +38,21 @@ public sealed class CreateJourneyHandler(
         var slug = await slugGenerator.EnsureUniqueAsync(
             slugCandidate, actor.UserId, journeyRepository.SlugExistsAsync, cancellationToken);
 
+        var userCar = await journeyRepository.GetUserCarAsync(request.UserCarId, cancellationToken);
+        var description = htmlSanitizer.Sanitize(request.Description);
+
         var journey = new Journey
         {
             Title = request.Title,
             Slug = slug,
-            Description = htmlSanitizer.Sanitize(request.Description),
+            Description = description,
             Category = request.Category,
             Status = JourneyStatus.Active,
             PrincipalId = actor.UserId,
             UserCarId = request.UserCarId,
             TargetCompletedAt = request.TargetCompletedAt,
             CoverImageUrl = request.CoverImageUrl,
+            SearchText = JourneySearchTextBuilder.Build(request.Title, description, userCar?.CarMake?.Name, userCar?.CarModel?.Name, userCar?.Nickname, user.Username, user.DisplayName),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
