@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.0...v0.26.1) (2026-05-21)
+
+
+### Refactoring
+
+* align with TanStack Start strict import protection ([#120](https://github.com/InteLLigentMonk/Paddokk/issues/120)) ([3e10a7a](https://github.com/InteLLigentMonk/Paddokk/commit/3e10a7a8a2ef4eed17dde7c6f8e245bd5630492d))
+
 ## [0.26.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.25.0...v0.26.0) (2026-05-21)
 
 
