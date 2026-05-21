@@ -1,13 +1,13 @@
 ﻿import { useState } from "react";
-import { Group, Button, Text } from "@mantine/core";
-import { Heart, Bell, Share2 } from "lucide-react";
+import { Button, Group, Text } from "@mantine/core";
+import { Bell, Heart, Share2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNotifications } from "@/integrations/mantine";
 import type { UserCarDto } from "@/generated/api/schemas";
+import { useNotifications } from "@/integrations/mantine";
 import {
   likeUserCarFn,
-  unlikeUserCarFn,
   subscribeToUserCarFn,
+  unlikeUserCarFn,
   unsubscribeFromUserCarFn,
 } from "@/lib/api/user-cars";
 
@@ -54,7 +54,7 @@ export function CarActionBar({ car }: CarActionBarProps) {
   };
 
   const handleShare = () => {
-    if (navigator.share) {
+    if (typeof navigator.share === "function") {
       navigator.share({ title: document.title, url: window.location.href });
     } else {
       navigator.clipboard.writeText(window.location.href);

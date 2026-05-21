@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Stepper } from "@mantine/core";
-import { Car, Camera, Check } from "lucide-react";
+import { Camera, Car, Check } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CarBasicInfoStep } from "./car-basic-info-step";
 import { CarImagesStep } from "./car-images-step";
+import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas";
 import { userCarsCreateUserCar } from "@/generated/api/user-cars/user-cars";
 import { carImagesUploadCarImage } from "@/generated/api/car-images/car-images";
 import { useNotifications } from "@/integrations/mantine";
-import type { UserCarDto, CreateUserCarCommand } from "@/generated/api/schemas";
 
 export interface PendingImage {
   localId: string;
@@ -35,9 +35,9 @@ interface CarFormStepperProps {
 export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
   const [activeStep, setActiveStep] = useState(0);
   const [carFormData, setCarFormData] = useState<CarBasicFormData | null>(null);
-  const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
+  const [pendingImages, setPendingImages] = useState<Array<PendingImage>>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const pendingImagesRef = useRef<PendingImage[]>([]);
+  const pendingImagesRef = useRef<Array<PendingImage>>([]);
   const queryClient = useQueryClient();
   const notifications = useNotifications();
 

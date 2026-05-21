@@ -1,39 +1,40 @@
 ﻿import {
+  ActionIcon,
   Badge,
+  Box,
+  Card,
   Group,
+  Image,
   Stack,
   Text,
-  ActionIcon,
-  Card,
-  Image,
-  Box,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { Upload, Image as ImageIcon, X, Trash2, GripVertical } from "lucide-react";
+import { GripVertical, Image as ImageIcon, Trash2, Upload, X } from "lucide-react";
 import {
   DndContext,
-  closestCenter,
+  
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
+  closestCenter,
   useSensor,
-  useSensors,
-  type DragEndEvent,
+  useSensors
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
+  arrayMove,
   rectSortingStrategy,
+  sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useQuery } from "@tanstack/react-query";
-import { getImageLimitsFn } from "@/lib/api/limits";
-import { useNotifications } from "@/integrations/mantine";
 import { CarImagePreview } from "./car-image-preview";
+import type {DragEndEvent} from "@dnd-kit/core";
 import type { PendingImage } from "./car-form-stepper";
 import type { CarImageDto } from "@/generated/api/schemas";
+import { useNotifications } from "@/integrations/mantine";
+import { getImageLimitsFn } from "@/lib/api/limits";
 
 interface ExistingImageCardProps {
   image: CarImageDto;
@@ -152,16 +153,16 @@ function ExistingImageCard({
 }
 
 export interface EditCarImagesSectionProps {
-  existingImages: CarImageDto[];
-  pendingImages: PendingImage[];
-  deletedImageIds: number[];
+  existingImages: Array<CarImageDto>;
+  pendingImages: Array<PendingImage>;
+  deletedImageIds: Array<number>;
   primaryId:
     | { type: "existing"; id: number }
     | { type: "pending"; localId: string }
     | null;
-  onPendingChange: (imgs: PendingImage[]) => void;
+  onPendingChange: (imgs: Array<PendingImage>) => void;
   onDeleteExisting: (id: number) => void;
-  onReorderExisting: (ids: number[]) => void;
+  onReorderExisting: (ids: Array<number>) => void;
   onSetPrimary: (
     id: { type: "existing"; id: number } | { type: "pending"; localId: string },
   ) => void;
@@ -201,8 +202,8 @@ export function EditCarImagesSection({
     }),
   );
 
-  const handleFileDrop = (files: File[]) => {
-    const newImages: PendingImage[] = [];
+  const handleFileDrop = (files: Array<File>) => {
+    const newImages: Array<PendingImage> = [];
     for (const file of files) {
       if (totalImages + newImages.length >= maxImages) {
         notifications.warning({

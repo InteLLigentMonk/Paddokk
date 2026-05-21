@@ -1,7 +1,7 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { ApiError } from "./api-error";
 
-export type ErrorType<_TError> = ApiError;
+export type ErrorType = ApiError;
 export type BodyType<TData> = TData;
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -40,7 +40,7 @@ const getAuthToken = createIsomorphicFn()
 const normalizeHeaders = (incoming: HeadersInit): Record<string, string> => {
   if (incoming instanceof Headers) return Object.fromEntries(incoming);
   if (Array.isArray(incoming)) return Object.fromEntries(incoming);
-  return incoming as Record<string, string>;
+  return incoming;
 };
 
 export const apiFetcher = async <T>(

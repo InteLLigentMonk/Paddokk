@@ -1,10 +1,10 @@
 import { SimpleGrid, Skeleton } from "@mantine/core";
-import type { JourneyDto } from "@/generated/api/schemas";
 import { JourneyCard } from "./journey-card";
 import { JourneysEmptyState } from "./journeys-empty-state";
+import type { JourneyDto } from "@/generated/api/schemas";
 
 interface JourneysGridProps {
-  journeys: JourneyDto[];
+  journeys: Array<JourneyDto>;
   defaultJourneyId?: number | null;
   isLoading?: boolean;
   onCreateJourney: () => void;

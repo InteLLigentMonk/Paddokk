@@ -3,7 +3,7 @@ import { Carousel } from "@mantine/carousel";
 import type { CarImageDto } from "@/generated/api/schemas";
 
 interface CarImageCarouselProps {
-  images: CarImageDto[];
+  images: Array<CarImageDto>;
   displayName: string;
 }
 

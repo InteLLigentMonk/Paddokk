@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Container, Title, Text, Stack } from "@mantine/core";
+import { Container, Stack, Text, Title } from "@mantine/core";
 
 export const Route = createFileRoute("/_app/me/notifications")({
   staticData: { breadcrumb: "Notifications" },

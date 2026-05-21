@@ -3,13 +3,13 @@ import { Button, Group, Modal, ScrollArea, Select, Stack, Switch, Text, TextInpu
 import { useStore } from "@tanstack/react-store"
 import { useForm } from "@tanstack/react-form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { journeysPageStore, closeEditJourneyModal } from "@/lib/stores/journeys-page-store"
-import { updateJourneyFn, getUserJourneysFn, getDefaultActiveJourneyFn } from "@/lib/api/user-journeys"
+import type { JourneyDto } from "@/generated/api/schemas"
+import { closeEditJourneyModal, journeysPageStore } from "@/lib/stores/journeys-page-store"
+import { getDefaultActiveJourneyFn, getUserJourneysFn, updateJourneyFn } from "@/lib/api/user-journeys"
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys"
 import { RichTextEditor } from "@/components/shared/rich-text-editor"
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone"
 import { useNotifications } from "@/integrations/mantine"
-import type { JourneyDto } from "@/generated/api/schemas"
 
 const JOURNEY_CATEGORIES = [
   { value: "1", label: "Build & Mods" },
@@ -120,7 +120,7 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
           name="title"
           validators={{
             onChange: ({ value }) => {
-              if (!value?.trim()) return "Title is required"
+              if (!value.trim()) return "Title is required"
               if (value.trim().length < 3) return "Title must be at least 3 characters"
               return undefined
             },

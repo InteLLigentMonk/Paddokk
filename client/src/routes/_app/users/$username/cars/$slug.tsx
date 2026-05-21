@@ -1,4 +1,4 @@
-import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
+import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 import { userCarBySlugQueryOptions } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app/users/$username/cars/$slug")({

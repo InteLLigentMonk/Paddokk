@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { Box, SimpleGrid, Skeleton, Stack } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { browseCarsInfiniteQueryOptions } from "@/lib/api/cars.queries";
 import { CarBrowseCard } from "./car-browse-card";
 import { CarsBrowseEmptyState } from "./cars-browse-empty-state";
+import { browseCarsInfiniteQueryOptions } from "@/lib/api/cars.queries";
 
 interface CarsBrowseGridProps {
-  terms: string[];
+  terms: Array<string>;
   sort: number;
 }
 

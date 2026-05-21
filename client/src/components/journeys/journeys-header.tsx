@@ -1,4 +1,4 @@
-import { Group, Title, Text, Button, Stack } from "@mantine/core";
+import { Button, Group, Stack, Text, Title } from "@mantine/core";
 import { Plus, TrendingUp } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { openCreateJourneyModal } from "@/lib/stores/journeys-page-store";

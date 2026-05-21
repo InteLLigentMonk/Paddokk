@@ -1,10 +1,10 @@
 import { SimpleGrid, Skeleton } from '@mantine/core'
-import type { UserCarDto } from '@/generated/api/schemas'
 import { CarCard } from './car-card'
 import { CarsEmptyState } from './cars-empty-state'
+import type { UserCarDto } from '@/generated/api/schemas'
 
 interface CarsGridProps {
-  cars: UserCarDto[]
+  cars: Array<UserCarDto>
   isLoading?: boolean
   onAddCar: () => void
 }

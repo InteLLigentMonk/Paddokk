@@ -1,5 +1,5 @@
 ﻿import { createFileRoute, notFound } from "@tanstack/react-router";
-import { Container, Stack, Title, Text, Alert } from "@mantine/core";
+import { Alert, Container, Stack, Text, Title } from "@mantine/core";
 import { AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { JourneysHeader } from "@/components/journeys/journeys-header";

@@ -1,19 +1,19 @@
 import {
+  CalendarDays,
+  Car,
+  ClipboardList,
+  Compass,
+  FileText,
   LayoutDashboard,
+  Library,
   MapPinHouse,
   MapPinned,
-  Compass,
-  Car,
-  Users,
-  SquareActivity,
   ShoppingBag,
-  CalendarDays,
-  ClipboardList,
-  Zap,
-  Library,
-  FileText,
+  SquareActivity,
   Upload,
+  Users,
   Warehouse,
+  Zap,
 } from "lucide-react";
 import type { NavConfig } from "./types";
 import { userCarsUrl, userJourneysUrl } from "@/lib/urls";

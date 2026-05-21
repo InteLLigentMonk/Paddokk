@@ -1,9 +1,9 @@
-import { Modal, Image, Text, Stack } from "@mantine/core";
+import { Image, Modal, Stack, Text } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import type { JourneyPostImageDto } from "@/generated/api/schemas";
 
 interface PostImageModalProps {
-  images: JourneyPostImageDto[];
+  images: Array<JourneyPostImageDto>;
   initialIndex: number;
   onClose: () => void;
 }

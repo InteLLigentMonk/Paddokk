@@ -1,18 +1,19 @@
 import { useState } from "react";
 import {
-  Stack,
-  Group,
-  Text,
-  Textarea,
-  ScrollArea,
-  Divider,
   ActionIcon,
-  Paper,
   Box,
   Button,
+  Divider,
+  Group,
+  Paper,
+  ScrollArea,
+  Stack,
+  Text,
+  Textarea,
 } from "@mantine/core";
-import { Send, Trash2, Reply } from "lucide-react";
+import { Reply, Send, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import type { PostCommentDto } from "@/generated/api/schemas";
 import {
   postCommentsQueryOptions,
   useCreateComment,
@@ -21,7 +22,6 @@ import {
 } from "@/hooks/use-journey-detail";
 import { ExpandableText } from "@/components/common/expandable-text";
 import { OwnerLink } from "@/components/common/owner-link";
-import type { PostCommentDto } from "@/generated/api/schemas";
 
 const MAX_COMMENT_LENGTH = 500;
 

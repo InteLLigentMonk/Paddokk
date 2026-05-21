@@ -1,4 +1,4 @@
-import { Center, Stack, Text, Button } from "@mantine/core";
+import { Button, Center, Stack, Text } from "@mantine/core";
 import { Car } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 

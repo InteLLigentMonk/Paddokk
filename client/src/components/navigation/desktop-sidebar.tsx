@@ -1,4 +1,4 @@
-import { Stack, Divider, Box, ActionIcon, Tooltip } from '@mantine/core'
+import { ActionIcon, Box, Divider, Stack, Tooltip } from '@mantine/core'
 import { LogOut } from 'lucide-react'
 import { NavItem } from './nav-item'
 import { navigationConfig } from '@/data/navigation/app-navigation'

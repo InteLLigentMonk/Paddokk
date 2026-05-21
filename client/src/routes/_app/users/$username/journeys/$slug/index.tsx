@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import {
+  Alert,
+  Box,
+  Center,
   Container,
+  Group,
+  Skeleton,
   Stack,
   Text,
-  Center,
-  Alert,
-  Skeleton,
-  Group,
-  Box,
 } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { AlertCircle } from "lucide-react";
@@ -93,7 +93,7 @@ function JourneyDetailPage() {
           </Alert>
         )}
 
-        {postsLoading && !postsError && <PostsLoadingSkeleton />}
+        {postsLoading && <PostsLoadingSkeleton />}
 
         {!postsLoading && !postsError && posts.length === 0 && (
           <Center py="xl">

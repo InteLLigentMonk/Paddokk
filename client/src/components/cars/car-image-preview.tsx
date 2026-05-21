@@ -1,5 +1,5 @@
 import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core"
-import { Trash2, GripVertical } from "lucide-react"
+import { GripVertical, Trash2 } from "lucide-react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import type { PendingImage } from "./car-form-stepper"

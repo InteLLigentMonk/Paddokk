@@ -1,17 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { CreateUserCarCommand, UpdateUserCarCommand, UserCarDto, UserCarsResponse } from "@/generated/api/schemas";
 import {
-  userCarsGetUserCars,
-  userCarsGetUserCar,
   userCarsCreateUserCar,
-  userCarsUpdateUserCar,
   userCarsDeleteUserCar,
+  userCarsGetUserCar,
+  userCarsGetUserCars,
   userCarsLikeUserCar,
-  userCarsUnlikeUserCar,
   userCarsSubscribeToUserCar,
+  userCarsUnlikeUserCar,
   userCarsUnsubscribeFromUserCar,
+  userCarsUpdateUserCar,
 } from "@/generated/api/user-cars/user-cars";
-import type { UserCarsResponse, UserCarDto, CreateUserCarCommand } from "@/generated/api/schemas";
 
 const carIdSchema = z.object({ carId: z.coerce.number() });
 
@@ -82,7 +82,7 @@ export const updateUserCarFn = createServerFn({ method: "POST" })
       ownerNote: ownerNote ?? null,
       specsByCategory: specsByCategory ?? null,
       isPrimary: isPrimary ?? null,
-    } as import("@/generated/api/schemas").UpdateUserCarCommand);
+    } as UpdateUserCarCommand);
     return result.data as UserCarDto;
   });
 

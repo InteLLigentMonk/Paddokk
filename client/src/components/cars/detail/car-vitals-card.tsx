@@ -1,34 +1,34 @@
 ﻿import { useState } from "react";
 import {
+  ActionIcon,
+  Button,
   Card,
   ColorSwatch,
-  Text,
-  Stack,
-  Group,
   Divider,
-  ActionIcon,
-  TextInput,
+  Group,
   NumberInput,
-  Button,
+  Stack,
+  Text,
+  TextInput,
 } from "@mantine/core";
 import {
-  Edit,
   Check,
-  X,
-  MapPin,
-  Compass,
   Clock,
+  Compass,
+  Edit,
   Gauge,
+  MapPin,
   PaletteIcon,
+  X,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNotifications } from "@/integrations/mantine";
-import type { UserCarDto } from "@/generated/api/schemas";
-import { updateUserCarFn } from "@/lib/api/user-cars";
 import {
   CarColorSwatchInput,
   colorLabelFromHex,
 } from "./car-color-swatch-input";
+import type { UserCarDto } from "@/generated/api/schemas";
+import { useNotifications } from "@/integrations/mantine";
+import { updateUserCarFn } from "@/lib/api/user-cars";
 import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface VitalsRowProps {

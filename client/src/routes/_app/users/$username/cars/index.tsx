@@ -1,12 +1,12 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import {
-  Container,
-  Stack,
-  Title,
-  Text,
   Alert,
+  Container,
   Group,
   Pagination,
+  Stack,
+  Text,
+  Title,
 } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -19,8 +19,8 @@ import {
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   carsPageStore,
-  setSortBy,
   openAddCarModal,
+  setSortBy,
 } from "@/lib/stores/cars-page-store";
 import { sortCars } from "@/lib/utils/sort-cars";
 import { CarsHeader } from "@/components/cars/cars-header";

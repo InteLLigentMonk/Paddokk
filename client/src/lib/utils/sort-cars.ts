@@ -1,7 +1,7 @@
 import type { UserCarDto } from '@/generated/api/schemas'
 import type { SortOption } from '@/lib/stores/cars-page-store'
 
-export function sortCars(cars: UserCarDto[], sortBy: SortOption): UserCarDto[] {
+export function sortCars(cars: Array<UserCarDto>, sortBy: SortOption): Array<UserCarDto> {
   const sorted = [...cars]
 
   switch (sortBy) {

@@ -5,13 +5,13 @@
   useQueryClient,
 } from "@tanstack/react-query";
 import {
+  createCommentFn,
+  createJourneyPostFn,
+  deleteCommentFn,
   getJourneyDetailFn,
   getJourneyPostsFn,
   getPostCommentsFn,
-  createCommentFn,
-  deleteCommentFn,
   replyToCommentFn,
-  createJourneyPostFn,
 } from "@/lib/api/journey-detail";
 
 const POSTS_PAGE_SIZE = 20;
@@ -38,7 +38,7 @@ export function useJourneyPostsInfinite(journeyId: number) {
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage || lastPage.length < POSTS_PAGE_SIZE) return undefined;
+      if (lastPage.length < POSTS_PAGE_SIZE) return undefined;
       return allPages.reduce((acc, page) => acc + page.length, 0);
     },
   });
@@ -96,7 +96,7 @@ export function useCreateJourneyPost(journeyId: number) {
   return useMutation({
     mutationFn: (payload: {
       textContent: string | null;
-      images: PostImagePayload[];
+      images: Array<PostImagePayload>;
     }) => createJourneyPostFn({ data: { journeyId, ...payload } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["journey-posts", journeyId] });

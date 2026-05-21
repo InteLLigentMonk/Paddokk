@@ -2,10 +2,10 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CarDetailPage } from "@/components/cars/car-detail-page";
 import {
-  userCarBySlugQueryOptions,
   carImagesQueryOptions,
-  userCarsByUsernameQueryOptions,
   carJourneysQueryOptions,
+  userCarBySlugQueryOptions,
+  userCarsByUsernameQueryOptions,
 } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app/users/$username/cars/$slug/")({

@@ -1,8 +1,8 @@
 import { Avatar, Group, Stack, Text } from "@mantine/core";
-import type { MantineRadius, MantineSize } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
 import classes from "./owner-link.module.css";
+import type { MantineRadius, MantineSize } from "@mantine/core";
+import type { ReactNode } from "react";
 
 export type OwnerLinkTarget =
   | { kind: "user"; username: string }

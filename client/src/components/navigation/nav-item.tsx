@@ -1,5 +1,5 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
-import { ActionIcon, Tooltip, Indicator } from "@mantine/core";
+import { ActionIcon, Indicator, Tooltip } from "@mantine/core";
 import type { NavItem as NavItemType } from "@/data/navigation/types";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
@@ -39,7 +39,7 @@ export function NavItem({ item, showTooltip = false, onClick }: NavItemProps) {
       offset={4}
     >
       <ActionIcon
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         component={resolvedHref ? (Link as any) : "button"}
         to={resolvedHref}
         variant={isActive ? "filled" : "subtle"}

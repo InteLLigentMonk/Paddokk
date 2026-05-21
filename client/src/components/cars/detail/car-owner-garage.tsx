@@ -10,15 +10,15 @@
 } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Bell } from "lucide-react";
+import type { UserCarDto } from "@/generated/api/schemas";
 import { userCarsByUsernameQueryOptions } from "@/lib/api/users.queries";
 import {
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
 } from "@/lib/api/user-cars";
 import { useNotifications } from "@/integrations/mantine";
-import type { UserCarDto } from "@/generated/api/schemas";
-import { useState } from "react";
-import { Bell } from "lucide-react";
 
 interface CarOwnerGarageProps {
   car: UserCarDto;

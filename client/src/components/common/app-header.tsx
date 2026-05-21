@@ -10,10 +10,10 @@ import {
   rem,
 } from "@mantine/core";
 import { spotlight } from "@mantine/spotlight";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LogOut, Search, Settings, User } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import { ColorSchemeToggle } from "./color-scheme-toggle";
+import { useAuth } from "@/hooks/use-auth";
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const;
 

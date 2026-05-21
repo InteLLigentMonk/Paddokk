@@ -1,5 +1,4 @@
 import { Container, Grid, Stack } from "@mantine/core";
-import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
 import { CarHero } from "./detail/car-hero";
 import { CarSpecStrip } from "./detail/car-spec-strip";
 import { CarActionBar } from "./detail/car-action-bar";
@@ -9,10 +8,11 @@ import { CarJourneyList } from "./detail/car-journey-list";
 import { CarPhotosSection } from "./detail/car-photos-section";
 import { CarVitalsCard } from "./detail/car-vitals-card";
 import { CarOwnerGarage } from "./detail/car-owner-garage";
+import type { CarImageDto, UserCarDto } from "@/generated/api/schemas";
 
 interface CarDetailPageProps {
   car: UserCarDto;
-  images: CarImageDto[];
+  images: Array<CarImageDto>;
 }
 
 export function CarDetailPage({ car, images }: CarDetailPageProps) {

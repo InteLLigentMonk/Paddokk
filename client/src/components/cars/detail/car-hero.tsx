@@ -1,9 +1,9 @@
 import { Avatar, Badge, Box, Group, Text, Title } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import { DotIcon, MapPin, Zap } from "lucide-react";
-import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
 import { DRIVE_LABELS } from "./car-drive-select";
 import { colorLabelFromHex } from "./car-color-swatch-input";
+import type { CarImageDto, UserCarDto } from "@/generated/api/schemas";
 
 interface CarHeroProps {
   car: UserCarDto;
@@ -12,7 +12,7 @@ interface CarHeroProps {
 
 export function CarHero({ car, primaryImage }: CarHeroProps) {
   const imageUrl = primaryImage?.imageUrl ?? car.primaryImageUrl;
-  const drive = car.drive != null ? DRIVE_LABELS[car.drive as number] : null;
+  const drive = car.drive != null ? DRIVE_LABELS[car.drive] : null;
   const colorHex = car.color ?? null;
   const colorLabel = colorLabelFromHex(car.color);
 

@@ -1,12 +1,12 @@
 ﻿import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import type { CarSpecCategoryDto } from "@/generated/api/schemas";
 import { useNotifications } from "@/integrations/mantine";
 import { updateUserCarFn } from "@/lib/api/user-cars";
-import type { CarSpecCategoryDto } from "@/generated/api/schemas";
 
 type CarPatch = {
   ownerNote?: string | null;
-  specsByCategory?: CarSpecCategoryDto[] | null;
+  specsByCategory?: Array<CarSpecCategoryDto> | null;
   region?: string | null;
   odometerKm?: number | null;
   drive?: number | null;

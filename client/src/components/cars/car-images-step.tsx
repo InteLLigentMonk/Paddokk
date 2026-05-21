@@ -1,30 +1,31 @@
-import { Button, Group, Stack, Text, Badge } from "@mantine/core"
+import { Badge, Button, Group, Stack, Text } from "@mantine/core"
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
-import { Upload, Image as ImageIcon, X } from "lucide-react"
+import { Image as ImageIcon, Upload, X } from "lucide-react"
 import {
   DndContext,
-  closestCenter,
+  
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
-  useSensors,
-  type DragEndEvent,
+  useSensors
 } from "@dnd-kit/core"
 import {
-  arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
+  arrayMove,
   rectSortingStrategy,
+  sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable"
 import { useQuery } from "@tanstack/react-query"
+import { CarImagePreview } from "./car-image-preview"
+import type {DragEndEvent} from "@dnd-kit/core";
+import type { PendingImage } from "./car-form-stepper"
 import { limitsGetImageLimits } from "@/generated/api/limits/limits"
 import { useNotifications } from "@/integrations/mantine"
-import { CarImagePreview } from "./car-image-preview"
-import type { PendingImage } from "./car-form-stepper"
 
 interface CarImagesStepProps {
-  pendingImages: PendingImage[]
-  onImagesChange: (imgs: PendingImage[]) => void
+  pendingImages: Array<PendingImage>
+  onImagesChange: (imgs: Array<PendingImage>) => void
   isSubmitting: boolean
   onFinish: () => void
   onBack: () => void
@@ -52,8 +53,8 @@ export function CarImagesStep({
     }),
   )
 
-  const handleFileDrop = (files: File[]) => {
-    const newImages: PendingImage[] = []
+  const handleFileDrop = (files: Array<File>) => {
+    const newImages: Array<PendingImage> = []
     for (const file of files) {
       if (pendingImages.length + newImages.length >= maxImages) {
         notifications.warning({

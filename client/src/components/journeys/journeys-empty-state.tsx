@@ -1,4 +1,4 @@
-import { Stack, Text, Button, Box } from "@mantine/core";
+import { Box, Button, Stack, Text } from "@mantine/core";
 import { BookOpen } from "lucide-react";
 
 interface JourneysEmptyStateProps {

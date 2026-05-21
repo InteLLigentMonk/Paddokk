@@ -2,7 +2,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { CarSortKey } from "@/lib/api/cars";
 
-const SORT_OPTIONS: { value: CarSortKey; label: string }[] = [
+const SORT_OPTIONS: Array<{ value: CarSortKey; label: string }> = [
   { value: "Newest", label: "Newest" },
   { value: "Relevance", label: "Relevance" },
   { value: "MostLiked", label: "Most Liked" },
@@ -10,14 +10,14 @@ const SORT_OPTIONS: { value: CarSortKey; label: string }[] = [
 ];
 
 interface CarsFilterBarProps {
-  terms: string[];
+  terms: Array<string>;
   sort: CarSortKey | undefined;
 }
 
 export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
   const navigate = useNavigate();
 
-  function updateSearch(newTerms: string[], newSort: CarSortKey | undefined) {
+  function updateSearch(newTerms: Array<string>, newSort: CarSortKey | undefined) {
     navigate({
       to: "/cars",
       search: {
@@ -51,7 +51,7 @@ export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
         data={SORT_OPTIONS}
         value={effectiveSortKey}
         onChange={(val) =>
-          updateSearch(terms, (val as CarSortKey) ?? undefined)
+          updateSearch(terms, val as CarSortKey)
         }
         w={160}
         allowDeselect={false}
