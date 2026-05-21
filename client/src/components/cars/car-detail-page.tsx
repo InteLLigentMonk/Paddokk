@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Stack } from "@mantine/core";
+import { Container, Grid, Stack } from "@mantine/core";
 import type { UserCarDto, CarImageDto } from "@/generated/api/schemas";
 import { CarHero } from "./detail/car-hero";
 import { CarSpecStrip } from "./detail/car-spec-strip";
@@ -24,7 +24,7 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
       <CarSpecStrip car={car} />
 
       <Container size="xl" py="xl">
-        <Grid gap="xl" align="flex-start">
+        <Grid gap="xl">
           <Grid.Col span={{ base: 12, md: 8 }}>
             <Stack gap={36}>
               <CarActionBar car={car} />
@@ -41,17 +41,16 @@ export function CarDetailPage({ car, images }: CarDetailPageProps) {
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 4 }}>
-            <Box
+            <Stack
+              gap="md"
               style={{
                 position: "sticky",
-                top: 80,
+                top: 32,
               }}
             >
-              <Stack gap="md">
-                <CarVitalsCard car={car} />
-                <CarOwnerGarage car={car} />
-              </Stack>
-            </Box>
+              <CarVitalsCard car={car} />
+              <CarOwnerGarage car={car} />
+            </Stack>
           </Grid.Col>
         </Grid>
       </Container>
