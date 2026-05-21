@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.25.0...v0.26.0) (2026-05-21)
+
+
+### Features
+
+* **deploy:** add backend deploy workflow and configurable CORS ([#118](https://github.com/InteLLigentMonk/Paddokk/issues/118)) ([45d4000](https://github.com/InteLLigentMonk/Paddokk/commit/45d4000b02cd7850a3a4c3015e53954dc8cd1181))
+
 ## [0.25.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.24.1...v0.25.0) (2026-05-21)
 
 
