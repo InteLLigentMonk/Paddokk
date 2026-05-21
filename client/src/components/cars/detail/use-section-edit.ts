@@ -1,7 +1,7 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/integrations/mantine";
-import { updateUserCarFn } from "@/lib/api/user-cars.server";
+import { updateUserCarFn } from "@/lib/api/user-cars";
 import type { CarSpecCategoryDto } from "@/generated/api/schemas";
 
 type CarPatch = {

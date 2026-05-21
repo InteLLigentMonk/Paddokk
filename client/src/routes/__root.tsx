@@ -9,8 +9,6 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
-import StoreDevtools from "../lib/demo-store-devtools";
-
 import appCss from "../styles.css?url";
 
 import {
@@ -97,7 +95,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               render: <TanStackRouterDevtoolsPanel />,
             },
             TanStackQueryDevtools,
-            StoreDevtools,
           ]}
         />
         <Scripts />

@@ -1,6 +1,6 @@
-import { Group, Select, TagsInput } from "@mantine/core";
+﻿import { Group, Select, TagsInput } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
-import type { JourneySortKey } from "@/lib/api/journeys.server";
+import type { JourneySortKey } from "@/lib/api/journeys";
 
 const SORT_OPTIONS: Array<{ value: JourneySortKey; label: string }> = [
   { value: "RecentActivity", label: "Recent activity" },

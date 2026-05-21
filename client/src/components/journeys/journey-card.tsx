@@ -1,4 +1,4 @@
-import {
+﻿import {
   Card,
   Image,
   Stack,
@@ -35,7 +35,7 @@ import {
 import {
   updateJourneyFn,
   setDefaultActiveJourneyFn,
-} from "@/lib/api/user-journeys.server";
+} from "@/lib/api/user-journeys";
 import { useNotifications } from "@/integrations/mantine";
 
 interface JourneyCardProps {
@@ -96,7 +96,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
     [journey.carMakeName, journey.carModelName, journey.carYear]
       .filter(Boolean)
       .join(" ") ||
-    "Okänd bil";
+    "OkÃ¤nd bil";
 
   const statusMutation = useMutation({
     mutationFn: (vars: {
@@ -146,7 +146,7 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       notifications.success({ message: "Aktiv resa uppdaterad" });
     },
     onError: () => {
-      notifications.error({ message: "Kunde inte sätta som aktiv resa" });
+      notifications.error({ message: "Kunde inte sÃ¤tta som aktiv resa" });
     },
   });
 

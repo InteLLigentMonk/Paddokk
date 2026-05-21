@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { CarsBrowsePage } from "@/components/cars/cars-browse-page";
 import {
@@ -6,7 +6,7 @@ import {
   browseCarsStatsQueryOptions,
   sortKeyToNumber,
 } from "@/lib/api/cars.queries";
-import type { CarSortKey } from "@/lib/api/cars.server";
+import type { CarSortKey } from "@/lib/api/cars";
 
 const searchSchema = z.object({
   q: z.array(z.string().min(1)).max(10).optional(),

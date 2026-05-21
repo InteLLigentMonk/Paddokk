@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+﻿import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Container, Stack, Title, Text, Alert } from "@mantine/core";
 import { AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -10,7 +10,7 @@ import {
   userByUsernameQueryOptions,
   userJourneysByUsernameQueryOptions,
 } from "@/lib/api/users.queries";
-import { getDefaultActiveJourneyFn } from "@/lib/api/user-journeys.server";
+import { getDefaultActiveJourneyFn } from "@/lib/api/user-journeys";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { openCreateJourneyModal } from "@/lib/stores/journeys-page-store";
 
@@ -57,7 +57,7 @@ function UserJourneysPage() {
           <JourneysHeader />
         ) : (
           <Stack gap={4}>
-            <Title order={2}>@{username} — Journeys</Title>
+            <Title order={2}>@{username} â€” Journeys</Title>
             <Text c="dimmed" size="sm">
               Journeys shared by @{username}
             </Text>

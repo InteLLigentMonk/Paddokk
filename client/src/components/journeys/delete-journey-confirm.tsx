@@ -1,4 +1,4 @@
-import { Modal, Text, Button, Group, Stack } from "@mantine/core";
+﻿import { Modal, Text, Button, Group, Stack } from "@mantine/core";
 import { useStore } from "@tanstack/react-store";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -6,7 +6,7 @@ import {
   closeDeleteJourneyConfirm,
 } from "@/lib/stores/journeys-page-store";
 import { userJourneysGetUserJourney } from "@/generated/api/user-journeys/user-journeys";
-import { deleteUserJourneyFn, getDefaultActiveJourneyFn } from "@/lib/api/user-journeys.server";
+import { deleteUserJourneyFn, getDefaultActiveJourneyFn } from "@/lib/api/user-journeys";
 import { useNotifications } from "@/integrations/mantine";
 
 export function DeleteJourneyConfirm() {
@@ -37,7 +37,7 @@ export function DeleteJourneyConfirm() {
     mutationFn: (id: number) => deleteUserJourneyFn({ data: { journeyId: id } }),
     onError: () => {
       notifications.error({
-        message: "Kunde inte ta bort resan. Försök igen.",
+        message: "Kunde inte ta bort resan. FÃ¶rsÃ¶k igen.",
       });
     },
     onSuccess: () => {
@@ -71,18 +71,18 @@ export function DeleteJourneyConfirm() {
     >
       <Stack gap="lg">
         <Text>
-          Är du säker på att du vill ta bort{" "}
+          Ã„r du sÃ¤ker pÃ¥ att du vill ta bort{" "}
           <strong>{journey?.title ?? "resan"}</strong>?
         </Text>
 
         <Text size="sm" c="orange">
-          Resan och alla dess inlägg kommer att tas bort permanent.
+          Resan och alla dess inlÃ¤gg kommer att tas bort permanent.
         </Text>
 
         {journey && Number(journey.postCount) > 0 && (
           <Text size="sm" c="orange">
-            Den här resan har {journey.postCount}{" "}
-            {Number(journey.postCount) === 1 ? "inlägg" : "inlägg"} som också
+            Den hÃ¤r resan har {journey.postCount}{" "}
+            {Number(journey.postCount) === 1 ? "inlÃ¤gg" : "inlÃ¤gg"} som ocksÃ¥
             tas bort.
           </Text>
         )}

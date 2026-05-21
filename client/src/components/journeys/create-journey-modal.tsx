@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Badge,
@@ -20,8 +20,8 @@ import {
   closeCreateJourneyModal,
 } from "@/lib/stores/journeys-page-store";
 import { useCanAddJourney } from "@/hooks/use-can-add-journey";
-import { createJourneyFn } from "@/lib/api/user-journeys.server";
-import { getUserCarsFn } from "@/lib/api/user-cars.server";
+import { createJourneyFn } from "@/lib/api/user-journeys";
+import { getUserCarsFn } from "@/lib/api/user-cars";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
