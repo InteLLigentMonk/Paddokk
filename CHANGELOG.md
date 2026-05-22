@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.5](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.4...v0.26.5) (2026-05-22)
+
+
+### Performance
+
+* eliminate navigation waterfall by prefetching currentUser ([#131](https://github.com/InteLLigentMonk/Paddokk/issues/131)) ([2956314](https://github.com/InteLLigentMonk/Paddokk/commit/2956314f02a6833221f0e41093137fbfb28ed8f4))
+
 ## [0.26.4](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.3...v0.26.4) (2026-05-22)
 
 
