@@ -30,7 +30,9 @@
       "Skill(git-workflow)",
       "Skill(git-workflow:*)",
       "Skill(new-api-feature)",
-      "Skill(new-api-feature:*)"
+      "Skill(new-api-feature:*)",
+      "Skill(new-bff-route)",
+      "Skill(new-bff-route:*)"
     ]
   },
   "hooks": {
