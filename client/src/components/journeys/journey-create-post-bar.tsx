@@ -35,7 +35,7 @@ export function JourneyCreatePostBar({ journey }: JourneyCreatePostBarProps) {
               src={user?.image ?? null}
               radius="xl"
               size="md"
-              alt={user?.name ?? "You"}
+              alt="Your avatar"
             />
             <TextInput
               placeholder="Share an update..."
