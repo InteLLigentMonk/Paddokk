@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.4](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.3...v0.26.4) (2026-05-22)
+
+
+### Bug Fixes
+
+* **client:** small bugs fixed ([#129](https://github.com/InteLLigentMonk/Paddokk/issues/129)) ([be62443](https://github.com/InteLLigentMonk/Paddokk/commit/be62443d4c3f9b2360572292ad8f7fffeefce060))
+
 ## [0.26.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.2...v0.26.3) (2026-05-22)
 
 
