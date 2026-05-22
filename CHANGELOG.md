@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.6](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.5...v0.26.6) (2026-05-22)
+
+
+### Bug Fixes
+
+* replace external placehold.co with local NoImagePlaceholder ([#132](https://github.com/InteLLigentMonk/Paddokk/issues/132)) ([e43c2c8](https://github.com/InteLLigentMonk/Paddokk/commit/e43c2c88ca3d2a5bdc74f90516b1aa50069d631e))
+
 ## [0.26.5](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.4...v0.26.5) (2026-05-22)
 
 
