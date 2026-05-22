@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Group,
-  Image,
   ScrollArea,
   Skeleton,
   Stack,
@@ -15,6 +14,7 @@ import { Link } from "@tanstack/react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { CarSectionHead } from "./car-section-head";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { carJourneysQueryOptions } from "@/lib/api/users.queries";
 
 const CATEGORY_LABELS: Record<number, string> = {
@@ -109,11 +109,12 @@ export function CarJourneyList({
               flexShrink: 0,
             }}
           >
-            <Image
+            <CdnImage
               src={
                 journey.primaryImageUrl ??
                 "https://placehold.co/200x136/1a1a1a/555?text="
               }
+              width={200}
               alt={journey.title}
               w={100}
               h={68}

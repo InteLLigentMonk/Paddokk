@@ -27,7 +27,7 @@ public sealed class UpdateCarImageHandler(
         if (command.IsPrimary == true && !image.IsPrimary)
         {
             await imageRepository.SetPrimaryImageAsync(image.UserCarId, image.Id, ct);
-            await carRepository.UpdatePrimaryImageUrlAsync(image.UserCarId, image.MediumUrl, ct);
+            await carRepository.UpdatePrimaryImageUrlAsync(image.UserCarId, image.ImageUrl, ct);
         }
 
         await imageRepository.UpdateCarImageAsync(image, ct);

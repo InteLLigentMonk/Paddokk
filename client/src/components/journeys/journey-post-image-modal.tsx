@@ -1,6 +1,7 @@
-import { Image, Modal, Stack, Text } from "@mantine/core";
+import { Modal, Stack, Text } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import type { JourneyPostImageDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 
 interface PostImageModalProps {
   images: Array<JourneyPostImageDto>;
@@ -53,8 +54,9 @@ export function PostImageModal({
         {images.map((img) => (
           <Carousel.Slide key={String(img.id)}>
             <Stack gap={0}>
-              <Image
+              <CdnImage
                 src={img.imageUrl}
+                width={1600}
                 alt={img.caption ?? ""}
                 fit="contain"
                 mah="75vh"

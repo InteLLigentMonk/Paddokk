@@ -6192,8 +6192,6 @@
           "id",
           "userCarId",
           "imageUrl",
-          "thumbnailUrl",
-          "mediumUrl",
           "sortOrder",
           "isPrimary",
           "createdAt"
@@ -6217,12 +6215,6 @@
             "format": "int32"
           },
           "imageUrl": {
-            "type": "string"
-          },
-          "thumbnailUrl": {
-            "type": "string"
-          },
-          "mediumUrl": {
             "type": "string"
           },
           "caption": {
@@ -6929,9 +6921,6 @@
       "ImageUploadDto": {
         "required": [
           "imageUrl",
-          "thumbnailUrl",
-          "mediumUrl",
-          "fullUrl",
           "fileName",
           "fileSizeBytes",
           "width",
@@ -6942,15 +6931,6 @@
         "type": "object",
         "properties": {
           "imageUrl": {
-            "type": "string"
-          },
-          "thumbnailUrl": {
-            "type": "string"
-          },
-          "mediumUrl": {
-            "type": "string"
-          },
-          "fullUrl": {
             "type": "string"
           },
           "fileName": {

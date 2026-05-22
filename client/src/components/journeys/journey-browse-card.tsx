@@ -6,7 +6,6 @@ import {
   Badge,
   Card,
   Group,
-  Image,
   Stack,
   Text,
 } from "@mantine/core";
@@ -17,6 +16,8 @@ import type {
   JourneyDto,
   JourneyStatus,
 } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import {
   useToggleJourneyLike,
   useToggleJourneySubscription,
@@ -68,7 +69,8 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
       .join(" ") ||
     "Okänd bil";
 
-  const coverImage = journey.primaryImageUrl || journey.carPrimaryImageUrl || undefined;
+  const coverImage =
+    journey.primaryImageUrl || journey.carPrimaryImageUrl || undefined;
 
   function handleCardClick() {
     navigate({
@@ -79,7 +81,10 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
 
   function handleOwnerClick(e: React.MouseEvent) {
     e.stopPropagation();
-    navigate({ to: "/users/$username", params: { username: journey.ownerUsername } });
+    navigate({
+      to: "/users/$username",
+      params: { username: journey.ownerUsername },
+    });
   }
 
   function handleLikeClick(e: React.MouseEvent) {
@@ -115,8 +120,9 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
     >
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
-          <Image
+          <CdnImage
             src={coverImage}
+            width={600}
             fallbackSrc="https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
             alt={journey.title}
             fit="cover"
@@ -171,7 +177,7 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
             }}
           >
             <Avatar
-              src={journey.userAvatarUrl ?? undefined}
+              src={optimizeImageUrl(journey.userAvatarUrl, 80)}
               size={20}
               radius="xl"
               name={journey.ownerUsername}
@@ -210,7 +216,9 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
                 variant={journey.isSubscribed ? "filled" : "subtle"}
                 color={journey.isSubscribed ? "blue" : "gray"}
                 size="xs"
-                aria-label={journey.isSubscribed ? "Avprenumerera" : "Prenumerera"}
+                aria-label={
+                  journey.isSubscribed ? "Avprenumerera" : "Prenumerera"
+                }
                 loading={subscribeMutation.isPending}
                 onClick={handleSubscribeClick}
               >

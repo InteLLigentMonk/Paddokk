@@ -29,7 +29,7 @@ public sealed class DeleteCarImageHandler(
             if (nextPrimary is not null)
                 await imageRepository.SetPrimaryImageAsync(image.UserCarId, nextPrimary.Id, ct);
 
-            await carRepository.UpdatePrimaryImageUrlAsync(image.UserCarId, nextPrimary?.MediumUrl, ct);
+            await carRepository.UpdatePrimaryImageUrlAsync(image.UserCarId, nextPrimary?.ImageUrl, ct);
         }
 
         await imageRepository.DeleteCarImageAsync(image.Id, ct);

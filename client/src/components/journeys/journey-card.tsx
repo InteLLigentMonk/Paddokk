@@ -4,7 +4,6 @@
   Badge,
   Card,
   Group,
-  Image,
   Menu,
   Stack,
   Text,
@@ -28,6 +27,7 @@ import type {
   JourneyDto,
   JourneyStatus,
 } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 import {
   openDeleteJourneyConfirm,
   openEditJourneyModal,
@@ -121,11 +121,11 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       });
       queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       const defaultChanged =
-        isDefault && vars.newStatus !== undefined && Number(vars.newStatus) !== STATUS_ACTIVE;
+        isDefault &&
+        vars.newStatus !== undefined &&
+        Number(vars.newStatus) !== STATUS_ACTIVE;
       notifications.success({
-        message: defaultChanged
-          ? "Aktiv resa uppdaterad"
-          : "Resan uppdaterad",
+        message: defaultChanged ? "Aktiv resa uppdaterad" : "Resan uppdaterad",
       });
     },
     onError: () => {
@@ -169,11 +169,12 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
     >
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
-          <Image
+          <CdnImage
             src={
               journey.primaryImageUrl ||
               "https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
             }
+            width={600}
             alt={journey.title}
             fit="cover"
           />
@@ -225,86 +226,88 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
           </Stack>
 
           {isOwner && (
-          <Menu shadow="md" width={220} position="bottom-end">
-            <Menu.Target>
-              <ActionIcon
-                variant="default"
-                bd={0}
-                size={44}
-                aria-label="Resans alternativ"
-                style={{ flexShrink: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoreVertical size={18} />
-              </ActionIcon>
-            </Menu.Target>
+            <Menu shadow="md" width={220} position="bottom-end">
+              <Menu.Target>
+                <ActionIcon
+                  variant="default"
+                  bd={0}
+                  size={44}
+                  aria-label="Resans alternativ"
+                  style={{ flexShrink: 0 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreVertical size={18} />
+                </ActionIcon>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={<Edit size={16} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openEditJourneyModal(journeyId);
-                }}
-              >
-                Edit
-              </Menu.Item>
-
-              <Menu.Divider />
-
-              {status === STATUS_ACTIVE && (
+              <Menu.Dropdown>
                 <Menu.Item
-                  leftSection={<CheckCircle size={16} />}
+                  leftSection={<Edit size={16} />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    statusMutation.mutate({
-                      newStatus: STATUS_COMPLETED,
-                      completedAt: new Date().toISOString(),
-                    });
+                    openEditJourneyModal(journeyId);
                   }}
                 >
-                  Complete Journey
+                  Edit
                 </Menu.Item>
-              )}
 
-              <Menu.Item
-                leftSection={isPublic ? <EyeOff size={16} /> : <Eye size={16} />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  statusMutation.mutate({ newIsPublic: !isPublic });
-                }}
-              >
-                {isPublic ? "Put Under Wraps" : "Make Public"}
-              </Menu.Item>
+                <Menu.Divider />
 
-              {status === STATUS_ACTIVE && !isDefault && (
-                <>
-                  <Menu.Divider />
+                {status === STATUS_ACTIVE && (
                   <Menu.Item
-                    leftSection={<Star size={16} />}
+                    leftSection={<CheckCircle size={16} />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setDefaultMutation.mutate();
+                      statusMutation.mutate({
+                        newStatus: STATUS_COMPLETED,
+                        completedAt: new Date().toISOString(),
+                      });
                     }}
                   >
-                    Set as Active Journey
+                    Complete Journey
                   </Menu.Item>
-                </>
-              )}
+                )}
 
-              <Menu.Divider />
-              <Menu.Item
-                leftSection={<Trash size={16} />}
-                c="red"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openDeleteJourneyConfirm(journeyId);
-                }}
-              >
-                Delete
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+                <Menu.Item
+                  leftSection={
+                    isPublic ? <EyeOff size={16} /> : <Eye size={16} />
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    statusMutation.mutate({ newIsPublic: !isPublic });
+                  }}
+                >
+                  {isPublic ? "Put Under Wraps" : "Make Public"}
+                </Menu.Item>
+
+                {status === STATUS_ACTIVE && !isDefault && (
+                  <>
+                    <Menu.Divider />
+                    <Menu.Item
+                      leftSection={<Star size={16} />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDefaultMutation.mutate();
+                      }}
+                    >
+                      Set as Active Journey
+                    </Menu.Item>
+                  </>
+                )}
+
+                <Menu.Divider />
+                <Menu.Item
+                  leftSection={<Trash size={16} />}
+                  c="red"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openDeleteJourneyConfirm(journeyId);
+                  }}
+                >
+                  Delete
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           )}
         </Group>
 

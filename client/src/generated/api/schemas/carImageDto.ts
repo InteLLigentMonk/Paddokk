@@ -12,8 +12,6 @@ export interface CarImageDto {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   userCarId: number | string;
   imageUrl: string;
-  thumbnailUrl: string;
-  mediumUrl: string;
   /** @nullable */
   caption?: string | null;
   /** @pattern ^-?(?:0|[1-9]\d*)$ */

@@ -4,7 +4,6 @@
   Badge,
   Card,
   Group,
-  Image,
   Menu,
   Stack,
   Text,
@@ -13,6 +12,7 @@ import { Bell, Edit, Heart, MoreVertical, Star, Trash } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { UserCarDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { openDeleteCarConfirm } from "@/lib/stores/cars-page-store";
 import {
   likeUserCarFn,
@@ -93,11 +93,12 @@ export function CarCard({ car }: CarCardProps) {
     >
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
-          <Image
+          <CdnImage
             src={
               car.primaryImageUrl ||
               "https://placehold.co/600x400/e9ecef/495057?text=No+Image"
             }
+            width={600}
             alt={displayName}
             fit="cover"
           />

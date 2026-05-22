@@ -13,6 +13,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Bell } from "lucide-react";
 import type { UserCarDto } from "@/generated/api/schemas";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import { userCarsByUsernameQueryOptions } from "@/lib/api/users.queries";
 import {
   subscribeToUserCarFn,
@@ -63,7 +64,11 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Group gap="sm">
-            <Avatar src={car.ownerAvatarUrl} size={36} radius="xl" />
+            <Avatar
+              src={optimizeImageUrl(car.ownerAvatarUrl, 80)}
+              size={36}
+              radius="xl"
+            />
             <div>
               <Text fz={13} fw={600} lh={1.2}>
                 {car.ownerUsername}
@@ -150,7 +155,7 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
                       className="hover-bg"
                     >
                       <Avatar
-                        src={otherCar.primaryImageUrl}
+                        src={optimizeImageUrl(otherCar.primaryImageUrl, 80)}
                         size={28}
                         radius="sm"
                       />

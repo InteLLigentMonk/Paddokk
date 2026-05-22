@@ -21,7 +21,7 @@ public sealed class UploadJourneyCoverImageHandler(
 
         var uploaded = await imageService.UploadImageAsync(command.File, ImageContext.JourneyCover, ct, command.JourneyId);
 
-        journey.CoverImageUrl = uploaded.MediumUrl;
+        journey.CoverImageUrl = uploaded.ImageUrl;
         journey.UpdatedAt = DateTime.UtcNow;
 
         await journeyRepository.UpdateJourneyAsync(journey, ct);

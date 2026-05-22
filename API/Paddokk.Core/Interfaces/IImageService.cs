@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Paddokk.Core.Models.DTOs.Image;
 using Paddokk.Core.Models.DTOs.Journey;
 
@@ -23,8 +23,4 @@ public interface IImageService
 
     // Journey Post Images (integrated with existing post creation)
     Task ValidatePostImagesAsync(string userId, List<CreateJourneyPostImageRequest> images, CancellationToken cancellationToken);
-
-    // Image URL Generation
-    Task<string> GenerateSecureUploadUrlAsync(string fileName, ImageContext context, CancellationToken cancellationToken);
-    Task<string> GetOptimizedImageUrlAsync(string originalUrl, CancellationToken cancellationToken, int? width = null, int? height = null);
 }

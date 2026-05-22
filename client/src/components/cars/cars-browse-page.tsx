@@ -2,7 +2,6 @@
 import { CarsStatsCard } from "./cars-stats-card";
 import { CarsFilterBar } from "./cars-filter-bar";
 import { CarsBrowseGrid } from "./cars-browse-grid";
-import type { CarSortKey } from "@/lib/api/cars";
 import { sortKeyToNumber } from "@/lib/api/cars.queries";
 import { Route } from "@/routes/_app/cars/index";
 

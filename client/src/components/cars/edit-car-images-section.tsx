@@ -4,21 +4,25 @@
   Box,
   Card,
   Group,
-  Image,
   Stack,
   Text,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { GripVertical, Image as ImageIcon, Trash2, Upload, X } from "lucide-react";
+import {
+  GripVertical,
+  Image as ImageIcon,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react";
 import {
   DndContext,
-  
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
   closestCenter,
   useSensor,
-  useSensors
+  useSensors,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -30,9 +34,10 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { useQuery } from "@tanstack/react-query";
 import { CarImagePreview } from "./car-image-preview";
-import type {DragEndEvent} from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import type { PendingImage } from "./car-form-stepper";
 import type { CarImageDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { useNotifications } from "@/integrations/mantine";
 import { getImageLimitsFn } from "@/lib/api/limits";
 
@@ -105,8 +110,9 @@ function ExistingImageCard({
       )}
 
       <Box style={{ position: "absolute", inset: 0, padding: "4px" }}>
-        <Image
-          src={image.mediumUrl || image.imageUrl}
+        <CdnImage
+          src={image.imageUrl}
+          width={400}
           alt={image.caption ?? "Car image"}
           fit="cover"
           w="100%"
@@ -196,7 +202,9 @@ export function EditCarImagesSection({
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),

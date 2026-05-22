@@ -4,6 +4,7 @@ import { DotIcon, MapPin, Zap } from "lucide-react";
 import { DRIVE_LABELS } from "./car-drive-select";
 import { colorLabelFromHex } from "./car-color-swatch-input";
 import type { CarImageDto, UserCarDto } from "@/generated/api/schemas";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 
 interface CarHeroProps {
   car: UserCarDto;
@@ -11,7 +12,8 @@ interface CarHeroProps {
 }
 
 export function CarHero({ car, primaryImage }: CarHeroProps) {
-  const imageUrl = primaryImage?.imageUrl ?? car.primaryImageUrl;
+  const rawImageUrl = primaryImage?.imageUrl ?? car.primaryImageUrl;
+  const imageUrl = optimizeImageUrl(rawImageUrl, 1600);
   const drive = car.drive != null ? DRIVE_LABELS[car.drive] : null;
   const colorHex = car.color ?? null;
   const colorLabel = colorLabelFromHex(car.color);
@@ -76,7 +78,11 @@ export function CarHero({ car, primaryImage }: CarHeroProps) {
               borderRadius: "var(--mantine-radius-xl)",
             }}
           >
-            <Avatar src={car.ownerAvatarUrl} size={24} radius="xl" />
+            <Avatar
+              src={optimizeImageUrl(car.ownerAvatarUrl, 80)}
+              size={24}
+              radius="xl"
+            />
             <Text fz={12} fw={600} c="white">
               {car.ownerUsername}
             </Text>

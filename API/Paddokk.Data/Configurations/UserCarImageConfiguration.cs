@@ -10,8 +10,6 @@ public class UserCarImageConfiguration : IEntityTypeConfiguration<UserCarImage>
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.ImageUrl).HasMaxLength(500);
-        builder.Property(e => e.ThumbnailUrl).HasMaxLength(500);
-        builder.Property(e => e.MediumUrl).HasMaxLength(500);
         builder.Property(e => e.Caption).HasMaxLength(500);
         builder.Property(e => e.ContentType).HasMaxLength(100);
 

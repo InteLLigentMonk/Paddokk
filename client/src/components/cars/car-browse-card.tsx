@@ -5,14 +5,18 @@ import {
   Avatar,
   Card,
   Group,
-  Image,
   Stack,
   Text,
 } from "@mantine/core";
 import { Bell, Heart, Route } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import type { UserCarDto } from "@/generated/api/schemas";
-import { useToggleCarLike, useToggleCarSubscription } from "@/lib/api/cars.queries";
+import { CdnImage } from "@/components/shared/cdn-image";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
+import {
+  useToggleCarLike,
+  useToggleCarSubscription,
+} from "@/lib/api/cars.queries";
 
 interface CarBrowseCardProps {
   car: UserCarDto;
@@ -27,11 +31,12 @@ export function CarBrowseCard({ car }: CarBrowseCardProps) {
 
   const displayTitle = car.isCustomBuild
     ? (car.customBuildName ?? "Custom Build")
-    : [car.carMakeName, car.carModelName, car.year].filter(Boolean).join(" ") || "Okänd bil";
+    : [car.carMakeName, car.carModelName, car.year].filter(Boolean).join(" ") ||
+      "Okänd bil";
 
   const subtitle = car.isCustomBuild
     ? "Custom build"
-    : car.carGenerationName ?? null;
+    : (car.carGenerationName ?? null);
 
   function handleCardClick() {
     navigate({
@@ -42,7 +47,10 @@ export function CarBrowseCard({ car }: CarBrowseCardProps) {
 
   function handleOwnerClick(e: React.MouseEvent) {
     e.stopPropagation();
-    navigate({ to: "/users/$username", params: { username: car.ownerUsername } });
+    navigate({
+      to: "/users/$username",
+      params: { username: car.ownerUsername },
+    });
   }
 
   function handleLikeClick(e: React.MouseEvent) {
@@ -78,8 +86,9 @@ export function CarBrowseCard({ car }: CarBrowseCardProps) {
     >
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
-          <Image
+          <CdnImage
             src={car.primaryImageUrl || undefined}
+            width={600}
             fallbackSrc="https://placehold.co/600x400/e9ecef/495057?text=No+Image"
             alt={displayTitle}
             fit="cover"
@@ -125,7 +134,7 @@ export function CarBrowseCard({ car }: CarBrowseCardProps) {
             }}
           >
             <Avatar
-              src={car.ownerAvatarUrl ?? undefined}
+              src={optimizeImageUrl(car.ownerAvatarUrl, 80)}
               size={20}
               radius="xl"
               name={car.ownerUsername}

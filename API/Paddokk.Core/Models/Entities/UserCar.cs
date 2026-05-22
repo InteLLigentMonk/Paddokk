@@ -94,12 +94,6 @@ public class UserCarImage
     public string ImageUrl { get; set; } = string.Empty;
 
     [StringLength(500)]
-    public string ThumbnailUrl { get; set; } = string.Empty;
-
-    [StringLength(500)]
-    public string MediumUrl { get; set; } = string.Empty;
-
-    [StringLength(500)]
     public string? Caption { get; set; }
 
     public int SortOrder { get; set; }
