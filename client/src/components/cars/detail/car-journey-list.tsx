@@ -110,11 +110,9 @@ export function CarJourneyList({
             }}
           >
             <CdnImage
-              src={
-                journey.primaryImageUrl ??
-                "https://placehold.co/200x136/1a1a1a/555?text="
-              }
-              width={200}
+              src={journey.primaryImageUrl}
+              width={400}
+              placeholder="journey"
               alt={journey.title}
               w={100}
               h={68}

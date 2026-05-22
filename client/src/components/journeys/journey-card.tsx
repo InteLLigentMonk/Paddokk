@@ -170,11 +170,9 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
           <CdnImage
-            src={
-              journey.primaryImageUrl ||
-              "https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
-            }
+            src={journey.primaryImageUrl}
             width={600}
+            placeholder="journey"
             alt={journey.title}
             fit="cover"
           />

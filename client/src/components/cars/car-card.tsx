@@ -94,11 +94,9 @@ export function CarCard({ car }: CarCardProps) {
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
           <CdnImage
-            src={
-              car.primaryImageUrl ||
-              "https://placehold.co/600x400/e9ecef/495057?text=No+Image"
-            }
+            src={car.primaryImageUrl}
             width={600}
+            placeholder="car"
             alt={displayName}
             fit="cover"
           />
