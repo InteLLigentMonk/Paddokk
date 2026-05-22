@@ -123,7 +123,7 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
           <CdnImage
             src={coverImage}
             width={600}
-            fallbackSrc="https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
+            placeholder="journey"
             alt={journey.title}
             fit="cover"
           />

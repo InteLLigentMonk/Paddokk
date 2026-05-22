@@ -87,9 +87,9 @@ export function CarBrowseCard({ car }: CarBrowseCardProps) {
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
           <CdnImage
-            src={car.primaryImageUrl || undefined}
+            src={car.primaryImageUrl}
             width={600}
-            fallbackSrc="https://placehold.co/600x400/e9ecef/495057?text=No+Image"
+            placeholder="car"
             alt={displayTitle}
             fit="cover"
           />
