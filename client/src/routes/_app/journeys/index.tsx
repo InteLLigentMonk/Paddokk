@@ -10,7 +10,13 @@ import {
 const searchSchema = z.object({
   q: z.array(z.string().min(1)).max(10).optional(),
   sort: z
-    .enum(["RecentActivity", "Newest", "MostLiked", "MostSubscribed", "RecentlyCompleted"])
+    .enum([
+      "RecentActivity",
+      "Newest",
+      "MostLiked",
+      "MostSubscribed",
+      "RecentlyCompleted",
+    ])
     .optional(),
 });
 
@@ -20,7 +26,9 @@ export const Route = createFileRoute("/_app/journeys/")({
   loader: async ({ deps, context: { queryClient } }) => {
     const sortNum = sortKeyToNumber(deps.sort, deps.q.length > 0);
     await Promise.all([
-      queryClient.prefetchInfiniteQuery(browseJourneysInfiniteQueryOptions(deps.q, sortNum)),
+      queryClient.prefetchInfiniteQuery(
+        browseJourneysInfiniteQueryOptions(deps.q, sortNum),
+      ),
       queryClient.ensureQueryData(browseJourneysStatsQueryOptions(deps.q)),
     ]);
   },

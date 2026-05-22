@@ -19,9 +19,7 @@ export const signupSchema = z
       .string()
       .min(1, "First name is required")
       .max(50, "First name cannot exceed 50 characters"),
-    lastName: z
-      .string()
-      .max(50, "Last name cannot exceed 50 characters"),
+    lastName: z.string().max(50, "Last name cannot exceed 50 characters"),
     email: z.email("Please enter a valid email address"),
     password: z
       .string()

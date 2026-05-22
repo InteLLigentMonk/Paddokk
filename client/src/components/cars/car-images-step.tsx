@@ -1,34 +1,33 @@
-import { Badge, Button, Group, Stack, Text } from "@mantine/core"
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
-import { Image as ImageIcon, Upload, X } from "lucide-react"
+import { Badge, Button, Group, Stack, Text } from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Image as ImageIcon, Upload, X } from "lucide-react";
 import {
   DndContext,
-  
   KeyboardSensor,
   PointerSensor,
   closestCenter,
   useSensor,
-  useSensors
-} from "@dnd-kit/core"
+  useSensors,
+} from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
   rectSortingStrategy,
   sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable"
-import { useQuery } from "@tanstack/react-query"
-import { CarImagePreview } from "./car-image-preview"
-import type {DragEndEvent} from "@dnd-kit/core";
-import type { PendingImage } from "./car-form-stepper"
-import { limitsGetImageLimits } from "@/generated/api/limits/limits"
-import { useNotifications } from "@/integrations/mantine"
+} from "@dnd-kit/sortable";
+import { useQuery } from "@tanstack/react-query";
+import { CarImagePreview } from "./car-image-preview";
+import type { DragEndEvent } from "@dnd-kit/core";
+import type { PendingImage } from "./car-form-stepper";
+import { limitsGetImageLimits } from "@/generated/api/limits/limits";
+import { useNotifications } from "@/integrations/mantine";
 
 interface CarImagesStepProps {
-  pendingImages: Array<PendingImage>
-  onImagesChange: (imgs: Array<PendingImage>) => void
-  isSubmitting: boolean
-  onFinish: () => void
-  onBack: () => void
+  pendingImages: Array<PendingImage>;
+  onImagesChange: (imgs: Array<PendingImage>) => void;
+  isSubmitting: boolean;
+  onFinish: () => void;
+  onBack: () => void;
 }
 
 export function CarImagesStep({
@@ -38,68 +37,73 @@ export function CarImagesStep({
   onFinish,
   onBack,
 }: CarImagesStepProps) {
-  const notifications = useNotifications()
+  const notifications = useNotifications();
 
   const { data: limitsData } = useQuery({
     queryKey: ["image-limits"],
     queryFn: () => limitsGetImageLimits(),
-  })
-  const maxImages = limitsData?.status === 200 ? Number(limitsData.data.maxImagesPerCar) : 10
+  });
+  const maxImages =
+    limitsData?.status === 200 ? Number(limitsData.data.maxImagesPerCar) : 10;
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
-  )
+  );
 
   const handleFileDrop = (files: Array<File>) => {
-    const newImages: Array<PendingImage> = []
+    const newImages: Array<PendingImage> = [];
     for (const file of files) {
       if (pendingImages.length + newImages.length >= maxImages) {
         notifications.warning({
           message: `Subscription limit reached (${maxImages}/${maxImages})`,
-        })
-        break
+        });
+        break;
       }
-      const isFirst = pendingImages.length === 0 && newImages.length === 0
+      const isFirst = pendingImages.length === 0 && newImages.length === 0;
       newImages.push({
         localId: crypto.randomUUID(),
         file,
         previewUrl: URL.createObjectURL(file),
         isPrimary: isFirst,
-      })
+      });
     }
     if (newImages.length > 0) {
-      onImagesChange([...pendingImages, ...newImages])
+      onImagesChange([...pendingImages, ...newImages]);
     }
-  }
+  };
 
   const handleDelete = (localId: string) => {
-    const img = pendingImages.find((i) => i.localId === localId)
-    if (img) URL.revokeObjectURL(img.previewUrl)
-    const remaining = pendingImages.filter((i) => i.localId !== localId)
+    const img = pendingImages.find((i) => i.localId === localId);
+    if (img) URL.revokeObjectURL(img.previewUrl);
+    const remaining = pendingImages.filter((i) => i.localId !== localId);
     if (img?.isPrimary && remaining.length > 0) {
-      onImagesChange(remaining.map((i, idx) => ({ ...i, isPrimary: idx === 0 })))
+      onImagesChange(
+        remaining.map((i, idx) => ({ ...i, isPrimary: idx === 0 })),
+      );
     } else {
-      onImagesChange(remaining)
+      onImagesChange(remaining);
     }
-  }
+  };
 
   const handleSetPrimary = (localId: string) => {
-    onImagesChange(pendingImages.map((i) => ({ ...i, isPrimary: i.localId === localId })))
-  }
+    onImagesChange(
+      pendingImages.map((i) => ({ ...i, isPrimary: i.localId === localId })),
+    );
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-    const oldIndex = pendingImages.findIndex((i) => i.localId === active.id)
-    const newIndex = pendingImages.findIndex((i) => i.localId === over.id)
-    if (oldIndex === -1 || newIndex === -1) return
-    onImagesChange(arrayMove(pendingImages, oldIndex, newIndex))
-  }
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = pendingImages.findIndex((i) => i.localId === active.id);
+    const newIndex = pendingImages.findIndex((i) => i.localId === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+    onImagesChange(arrayMove(pendingImages, oldIndex, newIndex));
+  };
 
-  const canUploadMore = pendingImages.length < maxImages
+  const canUploadMore = pendingImages.length < maxImages;
 
   return (
     <Stack gap="md" mt="md">
@@ -143,7 +147,9 @@ export function CarImagesStep({
 
             <div>
               <Text size="xl" inline>
-                {canUploadMore ? "Drag images here or click to select" : "Upload limit reached"}
+                {canUploadMore
+                  ? "Drag images here or click to select"
+                  : "Upload limit reached"}
               </Text>
               <Text size="sm" c="dimmed" inline mt={7}>
                 {canUploadMore
@@ -193,5 +199,5 @@ export function CarImagesStep({
         </Button>
       </Group>
     </Stack>
-  )
+  );
 }

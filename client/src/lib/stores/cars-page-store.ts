@@ -1,31 +1,31 @@
-import { Store } from '@tanstack/store'
+import { Store } from "@tanstack/store";
 
 export type SortOption =
-  | 'newest'
-  | 'oldest'
-  | 'name-asc'
-  | 'name-desc'
-  | 'year-new'
-  | 'year-old'
-  | 'journeys'
+  | "newest"
+  | "oldest"
+  | "name-asc"
+  | "name-desc"
+  | "year-new"
+  | "year-old"
+  | "journeys";
 
 interface CarsPageState {
-  sortBy: SortOption
+  sortBy: SortOption;
   modals: {
-    addCar: boolean
+    addCar: boolean;
     editCar: {
-      open: boolean
-      carId: number | null
-    }
+      open: boolean;
+      carId: number | null;
+    };
     deleteCar: {
-      open: boolean
-      carId: number | null
-    }
-  }
+      open: boolean;
+      carId: number | null;
+    };
+  };
 }
 
 export const carsPageStore = new Store<CarsPageState>({
-  sortBy: 'newest',
+  sortBy: "newest",
   modals: {
     addCar: false,
     editCar: {
@@ -37,14 +37,14 @@ export const carsPageStore = new Store<CarsPageState>({
       carId: null,
     },
   },
-})
+});
 
 // Action creators
 export function setSortBy(sortBy: SortOption) {
   carsPageStore.setState((state) => ({
     ...state,
     sortBy,
-  }))
+  }));
 }
 
 export function openAddCarModal() {
@@ -54,7 +54,7 @@ export function openAddCarModal() {
       ...state.modals,
       addCar: true,
     },
-  }))
+  }));
 }
 
 export function closeAddCarModal() {
@@ -64,7 +64,7 @@ export function closeAddCarModal() {
       ...state.modals,
       addCar: false,
     },
-  }))
+  }));
 }
 
 export function openEditCarModal(carId: number) {
@@ -77,7 +77,7 @@ export function openEditCarModal(carId: number) {
         carId,
       },
     },
-  }))
+  }));
 }
 
 export function closeEditCarModal() {
@@ -90,7 +90,7 @@ export function closeEditCarModal() {
         carId: null,
       },
     },
-  }))
+  }));
 }
 
 export function openDeleteCarConfirm(carId: number) {
@@ -103,7 +103,7 @@ export function openDeleteCarConfirm(carId: number) {
         carId,
       },
     },
-  }))
+  }));
 }
 
 export function closeDeleteCarConfirm() {
@@ -116,5 +116,5 @@ export function closeDeleteCarConfirm() {
         carId: null,
       },
     },
-  }))
+  }));
 }

@@ -17,7 +17,10 @@ interface CarsFilterBarProps {
 export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
   const navigate = useNavigate();
 
-  function updateSearch(newTerms: Array<string>, newSort: CarSortKey | undefined) {
+  function updateSearch(
+    newTerms: Array<string>,
+    newSort: CarSortKey | undefined,
+  ) {
     navigate({
       to: "/cars",
       search: {
@@ -50,9 +53,7 @@ export function CarsFilterBar({ terms, sort }: CarsFilterBarProps) {
       <Select
         data={SORT_OPTIONS}
         value={effectiveSortKey}
-        onChange={(val) =>
-          updateSearch(terms, val as CarSortKey)
-        }
+        onChange={(val) => updateSearch(terms, val as CarSortKey)}
         w={160}
         allowDeselect={false}
       />

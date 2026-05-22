@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Container, Stack, Text, Title } from '@mantine/core'
+import { createFileRoute } from "@tanstack/react-router";
+import { Container, Stack, Text, Title } from "@mantine/core";
 
-export const Route = createFileRoute('/_app/feed')({
+export const Route = createFileRoute("/_app/feed")({
   component: FeedPage,
-})
+});
 
 function FeedPage() {
   return (
@@ -13,5 +13,5 @@ function FeedPage() {
         <Text c="dimmed">Your personalized feed — coming soon</Text>
       </Stack>
     </Container>
-  )
+  );
 }

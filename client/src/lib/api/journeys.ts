@@ -25,7 +25,12 @@ export type JourneySortKey = keyof typeof JOURNEY_SEARCH_SORT;
 
 const browseJourneysSchema = z.object({
   terms: z.array(z.string().min(1).max(50)).max(10).default([]),
-  sort: z.number().int().min(1).max(5).default(JOURNEY_SEARCH_SORT.RecentActivity),
+  sort: z
+    .number()
+    .int()
+    .min(1)
+    .max(5)
+    .default(JOURNEY_SEARCH_SORT.RecentActivity),
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(50).default(24),
 });

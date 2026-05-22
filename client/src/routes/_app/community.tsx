@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Container, Stack, Text, Title } from '@mantine/core'
+import { createFileRoute } from "@tanstack/react-router";
+import { Container, Stack, Text, Title } from "@mantine/core";
 
-export const Route = createFileRoute('/_app/community')({
+export const Route = createFileRoute("/_app/community")({
   component: CommunityPage,
-})
+});
 
 function CommunityPage() {
   return (
@@ -13,5 +13,5 @@ function CommunityPage() {
         <Text c="dimmed">Connect with other car enthusiasts</Text>
       </Stack>
     </Container>
-  )
+  );
 }

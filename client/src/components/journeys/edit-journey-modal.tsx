@@ -1,15 +1,32 @@
-﻿import { useState } from "react"
-import { Button, Group, Modal, ScrollArea, Select, Stack, Switch, Text, TextInput } from "@mantine/core"
-import { useStore } from "@tanstack/react-store"
-import { useForm } from "@tanstack/react-form"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import type { JourneyDto } from "@/generated/api/schemas"
-import { closeEditJourneyModal, journeysPageStore } from "@/lib/stores/journeys-page-store"
-import { getDefaultActiveJourneyFn, getUserJourneysFn, updateJourneyFn } from "@/lib/api/user-journeys"
-import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys"
-import { RichTextEditor } from "@/components/shared/rich-text-editor"
-import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone"
-import { useNotifications } from "@/integrations/mantine"
+﻿import { useState } from "react";
+import {
+  Button,
+  Group,
+  Modal,
+  ScrollArea,
+  Select,
+  Stack,
+  Switch,
+  Text,
+  TextInput,
+} from "@mantine/core";
+import { useStore } from "@tanstack/react-store";
+import { useForm } from "@tanstack/react-form";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { JourneyDto } from "@/generated/api/schemas";
+import {
+  closeEditJourneyModal,
+  journeysPageStore,
+} from "@/lib/stores/journeys-page-store";
+import {
+  getDefaultActiveJourneyFn,
+  getUserJourneysFn,
+  updateJourneyFn,
+} from "@/lib/api/user-journeys";
+import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
+import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
+import { useNotifications } from "@/integrations/mantine";
 
 const JOURNEY_CATEGORIES = [
   { value: "1", label: "Build & Mods" },
@@ -17,34 +34,38 @@ const JOURNEY_CATEGORIES = [
   { value: "3", label: "Racing" },
   { value: "4", label: "Adventures" },
   { value: "5", label: "Ownership" },
-]
+];
 
 const JOURNEY_STATUSES = [
   { value: "1", label: "Active" },
   { value: "2", label: "Completed" },
-]
+];
 
 interface EditJourneyFormProps {
-  journey: JourneyDto
-  onClose: () => void
+  journey: JourneyDto;
+  onClose: () => void;
 }
 
 function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
-  const queryClient = useQueryClient()
-  const notifications = useNotifications()
+  const queryClient = useQueryClient();
+  const notifications = useNotifications();
 
-  const [description, setDescription] = useState(journey.description ?? "")
-  const [coverFile, setCoverFile] = useState<File | null>(null)
-  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(journey.primaryImageUrl ?? null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [description, setDescription] = useState(journey.description ?? "");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(
+    journey.primaryImageUrl ?? null,
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const journeyId = Number(journey.id)
+  const journeyId = Number(journey.id);
 
   const { data: defaultJourney } = useQuery({
     queryKey: ["default-active-journey"],
     queryFn: () => getDefaultActiveJourneyFn(),
-  })
-  const isDefault = defaultJourney ? Number(defaultJourney.id) === journeyId : false
+  });
+  const isDefault = defaultJourney
+    ? Number(defaultJourney.id) === journeyId
+    : false;
 
   const form = useForm({
     defaultValues: {
@@ -54,7 +75,7 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
       isPublic: journey.isPublic,
     },
     onSubmit: async ({ value }) => {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       try {
         await updateJourneyFn({
           data: {
@@ -65,64 +86,89 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
             description: description || null,
             isPublic: value.isPublic,
           },
-        })
+        });
 
         if (coverFile) {
-          await userJourneysUploadJourneyCoverImage(journeyId, { file: coverFile })
+          await userJourneysUploadJourneyCoverImage(journeyId, {
+            file: coverFile,
+          });
         }
 
-        const defaultChanged = isDefault && Number(value.status) !== Number(journey.status) && Number(value.status) !== 1
+        const defaultChanged =
+          isDefault &&
+          Number(value.status) !== Number(journey.status) &&
+          Number(value.status) !== 1;
         queryClient.invalidateQueries({
           predicate: (q) => {
-            const key = q.queryKey[0]
-            return key === "user-journeys" || key === "user-journeys-by-username"
+            const key = q.queryKey[0];
+            return (
+              key === "user-journeys" || key === "user-journeys-by-username"
+            );
           },
-        })
-        queryClient.invalidateQueries({ queryKey: ["journey-detail", journeyId] })
-        queryClient.invalidateQueries({ queryKey: ["default-active-journey"] })
-        notifications.success({ message: defaultChanged ? "Aktiv resa uppdaterad" : "Journey updated!" })
-        handleClose()
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["journey-detail", journeyId],
+        });
+        queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
+        notifications.success({
+          message: defaultChanged
+            ? "Aktiv resa uppdaterad"
+            : "Journey updated!",
+        });
+        handleClose();
       } catch {
-        notifications.error({ message: "Failed to update journey" })
-        setIsSubmitting(false)
+        notifications.error({ message: "Failed to update journey" });
+        setIsSubmitting(false);
       }
     },
-  })
+  });
 
   const handleClose = () => {
-    if (coverFile && coverPreviewUrl && coverPreviewUrl !== (journey.primaryImageUrl ?? null)) {
-      URL.revokeObjectURL(coverPreviewUrl)
+    if (
+      coverFile &&
+      coverPreviewUrl &&
+      coverPreviewUrl !== (journey.primaryImageUrl ?? null)
+    ) {
+      URL.revokeObjectURL(coverPreviewUrl);
     }
-    setCoverFile(null)
-    setIsSubmitting(false)
-    onClose()
-  }
+    setCoverFile(null);
+    setIsSubmitting(false);
+    onClose();
+  };
 
   const handleCoverChange = (file: File | null, previewUrl: string | null) => {
-    if (coverFile && coverPreviewUrl && coverPreviewUrl !== (journey.primaryImageUrl ?? null)) {
-      URL.revokeObjectURL(coverPreviewUrl)
+    if (
+      coverFile &&
+      coverPreviewUrl &&
+      coverPreviewUrl !== (journey.primaryImageUrl ?? null)
+    ) {
+      URL.revokeObjectURL(coverPreviewUrl);
     }
-    setCoverFile(file)
-    setCoverPreviewUrl(previewUrl)
-  }
+    setCoverFile(file);
+    setCoverPreviewUrl(previewUrl);
+  };
 
   return (
     <form
       onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
+        e.preventDefault();
+        form.handleSubmit();
       }}
     >
       <Stack gap="md">
-        <CoverImageDropzone previewUrl={coverPreviewUrl} onChange={handleCoverChange} />
+        <CoverImageDropzone
+          previewUrl={coverPreviewUrl}
+          onChange={handleCoverChange}
+        />
 
         <form.Field
           name="title"
           validators={{
             onChange: ({ value }) => {
-              if (!value.trim()) return "Title is required"
-              if (value.trim().length < 3) return "Title must be at least 3 characters"
-              return undefined
+              if (!value.trim()) return "Title is required";
+              if (value.trim().length < 3)
+                return "Title must be at least 3 characters";
+              return undefined;
             },
           }}
         >
@@ -132,7 +178,11 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
               placeholder="Give your journey a name"
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
-              error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+              error={
+                field.state.meta.isTouched
+                  ? field.state.meta.errors.join(", ")
+                  : undefined
+              }
               required
             />
           )}
@@ -141,7 +191,8 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
         <form.Field
           name="category"
           validators={{
-            onChange: ({ value }) => (!value ? "Category is required" : undefined),
+            onChange: ({ value }) =>
+              !value ? "Category is required" : undefined,
           }}
         >
           {(field) => (
@@ -151,7 +202,11 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
               data={JOURNEY_CATEGORIES}
               value={field.state.value || null}
               onChange={(value) => field.handleChange(value ?? "")}
-              error={field.state.meta.isTouched ? field.state.meta.errors.join(", ") : undefined}
+              error={
+                field.state.meta.isTouched
+                  ? field.state.meta.errors.join(", ")
+                  : undefined
+              }
               required
             />
           )}
@@ -187,7 +242,11 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
         </div>
 
         <Group justify="flex-end" mt="sm">
-          <Button variant="subtle" onClick={handleClose} disabled={isSubmitting}>
+          <Button
+            variant="subtle"
+            onClick={handleClose}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
           <Button type="submit" loading={isSubmitting}>
@@ -196,19 +255,22 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
         </Group>
       </Stack>
     </form>
-  )
+  );
 }
 
 export function EditJourneyModal() {
-  const editState = useStore(journeysPageStore, (state) => state.modals.editJourney)
+  const editState = useStore(
+    journeysPageStore,
+    (state) => state.modals.editJourney,
+  );
 
   const { data: journeys } = useQuery({
     queryKey: ["user-journeys"],
     queryFn: () => getUserJourneysFn(),
     enabled: editState.open,
-  })
+  });
 
-  const journey = journeys?.find((j) => Number(j.id) === editState.journeyId)
+  const journey = journeys?.find((j) => Number(j.id) === editState.journeyId);
 
   return (
     <Modal
@@ -220,7 +282,11 @@ export function EditJourneyModal() {
       scrollAreaComponent={ScrollArea.Autosize}
     >
       {journey ? (
-        <EditJourneyForm key={journey.id} journey={journey} onClose={closeEditJourneyModal} />
+        <EditJourneyForm
+          key={journey.id}
+          journey={journey}
+          onClose={closeEditJourneyModal}
+        />
       ) : (
         <Stack gap="md">
           <Text c="dimmed" size="sm">
@@ -229,5 +295,5 @@ export function EditJourneyModal() {
         </Stack>
       )}
     </Modal>
-  )
+  );
 }

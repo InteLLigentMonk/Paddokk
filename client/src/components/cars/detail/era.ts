@@ -1,6 +1,8 @@
 export type Era = "Classic" | "Youngtimer" | "Modern classic" | "Contemporary";
 
-export function eraFromYear(year: number | string | null | undefined): Era | null {
+export function eraFromYear(
+  year: number | string | null | undefined,
+): Era | null {
   const y = Number(year);
   if (!y || isNaN(y)) return null;
   if (y < 1985) return "Classic";

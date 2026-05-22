@@ -1,7 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { CommentsPagedResponse, JourneyDto, JourneyPostDto } from "@/generated/api/schemas";
-import { journeysCreateJourneyPost, journeysGetJourney, journeysGetJourneyPosts } from "@/generated/api/journeys/journeys";
+import type {
+  CommentsPagedResponse,
+  JourneyDto,
+  JourneyPostDto,
+} from "@/generated/api/schemas";
+import {
+  journeysCreateJourneyPost,
+  journeysGetJourney,
+  journeysGetJourneyPosts,
+} from "@/generated/api/journeys/journeys";
 import {
   postCommentsCreateComment,
   postCommentsGetPostComments,
@@ -49,7 +57,10 @@ export const getJourneyPostsFn = createServerFn({ method: "GET" })
 export const getPostCommentsFn = createServerFn({ method: "GET" })
   .inputValidator(postCommentsSchema)
   .handler(async ({ data: { postId, page, pageSize } }) => {
-    const result = await postCommentsGetPostComments(postId, { page, pageSize });
+    const result = await postCommentsGetPostComments(postId, {
+      page,
+      pageSize,
+    });
     return result.data as CommentsPagedResponse;
   });
 

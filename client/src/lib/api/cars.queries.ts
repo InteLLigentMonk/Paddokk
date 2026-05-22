@@ -5,30 +5,34 @@
   useQueryClient,
 } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
-import {
-  CAR_SEARCH_SORT,
-  
-  getCarsBrowseStatsFn,
-  searchCarsFn
-} from "./cars";
+import { CAR_SEARCH_SORT, getCarsBrowseStatsFn, searchCarsFn } from "./cars";
 import {
   likeUserCarFn,
   subscribeToUserCarFn,
   unlikeUserCarFn,
   unsubscribeFromUserCarFn,
 } from "./user-cars";
-import type {CarSortKey} from "./cars";
+import type { CarSortKey } from "./cars";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedUserCarsResponse } from "@/generated/api/schemas";
 
 const PAGE_SIZE = 24;
 
-export const browseCarsInfiniteQueryOptions = (terms: Array<string>, sort: number) =>
+export const browseCarsInfiniteQueryOptions = (
+  terms: Array<string>,
+  sort: number,
+) =>
   infiniteQueryOptions({
     queryKey: ["browse-cars", { terms, sort }] as const,
     queryFn: ({ pageParam }) =>
       searchCarsFn({
-        data: { terms, sort, isPublic: true, page: pageParam, pageSize: PAGE_SIZE },
+        data: {
+          terms,
+          sort,
+          isPublic: true,
+          page: pageParam,
+          pageSize: PAGE_SIZE,
+        },
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
@@ -41,15 +45,21 @@ export const browseCarsStatsQueryOptions = (terms: Array<string>) =>
     queryFn: () => getCarsBrowseStatsFn({ data: { terms, isPublic: true } }),
   });
 
-export function sortKeyToNumber(key: CarSortKey | undefined, hasTerms: boolean): number {
-  if (key === undefined) return hasTerms ? CAR_SEARCH_SORT.Relevance : CAR_SEARCH_SORT.Newest;
+export function sortKeyToNumber(
+  key: CarSortKey | undefined,
+  hasTerms: boolean,
+): number {
+  if (key === undefined)
+    return hasTerms ? CAR_SEARCH_SORT.Relevance : CAR_SEARCH_SORT.Newest;
   return CAR_SEARCH_SORT[key];
 }
 
 function patchCarInPages(
   data: InfiniteData<PagedUserCarsResponse>,
   carId: number | string,
-  patch: (car: PagedUserCarsResponse["cars"][number]) => PagedUserCarsResponse["cars"][number],
+  patch: (
+    car: PagedUserCarsResponse["cars"][number],
+  ) => PagedUserCarsResponse["cars"][number],
 ): InfiniteData<PagedUserCarsResponse> {
   return {
     ...data,
@@ -70,7 +80,9 @@ export function useToggleCarLike(carId: number) {
         : likeUserCarFn({ data: { carId } }),
     onMutate: async (isCurrentlyLiked) => {
       await queryClient.cancelQueries({ queryKey: ["browse-cars"] });
-      const snapshots = queryClient.getQueriesData<InfiniteData<PagedUserCarsResponse>>({
+      const snapshots = queryClient.getQueriesData<
+        InfiniteData<PagedUserCarsResponse>
+      >({
         queryKey: ["browse-cars"],
       });
       snapshots.forEach(([key, data]) => {
@@ -111,7 +123,9 @@ export function useToggleCarSubscription(carId: number) {
         : subscribeToUserCarFn({ data: { carId } }),
     onMutate: async (isCurrentlySubscribed) => {
       await queryClient.cancelQueries({ queryKey: ["browse-cars"] });
-      const snapshots = queryClient.getQueriesData<InfiniteData<PagedUserCarsResponse>>({
+      const snapshots = queryClient.getQueriesData<
+        InfiniteData<PagedUserCarsResponse>
+      >({
         queryKey: ["browse-cars"],
       });
       snapshots.forEach(([key, data]) => {
@@ -121,7 +135,8 @@ export function useToggleCarSubscription(carId: number) {
           patchCarInPages(data, carId, (car) => ({
             ...car,
             isSubscribed: !isCurrentlySubscribed,
-            subscriberCount: Number(car.subscriberCount) + (isCurrentlySubscribed ? -1 : 1),
+            subscriberCount:
+              Number(car.subscriberCount) + (isCurrentlySubscribed ? -1 : 1),
           })),
         );
       });

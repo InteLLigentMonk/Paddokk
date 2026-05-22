@@ -1,12 +1,4 @@
-import {
-  Box,
-  Divider,
-  Group,
-  Image,
-  Modal,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Box, Divider, Group, Image, Modal, Stack, Text } from "@mantine/core";
 import { JourneyPostComments } from "./journey-post-comments";
 import type { JourneyPostDto } from "@/generated/api/schemas";
 import { OwnerLink } from "@/components/common/owner-link";
