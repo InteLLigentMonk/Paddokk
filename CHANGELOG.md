@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.7](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.6...v0.26.7) (2026-05-22)
+
+
+### Bug Fixes
+
+* enable avatar images in production with Vercel optimization ([#135](https://github.com/InteLLigentMonk/Paddokk/issues/135)) ([39048b3](https://github.com/InteLLigentMonk/Paddokk/commit/39048b387bbbc1da4e18ceb4614e47c79afcf3d6))
+
 ## [0.26.6](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.5...v0.26.6) (2026-05-22)
 
 
