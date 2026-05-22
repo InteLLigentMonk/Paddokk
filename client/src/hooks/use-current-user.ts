@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "@/lib/auth-client";
 import { currentUserQueryOptions } from "@/lib/api/users.queries";
 
 /**
@@ -7,11 +6,8 @@ import { currentUserQueryOptions } from "@/lib/api/users.queries";
  * Shares the cache key with route loaders that use currentUserQueryOptions,
  * so a hover-preload and a component-mount don't double-fetch. Logout calls
  * queryClient.clear(), so cross-user cache contamination is handled there.
+ * Only use within authenticated routes (/_app) where currentUser is prefetched.
  */
 export function useCurrentUser() {
-  const { data: session } = useSession();
-  return useQuery({
-    ...currentUserQueryOptions(),
-    enabled: !!session?.user.id,
-  });
+  return useQuery(currentUserQueryOptions());
 }
