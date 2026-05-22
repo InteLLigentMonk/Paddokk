@@ -8,7 +8,7 @@
         "hostname": "paddokkblob.blob.core.windows.net"
       }
     ],
-    "sizes": [400, 600, 1200, 1600],
+    "sizes": [200, 400, 600, 1200, 1600],
     "formats": ["image/avif", "image/webp"]
   }
 }
