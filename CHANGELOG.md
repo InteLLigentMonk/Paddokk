@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.1...v0.26.2) (2026-05-22)
+
+
+### Refactoring
+
+* migrate image pipeline to Vercel Image Optimization ([#124](https://github.com/InteLLigentMonk/Paddokk/issues/124)) ([952ebb1](https://github.com/InteLLigentMonk/Paddokk/commit/952ebb1c1ab01383af740158548c642657f9f0fb))
+
 ## [0.26.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.0...v0.26.1) (2026-05-21)
 
 
