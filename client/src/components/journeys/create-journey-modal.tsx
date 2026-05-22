@@ -129,7 +129,9 @@ export function CreateJourneyModal() {
         queryClient.invalidateQueries({
           predicate: (q) => {
             const key = q.queryKey[0];
-            return key === "user-journeys" || key === "user-journeys-by-username";
+            return (
+              key === "user-journeys" || key === "user-journeys-by-username"
+            );
           },
         });
         queryClient.invalidateQueries({ queryKey: ["journey-limits"] });

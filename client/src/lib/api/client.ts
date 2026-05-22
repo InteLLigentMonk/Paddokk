@@ -10,9 +10,8 @@ if (!apiUrl) throw new Error("VITE_API_URL is required");
 const getAuthToken = createIsomorphicFn()
   .server(async (): Promise<string | null> => {
     try {
-      const { getRequestHeaders } = await import(
-        "@tanstack/react-start/server"
-      );
+      const { getRequestHeaders } =
+        await import("@tanstack/react-start/server");
       const { auth } = await import("@/lib/auth.server");
       const baseUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
       const res = await auth.handler(

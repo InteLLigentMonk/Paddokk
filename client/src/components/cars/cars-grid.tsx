@@ -1,12 +1,12 @@
-import { SimpleGrid, Skeleton } from '@mantine/core'
-import { CarCard } from './car-card'
-import { CarsEmptyState } from './cars-empty-state'
-import type { UserCarDto } from '@/generated/api/schemas'
+import { SimpleGrid, Skeleton } from "@mantine/core";
+import { CarCard } from "./car-card";
+import { CarsEmptyState } from "./cars-empty-state";
+import type { UserCarDto } from "@/generated/api/schemas";
 
 interface CarsGridProps {
-  cars: Array<UserCarDto>
-  isLoading?: boolean
-  onAddCar: () => void
+  cars: Array<UserCarDto>;
+  isLoading?: boolean;
+  onAddCar: () => void;
 }
 
 export function CarsGrid({ cars, isLoading, onAddCar }: CarsGridProps) {
@@ -17,11 +17,11 @@ export function CarsGrid({ cars, isLoading, onAddCar }: CarsGridProps) {
           <Skeleton key={i} height={300} radius="md" />
         ))}
       </SimpleGrid>
-    )
+    );
   }
 
   if (cars.length === 0) {
-    return <CarsEmptyState onAddCar={onAddCar} />
+    return <CarsEmptyState onAddCar={onAddCar} />;
   }
 
   return (
@@ -30,5 +30,5 @@ export function CarsGrid({ cars, isLoading, onAddCar }: CarsGridProps) {
         <CarCard key={car.id} car={car} />
       ))}
     </SimpleGrid>
-  )
+  );
 }

@@ -61,7 +61,11 @@ export function JourneysStatsCard({ terms }: JourneysStatsCardProps) {
       }}
     >
       <SimpleGrid cols={4} spacing={0}>
-        <StatItem value={data?.journeys} label="Journeys" isLoading={isLoading} />
+        <StatItem
+          value={data?.journeys}
+          label="Journeys"
+          isLoading={isLoading}
+        />
         <StatItem value={data?.owners} label="Owners" isLoading={isLoading} />
         <StatItem value={data?.posts} label="Posts" isLoading={isLoading} />
         <StatItem

@@ -1,10 +1,10 @@
-import { Modal } from '@mantine/core'
-import { useStore } from '@tanstack/react-store'
-import { CarFormStepper } from './car-form-stepper'
-import { carsPageStore, closeAddCarModal } from '@/lib/stores/cars-page-store'
+import { Modal } from "@mantine/core";
+import { useStore } from "@tanstack/react-store";
+import { CarFormStepper } from "./car-form-stepper";
+import { carsPageStore, closeAddCarModal } from "@/lib/stores/cars-page-store";
 
 export function AddCarModal() {
-  const isOpen = useStore(carsPageStore, (state) => state.modals.addCar)
+  const isOpen = useStore(carsPageStore, (state) => state.modals.addCar);
 
   return (
     <Modal
@@ -19,5 +19,5 @@ export function AddCarModal() {
         onCancel={closeAddCarModal}
       />
     </Modal>
-  )
+  );
 }

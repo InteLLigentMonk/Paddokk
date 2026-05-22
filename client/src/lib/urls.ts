@@ -3,7 +3,8 @@
  * everywhere user-facing — keep call sites consistent by going through these helpers.
  */
 
-export const userProfileUrl = (username: string) => `/users/${username}` as const;
+export const userProfileUrl = (username: string) =>
+  `/users/${username}` as const;
 
 export const userCarsUrl = (username: string) =>
   `/users/${username}/cars` as const;

@@ -16,8 +16,12 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug/")({
       );
       await Promise.all([
         queryClient.ensureQueryData(carImagesQueryOptions(Number(car.id))),
-        queryClient.prefetchQuery(userCarsByUsernameQueryOptions(params.username)),
-        queryClient.prefetchQuery(carJourneysQueryOptions(params.username, params.slug)),
+        queryClient.prefetchQuery(
+          userCarsByUsernameQueryOptions(params.username),
+        ),
+        queryClient.prefetchQuery(
+          carJourneysQueryOptions(params.username, params.slug),
+        ),
       ]);
     } catch {
       throw notFound();

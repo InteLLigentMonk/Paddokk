@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router";
 import {
   Box,
   Burger,
@@ -9,17 +9,17 @@ import {
   Stack,
   Text,
   UnstyledButton,
-} from "@mantine/core"
-import { useDisclosure } from "@mantine/hooks"
-import type { NavLink } from "@/data/marketing"
-import { mainNavLinks } from "@/data/marketing"
-import { openLogin, openSignup } from "@/lib/stores/auth-modal-store"
-import { ColorSchemeToggle } from "@/components/common/color-scheme-toggle"
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import type { NavLink } from "@/data/marketing";
+import { mainNavLinks } from "@/data/marketing";
+import { openLogin, openSignup } from "@/lib/stores/auth-modal-store";
+import { ColorSchemeToggle } from "@/components/common/color-scheme-toggle";
 
 interface NavAnchorProps {
-  link: NavLink
-  onClick?: () => void
-  mobile?: boolean
+  link: NavLink;
+  onClick?: () => void;
+  mobile?: boolean;
 }
 
 function NavAnchor({ link, onClick, mobile = false }: NavAnchorProps) {
@@ -39,7 +39,7 @@ function NavAnchor({ link, onClick, mobile = false }: NavAnchorProps) {
     : {
         fz: "sm" as const,
         fw: 500,
-      }
+      };
 
   if (link.type === "anchor") {
     return (
@@ -51,7 +51,7 @@ function NavAnchor({ link, onClick, mobile = false }: NavAnchorProps) {
       >
         {link.label}
       </UnstyledButton>
-    )
+    );
   }
 
   return (
@@ -63,12 +63,12 @@ function NavAnchor({ link, onClick, mobile = false }: NavAnchorProps) {
     >
       {link.label}
     </UnstyledButton>
-  )
+  );
 }
 
 export function MarketingHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
-    useDisclosure(false)
+    useDisclosure(false);
 
   return (
     <Box
@@ -198,8 +198,8 @@ export function MarketingHeader() {
             <Button
               variant="light"
               onClick={() => {
-                closeDrawer()
-                openLogin()
+                closeDrawer();
+                openLogin();
               }}
               fullWidth
               size="md"
@@ -209,8 +209,8 @@ export function MarketingHeader() {
             </Button>
             <Button
               onClick={() => {
-                closeDrawer()
-                openSignup()
+                closeDrawer();
+                openSignup();
               }}
               fullWidth
               size="md"
@@ -222,5 +222,5 @@ export function MarketingHeader() {
         </Stack>
       </Drawer>
     </Box>
-  )
+  );
 }

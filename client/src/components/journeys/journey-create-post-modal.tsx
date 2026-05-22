@@ -127,7 +127,11 @@ export function JourneyCreatePostModal({
             setImages((prev) =>
               prev.map((img) =>
                 img.tempId === tempId
-                  ? { ...img, imageUrl: result.data.imageUrl, isUploading: false }
+                  ? {
+                      ...img,
+                      imageUrl: result.data.imageUrl,
+                      isUploading: false,
+                    }
                   : img,
               ),
             );
@@ -178,9 +182,7 @@ export function JourneyCreatePostModal({
         sortOrder: img.sortOrder,
       }));
 
-    const textContent = content.replace(/<[^>]*>/g, "").trim()
-      ? content
-      : null;
+    const textContent = content.replace(/<[^>]*>/g, "").trim() ? content : null;
 
     createPost(
       { textContent, images: uploadedImages },
@@ -191,7 +193,9 @@ export function JourneyCreatePostModal({
           onClose();
         },
         onError: () => {
-          notifications.error({ message: "Failed to create post. Please try again." });
+          notifications.error({
+            message: "Failed to create post. Please try again.",
+          });
         },
       },
     );
@@ -291,24 +295,42 @@ export function JourneyCreatePostModal({
             >
               <Box component="span" darkHidden>
                 <Dropzone.Accept>
-                  <Upload size={24} style={{ color: "var(--mantine-color-blue-6)" }} />
+                  <Upload
+                    size={24}
+                    style={{ color: "var(--mantine-color-blue-6)" }}
+                  />
                 </Dropzone.Accept>
                 <Dropzone.Reject>
-                  <X size={24} style={{ color: "var(--mantine-color-red-6)" }} />
+                  <X
+                    size={24}
+                    style={{ color: "var(--mantine-color-red-6)" }}
+                  />
                 </Dropzone.Reject>
                 <Dropzone.Idle>
-                  <ImageIcon size={24} style={{ color: "var(--mantine-color-dimmed)" }} />
+                  <ImageIcon
+                    size={24}
+                    style={{ color: "var(--mantine-color-dimmed)" }}
+                  />
                 </Dropzone.Idle>
               </Box>
               <Box component="span" lightHidden>
                 <Dropzone.Accept>
-                  <Upload size={24} style={{ color: "var(--mantine-color-blue-4)" }} />
+                  <Upload
+                    size={24}
+                    style={{ color: "var(--mantine-color-blue-4)" }}
+                  />
                 </Dropzone.Accept>
                 <Dropzone.Reject>
-                  <X size={24} style={{ color: "var(--mantine-color-red-4)" }} />
+                  <X
+                    size={24}
+                    style={{ color: "var(--mantine-color-red-4)" }}
+                  />
                 </Dropzone.Reject>
                 <Dropzone.Idle>
-                  <ImageIcon size={24} style={{ color: "var(--mantine-color-dimmed)" }} />
+                  <ImageIcon
+                    size={24}
+                    style={{ color: "var(--mantine-color-dimmed)" }}
+                  />
                 </Dropzone.Idle>
               </Box>
               <Text size="sm" c="dimmed">
@@ -329,7 +351,11 @@ export function JourneyCreatePostModal({
           </Group>
 
           <Group gap="sm">
-            <Button variant="default" onClick={handleClose} disabled={isPending}>
+            <Button
+              variant="default"
+              onClick={handleClose}
+              disabled={isPending}
+            >
               Cancel
             </Button>
             <Button

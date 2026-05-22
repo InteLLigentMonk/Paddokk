@@ -52,8 +52,14 @@ export const carImagesQueryOptions = (carId: number) =>
     queryFn: () => getCarImagesFn({ data: { carId } }),
   });
 
-export const carJourneysQueryOptions = (username: string, carSlug: string, page = 1, pageSize = 5) =>
+export const carJourneysQueryOptions = (
+  username: string,
+  carSlug: string,
+  page = 1,
+  pageSize = 5,
+) =>
   queryOptions({
     queryKey: ["car-journeys", username, carSlug, page, pageSize],
-    queryFn: () => getCarJourneysFn({ data: { username, carSlug, page, pageSize } }),
+    queryFn: () =>
+      getCarJourneysFn({ data: { username, carSlug, page, pageSize } }),
   });

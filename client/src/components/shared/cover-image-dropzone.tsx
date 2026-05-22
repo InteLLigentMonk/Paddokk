@@ -1,29 +1,47 @@
-import { ActionIcon, AspectRatio, Box, Group, Image, Text } from "@mantine/core"
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
-import { Image as ImageIcon, Upload, X } from "lucide-react"
+import {
+  ActionIcon,
+  AspectRatio,
+  Box,
+  Group,
+  Image,
+  Text,
+} from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Image as ImageIcon, Upload, X } from "lucide-react";
 
 interface CoverImageDropzoneProps {
-  previewUrl: string | null
-  onChange: (file: File | null, previewUrl: string | null) => void
+  previewUrl: string | null;
+  onChange: (file: File | null, previewUrl: string | null) => void;
 }
 
-export function CoverImageDropzone({ previewUrl, onChange }: CoverImageDropzoneProps) {
+export function CoverImageDropzone({
+  previewUrl,
+  onChange,
+}: CoverImageDropzoneProps) {
   const handleDrop = (files: Array<File>) => {
-    if (files.length === 0) return
-    const file = files[0]
-    if (previewUrl) URL.revokeObjectURL(previewUrl)
-    onChange(file, URL.createObjectURL(file))
-  }
+    if (files.length === 0) return;
+    const file = files[0];
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    onChange(file, URL.createObjectURL(file));
+  };
 
   const handleRemove = () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl)
-    onChange(null, null)
-  }
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    onChange(null, null);
+  };
 
   if (previewUrl) {
     return (
       <AspectRatio ratio={16 / 9}>
-        <Box pos="relative" style={{ borderRadius: "var(--mantine-radius-md)", overflow: "hidden", width: "100%", height: "100%" }}>
+        <Box
+          pos="relative"
+          style={{
+            borderRadius: "var(--mantine-radius-md)",
+            overflow: "hidden",
+            width: "100%",
+            height: "100%",
+          }}
+        >
           <Image
             src={previewUrl}
             alt="Cover preview"
@@ -44,7 +62,7 @@ export function CoverImageDropzone({ previewUrl, onChange }: CoverImageDropzoneP
           </ActionIcon>
         </Box>
       </AspectRatio>
-    )
+    );
   }
 
   return (
@@ -63,7 +81,13 @@ export function CoverImageDropzone({ previewUrl, onChange }: CoverImageDropzoneP
         }}
         styles={{ inner: { height: "100%" } }}
       >
-        <Group justify="center" align="center" gap="xl" h="100%" style={{ pointerEvents: "none" }}>
+        <Group
+          justify="center"
+          align="center"
+          gap="xl"
+          h="100%"
+          style={{ pointerEvents: "none" }}
+        >
           <Dropzone.Accept>
             <Upload size={40} color="var(--mantine-color-blue-6)" />
           </Dropzone.Accept>
@@ -84,5 +108,5 @@ export function CoverImageDropzone({ previewUrl, onChange }: CoverImageDropzoneP
         </Group>
       </Dropzone>
     </AspectRatio>
-  )
+  );
 }

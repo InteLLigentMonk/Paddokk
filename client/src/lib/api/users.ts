@@ -1,10 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type {
-  JourneyDto,
-  UserCarDto,
-  UserDto,
-} from "@/generated/api/schemas";
+import type { JourneyDto, UserCarDto, UserDto } from "@/generated/api/schemas";
 import {
   usersGetCarJourneys,
   usersGetCurrentUser,
@@ -72,6 +68,9 @@ export const getUserJourneyBySlugFn = createServerFn({ method: "GET" })
 export const getCarJourneysFn = createServerFn({ method: "GET" })
   .inputValidator(carJourneysSchema)
   .handler(async ({ data: { username, carSlug, page, pageSize } }) => {
-    const result = await usersGetCarJourneys(username, carSlug, { page, pageSize });
+    const result = await usersGetCarJourneys(username, carSlug, {
+      page,
+      pageSize,
+    });
     return result.data as Array<JourneyDto>;
   });

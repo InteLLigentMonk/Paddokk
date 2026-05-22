@@ -100,7 +100,9 @@ export function ForgotPasswordForm({
                 error={
                   field.state.meta.isTouched &&
                   field.state.meta.errors.length > 0
-                    ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                    ? field.state.meta.errors
+                        .map((e) => e?.message ?? "")
+                        .join(", ")
                     : undefined
                 }
                 disabled={isRequestingReset}

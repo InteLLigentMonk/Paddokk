@@ -1,16 +1,16 @@
-import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core"
-import { GripVertical, Trash2 } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import type { PendingImage } from "./car-form-stepper"
+import { ActionIcon, Badge, Box, Card, Image } from "@mantine/core";
+import { GripVertical, Trash2 } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { PendingImage } from "./car-form-stepper";
 
 interface CarImagePreviewProps {
-  image: PendingImage
-  isPrimary: boolean
-  onDelete: () => void
-  onSetPrimary: () => void
-  id: string
-  index: number
+  image: PendingImage;
+  isPrimary: boolean;
+  onDelete: () => void;
+  onSetPrimary: () => void;
+  id: string;
+  index: number;
 }
 
 export function CarImagePreview({
@@ -20,9 +20,16 @@ export function CarImagePreview({
   onSetPrimary,
   id,
 }: CarImagePreviewProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id,
-  })
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -30,7 +37,7 @@ export function CarImagePreview({
     opacity: isDragging ? 0.5 : 1,
     cursor: isDragging ? "grabbing" : "grab",
     position: "relative" as const,
-  }
+  };
 
   return (
     <Card
@@ -43,11 +50,21 @@ export function CarImagePreview({
       onClick={onSetPrimary}
       style={{
         ...style,
-        borderColor: isPrimary ? "var(--mantine-primary-color-filled)" : undefined,
+        borderColor: isPrimary
+          ? "var(--mantine-primary-color-filled)"
+          : undefined,
         borderWidth: isPrimary ? "2px" : "1px",
       }}
-      w={isPrimary ? { base: 160, sm: 180, md: 200 } : { base: 150, sm: 150, md: 150 }}
-      h={isPrimary ? { base: 160, sm: 180, md: 200 } : { base: 150, sm: 150, md: 150 }}
+      w={
+        isPrimary
+          ? { base: 160, sm: 180, md: 200 }
+          : { base: 150, sm: 150, md: 150 }
+      }
+      h={
+        isPrimary
+          ? { base: 160, sm: 180, md: 200 }
+          : { base: 150, sm: 150, md: 150 }
+      }
     >
       {isPrimary && (
         <Badge
@@ -98,12 +115,12 @@ export function CarImagePreview({
         style={{ position: "absolute", bottom: 8, right: 8, zIndex: 10 }}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => {
-          e.stopPropagation()
-          onDelete()
+          e.stopPropagation();
+          onDelete();
         }}
       >
         <Trash2 size={16} />
       </ActionIcon>
     </Card>
-  )
+  );
 }

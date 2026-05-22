@@ -1,5 +1,5 @@
-import { Group,  Text } from "@mantine/core";
-import type {GroupProps} from "@mantine/core";
+import { Group, Text } from "@mantine/core";
+import type { GroupProps } from "@mantine/core";
 import type { ReactNode } from "react";
 
 interface CarSectionHeadProps {
@@ -10,11 +10,25 @@ interface CarSectionHeadProps {
   mb?: GroupProps["mb"];
 }
 
-export function CarSectionHead({ kicker, title, count, rightAction, mb = "md" }: CarSectionHeadProps) {
+export function CarSectionHead({
+  kicker,
+  title,
+  count,
+  rightAction,
+  mb = "md",
+}: CarSectionHeadProps) {
   return (
     <Group justify="space-between" align="flex-end" mb={mb}>
       <div>
-        <Text ff="monospace" tt="uppercase" fz={10} fw={700} c="dimmed" lts="0.12em" mb={2}>
+        <Text
+          ff="monospace"
+          tt="uppercase"
+          fz={10}
+          fw={700}
+          c="dimmed"
+          lts="0.12em"
+          mb={2}
+        >
           {kicker}
         </Text>
         <Group gap="xs" align="baseline">

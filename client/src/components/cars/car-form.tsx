@@ -2,19 +2,22 @@ import { useForm } from "@tanstack/react-form";
 import {
   Button,
   Checkbox,
-  
   Group,
   NumberInput,
   Select,
   Stack,
   Switch,
-  TextInput
+  TextInput,
 } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CarImageUpload } from "./car-image-upload";
-import type {ComboboxItem} from "@mantine/core";
-import type { CreateUserCarCommand, UpdateUserCarCommand, UserCarDto } from "@/generated/api/schemas";
+import type { ComboboxItem } from "@mantine/core";
+import type {
+  CreateUserCarCommand,
+  UpdateUserCarCommand,
+  UserCarDto,
+} from "@/generated/api/schemas";
 import {
   carsGetCarGenerations,
   carsGetCarMakes,
@@ -175,10 +178,12 @@ export function CarForm({
       } else {
         await addMutation.mutateAsync({
           isCustomBuild,
-          customBuildName: isCustomBuild ? (value.customBuildName || null) : null,
+          customBuildName: isCustomBuild ? value.customBuildName || null : null,
           carMakeId: isCustomBuild ? null : value.carMakeId,
           carModelId: isCustomBuild ? null : value.carModelId,
-          carGenerationId: isCustomBuild ? null : (value.carGenerationId ?? null),
+          carGenerationId: isCustomBuild
+            ? null
+            : (value.carGenerationId ?? null),
           year: isCustomBuild ? null : value.year,
           nickname: value.nickname || null,
           color: value.color || null,
@@ -312,7 +317,9 @@ export function CarForm({
                   <Select
                     label="Generation"
                     placeholder="Select generation (optional)"
-                    value={field.state.value ? field.state.value.toString() : null}
+                    value={
+                      field.state.value ? field.state.value.toString() : null
+                    }
                     onChange={(value) => {
                       field.handleChange(value ? Number(value) : undefined);
                     }}

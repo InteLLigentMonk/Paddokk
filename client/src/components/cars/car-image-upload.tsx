@@ -1,49 +1,67 @@
-import { useEffect, useState } from 'react'
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
-import { Box, CloseButton, Group, Image, Stack, Text, rem } from '@mantine/core'
-import { Image as ImageIcon, Upload, X } from 'lucide-react'
-import { useNotifications } from '@/integrations/mantine'
+import { useEffect, useState } from "react";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import {
+  Box,
+  CloseButton,
+  Group,
+  Image,
+  Stack,
+  Text,
+  rem,
+} from "@mantine/core";
+import { Image as ImageIcon, Upload, X } from "lucide-react";
+import { useNotifications } from "@/integrations/mantine";
 
 interface CarImageUploadProps {
-  value?: File | string
-  onChange: (file: File | null) => void
-  disabled?: boolean
+  value?: File | string;
+  onChange: (file: File | null) => void;
+  disabled?: boolean;
 }
 
-export function CarImageUpload({ value, onChange, disabled }: CarImageUploadProps) {
-  const notifications = useNotifications()
+export function CarImageUpload({
+  value,
+  onChange,
+  disabled,
+}: CarImageUploadProps) {
+  const notifications = useNotifications();
   const [preview, setPreview] = useState<string | null>(
-    typeof value === 'string' ? value : null
-  )
+    typeof value === "string" ? value : null,
+  );
 
   useEffect(() => {
     if (value instanceof File) {
-      const reader = new FileReader()
-      reader.onload = () => setPreview(reader.result as string)
-      reader.readAsDataURL(value)
-    } else if (typeof value === 'string') {
-      setPreview(value)
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result as string);
+      reader.readAsDataURL(value);
+    } else if (typeof value === "string") {
+      setPreview(value);
     } else {
-      setPreview(null)
+      setPreview(null);
     }
-  }, [value])
+  }, [value]);
 
   return (
     <Stack gap="sm">
       {preview ? (
-        <Box style={{ position: 'relative' }}>
-          <Image src={preview} h={200} radius="md" alt="Car preview" fit="cover" />
+        <Box style={{ position: "relative" }}>
+          <Image
+            src={preview}
+            h={200}
+            radius="md"
+            alt="Car preview"
+            fit="cover"
+          />
           {!disabled && (
             <CloseButton
               onClick={() => {
-                onChange(null)
-                setPreview(null)
+                onChange(null);
+                setPreview(null);
               }}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 8,
                 right: 8,
-                backgroundColor: 'var(--mantine-color-body)',
+                backgroundColor: "var(--mantine-color-body)",
               }}
               aria-label="Remove image"
             />
@@ -53,7 +71,9 @@ export function CarImageUpload({ value, onChange, disabled }: CarImageUploadProp
         <Dropzone
           onDrop={(files) => onChange(files[0])}
           onReject={() =>
-            notifications.error({ message: 'Invalid image file. Please upload an image under 5MB.' })
+            notifications.error({
+              message: "Invalid image file. Please upload an image under 5MB.",
+            })
           }
           maxSize={5 * 1024 * 1024}
           accept={IMAGE_MIME_TYPE}
@@ -62,29 +82,41 @@ export function CarImageUpload({ value, onChange, disabled }: CarImageUploadProp
           <Group
             justify="center"
             gap="xl"
-            style={{ minHeight: rem(200), pointerEvents: 'none' }}
+            style={{ minHeight: rem(200), pointerEvents: "none" }}
           >
             <Box component="span" darkHidden>
               <Dropzone.Accept>
-                <Upload size={52} style={{ color: 'var(--mantine-color-blue-6)' }} />
+                <Upload
+                  size={52}
+                  style={{ color: "var(--mantine-color-blue-6)" }}
+                />
               </Dropzone.Accept>
               <Dropzone.Reject>
-                <X size={52} style={{ color: 'var(--mantine-color-red-6)' }} />
+                <X size={52} style={{ color: "var(--mantine-color-red-6)" }} />
               </Dropzone.Reject>
               <Dropzone.Idle>
-                <ImageIcon size={52} style={{ color: 'var(--mantine-color-dimmed)' }} />
+                <ImageIcon
+                  size={52}
+                  style={{ color: "var(--mantine-color-dimmed)" }}
+                />
               </Dropzone.Idle>
             </Box>
 
             <Box component="span" lightHidden>
               <Dropzone.Accept>
-                <Upload size={52} style={{ color: 'var(--mantine-color-blue-4)' }} />
+                <Upload
+                  size={52}
+                  style={{ color: "var(--mantine-color-blue-4)" }}
+                />
               </Dropzone.Accept>
               <Dropzone.Reject>
-                <X size={52} style={{ color: 'var(--mantine-color-red-4)' }} />
+                <X size={52} style={{ color: "var(--mantine-color-red-4)" }} />
               </Dropzone.Reject>
               <Dropzone.Idle>
-                <ImageIcon size={52} style={{ color: 'var(--mantine-color-dimmed)' }} />
+                <ImageIcon
+                  size={52}
+                  style={{ color: "var(--mantine-color-dimmed)" }}
+                />
               </Dropzone.Idle>
             </Box>
 
@@ -100,5 +132,5 @@ export function CarImageUpload({ value, onChange, disabled }: CarImageUploadProp
         </Dropzone>
       )}
     </Stack>
-  )
+  );
 }

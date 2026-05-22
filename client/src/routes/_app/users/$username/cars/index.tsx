@@ -64,7 +64,10 @@ function UserCarsPage() {
   const carList = cars ?? [];
   const sortBy = useStore(carsPageStore, (state) => state.sortBy);
 
-  const sortedCars = useMemo(() => sortCars(carList, sortBy), [carList, sortBy]);
+  const sortedCars = useMemo(
+    () => sortCars(carList, sortBy),
+    [carList, sortBy],
+  );
 
   const paginatedCars = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;

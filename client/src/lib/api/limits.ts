@@ -1,6 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { CarLimitDto, ImageLimitsDto } from "@/generated/api/schemas";
-import { limitsGetCarLimits, limitsGetImageLimits } from "@/generated/api/limits/limits";
+import {
+  limitsGetCarLimits,
+  limitsGetImageLimits,
+} from "@/generated/api/limits/limits";
 
 export const getCarLimitFn = createServerFn({ method: "GET" }).handler(
   async () => {
