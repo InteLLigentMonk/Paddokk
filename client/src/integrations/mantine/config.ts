@@ -1,5 +1,5 @@
-import { createTheme } from "@mantine/core";
-import type { MantineColorsTuple } from "@mantine/core";
+import { createTheme, Image } from "@mantine/core";
+import type { ImageProps, MantineColorsTuple } from "@mantine/core";
 
 export const myColor: MantineColorsTuple = [
   "#fffae0",
@@ -31,5 +31,13 @@ export const theme = createTheme({
     sizes: {
       h1: { fontSize: "1.5rem" },
     },
+  },
+  components: {
+    Image: Image.extend({
+      defaultProps: {
+        loading: "lazy",
+        decoding: "async",
+      } as unknown as Partial<ImageProps>,
+    }),
   },
 });
