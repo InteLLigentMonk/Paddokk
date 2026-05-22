@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.2...v0.26.3) (2026-05-22)
+
+
+### Maintenance
+
+* format code with prettier ([#127](https://github.com/InteLLigentMonk/Paddokk/issues/127)) ([17ba8b8](https://github.com/InteLLigentMonk/Paddokk/commit/17ba8b8e4e564d562b4e4e515a922a4fa53bcb63))
+
 ## [0.26.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.1...v0.26.2) (2026-05-22)
 
 
