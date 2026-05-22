@@ -26,7 +26,6 @@ import { sortCars } from "@/lib/utils/sort-cars";
 import { CarsHeader } from "@/components/cars/cars-header";
 import { CarsSortControl } from "@/components/cars/cars-sort-control";
 import { CarsGrid } from "@/components/cars/cars-grid";
-import { AddCarModal } from "@/components/cars/add-car-modal";
 import { EditCarModal } from "@/components/cars/edit-car-modal";
 import { DeleteCarConfirm } from "@/components/cars/delete-car-confirm";
 
@@ -127,7 +126,6 @@ function UserCarsPage() {
 
       {isOwner && (
         <>
-          <AddCarModal />
           <EditCarModal />
           <DeleteCarConfirm />
         </>

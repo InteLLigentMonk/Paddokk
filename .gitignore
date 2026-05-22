@@ -62,3 +62,6 @@ launchSettings.json
 # Misc
 *.log
 *.Backup.tmp
+
+# Claude
+.claude/settings.local.json

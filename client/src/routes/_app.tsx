@@ -1,6 +1,5 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { Box } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { AppHeader } from "@/components/common/app-header";
 import { AppSpotlight } from "@/components/common/app-spotlight";
 import { AppNavigation } from "@/components/navigation/app-navigation";
@@ -19,8 +18,6 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  const isDesktop = useMediaQuery("(min-width: 62em)");
-
   return (
     <Box
       style={{
@@ -28,8 +25,8 @@ function AppLayout() {
         flexDirection: "column",
         height: "100dvh",
         overflow: "hidden",
-        paddingBottom: isDesktop ? 0 : 64,
       }}
+      pb={{ base: "64px", md: 0 }}
     >
       <AppSpotlight />
       <AppHeader />
@@ -41,8 +38,8 @@ function AppLayout() {
           flex: 1,
           minHeight: 0,
           overflowY: "auto",
-          paddingLeft: isDesktop ? 72 : 0,
         }}
+        pl={{ base: 0, md: "72px" }}
       >
         <PageBreadcrumbs />
         <Outlet />
