@@ -10,8 +10,6 @@ internal static class CarImageMapping
         Id = image.Id,
         UserCarId = image.UserCarId,
         ImageUrl = image.ImageUrl,
-        ThumbnailUrl = image.ThumbnailUrl,
-        MediumUrl = image.MediumUrl,
         Caption = image.Caption,
         SortOrder = image.SortOrder,
         IsPrimary = image.IsPrimary,

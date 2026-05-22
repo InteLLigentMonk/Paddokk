@@ -1,4 +1,4 @@
-﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -19,15 +19,12 @@ public class ImageService : IImageService
     private readonly BlobServiceClient _blobServiceClient;
     private readonly ILogger<ImageService> _logger;
 
-    // Image size configurations
-    private readonly Dictionary<string, int> _imageSizes = new()
-        {
-            { "thumbnail", 150 },
-            { "medium", 1024 },
-            { "full", 1920 }
-        };
+    // Master image is sized to serve as the origin for Vercel Image Optimization,
+    // which transforms it to any smaller size/format on demand at the edge.
+    private const int MasterMaxDimension = 2400;
+    private const int WebpQuality = 90;
+    private const string ImmutableCacheControl = "public, max-age=31536000, immutable";
 
-    // File size limits (in bytes)
     private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10MB
     private readonly string[] _allowedFormats = { "image/jpg", "image/jpeg", "image/png", "image/webp" };
 
@@ -49,54 +46,30 @@ public class ImageService : IImageService
 
     public async Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, CancellationToken cancellationToken, int? contextId = null, string? caption = null)
     {
-        // Validate file
         ValidateImageFile(file);
 
-        // Generate unique filename
         var fileName = GenerateUniqueFileName(file.FileName);
         var containerName = GetContainerName(context);
 
-        // Get blob container
         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
         await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: cancellationToken);
 
         try
         {
-            // Process and upload different sizes
-            var urls = new Dictionary<string, string>();
-
             using var originalStream = file.OpenReadStream();
-            using var codec = SKCodec.Create(originalStream);
+            using var codec = SKCodec.Create(originalStream)
+                ?? throw new InvalidOperationException("Failed to decode image");
 
-            if (codec == null)
-                throw new InvalidOperationException("Failed to decode image");
+            using var originalBitmap = SKBitmap.Decode(codec)
+                ?? throw new InvalidOperationException("Failed to create bitmap from image");
 
-            using var originalBitmap = SKBitmap.Decode(codec);
+            var imageUrl = await UploadMasterImageAsync(containerClient, originalBitmap, fileName, cancellationToken);
 
-            if (originalBitmap == null)
-                throw new InvalidOperationException("Failed to create bitmap from image");
-
-            // Upload original/full size
-            var fullUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "full", cancellationToken);
-            urls["full"] = fullUrl;
-
-            // Upload medium size
-            var mediumUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "medium", cancellationToken);
-            urls["medium"] = mediumUrl;
-
-            // Upload thumbnail
-            var thumbnailUrl = await UploadImageSizeAsync(containerClient, originalBitmap, fileName, "thumbnail", cancellationToken);
-            urls["thumbnail"] = thumbnailUrl;
-
-            _logger.LogInformation("Successfully uploaded image {FileName} with sizes: {Sizes}",
-                fileName, string.Join(", ", urls.Keys));
+            _logger.LogInformation("Successfully uploaded image {FileName}", fileName);
 
             return new ImageUploadDto
             {
-                ImageUrl = fullUrl,
-                ThumbnailUrl = thumbnailUrl,
-                MediumUrl = mediumUrl,
-                FullUrl = fullUrl,
+                ImageUrl = imageUrl,
                 FileName = fileName,
                 FileSizeBytes = file.Length,
                 Width = originalBitmap.Width,
@@ -122,20 +95,7 @@ public class ImageService : IImageService
             var blobName = string.Join('/', pathParts.Skip(2));
 
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-
-            // Extract base name and extension
-            var suffixedName = Path.GetFileNameWithoutExtension(blobName);
-            var splitBaseName = suffixedName.Split('_');
-            var baseName = string.Join('_', splitBaseName.Take(splitBaseName.Length - 1));
-            var extension = Path.GetExtension(blobName);
-
-            
-
-            foreach (var size in _imageSizes.Keys)
-            {
-                var sizedBlobName = $"{baseName}_{size}{extension}";
-                await containerClient.DeleteBlobIfExistsAsync(sizedBlobName, cancellationToken : cancellationToken);
-            }
+            await containerClient.DeleteBlobIfExistsAsync(blobName, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
@@ -186,7 +146,6 @@ public class ImageService : IImageService
                 return true;
 
             case ImageContext.JourneyPost:
-                // This will be validated during post creation
                 return true;
 
             case ImageContext.UserAvatar:
@@ -234,31 +193,24 @@ public class ImageService : IImageService
 
     public async Task<CarImageDto> AddCarImageAsync(string userId, int carId, IFormFile file, CancellationToken cancellationToken, string? caption = null)
     {
-        // Validate user owns the car
         var car = await _carRepository.GetUserCarByIdAsync(userId, carId, cancellationToken);
         if (car is null)
             throw new InvalidOperationException("Car not found or access denied");
 
-        // Check image limits
         if (!await CanUserUploadImageAsync(userId, ImageContext.Car, cancellationToken, carId))
             throw new InvalidOperationException("Image limit reached for this car");
 
-        // Upload image
-        var uploadResult = await UploadImageAsync(file, ImageContext.Car, cancellationToken, carId, caption) 
+        var uploadResult = await UploadImageAsync(file, ImageContext.Car, cancellationToken, carId, caption)
             ?? throw new InvalidOperationException("Image upload failed");
 
-        // Determine if this should be primary (first image)
         var existingImageCount = await _imageRepository.GetImageCountByContextAsync(
             ImageContext.Car.ToString(), carId, cancellationToken);
         var isPrimary = existingImageCount == 0;
 
-        // Create car image record
         var carImage = new UserCarImage
         {
             UserCarId = carId,
-            ImageUrl = uploadResult.FullUrl,
-            ThumbnailUrl = uploadResult.ThumbnailUrl,
-            MediumUrl = uploadResult.MediumUrl,
+            ImageUrl = uploadResult.ImageUrl,
             Caption = caption,
             SortOrder = existingImageCount,
             IsPrimary = isPrimary,
@@ -276,7 +228,7 @@ public class ImageService : IImageService
             if (isPrimary)
             {
                 await _imageRepository.SetPrimaryImageAsync(carId, carImage.Id, cancellationToken);
-                await _carRepository.UpdatePrimaryImageUrlAsync(carId, uploadResult.MediumUrl, cancellationToken);
+                await _carRepository.UpdatePrimaryImageUrlAsync(carId, uploadResult.ImageUrl, cancellationToken);
             }
         }, cancellationToken);
 
@@ -290,24 +242,18 @@ public class ImageService : IImageService
         var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken)
             ?? throw new InvalidOperationException("Car image not found");
 
-        // Update caption
         if (request.Caption != null)
             carImage.Caption = request.Caption;
 
-        // Update sort order
         if (request.SortOrder.HasValue)
             carImage.SortOrder = request.SortOrder.Value;
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            // Handle primary image change
             if (request.IsPrimary == true && !carImage.IsPrimary)
             {
-                // Unset other primary images for this car
                 await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, carImageId, cancellationToken);
-
-                // Update car's primary image URL
-                await _carRepository.UpdatePrimaryImageUrlAsync(carImage.UserCarId, carImage.MediumUrl, cancellationToken);
+                await _carRepository.UpdatePrimaryImageUrlAsync(carImage.UserCarId, carImage.ImageUrl, cancellationToken);
             }
 
             await _imageRepository.UpdateCarImageAsync(carImage, cancellationToken);
@@ -325,12 +271,10 @@ public class ImageService : IImageService
         var carImage = await _imageRepository.GetCarImageByIdAsync(carImageId, userId, cancellationToken)
              ?? throw new InvalidOperationException("Car image not found");
 
-        // Delete from blob storage
         await DeleteImageAsync(carImage.ImageUrl, cancellationToken);
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            // If this was the primary image, set another as primary
             if (carImage.IsPrimary)
             {
                 var nextPrimary = await _imageRepository.GetNextPrimaryImageAsync(
@@ -339,7 +283,7 @@ public class ImageService : IImageService
                 if (nextPrimary is not null)
                     await _imageRepository.SetPrimaryImageAsync(carImage.UserCarId, nextPrimary.Id, cancellationToken);
 
-                await _carRepository.UpdatePrimaryImageUrlAsync(carImage.UserCarId, nextPrimary?.MediumUrl, cancellationToken);
+                await _carRepository.UpdatePrimaryImageUrlAsync(carImage.UserCarId, nextPrimary?.ImageUrl, cancellationToken);
             }
 
             await _imageRepository.DeleteCarImageAsync(carImage.Id, cancellationToken);
@@ -359,7 +303,7 @@ public class ImageService : IImageService
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             await _imageRepository.SetPrimaryImageAsync(carId, carImageId, cancellationToken);
-            await _carRepository.UpdatePrimaryImageUrlAsync(carId, image.MediumUrl, cancellationToken);
+            await _carRepository.UpdatePrimaryImageUrlAsync(carId, image.ImageUrl, cancellationToken);
         }, cancellationToken);
     }
 
@@ -372,13 +316,10 @@ public class ImageService : IImageService
             throw new InvalidOperationException($"Too many images. Maximum allowed: {limits.MaxImagesPerPost}");
         }
 
-        // Validate all image URLs exist and are accessible
         foreach (var image in images)
         {
             if (string.IsNullOrEmpty(image.ImageUrl))
                 throw new ArgumentException("Image URL cannot be empty");
-
-            // Additional validation can be added here
         }
     }
 
@@ -394,7 +335,6 @@ public class ImageService : IImageService
         if (!_allowedFormats.Contains(file.ContentType.ToLower()))
             throw new ArgumentException($"Invalid file format. Allowed: {string.Join(", ", _allowedFormats)}");
 
-        // Validate file is actually an image using SkiaSharp
         try
         {
             using var stream = file.OpenReadStream();
@@ -413,31 +353,26 @@ public class ImageService : IImageService
         }
     }
 
-    private async Task<string> UploadImageSizeAsync(BlobContainerClient containerClient, SKBitmap originalBitmap, string baseFileName, string sizeKey, CancellationToken cancellationToken)
+    private static async Task<string> UploadMasterImageAsync(BlobContainerClient containerClient, SKBitmap originalBitmap, string baseFileName, CancellationToken cancellationToken)
     {
-        var targetSize = _imageSizes[sizeKey];
-        var fileName = $"{Path.GetFileNameWithoutExtension(baseFileName)}_{sizeKey}.webp";
+        var fileName = $"{Path.GetFileNameWithoutExtension(baseFileName)}.webp";
 
-        // Calculate new dimensions maintaining aspect ratio
-        var (newWidth, newHeight) = CalculateResizeDimensions(originalBitmap.Width, originalBitmap.Height, targetSize);
+        var (newWidth, newHeight) = CalculateResizeDimensions(originalBitmap.Width, originalBitmap.Height, MasterMaxDimension);
 
-        // Create resized bitmap
-        using var resizedBitmap = originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), new SKSamplingOptions(SKCubicResampler.Mitchell));
+        using var resizedBitmap = originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), new SKSamplingOptions(SKCubicResampler.Mitchell))
+            ?? throw new InvalidOperationException("Failed to resize image");
 
-        if (resizedBitmap == null)
-            throw new InvalidOperationException("Failed to resize image");
-
-        // Convert to WebP
         using var image = SKImage.FromBitmap(resizedBitmap);
-        using var data = image.Encode(SKEncodedImageFormat.Webp, 85); // 85% quality
+        using var data = image.Encode(SKEncodedImageFormat.Webp, WebpQuality)
+            ?? throw new InvalidOperationException("Failed to encode image as WebP");
 
-        if (data == null)
-            throw new InvalidOperationException("Failed to encode image as WebP");
-
-        // Upload to blob storage
         using var outputStream = data.AsStream();
         var blobClient = containerClient.GetBlobClient(fileName);
-        var blobHttpHeaders = new BlobHttpHeaders { ContentType = "image/webp" };
+        var blobHttpHeaders = new BlobHttpHeaders
+        {
+            ContentType = "image/webp",
+            CacheControl = ImmutableCacheControl
+        };
 
         await blobClient.UploadAsync(outputStream, new BlobUploadOptions
         {
@@ -456,12 +391,10 @@ public class ImageService : IImageService
 
         if (originalWidth > originalHeight)
         {
-            // Landscape
             return (maxSize, (int)(maxSize / aspectRatio));
         }
         else
         {
-            // Portrait or square
             return ((int)(maxSize * aspectRatio), maxSize);
         }
     }
@@ -485,34 +418,17 @@ public class ImageService : IImageService
         };
     }
 
-    private CarImageDto MapToCarImageDto(UserCarImage carImage)
+    private static CarImageDto MapToCarImageDto(UserCarImage carImage)
     {
         return new CarImageDto
         {
             Id = carImage.Id,
             UserCarId = carImage.UserCarId,
             ImageUrl = carImage.ImageUrl,
-            ThumbnailUrl = carImage.ThumbnailUrl,
-            MediumUrl = carImage.MediumUrl,
             Caption = carImage.Caption,
             SortOrder = carImage.SortOrder,
             IsPrimary = carImage.IsPrimary,
             CreatedAt = carImage.CreatedAt
         };
-    }
-
-    // Placeholder methods for future implementation
-    public async Task<string> GenerateSecureUploadUrlAsync(string fileName, ImageContext context, CancellationToken cancellationToken)
-    {
-        // Future: Generate SAS URLs for direct client upload
-        await Task.CompletedTask;
-        return string.Empty;
-    }
-
-    public async Task<string> GetOptimizedImageUrlAsync(string originalUrl, CancellationToken cancellationToken, int? width = null, int? height = null)
-    {
-        // Future: Image transformation service integration
-        await Task.CompletedTask;
-        return originalUrl;
     }
 }

@@ -32,9 +32,7 @@ public sealed class UploadCarImageHandler(
         var carImage = new UserCarImage
         {
             UserCarId = command.CarId,
-            ImageUrl = uploaded.FullUrl,
-            ThumbnailUrl = uploaded.ThumbnailUrl,
-            MediumUrl = uploaded.MediumUrl,
+            ImageUrl = uploaded.ImageUrl,
             Caption = command.Caption,
             SortOrder = imageCount,
             IsPrimary = isPrimary,
@@ -50,7 +48,7 @@ public sealed class UploadCarImageHandler(
         if (isPrimary)
         {
             await imageRepository.SetPrimaryImageAsync(command.CarId, carImage.Id, ct);
-            await carRepository.UpdatePrimaryImageUrlAsync(command.CarId, uploaded.MediumUrl, ct);
+            await carRepository.UpdatePrimaryImageUrlAsync(command.CarId, uploaded.ImageUrl, ct);
         }
 
         return Result<CarImageDto>.Success(CarImageMapping.ToDto(carImage));

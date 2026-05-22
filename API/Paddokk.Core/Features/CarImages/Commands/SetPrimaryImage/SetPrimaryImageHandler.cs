@@ -21,7 +21,7 @@ public sealed class SetPrimaryImageHandler(
             return Result.Failure(Error.NotFound($"Image {command.ImageId} not found for car {command.CarId}"));
 
         await imageRepository.SetPrimaryImageAsync(command.CarId, command.ImageId, ct);
-        await carRepository.UpdatePrimaryImageUrlAsync(command.CarId, image.MediumUrl, ct);
+        await carRepository.UpdatePrimaryImageUrlAsync(command.CarId, image.ImageUrl, ct);
 
         return Result.Success();
     }
