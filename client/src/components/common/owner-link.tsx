@@ -33,7 +33,7 @@ function OwnerContent({
 }: Omit<OwnerLinkProps, "target">) {
   const avatar = (
     <Avatar
-      src={optimizeImageUrl(avatarUrl, 80) ?? null}
+      src={optimizeImageUrl(avatarUrl, 200) ?? null}
       radius={avatarRadius ?? "xl"}
       size={avatarSize ?? "md"}
       alt={primaryText}
