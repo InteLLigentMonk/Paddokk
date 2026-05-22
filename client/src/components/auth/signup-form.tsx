@@ -1,5 +1,12 @@
 import { useForm } from "@tanstack/react-form";
-import { Anchor, Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
+import {
+  Anchor,
+  Button,
+  Group,
+  PasswordInput,
+  Stack,
+  TextInput,
+} from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { SocialLoginButtons } from "./social-login-buttons";
 import { AuthFormWrapper } from "./auth-form-wrapper";
@@ -86,7 +93,9 @@ export function SignupForm({
                   error={
                     field.state.meta.isTouched &&
                     field.state.meta.errors.length > 0
-                      ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                      ? field.state.meta.errors
+                          .map((e) => e?.message ?? "")
+                          .join(", ")
                       : undefined
                   }
                   disabled={isRegistering}
@@ -111,7 +120,9 @@ export function SignupForm({
                   error={
                     field.state.meta.isTouched &&
                     field.state.meta.errors.length > 0
-                      ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                      ? field.state.meta.errors
+                          .map((e) => e?.message ?? "")
+                          .join(", ")
                       : undefined
                   }
                   disabled={isRegistering}
@@ -136,7 +147,9 @@ export function SignupForm({
                 error={
                   field.state.meta.isTouched &&
                   field.state.meta.errors.length > 0
-                    ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                    ? field.state.meta.errors
+                        .map((e) => e?.message ?? "")
+                        .join(", ")
                     : undefined
                 }
                 disabled={isRegistering}
@@ -161,7 +174,9 @@ export function SignupForm({
                 error={
                   field.state.meta.isTouched &&
                   field.state.meta.errors.length > 0
-                    ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                    ? field.state.meta.errors
+                        .map((e) => e?.message ?? "")
+                        .join(", ")
                     : undefined
                 }
                 disabled={isRegistering}
@@ -186,7 +201,9 @@ export function SignupForm({
                 error={
                   field.state.meta.isTouched &&
                   field.state.meta.errors.length > 0
-                    ? field.state.meta.errors.map((e) => e?.message ?? "").join(", ")
+                    ? field.state.meta.errors
+                        .map((e) => e?.message ?? "")
+                        .join(", ")
                     : undefined
                 }
                 disabled={isRegistering}

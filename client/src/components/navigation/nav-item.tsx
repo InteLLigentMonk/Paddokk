@@ -39,7 +39,6 @@ export function NavItem({ item, showTooltip = false, onClick }: NavItemProps) {
       offset={4}
     >
       <ActionIcon
-         
         component={resolvedHref ? (Link as any) : "button"}
         to={resolvedHref}
         variant={isActive ? "filled" : "subtle"}

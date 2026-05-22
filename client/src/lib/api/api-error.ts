@@ -1,7 +1,7 @@
 export class ApiError extends Error {
-  status: number
-  detail?: string
-  errors?: Record<string, Array<string>>
+  status: number;
+  detail?: string;
+  errors?: Record<string, Array<string>>;
 
   constructor(
     status: number,
@@ -9,9 +9,9 @@ export class ApiError extends Error {
     detail?: string,
     errors?: Record<string, Array<string>>,
   ) {
-    super(title)
-    this.status = status
-    this.detail = detail
-    this.errors = errors
+    super(title);
+    this.status = status;
+    this.detail = detail;
+    this.errors = errors;
   }
 }

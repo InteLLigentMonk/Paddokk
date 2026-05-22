@@ -32,7 +32,9 @@
       "Skill(new-api-feature)",
       "Skill(new-api-feature:*)",
       "Skill(new-bff-route)",
-      "Skill(new-bff-route:*)"
+      "Skill(new-bff-route:*)",
+      "Skill(commit-commands:commit-push-pr)",
+      "Skill(commit-commands:commit-push-pr:*)"
     ]
   },
   "hooks": {

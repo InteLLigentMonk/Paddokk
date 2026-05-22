@@ -6,7 +6,10 @@ import {
   journeysPageStore,
 } from "@/lib/stores/journeys-page-store";
 import { userJourneysGetUserJourney } from "@/generated/api/user-journeys/user-journeys";
-import { deleteUserJourneyFn, getDefaultActiveJourneyFn } from "@/lib/api/user-journeys";
+import {
+  deleteUserJourneyFn,
+  getDefaultActiveJourneyFn,
+} from "@/lib/api/user-journeys";
 import { useNotifications } from "@/integrations/mantine";
 
 export function DeleteJourneyConfirm() {
@@ -31,10 +34,13 @@ export function DeleteJourneyConfirm() {
   });
 
   const journey = data?.status === 200 ? data.data : undefined;
-  const isDefault = defaultJourney ? Number(defaultJourney.id) === journeyId : false;
+  const isDefault = defaultJourney
+    ? Number(defaultJourney.id) === journeyId
+    : false;
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteUserJourneyFn({ data: { journeyId: id } }),
+    mutationFn: (id: number) =>
+      deleteUserJourneyFn({ data: { journeyId: id } }),
     onError: () => {
       notifications.error({
         message: "Kunde inte ta bort resan. FÃ¶rsÃ¶k igen.",
@@ -42,7 +48,9 @@ export function DeleteJourneyConfirm() {
     },
     onSuccess: () => {
       notifications.success({
-        message: isDefault ? "Resan borttagen, aktiv resa uppdaterad" : "Resan borttagen",
+        message: isDefault
+          ? "Resan borttagen, aktiv resa uppdaterad"
+          : "Resan borttagen",
       });
       queryClient.invalidateQueries({
         predicate: (q) => {

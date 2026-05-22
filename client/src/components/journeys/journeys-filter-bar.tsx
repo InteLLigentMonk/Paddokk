@@ -18,7 +18,10 @@ interface JourneysFilterBarProps {
 export function JourneysFilterBar({ terms, sort }: JourneysFilterBarProps) {
   const navigate = useNavigate();
 
-  function updateSearch(newTerms: Array<string>, newSort: JourneySortKey | undefined) {
+  function updateSearch(
+    newTerms: Array<string>,
+    newSort: JourneySortKey | undefined,
+  ) {
     navigate({
       to: "/journeys",
       search: {

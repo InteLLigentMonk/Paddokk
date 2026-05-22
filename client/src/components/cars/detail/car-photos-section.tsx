@@ -9,10 +9,7 @@ import type { PendingImage } from "@/components/cars/car-form-stepper";
 import { useNotifications } from "@/integrations/mantine";
 import { CarImageCarousel } from "@/components/cars/car-image-carousel";
 import { EditCarImagesSection } from "@/components/cars/edit-car-images-section";
-import {
-  deleteCarImageFn,
-  updateCarImageFn,
-} from "@/lib/api/car-images";
+import { deleteCarImageFn, updateCarImageFn } from "@/lib/api/car-images";
 import {
   carImagesSetPrimaryImage,
   carImagesUploadCarImage,
@@ -31,7 +28,8 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [existingImages, setExistingImages] = useState<Array<CarImageDto>>(images);
+  const [existingImages, setExistingImages] =
+    useState<Array<CarImageDto>>(images);
   const [pendingImages, setPendingImages] = useState<Array<PendingImage>>([]);
   const [deletedImageIds, setDeletedImageIds] = useState<Array<number>>([]);
   const [reorderedIds, setReorderedIds] = useState<Array<number> | null>(null);
@@ -52,7 +50,9 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
     setIsSaving(true);
     try {
       for (const id of deletedImageIds) {
-        await deleteCarImageFn({ data: { carId: Number(car.id), imageId: id } });
+        await deleteCarImageFn({
+          data: { carId: Number(car.id), imageId: id },
+        });
       }
       for (const img of pendingImages) {
         await carImagesUploadCarImage(Number(car.id), { File: img.file });
@@ -60,7 +60,11 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
       if (reorderedIds) {
         for (let i = 0; i < reorderedIds.length; i++) {
           await updateCarImageFn({
-            data: { carId: Number(car.id), imageId: reorderedIds[i], sortOrder: i },
+            data: {
+              carId: Number(car.id),
+              imageId: reorderedIds[i],
+              sortOrder: i,
+            },
           });
         }
       }
@@ -91,10 +95,27 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
 
   return (
     <Box>
-      <Box style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }} mb="md">
-        <CarSectionHead kicker="In the metal" title="Photos" count={images.length} mb={0} />
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+        }}
+        mb="md"
+      >
+        <CarSectionHead
+          kicker="In the metal"
+          title="Photos"
+          count={images.length}
+          mb={0}
+        />
         {car.isOwner && !isEditing && (
-          <ActionIcon variant="subtle" size="sm" mt={4} onClick={() => setIsEditing(true)}>
+          <ActionIcon
+            variant="subtle"
+            size="sm"
+            mt={4}
+            onClick={() => setIsEditing(true)}
+          >
             <Edit size={14} />
           </ActionIcon>
         )}
@@ -116,7 +137,9 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
           onReorderExisting={(ids) => {
             setReorderedIds(ids);
             setExistingImages((prev) => {
-              const byId = Object.fromEntries(prev.map((img) => [Number(img.id), img]));
+              const byId = Object.fromEntries(
+                prev.map((img) => [Number(img.id), img]),
+              );
               return ids.map((id) => byId[id]).filter(Boolean);
             });
           }}

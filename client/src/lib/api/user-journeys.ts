@@ -24,7 +24,9 @@ const createJourneySchema = z.object({
 export const createJourneyFn = createServerFn({ method: "POST" })
   .inputValidator(createJourneySchema)
   .handler(async ({ data }) => {
-    const result = await userJourneysCreateJourney(data as CreateJourneyCommand);
+    const result = await userJourneysCreateJourney(
+      data as CreateJourneyCommand,
+    );
     return result.data as JourneyDto;
   });
 
@@ -47,16 +49,16 @@ export const getUserJourneysFn = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export const getDefaultActiveJourneyFn = createServerFn({ method: "GET" }).handler(
-  async () => {
-    try {
-      const result = await userJourneysGetDefaultActiveJourney();
-      return result.status === 200 ? (result.data) : null;
-    } catch {
-      return null;
-    }
-  },
-);
+export const getDefaultActiveJourneyFn = createServerFn({
+  method: "GET",
+}).handler(async () => {
+  try {
+    const result = await userJourneysGetDefaultActiveJourney();
+    return result.status === 200 ? result.data : null;
+  } catch {
+    return null;
+  }
+});
 
 export const deleteUserJourneyFn = createServerFn({ method: "POST" })
   .inputValidator(journeyIdSchema)

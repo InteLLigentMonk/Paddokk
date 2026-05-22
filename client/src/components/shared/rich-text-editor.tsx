@@ -1,24 +1,21 @@
-import { RichTextEditor as MantineRichTextEditor } from "@mantine/tiptap"
-import { useEditor } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import TiptapLink from "@tiptap/extension-link"
+import { RichTextEditor as MantineRichTextEditor } from "@mantine/tiptap";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TiptapLink from "@tiptap/extension-link";
 
 interface RichTextEditorProps {
-  content: string
-  onChange: (html: string) => void
+  content: string;
+  onChange: (html: string) => void;
 }
 
 export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TiptapLink.configure({ openOnClick: false }),
-    ],
+    extensions: [StarterKit, TiptapLink.configure({ openOnClick: false })],
     content,
     onUpdate: ({ editor: instance }) => {
-      onChange(instance.getHTML())
+      onChange(instance.getHTML());
     },
-  })
+  });
 
   return (
     <MantineRichTextEditor editor={editor}>
@@ -47,5 +44,5 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
 
       <MantineRichTextEditor.Content />
     </MantineRichTextEditor>
-  )
+  );
 }

@@ -35,7 +35,9 @@ const getCarSchema = z.object({ carId: z.number().int().min(1) });
 export const getPublicCarFn = createServerFn({ method: "GET" })
   .inputValidator(getCarSchema)
   .handler(async ({ data: { carId } }) => {
-    const result = await apiFetcher<{ data: UserCarDto }>(`/api/v1/cars/${carId}`);
+    const result = await apiFetcher<{ data: UserCarDto }>(
+      `/api/v1/cars/${carId}`,
+    );
     return result.data;
   });
 

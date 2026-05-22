@@ -1,6 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { CreateUserCarCommand, UpdateUserCarCommand, UserCarDto, UserCarsResponse } from "@/generated/api/schemas";
+import type {
+  CreateUserCarCommand,
+  UpdateUserCarCommand,
+  UserCarDto,
+  UserCarsResponse,
+} from "@/generated/api/schemas";
 import {
   userCarsCreateUserCar,
   userCarsDeleteUserCar,
@@ -69,22 +74,38 @@ export const createUserCarFn = createServerFn({ method: "POST" })
 
 export const updateUserCarFn = createServerFn({ method: "POST" })
   .inputValidator(updateUserCarSchema)
-  .handler(async ({ data: { carId, customBuildName, nickname, color, region, drive, engine, odometerKm, ownerNote, specsByCategory, isPrimary } }) => {
-    const result = await userCarsUpdateUserCar(carId, {
-      carId,
-      customBuildName: customBuildName ?? null,
-      nickname: nickname ?? null,
-      color: color ?? null,
-      region: region ?? null,
-      drive: drive ?? null,
-      engine: engine ?? null,
-      odometerKm: odometerKm ?? null,
-      ownerNote: ownerNote ?? null,
-      specsByCategory: specsByCategory ?? null,
-      isPrimary: isPrimary ?? null,
-    } as UpdateUserCarCommand);
-    return result.data as UserCarDto;
-  });
+  .handler(
+    async ({
+      data: {
+        carId,
+        customBuildName,
+        nickname,
+        color,
+        region,
+        drive,
+        engine,
+        odometerKm,
+        ownerNote,
+        specsByCategory,
+        isPrimary,
+      },
+    }) => {
+      const result = await userCarsUpdateUserCar(carId, {
+        carId,
+        customBuildName: customBuildName ?? null,
+        nickname: nickname ?? null,
+        color: color ?? null,
+        region: region ?? null,
+        drive: drive ?? null,
+        engine: engine ?? null,
+        odometerKm: odometerKm ?? null,
+        ownerNote: ownerNote ?? null,
+        specsByCategory: specsByCategory ?? null,
+        isPrimary: isPrimary ?? null,
+      } as UpdateUserCarCommand);
+      return result.data as UserCarDto;
+    },
+  );
 
 export const deleteUserCarFn = createServerFn({ method: "POST" })
   .inputValidator(carIdSchema)

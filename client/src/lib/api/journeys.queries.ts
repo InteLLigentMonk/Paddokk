@@ -7,21 +7,23 @@
 import { notifications } from "@mantine/notifications";
 import {
   JOURNEY_SEARCH_SORT,
-  
   getJourneysBrowseStatsFn,
   likeJourneyFn,
   searchJourneysFn,
   subscribeToJourneyFn,
   unlikeJourneyFn,
-  unsubscribeFromJourneyFn
+  unsubscribeFromJourneyFn,
 } from "./journeys";
-import type {JourneySortKey} from "./journeys";
+import type { JourneySortKey } from "./journeys";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedJourneysResponse } from "@/generated/api/schemas";
 
 const PAGE_SIZE = 24;
 
-export const browseJourneysInfiniteQueryOptions = (terms: Array<string>, sort: number) =>
+export const browseJourneysInfiniteQueryOptions = (
+  terms: Array<string>,
+  sort: number,
+) =>
   infiniteQueryOptions({
     queryKey: ["browse-journeys", { terms, sort }] as const,
     queryFn: ({ pageParam }) =>
@@ -39,15 +41,23 @@ export const browseJourneysStatsQueryOptions = (terms: Array<string>) =>
     queryFn: () => getJourneysBrowseStatsFn({ data: { terms } }),
   });
 
-export function sortKeyToNumber(key: JourneySortKey | undefined, hasTerms: boolean): number {
-  if (key === undefined) return hasTerms ? JOURNEY_SEARCH_SORT.RecentActivity : JOURNEY_SEARCH_SORT.Newest;
+export function sortKeyToNumber(
+  key: JourneySortKey | undefined,
+  hasTerms: boolean,
+): number {
+  if (key === undefined)
+    return hasTerms
+      ? JOURNEY_SEARCH_SORT.RecentActivity
+      : JOURNEY_SEARCH_SORT.Newest;
   return JOURNEY_SEARCH_SORT[key];
 }
 
 function patchJourneyInPages(
   data: InfiniteData<PagedJourneysResponse>,
   journeyId: number | string,
-  patch: (journey: PagedJourneysResponse["journeys"][number]) => PagedJourneysResponse["journeys"][number],
+  patch: (
+    journey: PagedJourneysResponse["journeys"][number],
+  ) => PagedJourneysResponse["journeys"][number],
 ): InfiniteData<PagedJourneysResponse> {
   return {
     ...data,
@@ -68,7 +78,9 @@ export function useToggleJourneyLike(journeyId: number) {
         : likeJourneyFn({ data: { journeyId } }),
     onMutate: async (isCurrentlyLiked) => {
       await queryClient.cancelQueries({ queryKey: ["browse-journeys"] });
-      const snapshots = queryClient.getQueriesData<InfiniteData<PagedJourneysResponse>>({
+      const snapshots = queryClient.getQueriesData<
+        InfiniteData<PagedJourneysResponse>
+      >({
         queryKey: ["browse-journeys"],
       });
       snapshots.forEach(([key, data]) => {
@@ -109,7 +121,9 @@ export function useToggleJourneySubscription(journeyId: number) {
         : subscribeToJourneyFn({ data: { journeyId } }),
     onMutate: async (isCurrentlySubscribed) => {
       await queryClient.cancelQueries({ queryKey: ["browse-journeys"] });
-      const snapshots = queryClient.getQueriesData<InfiniteData<PagedJourneysResponse>>({
+      const snapshots = queryClient.getQueriesData<
+        InfiniteData<PagedJourneysResponse>
+      >({
         queryKey: ["browse-journeys"],
       });
       snapshots.forEach(([key, data]) => {
@@ -119,7 +133,8 @@ export function useToggleJourneySubscription(journeyId: number) {
           patchJourneyInPages(data, journeyId, (j) => ({
             ...j,
             isSubscribed: !isCurrentlySubscribed,
-            subscriberCount: Number(j.subscriberCount) + (isCurrentlySubscribed ? -1 : 1),
+            subscriberCount:
+              Number(j.subscriberCount) + (isCurrentlySubscribed ? -1 : 1),
           })),
         );
       });

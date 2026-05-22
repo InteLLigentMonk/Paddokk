@@ -1,18 +1,24 @@
-import { Box, Button, Stack, Text } from '@mantine/core'
-import { Car } from 'lucide-react'
+import { Box, Button, Stack, Text } from "@mantine/core";
+import { Car } from "lucide-react";
 
 interface CarsEmptyStateProps {
-  onAddCar: () => void
+  onAddCar: () => void;
 }
 
 export function CarsEmptyState({ onAddCar }: CarsEmptyStateProps) {
   return (
-    <Stack align="center" justify="center" gap="xl" py="xl" style={{ minHeight: 300 }}>
+    <Stack
+      align="center"
+      justify="center"
+      gap="xl"
+      py="xl"
+      style={{ minHeight: 300 }}
+    >
       <Box component="span" darkHidden>
-        <Car size={64} style={{ color: 'var(--mantine-color-gray-4)' }} />
+        <Car size={64} style={{ color: "var(--mantine-color-gray-4)" }} />
       </Box>
       <Box component="span" lightHidden>
-        <Car size={64} style={{ color: 'var(--mantine-color-dark-4)' }} />
+        <Car size={64} style={{ color: "var(--mantine-color-dark-4)" }} />
       </Box>
 
       <Stack align="center" gap="xs">
@@ -26,5 +32,5 @@ export function CarsEmptyState({ onAddCar }: CarsEmptyStateProps) {
 
       <Button onClick={onAddCar}>Add Your First Car</Button>
     </Stack>
-  )
+  );
 }

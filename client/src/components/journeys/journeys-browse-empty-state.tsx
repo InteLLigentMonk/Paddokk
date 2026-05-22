@@ -8,7 +8,11 @@ export function JourneysBrowseEmptyState() {
   return (
     <Center py="xl">
       <Stack align="center" gap="md">
-        <Compass size={48} strokeWidth={1.2} color="var(--mantine-color-dimmed)" />
+        <Compass
+          size={48}
+          strokeWidth={1.2}
+          color="var(--mantine-color-dimmed)"
+        />
         <Stack align="center" gap={4}>
           <Text fw={500}>Inga journeys matchade</Text>
           <Text size="sm" c="dimmed">
