@@ -11,9 +11,12 @@ import {
 } from "@mantine/core";
 import { spotlight } from "@mantine/spotlight";
 import { useEffect, useState } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 import { LogOut, Search, Settings, User } from "lucide-react";
 import { ColorSchemeToggle } from "./color-scheme-toggle";
 import { useAuth } from "@/hooks/use-auth";
+
+const appRouteApi = getRouteApi("/_app");
 
 const iconProps = { size: 18, strokeWidth: 1.5 } as const;
 
@@ -155,9 +158,10 @@ function UserMenu({ user, onLogout, isLoggingOut }: UserMenuProps) {
 }
 
 export function AppHeader() {
-  const { user, logout, isLoggingOut } = useAuth();
+  const { auth } = appRouteApi.useRouteContext();
+  const { logout, isLoggingOut } = useAuth();
 
-  if (!user) return null;
+  if (!auth.user) return null;
 
   return (
     <Box
@@ -171,7 +175,6 @@ export function AppHeader() {
         backgroundColor: "var(--mantine-color-body)",
       }}
     >
-      {/* <Container size="xl" py="sm"> */}
       <Group justify="space-between" wrap="nowrap">
         <HeaderLogo />
 
@@ -193,10 +196,13 @@ export function AppHeader() {
 
           <ColorSchemeToggle />
 
-          <UserMenu user={user} onLogout={logout} isLoggingOut={isLoggingOut} />
+          <UserMenu
+            user={auth.user}
+            onLogout={logout}
+            isLoggingOut={isLoggingOut}
+          />
         </Group>
       </Group>
-      {/* </Container> */}
     </Box>
   );
 }

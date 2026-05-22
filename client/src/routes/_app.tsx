@@ -6,13 +6,17 @@ import { AppNavigation } from "@/components/navigation/app-navigation";
 import { AddCarModal } from "@/components/cars/add-car-modal";
 import { CreateJourneyModal } from "@/components/journeys/create-journey-modal";
 import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
+import { currentUserQueryOptions } from "@/lib/api/users.queries";
 
 export const Route = createFileRoute("/_app")({
-  beforeLoad: ({ context }) => {
+  beforeLoad: async ({ context: { queryClient, auth } }) => {
     // Redirect unauthenticated users to landing page
-    if (!context.auth.isAuthenticated) {
+    if (!auth.isAuthenticated) {
       throw redirect({ to: "/" });
     }
+
+    // Prefetch current user profile (needed for navigation items with dynamic usernames)
+    await queryClient.ensureQueryData(currentUserQueryOptions());
   },
   component: AppLayout,
 });
