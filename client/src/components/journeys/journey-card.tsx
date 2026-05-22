@@ -4,11 +4,11 @@
   Badge,
   Card,
   Group,
-  Image,
   Menu,
   Stack,
   Text,
 } from "@mantine/core";
+import { CdnImage } from "@/components/shared/cdn-image";
 import {
   Bell,
   CheckCircle,
@@ -169,11 +169,12 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
     >
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
-          <Image
+          <CdnImage
             src={
               journey.primaryImageUrl ||
               "https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
             }
+            width={600}
             alt={journey.title}
             fit="cover"
           />

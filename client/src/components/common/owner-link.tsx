@@ -1,6 +1,7 @@
 import { Avatar, Group, Stack, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import classes from "./owner-link.module.css";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import type { MantineRadius, MantineSize } from "@mantine/core";
 import type { ReactNode } from "react";
 
@@ -32,7 +33,7 @@ function OwnerContent({
 }: Omit<OwnerLinkProps, "target">) {
   const avatar = (
     <Avatar
-      src={avatarUrl ?? null}
+      src={optimizeImageUrl(avatarUrl, 80) ?? null}
       radius={avatarRadius ?? "xl"}
       size={avatarSize ?? "md"}
       alt={primaryText}

@@ -4,10 +4,10 @@
   Box,
   Card,
   Group,
-  Image,
   Stack,
   Text,
 } from "@mantine/core";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { GripVertical, Image as ImageIcon, Trash2, Upload, X } from "lucide-react";
 import {
@@ -105,8 +105,9 @@ function ExistingImageCard({
       )}
 
       <Box style={{ position: "absolute", inset: 0, padding: "4px" }}>
-        <Image
-          src={image.mediumUrl || image.imageUrl}
+        <CdnImage
+          src={image.imageUrl}
+          width={400}
           alt={image.caption ?? "Car image"}
           fit="cover"
           w="100%"

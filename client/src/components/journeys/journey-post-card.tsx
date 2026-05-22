@@ -5,13 +5,13 @@ import {
   Button,
   Card,
   Group,
-  Image,
   Stack,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
 import { PostImageModal } from "./journey-post-image-modal";
+import { CdnImage } from "@/components/shared/cdn-image";
 import type { JourneyPostDto } from "@/generated/api/schemas";
 import { OwnerLink } from "@/components/common/owner-link";
 
@@ -64,8 +64,9 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
   if (sorted.length === 1) {
     return (
       <AspectRatio ratio={16 / 9}>
-        <Image
+        <CdnImage
           src={sorted[0].imageUrl}
+          width={1200}
           alt={sorted[0].caption ?? ""}
           radius="sm"
           fit="cover"
@@ -81,12 +82,12 @@ function PostImages({ images, onImageClick }: PostImagesProps) {
       <Carousel height="100%" slideSize="100%" slideGap="xs">
         {sorted.map((img, i) => (
           <Carousel.Slide key={String(img.id)}>
-            <Image
+            <CdnImage
               src={img.imageUrl}
+              width={1200}
               alt={img.caption ?? ""}
               fit="cover"
               h="100%"
-              // radius="sm"
               onClick={() => onImageClick(i)}
               style={imgStyle}
             />

@@ -7,13 +7,13 @@ import {
   Collapse,
   Divider,
   Group,
-  Image,
   Paper,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
 import { Bell, Heart, MessageSquare } from "lucide-react";
+import { CdnImage } from "@/components/shared/cdn-image";
 import type { JourneyActivityTier, JourneyDto } from "@/generated/api/schemas";
 import { OwnerLink } from "@/components/common/owner-link";
 
@@ -69,8 +69,9 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
     >
       {journey.primaryImageUrl && (
         <Box pos="relative">
-          <Image
+          <CdnImage
             src={journey.primaryImageUrl}
+            width={1600}
             h={{ base: 200, sm: 280 }}
             fit="cover"
             alt={journey.title}

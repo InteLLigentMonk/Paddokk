@@ -6,12 +6,13 @@ import {
   Badge,
   Card,
   Group,
-  Image,
   Stack,
   Text,
 } from "@mantine/core";
 import { Bell, Heart, MessageSquare } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { CdnImage } from "@/components/shared/cdn-image";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import type {
   JourneyActivityTier,
   JourneyDto,
@@ -115,8 +116,9 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
     >
       <Card.Section>
         <AspectRatio ratio={16 / 9}>
-          <Image
+          <CdnImage
             src={coverImage}
+            width={600}
             fallbackSrc="https://placehold.co/600x400/e9ecef/495057?text=No+Cover"
             alt={journey.title}
             fit="cover"
@@ -171,7 +173,7 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
             }}
           >
             <Avatar
-              src={journey.userAvatarUrl ?? undefined}
+              src={optimizeImageUrl(journey.userAvatarUrl, 80)}
               size={20}
               radius="xl"
               name={journey.ownerUsername}

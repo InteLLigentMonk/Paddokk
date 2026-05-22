@@ -1,4 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "git log -1 --pretty=%B | grep -q '^chore(main): release'"
+  "ignoreCommand": "git log -1 --pretty=%B | grep -q '^chore(main): release'",
+  "images": {
+    "remotePatterns": [
+      {
+        "protocol": "https",
+        "hostname": "paddokkblob.blob.core.windows.net"
+      }
+    ],
+    "sizes": [400, 600, 1200, 1600],
+    "formats": ["image/avif", "image/webp"]
+  }
 }
