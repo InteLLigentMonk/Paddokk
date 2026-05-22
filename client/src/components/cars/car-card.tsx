@@ -8,11 +8,11 @@
   Stack,
   Text,
 } from "@mantine/core";
-import { CdnImage } from "@/components/shared/cdn-image";
 import { Bell, Edit, Heart, MoreVertical, Star, Trash } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { UserCarDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { openDeleteCarConfirm } from "@/lib/stores/cars-page-store";
 import {
   likeUserCarFn,
