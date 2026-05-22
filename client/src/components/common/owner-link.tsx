@@ -1,9 +1,9 @@
 import { Avatar, Group, Stack, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import classes from "./owner-link.module.css";
-import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import type { MantineRadius, MantineSize } from "@mantine/core";
 import type { ReactNode } from "react";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 
 export type OwnerLinkTarget =
   | { kind: "user"; username: string }
@@ -53,11 +53,13 @@ function OwnerContent({
       >
         {primaryText}
       </Text>
-      {secondaryText !== undefined && secondaryText !== null && secondaryText !== false && (
-        <Text size="xs" c="dimmed">
-          {secondaryText}
-        </Text>
-      )}
+      {secondaryText !== undefined &&
+        secondaryText !== null &&
+        secondaryText !== false && (
+          <Text size="xs" c="dimmed">
+            {secondaryText}
+          </Text>
+        )}
     </Stack>
   );
 

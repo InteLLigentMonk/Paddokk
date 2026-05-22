@@ -1,4 +1,4 @@
-import { createTheme, Image } from "@mantine/core";
+import { Image, createTheme } from "@mantine/core";
 import type { ImageProps, MantineColorsTuple } from "@mantine/core";
 
 export const myColor: MantineColorsTuple = [

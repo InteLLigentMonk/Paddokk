@@ -11,13 +11,13 @@ import {
 } from "@mantine/core";
 import { Bell, Heart, MessageSquare } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { CdnImage } from "@/components/shared/cdn-image";
-import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import type {
   JourneyActivityTier,
   JourneyDto,
   JourneyStatus,
 } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import {
   useToggleJourneyLike,
   useToggleJourneySubscription,
@@ -69,7 +69,8 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
       .join(" ") ||
     "Okänd bil";
 
-  const coverImage = journey.primaryImageUrl || journey.carPrimaryImageUrl || undefined;
+  const coverImage =
+    journey.primaryImageUrl || journey.carPrimaryImageUrl || undefined;
 
   function handleCardClick() {
     navigate({
@@ -80,7 +81,10 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
 
   function handleOwnerClick(e: React.MouseEvent) {
     e.stopPropagation();
-    navigate({ to: "/users/$username", params: { username: journey.ownerUsername } });
+    navigate({
+      to: "/users/$username",
+      params: { username: journey.ownerUsername },
+    });
   }
 
   function handleLikeClick(e: React.MouseEvent) {
@@ -212,7 +216,9 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
                 variant={journey.isSubscribed ? "filled" : "subtle"}
                 color={journey.isSubscribed ? "blue" : "gray"}
                 size="xs"
-                aria-label={journey.isSubscribed ? "Avprenumerera" : "Prenumerera"}
+                aria-label={
+                  journey.isSubscribed ? "Avprenumerera" : "Prenumerera"
+                }
                 loading={subscribeMutation.isPending}
                 onClick={handleSubscribeClick}
               >

@@ -1,14 +1,17 @@
 import { AspectRatio, Image } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
-import { CdnImage } from "@/components/shared/cdn-image";
 import type { CarImageDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 
 interface CarImageCarouselProps {
   images: Array<CarImageDto>;
   displayName: string;
 }
 
-export function CarImageCarousel({ images, displayName }: CarImageCarouselProps) {
+export function CarImageCarousel({
+  images,
+  displayName,
+}: CarImageCarouselProps) {
   if (images.length === 0) {
     return (
       <AspectRatio ratio={16 / 9}>

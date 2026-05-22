@@ -1,18 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Anchor,
-  AspectRatio,
-  Button,
-  Card,
-  Group,
-  Stack,
-} from "@mantine/core";
+import { Anchor, AspectRatio, Button, Card, Group, Stack } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
 import { JourneyPostCommentsModal } from "./journey-post-comments-modal";
 import { PostImageModal } from "./journey-post-image-modal";
-import { CdnImage } from "@/components/shared/cdn-image";
 import type { JourneyPostDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { OwnerLink } from "@/components/common/owner-link";
 
 function formatDate(iso: string): string {

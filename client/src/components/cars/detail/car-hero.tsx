@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { DotIcon, MapPin, Zap } from "lucide-react";
 import { DRIVE_LABELS } from "./car-drive-select";
 import { colorLabelFromHex } from "./car-color-swatch-input";
-import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import type { CarImageDto, UserCarDto } from "@/generated/api/schemas";
+import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 
 interface CarHeroProps {
   car: UserCarDto;
@@ -78,7 +78,11 @@ export function CarHero({ car, primaryImage }: CarHeroProps) {
               borderRadius: "var(--mantine-radius-xl)",
             }}
           >
-            <Avatar src={optimizeImageUrl(car.ownerAvatarUrl, 80)} size={24} radius="xl" />
+            <Avatar
+              src={optimizeImageUrl(car.ownerAvatarUrl, 80)}
+              size={24}
+              radius="xl"
+            />
             <Text fz={12} fw={600} c="white">
               {car.ownerUsername}
             </Text>

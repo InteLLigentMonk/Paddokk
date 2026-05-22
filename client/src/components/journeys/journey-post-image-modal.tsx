@@ -1,7 +1,7 @@
 import { Modal, Stack, Text } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
-import { CdnImage } from "@/components/shared/cdn-image";
 import type { JourneyPostImageDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 
 interface PostImageModalProps {
   images: Array<JourneyPostImageDto>;

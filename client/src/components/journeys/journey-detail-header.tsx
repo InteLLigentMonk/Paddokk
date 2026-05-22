@@ -13,8 +13,8 @@ import {
   Title,
 } from "@mantine/core";
 import { Bell, Heart, MessageSquare } from "lucide-react";
-import { CdnImage } from "@/components/shared/cdn-image";
 import type { JourneyActivityTier, JourneyDto } from "@/generated/api/schemas";
+import { CdnImage } from "@/components/shared/cdn-image";
 import { OwnerLink } from "@/components/common/owner-link";
 
 const ACTIVITY_TIER_LABELS: Record<JourneyActivityTier, string> = {
@@ -81,14 +81,21 @@ export function JourneyDetailHeader({ journey }: JourneyDetailHeaderProps) {
 
       <Stack gap="md" p="lg">
         <Group gap="xs" wrap="wrap">
-          <Badge variant="light" color={ACTIVITY_TIER_COLORS[activityTier] ?? "gray"}>
+          <Badge
+            variant="light"
+            color={ACTIVITY_TIER_COLORS[activityTier] ?? "gray"}
+          >
             {ACTIVITY_TIER_LABELS[activityTier] ?? "Unknown"}
           </Badge>
           {status === STATUS_COMPLETED && (
-            <Badge variant="light" color="blue">Complete</Badge>
+            <Badge variant="light" color="blue">
+              Complete
+            </Badge>
           )}
           {!journey.isPublic && (
-            <Badge variant="light" color="gray">Under Wraps</Badge>
+            <Badge variant="light" color="gray">
+              Under Wraps
+            </Badge>
           )}
           <Badge variant="outline">
             {CATEGORY_LABELS[category] ?? "Other"}
