@@ -52,7 +52,7 @@ function VitalsRow({ label, value, icon }: VitalsRowProps) {
         >
           {label}
         </Text>
-        <Text c={value ? undefined : "dimmed"}>{value ?? "â€”"}</Text>
+        <Text c={value ? undefined : "dimmed"}>{value ?? "—"}</Text>
       </Stack>
     </Group>
   );
