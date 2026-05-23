@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.8](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.7...v0.26.8) (2026-05-23)
+
+
+### Bug Fixes
+
+* **car:** correct encoding of empty value placeholder dash ([#137](https://github.com/InteLLigentMonk/Paddokk/issues/137)) ([2411828](https://github.com/InteLLigentMonk/Paddokk/commit/2411828c3b72988ef473b483d246775b52dc355b))
+
 ## [0.26.7](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.6...v0.26.7) (2026-05-22)
 
 
