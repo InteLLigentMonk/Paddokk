@@ -53,7 +53,7 @@ function StripCell({ label, value }: StripCellProps) {
         c={value ? undefined : "dimmed"}
         style={{ overflowWrap: "break-word" }}
       >
-        {value ?? "â€”"}
+        {value ?? "—"}
       </Text>
     </Box>
   );
