@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.9](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.8...v0.26.9) (2026-05-23)
+
+
+### Bug Fixes
+
+* **car:** replaced wierd chars in on era placeholder in spec bar ([#139](https://github.com/InteLLigentMonk/Paddokk/issues/139)) ([fcb93d3](https://github.com/InteLLigentMonk/Paddokk/commit/fcb93d38c9838d926d357dbaf888e5864a9181f1))
+
 ## [0.26.8](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.7...v0.26.8) (2026-05-23)
 
 
