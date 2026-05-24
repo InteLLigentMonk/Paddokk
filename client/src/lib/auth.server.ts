@@ -4,6 +4,9 @@ import { jwt } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "./db/index.server";
 import * as schema from "./db/schema";
+import { sendEmail } from "./email/email.server";
+import { buildResetPasswordEmail } from "./email/templates/reset-password";
+import { buildVerifyEmailEmail } from "./email/templates/verify-email";
 
 const trustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS
   ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((o) => o.trim())
@@ -19,20 +22,27 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false, // Set to true when email service is integrated
-    sendResetPassword: ({ user, url }) => {
-      // TODO: Integrate email service (Resend, SendGrid, etc.)
-      console.log(`[DEV] Password reset link for ${user.email}: ${url}`);
-      return Promise.resolve();
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      const { subject, html, text } = buildResetPasswordEmail({
+        name: user.name,
+        resetUrl: url,
+      });
+      await sendEmail({ to: user.email, subject, html, text });
     },
   },
 
   emailVerification: {
     sendOnSignUp: true,
-    sendVerificationEmail: ({ user, url }) => {
-      // TODO: Integrate email service
-      console.log(`[DEV] Verification email for ${user.email}: ${url}`);
-      return Promise.resolve();
+    sendVerificationEmail: async ({ user, url, token }) => {
+      const appUrl =
+        process.env.VITE_BETTER_AUTH_URL ?? new URL(url).origin;
+      const verifyUrl = `${appUrl}/verify-email?token=${encodeURIComponent(token)}`;
+      const { subject, html, text } = buildVerifyEmailEmail({
+        name: user.name,
+        verifyUrl,
+      });
+      await sendEmail({ to: user.email, subject, html, text });
     },
   },
 
