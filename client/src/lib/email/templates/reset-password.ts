@@ -1,4 +1,5 @@
-import { type EmailContent, escapeHtml, resolveGreeting, wrapLayout } from "./_layout";
+import { escapeHtml, resolveGreeting, wrapLayout } from "./_layout";
+import type { EmailContent } from "./_layout";
 
 export type ResetPasswordInput = {
   name: string;
