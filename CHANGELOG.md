@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.9...v0.27.0) (2026-05-24)
+
+
+### Features
+
+* **auth:** integrate Resend for verification and password reset emails ([#141](https://github.com/InteLLigentMonk/Paddokk/issues/141)) ([f4455c3](https://github.com/InteLLigentMonk/Paddokk/commit/f4455c376e3f994a83d937de9cd38560c92c5f56))
+
 ## [0.26.9](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.8...v0.26.9) (2026-05-23)
 
 
