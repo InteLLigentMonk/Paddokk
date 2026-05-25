@@ -30,6 +30,16 @@ Marketplace, Stores, Harness-designer and more.
 - Frontend components never call the .NET API directly
 - Flow: Component → TanStack Query → Server Function → Orval Client → .NET API
 
+### BFF Type Safety (strict)
+- Server functions MUST call generated SDK functions from `@/generated/api/<tag>/<tag>`. Never call `apiFetcher` directly with handwritten URLs and never write `apiFetcher<{data:X}>(...)` patterns.
+- `inputValidator` MUST use generated Zod schemas from `@/generated/api-zod/<tag>/<tag>.zod` for any input that maps to a backend DTO (request bodies, params). Handwritten Zod is only allowed for inputs that have no backend counterpart.
+- No `as X` casts in `client/src/lib/api/*.ts` — the only acceptable casts are the two `as T` in `client.ts` (the fetch wrapper, where `T` is unknowable from `fetch()`). If a cast appears tempting, the root cause is usually missing generation or a missing partial schema; fix it there.
+- Combine generated Params + Body schemas via `Params.extend(Body.shape)` for full-replace updates, or `Body.partial().extend(Params.shape)` for partial-patch updates (path/query keys stay required).
+- Regenerate after backend changes: `cd client && pnpm orval` (emits both fetch SDK at `src/generated/api/` and Zod schemas at `src/generated/api-zod/`).
+
+### Backend OpenAPI hygiene
+- `JsonNumberHandling.Strict` is set globally via `ConfigureHttpJsonOptions` in [Program.cs](API/Paddokk.Api/Program.cs). This stops `Microsoft.AspNetCore.OpenApi` from emitting `type: ["integer", "string"]` for int fields, which would otherwise break Orval's Zod codegen. Do not remove without also adjusting Orval.
+
 ### Auth
 - BetterAuth handles session management on the frontend/BFF
 - .NET API validates tokens from BetterAuth

@@ -1,6 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import type { JourneyDto, UserCarDto, UserDto } from "@/generated/api/schemas";
+import {
+  UsersGetCarJourneysParams,
+  UsersGetCarJourneysQueryParams,
+  UsersGetJourneyBySlugParams,
+  UsersGetUserByUsernameParams,
+  UsersGetUserCarBySlugParams,
+  UsersGetUserCarsByUsernameParams,
+  UsersGetUserJourneysByUsernameParams,
+} from "@/generated/api-zod/users/users.zod";
 import {
   usersGetCarJourneys,
   usersGetCurrentUser,
@@ -11,66 +18,51 @@ import {
   usersGetUserJourneysByUsername,
 } from "@/generated/api/users/users";
 
-export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const result = await usersGetCurrentUser();
-    return result.data as UserDto;
-  },
+const getCarJourneysSchema = UsersGetCarJourneysParams.extend(
+  UsersGetCarJourneysQueryParams.shape,
 );
 
-const usernameSchema = z.object({ username: z.string() });
-const usernameSlugSchema = z.object({
-  username: z.string(),
-  slug: z.string(),
-});
-const carJourneysSchema = z.object({
-  username: z.string(),
-  carSlug: z.string(),
-  page: z.number().optional(),
-  pageSize: z.number().optional(),
-});
+export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(
+  async () => await usersGetCurrentUser(),
+);
 
 export const getUserByUsernameFn = createServerFn({ method: "GET" })
-  .inputValidator(usernameSchema)
-  .handler(async ({ data: { username } }) => {
-    const result = await usersGetUserByUsername(username);
-    return result.data as UserDto;
-  });
+  .inputValidator(UsersGetUserByUsernameParams)
+  .handler(
+    async ({ data: { username } }) => await usersGetUserByUsername(username),
+  );
 
 export const getUserCarsByUsernameFn = createServerFn({ method: "GET" })
-  .inputValidator(usernameSchema)
-  .handler(async ({ data: { username } }) => {
-    const result = await usersGetUserCarsByUsername(username);
-    return result.data as Array<UserCarDto>;
-  });
+  .inputValidator(UsersGetUserCarsByUsernameParams)
+  .handler(
+    async ({ data: { username } }) =>
+      await usersGetUserCarsByUsername(username),
+  );
 
 export const getUserCarBySlugFn = createServerFn({ method: "GET" })
-  .inputValidator(usernameSlugSchema)
-  .handler(async ({ data: { username, slug } }) => {
-    const result = await usersGetUserCarBySlug(username, slug);
-    return result.data as UserCarDto;
-  });
+  .inputValidator(UsersGetUserCarBySlugParams)
+  .handler(
+    async ({ data: { username, slug } }) =>
+      await usersGetUserCarBySlug(username, slug),
+  );
 
 export const getUserJourneysByUsernameFn = createServerFn({ method: "GET" })
-  .inputValidator(usernameSchema)
-  .handler(async ({ data: { username } }) => {
-    const result = await usersGetUserJourneysByUsername(username);
-    return result.data as Array<JourneyDto>;
-  });
+  .inputValidator(UsersGetUserJourneysByUsernameParams)
+  .handler(
+    async ({ data: { username } }) =>
+      await usersGetUserJourneysByUsername(username),
+  );
 
 export const getUserJourneyBySlugFn = createServerFn({ method: "GET" })
-  .inputValidator(usernameSlugSchema)
-  .handler(async ({ data: { username, slug } }) => {
-    const result = await usersGetJourneyBySlug(username, slug);
-    return result.data as JourneyDto;
-  });
+  .inputValidator(UsersGetJourneyBySlugParams)
+  .handler(
+    async ({ data: { username, slug } }) =>
+      await usersGetJourneyBySlug(username, slug),
+  );
 
 export const getCarJourneysFn = createServerFn({ method: "GET" })
-  .inputValidator(carJourneysSchema)
-  .handler(async ({ data: { username, carSlug, page, pageSize } }) => {
-    const result = await usersGetCarJourneys(username, carSlug, {
-      page,
-      pageSize,
-    });
-    return result.data as Array<JourneyDto>;
-  });
+  .inputValidator(getCarJourneysSchema)
+  .handler(
+    async ({ data: { username, carSlug, page, pageSize } }) =>
+      await usersGetCarJourneys(username, carSlug, { page, pageSize }),
+  );

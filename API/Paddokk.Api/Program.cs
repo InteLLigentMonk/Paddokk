@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Data;
 using Paddokk.Data.Seeding;
@@ -11,6 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Setting Strict here makes the OpenAPI generator
+// emit `type: "integer"` instead of `type: ["integer", "string"]`, which keeps Orval's
+// Zod codegen clean (no invalid union with stringFormat branches).
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+});
 builder.Services.AddApiVersioningV1();
 builder.Services.AddValidation();
 builder.Services.AddMediator();

@@ -7,7 +7,7 @@ export function useCanAddJourney() {
     queryFn: () => userJourneysCanCreateJourney(),
   });
 
-  const limits = data?.status === 200 ? data.data : undefined;
+  const limits = data;
   const isUnlimited = limits?.maxJourneys === "Unlimited";
 
   return {

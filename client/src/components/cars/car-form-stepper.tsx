@@ -4,7 +4,6 @@ import { Camera, Car, Check } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CarBasicInfoStep } from "./car-basic-info-step";
 import { CarImagesStep } from "./car-images-step";
-import type { CreateUserCarCommand, UserCarDto } from "@/generated/api/schemas";
 import { userCarsCreateUserCar } from "@/generated/api/user-cars/user-cars";
 import { carImagesUploadCarImage } from "@/generated/api/car-images/car-images";
 import { useNotifications } from "@/integrations/mantine";
@@ -66,7 +65,7 @@ export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
     if (!carFormData) return;
     setIsSubmitting(true);
     try {
-      const result = await userCarsCreateUserCar({
+      const car = await userCarsCreateUserCar({
         isCustomBuild: carFormData.isCustomBuild,
         customBuildName: carFormData.customBuildName,
         carMakeId: carFormData.carMakeId,
@@ -75,10 +74,8 @@ export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
         year: carFormData.year,
         nickname: carFormData.nickname,
         color: carFormData.color,
-        description: null,
         isPrimary: false,
-      } as CreateUserCarCommand);
-      const car = result.data as UserCarDto;
+      });
       const carId = Number(car.id);
       for (const img of pendingImages) {
         await carImagesUploadCarImage(carId, { File: img.file });

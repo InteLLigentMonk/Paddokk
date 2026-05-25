@@ -3,15 +3,37 @@ import { defineConfig } from "orval";
 export default defineConfig({
   paddokkApi: {
     input: {
-      target: "./swagger.json", // Use local file for reliability
+      target: "./swagger.json",
     },
     output: {
-      workspace: "src/",
-      mode: "tags-split", // Split by controller tags
-      target: "./generated/api",
-      schemas: "./generated/api/schemas",
+      mode: "tags-split",
+      target: "./src/generated/api",
+      schemas: "./src/generated/api/schemas",
       client: "fetch",
       mock: false,
+      override: {
+        fetch: {
+          includeHttpResponseReturnType: false,
+        },
+        mutator: {
+          path: "./src/lib/api/client.ts",
+          name: "apiFetcher",
+        },
+      },
+    },
+    hooks: {
+      afterAllFilesWrite: "prettier --write",
+    },
+  },
+  paddokkApiZod: {
+    input: {
+      target: "./swagger.json",
+    },
+    output: {
+      mode: "tags-split",
+      target: "./src/generated/api-zod",
+      client: "zod",
+      fileExtension: ".zod.ts",
       override: {
         zod: {
           strict: {
@@ -26,13 +48,6 @@ export default defineConfig({
             body: true,
             response: true,
           },
-        },
-        fetch: {
-          includeHttpResponseReturnType: true,
-        },
-        mutator: {
-          path: "./lib/api/client.ts",
-          name: "apiFetcher",
         },
       },
     },

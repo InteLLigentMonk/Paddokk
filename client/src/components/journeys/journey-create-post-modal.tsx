@@ -123,23 +123,17 @@ export function JourneyCreatePostModal({
 
       journeysUploadJourneyPostImage(journeyId, { file })
         .then((result) => {
-          if (result.status === 200) {
-            setImages((prev) =>
-              prev.map((img) =>
-                img.tempId === tempId
-                  ? {
-                      ...img,
-                      imageUrl: result.data.imageUrl,
-                      isUploading: false,
-                    }
-                  : img,
-              ),
-            );
-          } else {
-            setImages((prev) => prev.filter((img) => img.tempId !== tempId));
-            URL.revokeObjectURL(previewUrl);
-            notifications.error({ message: "Failed to upload image" });
-          }
+          setImages((prev) =>
+            prev.map((img) =>
+              img.tempId === tempId
+                ? {
+                    ...img,
+                    imageUrl: result.imageUrl,
+                    isUploading: false,
+                  }
+                : img,
+            ),
+          );
         })
         .catch(() => {
           setImages((prev) => prev.filter((img) => img.tempId !== tempId));

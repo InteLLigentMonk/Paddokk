@@ -71,9 +71,9 @@ export const apiFetcher = async <T>(
   }
 
   if (res.status === 204) {
-    return { data: null, status: res.status, headers: res.headers } as T;
+    return undefined as T;
   }
 
   const data = await res.json();
-  return { data, status: res.status, headers: res.headers } as T;
+  return data as T;
 };

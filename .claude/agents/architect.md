@@ -12,7 +12,7 @@ You are a senior software architect for Paddokk, a mobile-first SaaS social plat
 ## Tech Context
 
 - **Framework:** TanStack Start (SSR via Nitro), TanStack Router (file-based), TanStack Query (SSR integration)
-- **UI:** Mantine v8 + Tailwind CSS v4
+- **UI:** Mantine v9
 - **Auth:** Better Auth (stateless, needs DB adapter)
 - **Validation:** Zod v4
 - **Rich text:** Tiptap v3
@@ -85,6 +85,7 @@ Accepted / Superseded / Deprecated
 - **Mantine components** for complex UI, Tailwind for layout/utility
 - **Zod schemas** for validation at system boundaries
 - **Feature-based organization** (not type-based)
+- **BFF type-safety contract** — Server functions in `client/src/lib/api/*.ts` must call Orval-generated SDK functions from `@/generated/api/<tag>` and use Orval-generated Zod from `@/generated/api-zod/<tag>` as `inputValidator`. No handwritten `apiFetcher<{data:X}>` calls, no `as X` casts (except the two in `client.ts`). Full pattern and don'ts live in the [new-bff-route skill](../skills/new-bff-route/SKILL.md).
 
 ## Design Checklist
 
