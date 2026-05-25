@@ -11,7 +11,6 @@ public class SearchCarsValidator : AbstractValidator<SearchCarsQuery>
             .WithMessage("Maximum 10 search terms allowed");
 
         RuleForEach(x => x.Terms)
-            .NotEmpty()
             .MaximumLength(50);
 
         RuleFor(x => x.Page)

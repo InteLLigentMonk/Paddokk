@@ -15,7 +15,7 @@ export function EditCarModal() {
     enabled: isOpen && !!carId,
   });
 
-  const car = data?.status === 200 ? data.data : undefined;
+  const car = data;
 
   return (
     <Modal

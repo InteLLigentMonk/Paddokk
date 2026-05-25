@@ -7,7 +7,7 @@ export function useCanAddCar() {
     queryFn: () => limitsGetCarLimits(),
   });
 
-  const limits = data?.status === 200 ? data.data : undefined;
+  const limits = data;
 
   return {
     canAdd: limits?.canAdd ?? false,

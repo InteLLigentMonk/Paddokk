@@ -60,10 +60,9 @@ export function CarBasicInfoStep({
     enabled: !isCustomBuild && !!selectedModelId,
   });
 
-  const makes = makesData?.status === 200 ? makesData.data.makes : [];
-  const models = modelsData?.status === 200 ? modelsData.data.models : [];
-  const generations =
-    generationsData?.status === 200 ? generationsData.data.generations : [];
+  const makes = makesData?.makes ?? [];
+  const models = modelsData?.models ?? [];
+  const generations = generationsData?.generations ?? [];
 
   const makesSelectData = useMemo(
     () =>

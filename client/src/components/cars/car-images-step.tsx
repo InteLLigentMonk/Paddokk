@@ -43,8 +43,7 @@ export function CarImagesStep({
     queryKey: ["image-limits"],
     queryFn: () => limitsGetImageLimits(),
   });
-  const maxImages =
-    limitsData?.status === 200 ? Number(limitsData.data.maxImagesPerCar) : 10;
+  const maxImages = limitsData ? Number(limitsData.maxImagesPerCar) : 10;
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),

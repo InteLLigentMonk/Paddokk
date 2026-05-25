@@ -28,7 +28,12 @@ export const browseJourneysInfiniteQueryOptions = (
     queryKey: ["browse-journeys", { terms, sort }] as const,
     queryFn: ({ pageParam }) =>
       searchJourneysFn({
-        data: { terms, sort, page: pageParam, pageSize: PAGE_SIZE },
+        data: {
+          Terms: terms,
+          SortBy: sort,
+          Page: pageParam,
+          PageSize: PAGE_SIZE,
+        },
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
@@ -38,7 +43,7 @@ export const browseJourneysInfiniteQueryOptions = (
 export const browseJourneysStatsQueryOptions = (terms: Array<string>) =>
   queryOptions({
     queryKey: ["browse-journeys-stats", { terms }] as const,
-    queryFn: () => getJourneysBrowseStatsFn({ data: { terms } }),
+    queryFn: () => getJourneysBrowseStatsFn({ data: { Terms: terms } }),
   });
 
 export function sortKeyToNumber(

@@ -26,7 +26,7 @@ export function DeleteCarConfirm() {
     enabled: isOpen && !!carId,
   });
 
-  const car = data?.status === 200 ? data.data : undefined;
+  const car = data;
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => userCarsDeleteUserCar(id),

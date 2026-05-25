@@ -33,7 +33,7 @@ export function DeleteJourneyConfirm() {
     enabled: isOpen,
   });
 
-  const journey = data?.status === 200 ? data.data : undefined;
+  const journey = data;
   const isDefault = defaultJourney
     ? Number(defaultJourney.id) === journeyId
     : false;
