@@ -3,9 +3,9 @@ import { useForm } from "@tanstack/react-form";
 import { Alert, Button, Group, Stack, Text, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { Info, MailCheck } from "lucide-react";
+import type { UserDto } from "@/generated/api/schemas";
 import { changeEmail } from "@/lib/auth-client";
 import { changeEmailSchema } from "@/lib/validation/profile-schemas";
-import type { UserDto } from "@/generated/api/schemas";
 
 interface ChangeEmailFormProps {
   user: UserDto;
@@ -66,8 +66,8 @@ export function ChangeEmailForm({ user }: ChangeEmailFormProps) {
       {pendingEmail ? (
         <Alert icon={<MailCheck size={16} />} color="green" variant="light">
           <Text size="sm">
-            We sent a confirmation link to <strong>{pendingEmail}</strong>.
-            Open it from that inbox to finish the change.
+            We sent a confirmation link to <strong>{pendingEmail}</strong>. Open
+            it from that inbox to finish the change.
           </Text>
         </Alert>
       ) : null}
@@ -105,11 +105,7 @@ export function ChangeEmailForm({ user }: ChangeEmailFormProps) {
           <Group justify="flex-end">
             <form.Subscribe selector={(state) => state.canSubmit}>
               {(canSubmit) => (
-                <Button
-                  type="submit"
-                  loading={isPending}
-                  disabled={!canSubmit}
-                >
+                <Button type="submit" loading={isPending} disabled={!canSubmit}>
                   Send confirmation
                 </Button>
               )}

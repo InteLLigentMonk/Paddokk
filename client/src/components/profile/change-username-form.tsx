@@ -2,10 +2,10 @@ import { useForm } from "@tanstack/react-form";
 import { Alert, Button, Group, Stack, Text, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { Info } from "lucide-react";
+import type { UserDto } from "@/generated/api/schemas";
 import { ApiError } from "@/lib/api/api-error";
 import { useChangeUsername } from "@/lib/api/users.queries";
 import { changeUsernameSchema } from "@/lib/validation/profile-schemas";
-import type { UserDto } from "@/generated/api/schemas";
 
 interface ChangeUsernameFormProps {
   user: UserDto;
@@ -20,7 +20,9 @@ export function ChangeUsernameForm({ user }: ChangeUsernameFormProps) {
     onSubmit: async ({ value }) => {
       if (value.username === user.username) return;
       try {
-        await changeUsername.mutateAsync({ data: { username: value.username } });
+        await changeUsername.mutateAsync({
+          data: { username: value.username },
+        });
         notifications.show({
           color: "green",
           message: "Username updated",
@@ -66,8 +68,7 @@ export function ChangeUsernameForm({ user }: ChangeUsernameFormProps) {
               }
               onBlur={field.handleBlur}
               error={
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
                   ? field.state.meta.errors
                       .map((e) => e?.message ?? "")
                       .join(", ")

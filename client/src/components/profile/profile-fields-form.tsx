@@ -1,10 +1,10 @@
 import { useForm } from "@tanstack/react-form";
-import { Button, Group, Stack, Textarea, TextInput } from "@mantine/core";
+import { Button, Group, Stack, TextInput, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import type { UserDto } from "@/generated/api/schemas";
 import { ApiError } from "@/lib/api/api-error";
 import { useUpdateCurrentUser } from "@/lib/api/users.queries";
 import { updateProfileSchema } from "@/lib/validation/profile-schemas";
-import type { UserDto } from "@/generated/api/schemas";
 
 interface ProfileFieldsFormProps {
   user: UserDto;
@@ -116,8 +116,7 @@ export function ProfileFieldsForm({ user }: ProfileFieldsFormProps) {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               error={
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
                   ? field.state.meta.errors
                       .map((e) => e?.message ?? "")
                       .join(", ")
@@ -144,8 +143,7 @@ export function ProfileFieldsForm({ user }: ProfileFieldsFormProps) {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               error={
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
                   ? field.state.meta.errors
                       .map((e) => e?.message ?? "")
                       .join(", ")
