@@ -11,10 +11,13 @@ import {
 } from "@mantine/core";
 import { spotlight } from "@mantine/spotlight";
 import { useEffect, useState } from "react";
-import { getRouteApi } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { LogOut, Search, Settings, User } from "lucide-react";
 import { ColorSchemeToggle } from "./color-scheme-toggle";
 import { useAuth } from "@/hooks/use-auth";
+import { currentUserQueryOptions } from "@/lib/api/users.queries";
+import { userProfileUrl } from "@/lib/urls";
 
 const appRouteApi = getRouteApi("/_app");
 
@@ -97,6 +100,8 @@ interface UserMenuProps {
 }
 
 function UserMenu({ user, onLogout, isLoggingOut }: UserMenuProps) {
+  const { data: currentUser } = useSuspenseQuery(currentUserQueryOptions());
+
   return (
     <Menu position="bottom-end" offset={8} withArrow>
       <Menu.Target>
@@ -125,19 +130,17 @@ function UserMenu({ user, onLogout, isLoggingOut }: UserMenuProps) {
         <Menu.Divider />
 
         <Menu.Item
+          component={Link}
+          to={userProfileUrl(currentUser.username)}
           leftSection={<User {...iconProps} />}
-          onClick={() => {
-            // TODO: Navigate to profile
-          }}
         >
           Profile
         </Menu.Item>
 
         <Menu.Item
+          component={Link}
+          to="/me/settings"
           leftSection={<Settings {...iconProps} />}
-          onClick={() => {
-            // TODO: Navigate to settings
-          }}
         >
           Settings
         </Menu.Item>
