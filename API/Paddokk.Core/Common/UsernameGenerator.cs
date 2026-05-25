@@ -10,7 +10,7 @@ public sealed class UsernameGenerator
     private const int MaxLength = 30;
     private const int MaxAttempts = 100;
 
-    private static readonly HashSet<string> Reserved = new(StringComparer.OrdinalIgnoreCase)
+    public static readonly IReadOnlySet<string> Reserved = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "me", "admin", "administrator", "api", "auth", "user", "users",
         "signup", "signin", "signout", "login", "logout", "register",

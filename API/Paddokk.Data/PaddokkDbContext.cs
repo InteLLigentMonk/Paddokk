@@ -24,6 +24,7 @@ public class PaddokkDbContext : DbContext
     public DbSet<UserCarImage> UserCarImages { get; set; }
     public DbSet<UserCarLike> UserCarLikes { get; set; }
     public DbSet<UserCarSubscription> UserCarSubscriptions { get; set; }
+    public DbSet<ReservedUsername> ReservedUsernames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
