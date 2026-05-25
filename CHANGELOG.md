@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.27.0...v0.27.1) (2026-05-25)
+
+
+### Refactoring
+
+* **bff:** eliminate type-casts in server functions via Orval Zod + Strict JsonNumberHandling ([#144](https://github.com/InteLLigentMonk/Paddokk/issues/144)) ([2af6fec](https://github.com/InteLLigentMonk/Paddokk/commit/2af6fecc2b15d60897fbd85b56f9a05dcf759323))
+
 ## [0.27.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.26.9...v0.27.0) (2026-05-24)
 
 
