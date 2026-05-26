@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.0...v0.28.1) (2026-05-26)
+
+
+### Maintenance
+
+* split architect agent and align all agents with stack reality ([#149](https://github.com/InteLLigentMonk/Paddokk/issues/149)) ([8cffc5b](https://github.com/InteLLigentMonk/Paddokk/commit/8cffc5b7bc2e473dd975c0e5a4e9518214201d26))
+
 ## [0.28.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.27.1...v0.28.0) (2026-05-26)
 
 
