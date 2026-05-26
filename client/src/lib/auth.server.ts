@@ -39,8 +39,7 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url, token }) => {
-      const appUrl =
-        process.env.VITE_BETTER_AUTH_URL ?? new URL(url).origin;
+      const appUrl = process.env.VITE_BETTER_AUTH_URL ?? new URL(url).origin;
       const verifyUrl = `${appUrl}/verify-email?token=${encodeURIComponent(token)}`;
       const { subject, html, text } = buildVerifyEmailEmail({
         name: user.name,

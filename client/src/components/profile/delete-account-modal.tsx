@@ -81,11 +81,7 @@ export function DeleteAccountModal({
         }}
       >
         <Stack gap="md">
-          <Alert
-            color="red"
-            variant="light"
-            icon={<AlertTriangle size={16} />}
-          >
+          <Alert color="red" variant="light" icon={<AlertTriangle size={16} />}>
             <Text size="sm">
               This will permanently anonymize your profile and sign you out.
               Your cars, journeys and posts will remain visible but attributed
@@ -138,7 +134,11 @@ export function DeleteAccountModal({
           </form.Field>
 
           <Group justify="flex-end">
-            <Button variant="default" onClick={handleClose} disabled={isPending}>
+            <Button
+              variant="default"
+              onClick={handleClose}
+              disabled={isPending}
+            >
               Cancel
             </Button>
             <form.Subscribe selector={(state) => state.canSubmit}>
