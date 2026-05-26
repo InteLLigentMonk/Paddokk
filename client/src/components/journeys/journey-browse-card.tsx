@@ -196,16 +196,20 @@ export function JourneyBrowseCard({ journey }: JourneyBrowseCardProps) {
             </Group>
 
             <Group gap={3} wrap="nowrap">
-              <ActionIcon
-                variant={journey.isLiked ? "filled" : "subtle"}
-                color={journey.isLiked ? "red" : "gray"}
-                size="xs"
-                aria-label={journey.isLiked ? "Ta bort gillning" : "Gilla"}
-                loading={likeMutation.isPending}
-                onClick={handleLikeClick}
-              >
-                <Heart size={11} />
-              </ActionIcon>
+              {journey.isOwner ? (
+                <Heart size={11} color="var(--mantine-color-dimmed)" />
+              ) : (
+                <ActionIcon
+                  variant={journey.isLiked ? "filled" : "subtle"}
+                  color={journey.isLiked ? "red" : "gray"}
+                  size="xs"
+                  aria-label={journey.isLiked ? "Ta bort gillning" : "Gilla"}
+                  loading={likeMutation.isPending}
+                  onClick={handleLikeClick}
+                >
+                  <Heart size={11} />
+                </ActionIcon>
+              )}
               <Text size="xs" c="dimmed">
                 {Number(journey.likeCount)}
               </Text>

@@ -153,16 +153,20 @@ export function CarBrowseCard({ car }: CarBrowseCardProps) {
             </Group>
 
             <Group gap={3} wrap="nowrap">
-              <ActionIcon
-                variant={car.isLiked ? "filled" : "subtle"}
-                color={car.isLiked ? "red" : "gray"}
-                size="xs"
-                aria-label={car.isLiked ? "Ta bort gillning" : "Gilla"}
-                loading={likeMutation.isPending}
-                onClick={handleLikeClick}
-              >
-                <Heart size={11} />
-              </ActionIcon>
+              {car.isOwner ? (
+                <Heart size={11} color="var(--mantine-color-dimmed)" />
+              ) : (
+                <ActionIcon
+                  variant={car.isLiked ? "filled" : "subtle"}
+                  color={car.isLiked ? "red" : "gray"}
+                  size="xs"
+                  aria-label={car.isLiked ? "Ta bort gillning" : "Gilla"}
+                  loading={likeMutation.isPending}
+                  onClick={handleLikeClick}
+                >
+                  <Heart size={11} />
+                </ActionIcon>
+              )}
               <Text size="xs" c="dimmed">
                 {Number(car.likeCount)}
               </Text>

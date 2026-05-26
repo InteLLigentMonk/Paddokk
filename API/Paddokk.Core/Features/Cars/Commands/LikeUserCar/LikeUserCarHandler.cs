@@ -10,6 +10,14 @@ public sealed class LikeUserCarHandler(ICarRepository carRepository, IActorResol
 {
     public async Task<Result> Handle(LikeUserCarCommand request, CancellationToken cancellationToken)
     {
+        var car = await carRepository.GetCarByIdAsync(request.CarId, cancellationToken);
+
+        if (car is null)
+            return Result.Failure(Error.NotFound($"Car {request.CarId} not found"));
+
+        if (car.PrincipalId == actor.UserId)
+            return Result.Failure(Error.Conflict("Cannot like your own car"));
+
         var existing = await carRepository.GetCarLikeAsync(actor.UserId, request.CarId, cancellationToken);
 
         if (existing is not null)
