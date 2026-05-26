@@ -24,7 +24,11 @@ type LayoutInput = {
   bodyHtml: string;
 };
 
-export function wrapLayout({ preheader, heading, bodyHtml }: LayoutInput): string {
+export function wrapLayout({
+  preheader,
+  heading,
+  bodyHtml,
+}: LayoutInput): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>

@@ -15,12 +15,7 @@ export function CarImageCarousel({
   if (images.length === 0) {
     return (
       <AspectRatio ratio={16 / 9}>
-        <CdnImage
-          src={null}
-          placeholder="car"
-          alt={displayName}
-          radius="md"
-        />
+        <CdnImage src={null} placeholder="car" alt={displayName} radius="md" />
       </AspectRatio>
     );
   }

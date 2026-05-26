@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import {
-  Button,
-  Checkbox,
-  Group,
-  PasswordInput,
-  Stack,
-} from "@mantine/core";
+import { Button, Checkbox, Group, PasswordInput, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { changePassword } from "@/lib/auth-client";
 import { changePasswordSchema } from "@/lib/validation/profile-schemas";
@@ -71,8 +65,7 @@ export function ChangePasswordForm() {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               error={
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
                   ? field.state.meta.errors
                       .map((e) => e?.message ?? "")
                       .join(", ")
@@ -94,8 +87,7 @@ export function ChangePasswordForm() {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               error={
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
                   ? field.state.meta.errors
                       .map((e) => e?.message ?? "")
                       .join(", ")
@@ -116,8 +108,7 @@ export function ChangePasswordForm() {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               error={
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
                   ? field.state.meta.errors
                       .map((e) => e?.message ?? "")
                       .join(", ")
@@ -145,11 +136,7 @@ export function ChangePasswordForm() {
         <Group justify="flex-end">
           <form.Subscribe selector={(state) => state.canSubmit}>
             {(canSubmit) => (
-              <Button
-                type="submit"
-                loading={isPending}
-                disabled={!canSubmit}
-              >
+              <Button type="submit" loading={isPending} disabled={!canSubmit}>
                 Update password
               </Button>
             )}

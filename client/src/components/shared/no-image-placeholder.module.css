@@ -22,10 +22,7 @@
       transparent 1px
     );
   background-size: 16px 16px;
-  color: light-dark(
-    var(--mantine-color-gray-6),
-    var(--mantine-color-dark-2)
-  );
+  color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
 }
 
 .root::after {
@@ -36,11 +33,7 @@
   background: radial-gradient(
     circle at center,
     transparent 25%,
-    light-dark(
-        var(--mantine-color-gray-1),
-        var(--mantine-color-dark-6)
-      )
-      78%
+    light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6)) 78%
   );
 }
 
