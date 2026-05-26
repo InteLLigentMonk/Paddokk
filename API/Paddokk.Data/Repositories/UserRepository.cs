@@ -34,7 +34,21 @@ public class UserRepository(PaddokkDbContext db) : IUserRepository
 
     public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
     {
-        return await _db.Users.AnyAsync(u => u.Username == username, cancellationToken);
+        return await _db.Users.AnyAsync(u => u.Username == username, cancellationToken)
+            || await UsernameIsReservedAsync(username, cancellationToken);
+    }
+
+    public async Task<bool> UsernameIsReservedAsync(string username, CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        return await _db.ReservedUsernames
+            .AnyAsync(r => r.Slug == username && r.ReleaseAfter > now, cancellationToken);
+    }
+
+    public async Task ReserveUsernameAsync(ReservedUsername reservation, CancellationToken cancellationToken)
+    {
+        _db.ReservedUsernames.Add(reservation);
+        await _db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task CreateAsync(ApplicationUser user, CancellationToken cancellationToken)

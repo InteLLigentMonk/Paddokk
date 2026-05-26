@@ -12,9 +12,13 @@ public interface IUserRepository
 
     Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken);
 
+    Task<bool> UsernameIsReservedAsync(string username, CancellationToken cancellationToken);
+
     Task CreateAsync(ApplicationUser user, CancellationToken cancellationToken);
 
     Task UpdateAsync(ApplicationUser user, CancellationToken cancellationToken);
 
     Task SoftDeleteAsync(string userId, CancellationToken cancellationToken);
+
+    Task ReserveUsernameAsync(ReservedUsername reservation, CancellationToken cancellationToken);
 }

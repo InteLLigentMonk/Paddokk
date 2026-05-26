@@ -1,5 +1,11 @@
-﻿import { queryOptions } from "@tanstack/react-query";
+﻿import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
+  changeUsernameFn,
+  deleteCurrentUserFn,
   getCarJourneysFn,
   getCurrentUserFn,
   getUserByUsernameFn,
@@ -7,6 +13,7 @@ import {
   getUserCarsByUsernameFn,
   getUserJourneyBySlugFn,
   getUserJourneysByUsernameFn,
+  updateCurrentUserFn,
 } from "./users";
 import { getCarImagesFn } from "./car-images";
 
@@ -63,3 +70,31 @@ export const carJourneysQueryOptions = (
     queryFn: () =>
       getCarJourneysFn({ data: { username, carSlug, page, pageSize } }),
   });
+
+export function useUpdateCurrentUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateCurrentUserFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["user-by-username"] });
+    },
+  });
+}
+
+export function useChangeUsername() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: changeUsernameFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["user-by-username"] });
+    },
+  });
+}
+
+export function useDeleteCurrentUser() {
+  return useMutation({
+    mutationFn: deleteCurrentUserFn,
+  });
+}

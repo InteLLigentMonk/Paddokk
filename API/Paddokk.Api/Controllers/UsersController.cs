@@ -9,6 +9,8 @@ using Paddokk.Core.Features.Cars.Queries.GetUserCarsByUsername;
 using Paddokk.Core.Features.Journeys.Queries.GetCarJourneys;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyBySlug;
 using Paddokk.Core.Features.Journeys.Queries.GetUserJourneysByUsername;
+using Paddokk.Core.Features.Users.Commands.ChangeUsername;
+using Paddokk.Core.Features.Users.Commands.DeleteCurrentUser;
 using Paddokk.Core.Features.Users.Commands.UpdateUser;
 using Paddokk.Core.Features.Users.Queries.GetUserByEmail;
 using Paddokk.Core.Features.Users.Queries.GetUserById;
@@ -39,6 +41,24 @@ public class UsersController(ISender sender) : ApiControllerBase
     public async Task<ActionResult<UserDto>> UpdateCurrentUser([FromBody] UpdateUserCommand command, CancellationToken ct)
     {
         var result = await sender.Send(command, ct);
+        return OkOrError(result);
+    }
+
+    [HttpPatch("me/username")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Change current authenticated user's username (rate-limited)")]
+    public async Task<ActionResult<UserDto>> ChangeCurrentUsername([FromBody] ChangeUsernameCommand command, CancellationToken ct)
+    {
+        var result = await sender.Send(command, ct);
+        return OkOrError(result);
+    }
+
+    [HttpDelete("me")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Soft-delete current authenticated user (anonymises PII, reserves username)")]
+    public async Task<ActionResult> DeleteCurrentUser(CancellationToken ct)
+    {
+        var result = await sender.Send(new DeleteCurrentUserCommand(), ct);
         return OkOrError(result);
     }
 

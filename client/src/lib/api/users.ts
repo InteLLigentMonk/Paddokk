@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import {
+  UsersChangeCurrentUsernameBody,
   UsersGetCarJourneysParams,
   UsersGetCarJourneysQueryParams,
   UsersGetJourneyBySlugParams,
@@ -7,8 +8,11 @@ import {
   UsersGetUserCarBySlugParams,
   UsersGetUserCarsByUsernameParams,
   UsersGetUserJourneysByUsernameParams,
+  UsersUpdateCurrentUserBody,
 } from "@/generated/api-zod/users/users.zod";
 import {
+  usersChangeCurrentUsername,
+  usersDeleteCurrentUser,
   usersGetCarJourneys,
   usersGetCurrentUser,
   usersGetJourneyBySlug,
@@ -16,11 +20,14 @@ import {
   usersGetUserCarBySlug,
   usersGetUserCarsByUsername,
   usersGetUserJourneysByUsername,
+  usersUpdateCurrentUser,
 } from "@/generated/api/users/users";
 
 const getCarJourneysSchema = UsersGetCarJourneysParams.extend(
   UsersGetCarJourneysQueryParams.shape,
 );
+
+const updateCurrentUserSchema = UsersUpdateCurrentUserBody.partial();
 
 export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(
   async () => await usersGetCurrentUser(),
@@ -66,3 +73,26 @@ export const getCarJourneysFn = createServerFn({ method: "GET" })
     async ({ data: { username, carSlug, page, pageSize } }) =>
       await usersGetCarJourneys(username, carSlug, { page, pageSize }),
   );
+
+export const updateCurrentUserFn = createServerFn({ method: "POST" })
+  .inputValidator(updateCurrentUserSchema)
+  .handler(
+    async ({ data }) =>
+      await usersUpdateCurrentUser({
+        firstName: data.firstName ?? null,
+        lastName: data.lastName ?? null,
+        displayName: data.displayName ?? null,
+        bio: data.bio ?? null,
+        avatarUrl: data.avatarUrl ?? null,
+      }),
+  );
+
+export const changeUsernameFn = createServerFn({ method: "POST" })
+  .inputValidator(UsersChangeCurrentUsernameBody)
+  .handler(async ({ data }) => await usersChangeCurrentUsername(data));
+
+export const deleteCurrentUserFn = createServerFn({ method: "POST" }).handler(
+  async () => {
+    await usersDeleteCurrentUser();
+  },
+);

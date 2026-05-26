@@ -17,4 +17,7 @@ public abstract class ApiControllerBase : ControllerBase
 
     protected ActionResult<T> OkOrError<T>(Result<T> result) =>
         result.IsSuccess ? Ok(result.Value) : FromError(result.Error);
+
+    protected ActionResult OkOrError(Result result) =>
+        result.IsSuccess ? NoContent() : FromError(result.Error);
 }
