@@ -6,6 +6,7 @@
  * OpenAPI spec version: v1
  */
 import type {
+  ChangeUsernameCommand,
   JourneyDto,
   UpdateUserCommand,
   UserCarDto,
@@ -57,6 +58,52 @@ export const usersUpdateCurrentUser = async (updateUserCommand: UpdateUserComman
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(updateUserCommand)
+  }
+);}
+
+
+export const getUsersDeleteCurrentUserUrl = () => {
+
+
+
+
+  return `/api/v1/Users/me`
+}
+
+/**
+ * @summary Soft-delete current authenticated user (anonymises PII, reserves username)
+ */
+export const usersDeleteCurrentUser = async ( options?: RequestInit): Promise<void> => {
+
+  return apiFetcher<void>(getUsersDeleteCurrentUserUrl(),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+export const getUsersChangeCurrentUsernameUrl = () => {
+
+
+
+
+  return `/api/v1/Users/me/username`
+}
+
+/**
+ * @summary Change current authenticated user's username (rate-limited)
+ */
+export const usersChangeCurrentUsername = async (changeUsernameCommand: ChangeUsernameCommand, options?: RequestInit): Promise<UserDto> => {
+
+  return apiFetcher<UserDto>(getUsersChangeCurrentUsernameUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(changeUsernameCommand)
   }
 );}
 
