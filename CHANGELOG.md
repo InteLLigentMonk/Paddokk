@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.1...v0.28.2) (2026-05-26)
+
+
+### Maintenance
+
+* **deps:** add skills and agents from matt pocock ([#153](https://github.com/InteLLigentMonk/Paddokk/issues/153)) ([088d0b5](https://github.com/InteLLigentMonk/Paddokk/commit/088d0b5731109620a54b2bb15db172f66d3eb394))
+
 ## [0.28.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.0...v0.28.1) (2026-05-26)
 
 
