@@ -24,6 +24,7 @@ export * from './carsBrowseStatsParams.ts';
 export * from './carSearchSort.ts';
 export * from './carSpecCategoryDto.ts';
 export * from './carsSearchCarsParams.ts';
+export * from './changeUsernameCommand.ts';
 export * from './commentsPagedResponse.ts';
 export * from './createCommentCommand.ts';
 export * from './createJourneyCommand.ts';
