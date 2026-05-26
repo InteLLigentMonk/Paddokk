@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.27.1...v0.28.0) (2026-05-26)
+
+
+### Features
+
+* **profile:** self-service account and profile settings ([#147](https://github.com/InteLLigentMonk/Paddokk/issues/147)) ([9683293](https://github.com/InteLLigentMonk/Paddokk/commit/968329392114972377f27ee3c8ace9b01ee65375))
+
 ## [0.27.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.27.0...v0.27.1) (2026-05-25)
 
 
