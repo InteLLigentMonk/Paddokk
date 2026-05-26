@@ -2,7 +2,7 @@
 
 namespace Paddokk.Core.Models.Entities;
 
-public class JourneySubscription
+public class JourneySubscription : IActivatable
 {
     public int Id { get; set; }
     public string UserId { get; set; } = string.Empty;
@@ -33,7 +33,7 @@ public class UserCarLike
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
-public class UserCarSubscription
+public class UserCarSubscription : IActivatable
 {
     public int Id { get; set; }
     public string UserId { get; set; } = string.Empty;
