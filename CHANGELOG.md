@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.28.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.2...v0.28.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* **likes:** forbid liking your own car or journey ([#155](https://github.com/InteLLigentMonk/Paddokk/issues/155)) ([c2d9df2](https://github.com/InteLLigentMonk/Paddokk/commit/c2d9df22cf1487c2e6890ddc74898ed2e4df5dd4))
+
+
+### Refactoring
+
+* **api:** introduce Subscriptions module ([#157](https://github.com/InteLLigentMonk/Paddokk/issues/157)) ([63dacd6](https://github.com/InteLLigentMonk/Paddokk/commit/63dacd65b2cb9573472cc4cded48f30385408580))
+
+
+### Maintenance
+
+* add prettier/eslint pre-commit hooks and reformat codebase ([#159](https://github.com/InteLLigentMonk/Paddokk/issues/159)) ([b45cebc](https://github.com/InteLLigentMonk/Paddokk/commit/b45cebc6cc6f045fa059f443a4f4c79f86031ebd))
+
 ## [0.28.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.1...v0.28.2) (2026-05-26)
 
 
