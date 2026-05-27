@@ -12,13 +12,27 @@ public sealed class GetPostCommentsHandler(
     public async Task<Result<CommentsPagedResponse>> Handle(
         GetPostCommentsQuery query, CancellationToken ct)
     {
-        if (!await comments.JourneyPostExists(query.PostId, ct))
+        var parentJourney = await comments.GetParentJourneyAsync(query.PostId, ct);
+        if (parentJourney is null)
             return Result<CommentsPagedResponse>.Failure(Error.NotFound("Post not found"));
+
+        var currentUserId = actor.IsAuthenticated ? actor.UserId : null;
+
+        if (!parentJourney.IsPublic && currentUserId != parentJourney.PrincipalId)
+        {
+            return Result<CommentsPagedResponse>.Success(new CommentsPagedResponse
+            {
+                Comments = [],
+                TotalCount = 0,
+                Page = query.Page,
+                PageSize = query.PageSize,
+                HasNext = false,
+                HasPrevious = false
+            });
+        }
 
         var (postComments, total) = await comments.GetPostCommentsAsync(
             query.PostId, ct, query.Page, query.PageSize);
-
-        var currentUserId = actor.IsAuthenticated ? actor.UserId : null;
 
         return Result<CommentsPagedResponse>.Success(new CommentsPagedResponse
         {

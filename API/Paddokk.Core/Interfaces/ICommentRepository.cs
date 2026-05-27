@@ -1,4 +1,4 @@
-﻿using Paddokk.Core.Models.Entities;
+using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Interfaces;
 
@@ -17,6 +17,8 @@ public interface ICommentRepository
     Task<int> GetPostCommentCountAsync(int postId, CancellationToken cancellationToken);
 
     Task<bool> JourneyPostExists(int postId, CancellationToken cancellationToken);
+
+    Task<Journey?> GetParentJourneyAsync(int postId, CancellationToken cancellationToken);
 
     Task<bool> UserExist(string userId, CancellationToken cancellationToken);
 }
