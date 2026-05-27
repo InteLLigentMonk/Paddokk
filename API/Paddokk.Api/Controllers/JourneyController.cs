@@ -196,7 +196,7 @@ public class JourneysController(ISender sender) : ApiControllerBase
     [HttpPost("{journeyId}/posts/upload-image")]
     [Authorize]
     [Consumes("multipart/form-data")]
-    [EnableRateLimiting("writes")]
+    [EnableRateLimiting("upload")]
     [EndpointSummary("Upload an image for a journey post (pre-upload before post creation)")]
     public async Task<ActionResult<ImageUploadDto>> UploadJourneyPostImage(
         int journeyId, IFormFile file, CancellationToken ct)

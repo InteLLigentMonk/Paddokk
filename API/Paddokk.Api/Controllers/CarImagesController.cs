@@ -38,7 +38,7 @@ public class CarImagesController(ISender sender) : ApiControllerBase
 
     [HttpPost]
     [Consumes("multipart/form-data")]
-    [EnableRateLimiting("writes")]
+    [EnableRateLimiting("upload")]
     [EndpointSummary("Upload a new image for the car")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<CarImageDto>> UploadCarImage(
