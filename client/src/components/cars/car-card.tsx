@@ -126,7 +126,7 @@ export function CarCard({ car }: CarCardProps) {
             <Text size="sm" c="dimmed">
               {carAny.isCustomBuild
                 ? "Custom Build"
-                : `${car.year}${car.carGenerationName ? ` â€¢ ${car.carGenerationName}` : ""}`}
+                : `${car.year}${car.carGenerationName ? ` - ${car.carGenerationName}` : ""}`}
             </Text>
             {car.nickname && (
               <Text size="sm" c="dimmed" lineClamp={1}>
