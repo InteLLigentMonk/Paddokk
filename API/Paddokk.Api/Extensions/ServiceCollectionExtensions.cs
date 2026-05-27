@@ -10,6 +10,7 @@ using Paddokk.Api.OpenApi;
 using Paddokk.Api.Security;
 using Paddokk.Core.Behaviours;
 using Paddokk.Core.Common;
+using Paddokk.Core.Common.ImageUpload;
 using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 using Paddokk.Core.Features.Comments.Commands.CreateComment;
 using Paddokk.Core.Interfaces;
@@ -194,6 +195,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<UsernameGenerator>();
         services.AddSingleton<SlugGenerator>();
         services.AddScoped<IImageService, ImageService>();
+        services.AddSingleton<IImageUploadValidator, ImageUploadValidator>();
 
         // Register application repositories here
         services.AddScoped<ICarRepository, CarRepository>();
