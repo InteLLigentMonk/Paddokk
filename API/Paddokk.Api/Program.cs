@@ -109,6 +109,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (app.Environment.IsProduction())
