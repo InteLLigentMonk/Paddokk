@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Api.Extensions;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Journeys.Commands.CreateJourney;
 using Paddokk.Core.Features.Journeys.Commands.DeleteJourney;
 using Paddokk.Core.Features.Journeys.Commands.SetDefaultActiveJourney;
@@ -26,9 +27,12 @@ public class UserJourneysController(ISender sender) : ApiControllerBase
     [HttpGet]
     [EnableRateLimiting("reads")]
     [EndpointSummary("Get current user's journeys")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetUserJourneys(CancellationToken ct)
+    public async Task<ActionResult<PagedResult<JourneyDto>>> GetUserJourneys(
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize)
     {
-        var result = await sender.Send(new GetUserJourneysQuery(), ct);
+        var result = await sender.Send(new GetUserJourneysQuery(page, pageSize), ct);
         return Ok(result);
     }
 

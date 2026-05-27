@@ -285,7 +285,7 @@ export function JourneyPostComments({
   const { data } = useQuery(postCommentsQueryOptions(postId));
   const { mutate: createComment, isPending } = useCreateComment(postId);
 
-  const comments = data?.comments ?? [];
+  const comments = data?.items ?? [];
 
   const handleSubmit = () => {
     const trimmed = text.trim();

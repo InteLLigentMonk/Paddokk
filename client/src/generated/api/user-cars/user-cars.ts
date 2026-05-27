@@ -7,27 +7,35 @@
  */
 import type {
   CreateUserCarCommand,
+  PagedResultOfUserCarDto,
   UpdateUserCarCommand,
   UserCarDto,
-  UserCarsResponse
+  UserCarsGetUserCarsParams
 } from '../schemas';
 
 import { apiFetcher } from '../../../lib/api/client';
 
-export const getUserCarsGetUserCarsUrl = () => {
+export const getUserCarsGetUserCarsUrl = (params?: UserCarsGetUserCarsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/users/me/cars`
+  return stringifiedParams.length > 0 ? `/api/v1/users/me/cars?${stringifiedParams}` : `/api/v1/users/me/cars`
 }
 
 /**
  * @summary Get all cars for the current user
  */
-export const userCarsGetUserCars = async ( options?: RequestInit): Promise<UserCarsResponse> => {
+export const userCarsGetUserCars = async (params?: UserCarsGetUserCarsParams, options?: RequestInit): Promise<PagedResultOfUserCarDto> => {
 
-  return apiFetcher<UserCarsResponse>(getUserCarsGetUserCarsUrl(),
+  return apiFetcher<PagedResultOfUserCarDto>(getUserCarsGetUserCarsUrl(params),
   {
     ...options,
     method: 'GET'

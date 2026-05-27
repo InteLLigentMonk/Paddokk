@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import {
   UserJourneysCreateJourneyBody,
   UserJourneysDeleteJourneyParams,
+  UserJourneysGetUserJourneysQueryParams,
   UserJourneysSetDefaultActiveJourneyParams,
   UserJourneysUpdateJourneyBody,
   UserJourneysUpdateJourneyParams,
@@ -26,9 +27,9 @@ export const createJourneyFn = createServerFn({ method: "POST" })
   .inputValidator(UserJourneysCreateJourneyBody)
   .handler(async ({ data }) => await userJourneysCreateJourney(data));
 
-export const getUserJourneysFn = createServerFn({ method: "GET" }).handler(
-  async () => await userJourneysGetUserJourneys(),
-);
+export const getUserJourneysFn = createServerFn({ method: "GET" })
+  .inputValidator(UserJourneysGetUserJourneysQueryParams)
+  .handler(async ({ data }) => await userJourneysGetUserJourneys(data));
 
 // Returns null when the backend has no default-active journey (404 surfaces as ApiError).
 export const getDefaultActiveJourneyFn = createServerFn({

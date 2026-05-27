@@ -17,6 +17,7 @@ import {
 import { notify } from "@/integrations/mantine/use-notifications";
 
 const POSTS_PAGE_SIZE = 20;
+const COMMENTS_PAGE_SIZE = 20;
 
 export const journeyDetailQueryOptions = (journeyId: number) =>
   queryOptions({
@@ -28,21 +29,21 @@ export const postCommentsQueryOptions = (postId: number) =>
   queryOptions({
     queryKey: ["post-comments", postId],
     queryFn: () =>
-      getPostCommentsFn({ data: { postId, page: 1, pageSize: 50 } }),
+      getPostCommentsFn({
+        data: { postId, page: 1, pageSize: COMMENTS_PAGE_SIZE },
+      }),
   });
 
 export function useJourneyPostsInfinite(journeyId: number) {
   return useInfiniteQuery({
     queryKey: ["journey-posts", journeyId],
-    queryFn: ({ pageParam = 0 }) =>
+    queryFn: ({ pageParam = 1 }) =>
       getJourneyPostsFn({
-        data: { journeyId, skip: pageParam, take: POSTS_PAGE_SIZE },
+        data: { journeyId, page: pageParam, pageSize: POSTS_PAGE_SIZE },
       }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length < POSTS_PAGE_SIZE) return undefined;
-      return allPages.reduce((acc, page) => acc + page.length, 0);
-    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNextPage ? lastPage.page + 1 : undefined,
   });
 }
 

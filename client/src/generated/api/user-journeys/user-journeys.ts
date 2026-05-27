@@ -10,26 +10,35 @@ import type {
   CreateJourneyCommand,
   JourneyDto,
   JourneyStatsDto,
+  PagedResultOfJourneyDto,
   UpdateJourneyCommand,
+  UserJourneysGetUserJourneysParams,
   UserJourneysUploadJourneyCoverImageBody
 } from '../schemas';
 
 import { apiFetcher } from '../../../lib/api/client';
 
-export const getUserJourneysGetUserJourneysUrl = () => {
+export const getUserJourneysGetUserJourneysUrl = (params?: UserJourneysGetUserJourneysParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/users/me/journeys`
+  return stringifiedParams.length > 0 ? `/api/v1/users/me/journeys?${stringifiedParams}` : `/api/v1/users/me/journeys`
 }
 
 /**
  * @summary Get current user's journeys
  */
-export const userJourneysGetUserJourneys = async ( options?: RequestInit): Promise<JourneyDto[]> => {
+export const userJourneysGetUserJourneys = async (params?: UserJourneysGetUserJourneysParams, options?: RequestInit): Promise<PagedResultOfJourneyDto> => {
 
-  return apiFetcher<JourneyDto[]>(getUserJourneysGetUserJourneysUrl(),
+  return apiFetcher<PagedResultOfJourneyDto>(getUserJourneysGetUserJourneysUrl(params),
   {
     ...options,
     method: 'GET'

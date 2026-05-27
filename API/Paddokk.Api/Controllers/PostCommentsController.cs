@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Comments.Commands.CreateComment;
 using Paddokk.Core.Features.Comments.Commands.DeleteComment;
 using Paddokk.Core.Features.Comments.Commands.UpdateComment;
@@ -18,15 +19,12 @@ public class PostCommentsController(ISender sender) : ApiControllerBase
 {
     [HttpGet]
     [EnableRateLimiting("reads")]
-    public async Task<ActionResult<CommentsPagedResponse>> GetPostComments(
+    public async Task<ActionResult<PagedResult<PostCommentDto>>> GetPostComments(
         int postId,
         CancellationToken ct,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize)
     {
-        if (page < 1) page = 1;
-        if (pageSize is < 1 or > 100) pageSize = 20;
-
         var result = await sender.Send(new GetPostCommentsQuery(postId, page, pageSize), ct);
         return OkOrError(result);
     }
