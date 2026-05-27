@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.30.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.30.0...v0.30.1) (2026-05-27)
+
+
+### Maintenance
+
+* **api:** add security headers middleware (HSTS, X-Frame-Options, CSP report-only) ([#219](https://github.com/InteLLigentMonk/Paddokk/issues/219)) ([3f56b36](https://github.com/InteLLigentMonk/Paddokk/commit/3f56b36f1f4001c611c618a90d24ea7fcc85887f)), closes [#173](https://github.com/InteLLigentMonk/Paddokk/issues/173)
+
 ## [0.30.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.29.0...v0.30.0) (2026-05-27)
 
 
