@@ -82,6 +82,14 @@ public class CommentRepository : ICommentRepository
         return await _db.JourneyPosts.AnyAsync(p => p.Id == postId, cancellationToken);
     }
 
+    public async Task<Journey?> GetParentJourneyAsync(int postId, CancellationToken cancellationToken)
+    {
+        return await _db.JourneyPosts
+            .Where(p => p.Id == postId)
+            .Select(p => p.Journey)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<bool> UserExist(string userId, CancellationToken cancellationToken)
     {
         return await _db.Users.AnyAsync(u => u.Id == userId && !u.IsDeleted, cancellationToken);

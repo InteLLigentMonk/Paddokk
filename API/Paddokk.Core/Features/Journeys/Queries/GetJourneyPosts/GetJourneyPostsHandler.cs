@@ -14,8 +14,11 @@ public sealed class GetJourneyPostsHandler(IJourneyRepository journeyRepository,
         if (journey is null)
             return Result<IEnumerable<JourneyPostDto>>.Failure(Error.NotFound($"Journey {request.JourneyId} not found"));
 
-        var posts = await journeyRepository.GetJourneyPostsAsync(request.JourneyId, request.Skip, request.Take, cancellationToken);
         var currentUserId = actor.IsAuthenticated ? actor.UserId : null;
+        if (!journey.IsPublic && currentUserId != journey.PrincipalId)
+            return Result<IEnumerable<JourneyPostDto>>.Success([]);
+
+        var posts = await journeyRepository.GetJourneyPostsAsync(request.JourneyId, request.Skip, request.Take, cancellationToken);
         return Result<IEnumerable<JourneyPostDto>>.Success(posts.Select(p => JourneyMapping.ToJourneyPostDto(p, currentUserId)));
     }
 }
