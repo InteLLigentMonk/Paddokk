@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.5...v0.29.0) (2026-05-27)
+
+
+### Features
+
+* **api:** add shared image upload validator (size, MIME, magic bytes) ([#214](https://github.com/InteLLigentMonk/Paddokk/issues/214)) ([dfb8c29](https://github.com/InteLLigentMonk/Paddokk/commit/dfb8c2937ff06f47e5a2398229b9c5011a0850aa)), closes [#170](https://github.com/InteLLigentMonk/Paddokk/issues/170)
+
 ## [0.28.5](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.4...v0.28.5) (2026-05-27)
 
 
