@@ -94,9 +94,9 @@ export const getCommentsReportCommentUrl = (commentId: number,) => {
  * @summary Report comment for moderation
  */
 export const commentsReportComment = async (commentId: number,
-    commentsReportCommentBody: string, options?: RequestInit): Promise<void> => {
+    commentsReportCommentBody: string, options?: RequestInit): Promise<unknown> => {
 
-  return apiFetcher<void>(getCommentsReportCommentUrl(commentId),
+  return apiFetcher<unknown>(getCommentsReportCommentUrl(commentId),
   {
     ...options,
     method: 'POST',

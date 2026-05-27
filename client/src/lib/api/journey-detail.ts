@@ -1,5 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { CommentsDeleteCommentParams } from "@/generated/api-zod/comments/comments.zod";
+import { ApiError } from "@/lib/api/api-error";
+import {
+  CommentsDeleteCommentParams,
+  CommentsReportCommentBody,
+  CommentsReportCommentParams,
+} from "@/generated/api-zod/comments/comments.zod";
 import {
   JourneysCreateJourneyPostBody,
   JourneysCreateJourneyPostParams,
@@ -13,7 +18,10 @@ import {
   PostCommentsGetPostCommentsParams,
   PostCommentsGetPostCommentsQueryParams,
 } from "@/generated/api-zod/post-comments/post-comments.zod";
-import { commentsDeleteComment } from "@/generated/api/comments/comments";
+import {
+  commentsDeleteComment,
+  commentsReportComment,
+} from "@/generated/api/comments/comments";
 import {
   journeysCreateJourneyPost,
   journeysGetJourney,
@@ -39,6 +47,10 @@ const createCommentSchema = PostCommentsCreateCommentParams.extend(
 const createJourneyPostSchema = JourneysCreateJourneyPostParams.extend(
   JourneysCreateJourneyPostBody.shape,
 );
+
+const reportCommentSchema = CommentsReportCommentParams.extend({
+  reason: CommentsReportCommentBody,
+});
 
 export const getJourneyDetailFn = createServerFn({ method: "GET" })
   .inputValidator(JourneysGetJourneyParams)
@@ -78,6 +90,30 @@ export const replyToCommentFn = createServerFn({ method: "POST" })
   .handler(
     async ({ data: { postId, ...body } }) =>
       await postCommentsCreateComment(postId, { postId, ...body }),
+  );
+
+export type ReportCommentResult =
+  | { kind: "accepted" }
+  | { kind: "notImplemented"; title: string; message: string };
+
+export const reportCommentFn = createServerFn({ method: "POST" })
+  .inputValidator(reportCommentSchema)
+  .handler(
+    async ({ data: { commentId, reason } }): Promise<ReportCommentResult> => {
+      try {
+        await commentsReportComment(commentId, reason);
+        return { kind: "accepted" };
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 501) {
+          return {
+            kind: "notImplemented",
+            title: error.message,
+            message: error.detail ?? "",
+          };
+        }
+        throw error;
+      }
+    },
   );
 
 export const createJourneyPostFn = createServerFn({ method: "POST" })
