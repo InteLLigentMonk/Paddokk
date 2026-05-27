@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.4](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.3...v0.28.4) (2026-05-27)
+
+
+### Bug Fixes
+
+* **journey:** close IDOR on GetJourneyPosts and GetPostComments ([#210](https://github.com/InteLLigentMonk/Paddokk/issues/210)) ([f32deba](https://github.com/InteLLigentMonk/Paddokk/commit/f32debadc898db6468b16d4305aff8780dbbe3fa))
+
 ## [0.28.3](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.2...v0.28.3) (2026-05-26)
 
 
