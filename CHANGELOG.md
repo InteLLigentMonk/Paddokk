@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.5](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.4...v0.28.5) (2026-05-27)
+
+
+### Bug Fixes
+
+* **car:** replace strance chars with - in car-card.tsx ([#212](https://github.com/InteLLigentMonk/Paddokk/issues/212)) ([33562b7](https://github.com/InteLLigentMonk/Paddokk/commit/33562b7a9da3929dcfaba96d2ce68bb2dd3d1bde))
+
 ## [0.28.4](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.3...v0.28.4) (2026-05-27)
 
 
