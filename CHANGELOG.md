@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.30.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.29.0...v0.30.0) (2026-05-27)
+
+
+### Features
+
+* **api:** shared PagedResult and page/pageSize convention across list endpoints ([#217](https://github.com/InteLLigentMonk/Paddokk/issues/217)) ([4ca90b6](https://github.com/InteLLigentMonk/Paddokk/commit/4ca90b6613b624e066c75c150da7bf182b3d716b)), closes [#172](https://github.com/InteLLigentMonk/Paddokk/issues/172)
+
+
+### Bug Fixes
+
+* **comments:** require auth on ReportComment, return 501 until moderation exists ([#216](https://github.com/InteLLigentMonk/Paddokk/issues/216)) ([de0f2e3](https://github.com/InteLLigentMonk/Paddokk/commit/de0f2e3e650b5048f7bf1e0b032ef39f53a7d45d)), closes [#171](https://github.com/InteLLigentMonk/Paddokk/issues/171)
+
 ## [0.29.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.28.5...v0.29.0) (2026-05-27)
 
 
