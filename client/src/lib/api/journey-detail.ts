@@ -61,8 +61,8 @@ export const getJourneyDetailFn = createServerFn({ method: "GET" })
 export const getJourneyPostsFn = createServerFn({ method: "GET" })
   .inputValidator(journeyPostsSchema)
   .handler(
-    async ({ data: { journeyId, skip, take } }) =>
-      await journeysGetJourneyPosts(journeyId, { skip, take }),
+    async ({ data: { journeyId, page, pageSize } }) =>
+      await journeysGetJourneyPosts(journeyId, { page, pageSize }),
   );
 
 export const getPostCommentsFn = createServerFn({ method: "GET" })

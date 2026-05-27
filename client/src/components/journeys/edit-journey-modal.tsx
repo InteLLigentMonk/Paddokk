@@ -20,9 +20,9 @@ import {
 } from "@/lib/stores/journeys-page-store";
 import {
   getDefaultActiveJourneyFn,
-  getUserJourneysFn,
   updateJourneyFn,
 } from "@/lib/api/user-journeys";
+import { useUserJourneysInfinite } from "@/hooks/use-user-journeys";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
@@ -264,13 +264,11 @@ export function EditJourneyModal() {
     (state) => state.modals.editJourney,
   );
 
-  const { data: journeys } = useQuery({
-    queryKey: ["user-journeys"],
-    queryFn: () => getUserJourneysFn(),
-    enabled: editState.open,
-  });
+  const { data: journeysData } = useUserJourneysInfinite(editState.open);
 
-  const journey = journeys?.find((j) => Number(j.id) === editState.journeyId);
+  const journey = journeysData?.pages
+    .flatMap((p) => p.items)
+    .find((j) => Number(j.id) === editState.journeyId);
 
   return (
     <Modal

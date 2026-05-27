@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneysBrowseStats;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.DTOs.Journey;
@@ -30,6 +31,30 @@ public class JourneyRepository : IJourneyRepository
             .OrderByDescending(j => j.Status == JourneyStatus.Active ? 1 : 0)
             .ThenByDescending(j => j.UpdatedAt)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<(List<Journey> Journeys, int TotalCount)> GetUserJourneysPagedAsync(string userId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var (p, s) = PaginationDefaults.Normalize(page, pageSize);
+
+        var baseQuery = _db.Journeys.Where(j => j.PrincipalId == userId);
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var journeys = await baseQuery
+            .Include(j => j.User)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
+            .Include(j => j.UserCar).ThenInclude(c => c.CarGeneration)
+            .Include(j => j.Posts)
+            .Include(j => j.Subscriptions)
+            .Include(j => j.Likes)
+            .OrderByDescending(j => j.Status == JourneyStatus.Active ? 1 : 0)
+            .ThenByDescending(j => j.UpdatedAt)
+            .Skip((p - 1) * s)
+            .Take(s)
+            .ToListAsync(cancellationToken);
+
+        return (journeys, totalCount);
     }
 
     public async Task<Journey?> GetJourneyByIdAsync(int journeyId, CancellationToken cancellationToken)
@@ -241,17 +266,23 @@ public class JourneyRepository : IJourneyRepository
     }
 
     // Journey posts
-    public async Task<List<JourneyPost>> GetJourneyPostsAsync(int journeyId, int skip, int take, CancellationToken cancellationToken)
+    public async Task<(List<JourneyPost> Posts, int TotalCount)> GetJourneyPostsAsync(int journeyId, int page, int pageSize, CancellationToken cancellationToken)
     {
-        return await _db.JourneyPosts
-            .Include(p => p.Author)
-            .Include(p => p.Images)
-            .Include(p => p.Comments)
-            .Where(p => p.JourneyId == journeyId)
-            .OrderByDescending(p => p.CreatedAt)
-            .Skip(skip)
-            .Take(take)
+        var (p, s) = PaginationDefaults.Normalize(page, pageSize);
+
+        var baseQuery = _db.JourneyPosts.Where(jp => jp.JourneyId == journeyId);
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var posts = await baseQuery
+            .Include(jp => jp.Author)
+            .Include(jp => jp.Images)
+            .Include(jp => jp.Comments)
+            .OrderByDescending(jp => jp.CreatedAt)
+            .Skip((p - 1) * s)
+            .Take(s)
             .ToListAsync(cancellationToken);
+
+        return (posts, totalCount);
     }
 
     public async Task<JourneyPost?> GetJourneyPostByIdAsync(int postId, CancellationToken cancellationToken)

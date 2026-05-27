@@ -17,6 +17,7 @@ import type {
   JourneysSearchJourneysParams,
   JourneysUploadJourneyPostImageBody,
   PagedJourneysResponse,
+  PagedResultOfJourneyPostDto,
   UpdateJourneyPostCommand
 } from '../schemas';
 
@@ -263,9 +264,9 @@ export const getJourneysGetJourneyPostsUrl = (journeyId: number,
  * @summary Get journey posts (timeline)
  */
 export const journeysGetJourneyPosts = async (journeyId: number,
-    params?: JourneysGetJourneyPostsParams, options?: RequestInit): Promise<JourneyPostDto[]> => {
+    params?: JourneysGetJourneyPostsParams, options?: RequestInit): Promise<PagedResultOfJourneyPostDto> => {
 
-  return apiFetcher<JourneyPostDto[]>(getJourneysGetJourneyPostsUrl(journeyId,params),
+  return apiFetcher<PagedResultOfJourneyPostDto>(getJourneysGetJourneyPostsUrl(journeyId,params),
   {
     ...options,
     method: 'GET'

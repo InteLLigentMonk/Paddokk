@@ -55,7 +55,7 @@ public class GetPostCommentsHandlerTests
         var result = await _handler.Handle(new GetPostCommentsQuery(100), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        result.Value!.Comments.Should().BeEmpty();
+        result.Value!.Items.Should().BeEmpty();
         result.Value.TotalCount.Should().Be(0);
     }
 
@@ -72,7 +72,7 @@ public class GetPostCommentsHandlerTests
         var result = await _handler.Handle(new GetPostCommentsQuery(100), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        result.Value!.Comments.Should().BeEmpty();
+        result.Value!.Items.Should().BeEmpty();
         result.Value.TotalCount.Should().Be(0);
     }
 
@@ -89,8 +89,11 @@ public class GetPostCommentsHandlerTests
         var result = await _handler.Handle(new GetPostCommentsQuery(100), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        result.Value!.Comments.Should().HaveCount(2);
+        result.Value!.Items.Should().HaveCount(2);
         result.Value.TotalCount.Should().Be(2);
+        result.Value.Page.Should().Be(1);
+        result.Value.PageSize.Should().Be(20);
+        result.Value.HasNextPage.Should().BeFalse();
     }
 
     [Fact]
@@ -105,7 +108,7 @@ public class GetPostCommentsHandlerTests
         var result = await _handler.Handle(new GetPostCommentsQuery(100), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        result.Value!.Comments.Should().HaveCount(1);
+        result.Value!.Items.Should().HaveCount(1);
         result.Value.TotalCount.Should().Be(1);
     }
 

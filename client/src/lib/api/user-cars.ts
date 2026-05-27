@@ -3,6 +3,7 @@ import {
   UserCarsCreateUserCarBody,
   UserCarsDeleteUserCarParams,
   UserCarsGetUserCarParams,
+  UserCarsGetUserCarsQueryParams,
   UserCarsLikeUserCarParams,
   UserCarsSubscribeToUserCarParams,
   UserCarsUnlikeUserCarParams,
@@ -29,9 +30,9 @@ const updateUserCarSchema = UserCarsUpdateUserCarBody.partial().extend(
   UserCarsUpdateUserCarParams.shape,
 );
 
-export const getUserCarsFn = createServerFn({ method: "GET" }).handler(
-  async () => await userCarsGetUserCars(),
-);
+export const getUserCarsFn = createServerFn({ method: "GET" })
+  .inputValidator(UserCarsGetUserCarsQueryParams)
+  .handler(async ({ data }) => await userCarsGetUserCars(data));
 
 export const getUserCarFn = createServerFn({ method: "GET" })
   .inputValidator(UserCarsGetUserCarParams)

@@ -8,6 +8,7 @@ public interface IJourneyRepository
 {
     // Journey queries
     Task<List<Journey>> GetUserJourneysAsync(string userId, CancellationToken cancellationToken);
+    Task<(List<Journey> Journeys, int TotalCount)> GetUserJourneysPagedAsync(string userId, int page, int pageSize, CancellationToken cancellationToken);
     Task<List<Journey>> GetUserJourneysByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken);
     Task<List<Journey>> GetCarJourneysAsync(string username, string carSlug, string? currentUserId, int page, int pageSize, CancellationToken cancellationToken);
     Task<Journey?> GetJourneyByIdAsync(int journeyId, CancellationToken cancellationToken);
@@ -25,7 +26,7 @@ public interface IJourneyRepository
     Task DeleteJourneyAsync(int journeyId, CancellationToken cancellationToken);
 
     // Journey posts
-    Task<List<JourneyPost>> GetJourneyPostsAsync(int journeyId, int skip, int take, CancellationToken cancellationToken);
+    Task<(List<JourneyPost> Posts, int TotalCount)> GetJourneyPostsAsync(int journeyId, int page, int pageSize, CancellationToken cancellationToken);
     Task<JourneyPost?> GetJourneyPostByIdAsync(int postId, CancellationToken cancellationToken);
     Task<int> CreateJourneyPostAsync(JourneyPost post, CancellationToken cancellationToken);
     Task UpdateJourneyPostAsync(JourneyPost post, CancellationToken cancellationToken);

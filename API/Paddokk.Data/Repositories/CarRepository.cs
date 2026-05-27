@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Cars.Queries.GetCarsBrowseStats;
 using Paddokk.Core.Features.Cars.Queries.SearchCars;
 using Paddokk.Core.Interfaces;
@@ -78,6 +79,30 @@ public class CarRepository : ICarRepository
             .OrderByDescending(c => c.IsPrimary)
             .ThenByDescending(c => c.CreatedAt)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<(List<UserCar> Cars, int TotalCount)> GetUserCarsPagedAsync(string userId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var (p, s) = PaginationDefaults.Normalize(page, pageSize);
+
+        var baseQuery = _db.UserCars.Where(c => c.PrincipalId == userId && c.IsActive);
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var cars = await baseQuery
+            .Include(c => c.User)
+            .Include(c => c.CarMake)
+            .Include(c => c.CarModel)
+            .Include(c => c.CarGeneration)
+            .Include(c => c.Journeys)
+            .Include(c => c.Likes)
+            .Include(c => c.Subscriptions)
+            .OrderByDescending(c => c.IsPrimary)
+            .ThenByDescending(c => c.CreatedAt)
+            .Skip((p - 1) * s)
+            .Take(s)
+            .ToListAsync(cancellationToken);
+
+        return (cars, totalCount);
     }
 
     public async Task<UserCar?> GetUserCarByIdAsync(string userId, int carId, CancellationToken cancellationToken)

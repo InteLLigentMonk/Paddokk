@@ -72,7 +72,7 @@ function JourneyDetailPage() {
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const posts = postsData?.pages.flat() ?? [];
+  const posts = postsData?.pages.flatMap((p) => p.items) ?? [];
 
   return (
     <Container size="lg" py="xl">

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 using Paddokk.Core.Features.Cars.Commands.DeleteUserCar;
 using Paddokk.Core.Features.Cars.Commands.LikeUserCar;
@@ -24,8 +25,11 @@ public class UserCarsController(ISender sender) : ApiControllerBase
     [HttpGet]
     [EnableRateLimiting("reads")]
     [EndpointSummary("Get all cars for the current user")]
-    public async Task<UserCarsResponse> GetUserCars(CancellationToken ct) =>
-        await sender.Send(new GetUserCarsQuery(), ct);
+    public async Task<PagedResult<UserCarDto>> GetUserCars(
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize) =>
+        await sender.Send(new GetUserCarsQuery(page, pageSize), ct);
 
     [HttpGet("{carId}")]
     [EnableRateLimiting("reads")]

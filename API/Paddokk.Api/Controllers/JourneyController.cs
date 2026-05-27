@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Journeys.Commands.CreateJourneyPost;
 using Paddokk.Core.Features.Journeys.Commands.DeleteJourneyPost;
 using Paddokk.Core.Features.Journeys.Commands.DeleteJourneyPostImage;
@@ -134,11 +135,12 @@ public class JourneysController(ISender sender) : ApiControllerBase
     [HttpGet("{journeyId}/posts")]
     [EnableRateLimiting("reads")]
     [EndpointSummary("Get journey posts (timeline)")]
-    public async Task<ActionResult<IEnumerable<JourneyPostDto>>> GetJourneyPosts(
+    public async Task<ActionResult<PagedResult<JourneyPostDto>>> GetJourneyPosts(
         int journeyId, CancellationToken ct,
-        [FromQuery] int skip = 0, [FromQuery] int take = 20)
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize)
     {
-        var result = await sender.Send(new GetJourneyPostsQuery(journeyId, skip, take), ct);
+        var result = await sender.Send(new GetJourneyPostsQuery(journeyId, page, pageSize), ct);
         return OkOrError(result);
     }
 

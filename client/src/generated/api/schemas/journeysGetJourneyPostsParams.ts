@@ -7,6 +7,6 @@
  */
 
 export type JourneysGetJourneyPostsParams = {
-skip?: number;
-take?: number;
+page?: number;
+pageSize?: number;
 };

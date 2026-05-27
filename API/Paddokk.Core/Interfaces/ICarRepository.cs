@@ -19,6 +19,7 @@ public interface ICarRepository
     Task<CarGeneration?> GetCarGenerationByIdAsync(int carGenerationId, CancellationToken cancellationToken);
 
     Task<List<UserCar>> GetUserCarsAsync(string userId, CancellationToken cancellationToken);
+    Task<(List<UserCar> Cars, int TotalCount)> GetUserCarsPagedAsync(string userId, int page, int pageSize, CancellationToken cancellationToken);
 
     Task<UserCar?> GetUserCarByIdAsync(string userId, int carId, CancellationToken cancellationToken);
 

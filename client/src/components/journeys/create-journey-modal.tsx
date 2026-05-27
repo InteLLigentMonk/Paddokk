@@ -14,14 +14,14 @@ import {
 } from "@mantine/core";
 import { useStore } from "@tanstack/react-store";
 import { useForm } from "@tanstack/react-form";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   closeCreateJourneyModal,
   journeysPageStore,
 } from "@/lib/stores/journeys-page-store";
 import { useCanAddJourney } from "@/hooks/use-can-add-journey";
+import { useUserCarsInfinite } from "@/hooks/use-user-cars";
 import { createJourneyFn } from "@/lib/api/user-journeys";
-import { getUserCarsFn } from "@/lib/api/user-cars";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
@@ -76,13 +76,9 @@ export function CreateJourneyModal() {
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: carsData } = useQuery({
-    queryKey: ["user-cars"],
-    queryFn: () => getUserCarsFn(),
-    enabled: isOpen,
-  });
+  const { data: carsData } = useUserCarsInfinite(isOpen);
 
-  const cars = carsData?.cars ?? [];
+  const cars = carsData?.pages.flatMap((p) => p.items) ?? [];
 
   const carsSelectData = useMemo(
     () =>

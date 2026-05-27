@@ -6,8 +6,8 @@
  * OpenAPI spec version: v1
  */
 import type {
-  CommentsPagedResponse,
   CreateCommentCommand,
+  PagedResultOfPostCommentDto,
   PostCommentDto,
   PostCommentsGetPostCommentsParams,
   UpdateCommentCommand
@@ -32,9 +32,9 @@ export const getPostCommentsGetPostCommentsUrl = (postId: number,
 }
 
 export const postCommentsGetPostComments = async (postId: number,
-    params?: PostCommentsGetPostCommentsParams, options?: RequestInit): Promise<CommentsPagedResponse> => {
+    params?: PostCommentsGetPostCommentsParams, options?: RequestInit): Promise<PagedResultOfPostCommentDto> => {
 
-  return apiFetcher<CommentsPagedResponse>(getPostCommentsGetPostCommentsUrl(postId,params),
+  return apiFetcher<PagedResultOfPostCommentDto>(getPostCommentsGetPostCommentsUrl(postId,params),
   {
     ...options,
     method: 'GET'
