@@ -50,9 +50,12 @@ public class CommentsController(ISender sender) : ApiControllerBase
     [HttpPost("{commentId}/report")]
     [EnableRateLimiting("writes")]
     [EndpointSummary("Report comment for moderation")]
+    [ProducesResponseType(StatusCodes.Status501NotImplemented)]
     public IActionResult ReportComment(int commentId, [FromBody] string reason)
     {
-        // Moderation system is not yet implemented
-        return Accepted();
+        return Problem(
+            statusCode: StatusCodes.Status501NotImplemented,
+            title: "Moderation coming soon",
+            detail: "Comment reporting is not yet available. Please contact support@paddokk.com if you need to flag this comment.");
     }
 }

@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://localhost:7015/"
+      "url": "http://localhost:5037/"
     }
   ],
   "paths": {
@@ -1451,8 +1451,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "501": {
+            "description": "Not Implemented"
           },
           "500": {
             "description": "Internal server error - unexpected failure",

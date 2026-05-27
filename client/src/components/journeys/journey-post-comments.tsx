@@ -5,13 +5,14 @@ import {
   Button,
   Divider,
   Group,
+  Menu,
   Paper,
   ScrollArea,
   Stack,
   Text,
   Textarea,
 } from "@mantine/core";
-import { Reply, Send, Trash2 } from "lucide-react";
+import { Flag, MoreVertical, Reply, Send, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { PostCommentDto } from "@/generated/api/schemas";
 import {
@@ -19,6 +20,7 @@ import {
   useCreateComment,
   useDeleteComment,
   useReplyToComment,
+  useReportComment,
 } from "@/hooks/use-journey-detail";
 import { ExpandableText } from "@/components/common/expandable-text";
 import { OwnerLink } from "@/components/common/owner-link";
@@ -108,6 +110,7 @@ function CommentItem({ comment, postId, isPostOwner }: CommentItemProps) {
   const { mutate: deleteComment, isPending: isDeleting } =
     useDeleteComment(postId);
   const { mutate: reply, isPending: isReplying } = useReplyToComment(postId);
+  const { mutate: reportComment, isPending: isReporting } = useReportComment();
 
   const handleReply = () => {
     const trimmed = replyText.trim();
@@ -163,7 +166,7 @@ function CommentItem({ comment, postId, isPostOwner }: CommentItemProps) {
             </Button>
           )}
         </Stack>
-        {comment.isOwner && (
+        {comment.isOwner ? (
           <ActionIcon
             variant="subtle"
             size="sm"
@@ -174,6 +177,34 @@ function CommentItem({ comment, postId, isPostOwner }: CommentItemProps) {
           >
             <Trash2 size={14} />
           </ActionIcon>
+        ) : (
+          <Menu position="bottom-end" withinPortal>
+            <Menu.Target>
+              <ActionIcon
+                variant="subtle"
+                size="sm"
+                color="gray"
+                aria-label="Comment actions"
+                loading={isReporting}
+              >
+                <MoreVertical size={14} />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                color="red"
+                leftSection={<Flag size={14} />}
+                onClick={() =>
+                  reportComment({
+                    commentId: Number(comment.id),
+                    reason: "user-reported",
+                  })
+                }
+              >
+                Report
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         )}
       </Group>
 

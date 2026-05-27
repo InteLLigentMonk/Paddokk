@@ -12,7 +12,9 @@ import {
   getJourneyPostsFn,
   getPostCommentsFn,
   replyToCommentFn,
+  reportCommentFn,
 } from "@/lib/api/journey-detail";
+import { notify } from "@/integrations/mantine/use-notifications";
 
 const POSTS_PAGE_SIZE = 20;
 
@@ -80,6 +82,39 @@ export function useReplyToComment(postId: number) {
     }) => replyToCommentFn({ data: { postId, content, parentCommentId } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+    },
+  });
+}
+
+export function useReportComment() {
+  return useMutation({
+    mutationFn: ({
+      commentId,
+      reason,
+    }: {
+      commentId: number;
+      reason: string;
+    }) => reportCommentFn({ data: { commentId, reason } }),
+    onSuccess: (result) => {
+      if (result.kind === "notImplemented") {
+        notify.info({
+          title: result.title,
+          message:
+            result.message ||
+            "Moderation is not implemented yet. The comment has not been reported, but we appreciate you taking the time to provide feedback.",
+          autoClose: 6000,
+        });
+        return;
+      }
+      notify.success({ message: "Thank you - The comment has been reported." });
+    },
+    onError: (error) => {
+      notify.error({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Could not report the comment.",
+      });
     },
   });
 }
