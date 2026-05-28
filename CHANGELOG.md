@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.31.0...v0.31.1) (2026-05-28)
+
+
+### Refactoring
+
+* **api:** apply AsNoTracking, FK indexes migration, siblings prefetch cap ([#224](https://github.com/InteLLigentMonk/Paddokk/issues/224)) ([9f8a2a5](https://github.com/InteLLigentMonk/Paddokk/commit/9f8a2a57465e2fadabb8ee0e12ff190088fb7ae2)), closes [#175](https://github.com/InteLLigentMonk/Paddokk/issues/175)
+
 ## [0.31.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.30.1...v0.31.0) (2026-05-28)
 
 
