@@ -19,6 +19,7 @@ public class CarRepository : ICarRepository
     public async Task<List<CarMake>> GetCarMakesAsync(CancellationToken cancellationToken)
     {
         return await _db.CarMakes
+            .AsNoTracking()
             .Include(m => m.Models)
             .OrderBy(m => m.Name)
             .ToListAsync(cancellationToken);
@@ -27,6 +28,7 @@ public class CarRepository : ICarRepository
     public async Task<List<CarModel>> GetCarModelsByMakeAsync(int carMakeId, CancellationToken cancellationToken)
     {
         return await _db.CarModels
+            .AsNoTracking()
             .Include(m => m.CarMake)
             .Include(m => m.Generations)
             .Where(m => m.CarMakeId == carMakeId)
@@ -37,6 +39,7 @@ public class CarRepository : ICarRepository
     public async Task<List<CarGeneration>> GetCarGenerationsByModelAsync(int carModelId, CancellationToken cancellationToken)
     {
         return await _db.CarGenerations
+            .AsNoTracking()
             .Include(g => g.CarModel)
             .Where(g => g.CarModelId == carModelId)
             .OrderBy(g => g.Name)
@@ -46,6 +49,7 @@ public class CarRepository : ICarRepository
     public async Task<CarMake?> GetCarMakeByIdAsync(int carMakeId, CancellationToken cancellationToken)
     {
         return await _db.CarMakes
+            .AsNoTracking()
             .Include(m => m.Models)
             .FirstOrDefaultAsync(m => m.Id == carMakeId, cancellationToken);
     }
@@ -53,6 +57,7 @@ public class CarRepository : ICarRepository
     public async Task<CarModel?> GetCarModelByIdAsync(int carModelId, CancellationToken cancellationToken)
     {
         return await _db.CarModels
+            .AsNoTracking()
             .Include(m => m.CarMake)
             .Include(m => m.Generations)
             .FirstOrDefaultAsync(m => m.Id == carModelId, cancellationToken);
@@ -61,6 +66,7 @@ public class CarRepository : ICarRepository
     public async Task<CarGeneration?> GetCarGenerationByIdAsync(int carGenerationId, CancellationToken cancellationToken)
     {
         return await _db.CarGenerations
+            .AsNoTracking()
             .Include(g => g.CarModel)
             .FirstOrDefaultAsync(g => g.Id == carGenerationId, cancellationToken);
     }
@@ -68,6 +74,7 @@ public class CarRepository : ICarRepository
     public async Task<List<UserCar>> GetUserCarsAsync(string userId, CancellationToken cancellationToken)
     {
         return await _db.UserCars
+            .AsNoTracking()
             .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
@@ -89,6 +96,7 @@ public class CarRepository : ICarRepository
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         var cars = await baseQuery
+            .AsNoTracking()
             .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
@@ -119,9 +127,10 @@ public class CarRepository : ICarRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<List<UserCar>> GetUserCarsByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken)
+    public async Task<List<UserCar>> GetUserCarsByUsernameAsync(string username, string? currentUserId, int? limit, CancellationToken cancellationToken)
     {
-        return await _db.UserCars
+        var query = _db.UserCars
+            .AsNoTracking()
             .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
@@ -133,12 +142,18 @@ public class CarRepository : ICarRepository
                 && (c.IsPublic || c.PrincipalId == currentUserId))
             .OrderByDescending(c => c.IsPrimary)
             .ThenByDescending(c => c.CreatedAt)
-            .ToListAsync(cancellationToken);
+            .AsQueryable();
+
+        if (limit is > 0)
+            query = query.Take(limit.Value);
+
+        return await query.ToListAsync(cancellationToken);
     }
 
     public async Task<UserCar?> GetUserCarBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken)
     {
         return await _db.UserCars
+            .AsNoTracking()
             .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)
@@ -280,6 +295,7 @@ public class CarRepository : ICarRepository
         };
 
         var cars = await ordered
+            .AsNoTracking()
             .Include(c => c.User)
             .Include(c => c.CarMake)
             .Include(c => c.CarModel)

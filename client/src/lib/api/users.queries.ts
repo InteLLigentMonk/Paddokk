@@ -29,10 +29,13 @@ export const userByUsernameQueryOptions = (username: string) =>
     queryFn: () => getUserByUsernameFn({ data: { username } }),
   });
 
-export const userCarsByUsernameQueryOptions = (username: string) =>
+export const userCarsByUsernameQueryOptions = (
+  username: string,
+  limit?: number,
+) =>
   queryOptions({
-    queryKey: ["user-cars-by-username", username],
-    queryFn: () => getUserCarsByUsernameFn({ data: { username } }),
+    queryKey: ["user-cars-by-username", username, limit ?? null],
+    queryFn: () => getUserCarsByUsernameFn({ data: { username, limit } }),
   });
 
 export const userCarBySlugQueryOptions = (username: string, slug: string) =>

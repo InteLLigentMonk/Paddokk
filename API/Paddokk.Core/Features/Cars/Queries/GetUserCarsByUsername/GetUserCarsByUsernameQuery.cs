@@ -4,4 +4,4 @@ using Paddokk.Core.Models.DTOs.Car;
 
 namespace Paddokk.Core.Features.Cars.Queries.GetUserCarsByUsername;
 
-public record GetUserCarsByUsernameQuery(string Username) : IQuery<Result<IEnumerable<UserCarDto>>>;
+public record GetUserCarsByUsernameQuery(string Username, int? Limit = null) : IQuery<Result<IEnumerable<UserCarDto>>>;

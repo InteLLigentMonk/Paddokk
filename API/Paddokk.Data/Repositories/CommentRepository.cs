@@ -20,6 +20,7 @@ public class CommentRepository : ICommentRepository
             throw new ArgumentException("Post not found");
 
         var query = _db.PostComments
+            .AsNoTracking()
             .Include(c => c.Author)
             .Include(c => c.JourneyPost).ThenInclude(p => p.Author)
             .Include(c => c.Replies).ThenInclude(r => r.Author)

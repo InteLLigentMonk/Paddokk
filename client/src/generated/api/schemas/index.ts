@@ -75,3 +75,4 @@ export * from './userDto.ts';
 export * from './userJourneysGetUserJourneysParams.ts';
 export * from './userJourneysUploadJourneyCoverImageBody.ts';
 export * from './usersGetCarJourneysParams.ts';
+export * from './usersGetUserCarsByUsernameParams.ts';

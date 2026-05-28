@@ -96,9 +96,9 @@ public class UsersController(ISender sender) : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting("reads")]
     [EndpointSummary("Get a user's cars (filtered by visibility)")]
-    public async Task<ActionResult<IEnumerable<UserCarDto>>> GetUserCarsByUsername(string username, CancellationToken ct)
+    public async Task<ActionResult<IEnumerable<UserCarDto>>> GetUserCarsByUsername(string username, [FromQuery] int? limit, CancellationToken ct)
     {
-        var result = await sender.Send(new GetUserCarsByUsernameQuery(username), ct);
+        var result = await sender.Send(new GetUserCarsByUsernameQuery(username, limit), ct);
         return OkOrError(result);
     }
 
