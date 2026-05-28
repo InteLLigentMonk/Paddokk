@@ -10,6 +10,7 @@ import { useNotifications } from "@/integrations/mantine";
 import { CarImageCarousel } from "@/components/cars/car-image-carousel";
 import { EditCarImagesSection } from "@/components/cars/edit-car-images-section";
 import { deleteCarImageFn, updateCarImageFn } from "@/lib/api/car-images";
+import { handleUploadError } from "@/lib/api/upload-error";
 import {
   carImagesSetPrimaryImage,
   carImagesUploadCarImage,
@@ -77,8 +78,8 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
       await router.invalidate();
       notifications.success({ message: "Photos updated" });
       setIsEditing(false);
-    } catch {
-      notifications.error({ message: "Failed to save photos" });
+    } catch (err) {
+      handleUploadError(err, "Failed to save photos");
     } finally {
       setIsSaving(false);
     }

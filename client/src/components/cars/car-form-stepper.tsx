@@ -6,6 +6,7 @@ import { CarBasicInfoStep } from "./car-basic-info-step";
 import { CarImagesStep } from "./car-images-step";
 import { userCarsCreateUserCar } from "@/generated/api/user-cars/user-cars";
 import { carImagesUploadCarImage } from "@/generated/api/car-images/car-images";
+import { handleUploadError } from "@/lib/api/upload-error";
 import { useNotifications } from "@/integrations/mantine";
 
 export interface PendingImage {
@@ -91,7 +92,7 @@ export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
       onSuccess();
     } catch (err) {
       console.error("Failed to add car:", err);
-      notifications.error({ message: "Failed to add car" });
+      handleUploadError(err, "Failed to add car");
       setIsSubmitting(false);
     }
   };

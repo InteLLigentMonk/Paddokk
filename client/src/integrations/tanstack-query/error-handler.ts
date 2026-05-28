@@ -1,8 +1,6 @@
 import { notify } from "../mantine";
 import { ApiError } from "@/lib/api/api-error";
-
-const RATE_LIMIT_MESSAGE =
-  "You're going a bit too fast — please wait a moment and try again.";
+import { RATE_LIMIT_MESSAGE } from "@/lib/api/upload-error";
 
 function isRateLimitError(error: Error): boolean {
   return error instanceof ApiError && error.status === 429;
