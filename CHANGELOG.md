@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.31.1...v0.31.2) (2026-05-28)
+
+
+### Maintenance
+
+* **api:** bootstrap user-secrets and add backend onboarding README ([#226](https://github.com/InteLLigentMonk/Paddokk/issues/226)) ([0d21185](https://github.com/InteLLigentMonk/Paddokk/commit/0d2118576d721dc184bddf38d397f704c0bf19ef))
+
 ## [0.31.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.31.0...v0.31.1) (2026-05-28)
 
 
