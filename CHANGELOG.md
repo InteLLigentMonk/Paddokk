@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.30.1...v0.31.0) (2026-05-28)
+
+
+### Features
+
+* **api:** upload-endpoint rate-limit partition ([#221](https://github.com/InteLLigentMonk/Paddokk/issues/221)) ([7002da9](https://github.com/InteLLigentMonk/Paddokk/commit/7002da99aad92c506093af2343fad7c5080c6487))
+
 ## [0.30.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.30.0...v0.30.1) (2026-05-27)
 
 
