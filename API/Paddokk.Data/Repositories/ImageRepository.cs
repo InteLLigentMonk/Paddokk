@@ -17,6 +17,7 @@ public class ImageRepository(PaddokkDbContext db) : IImageRepository
  public async Task<IEnumerable<UserCarImage>> GetCarImagesAsync(int carId, CancellationToken cancellationToken)
     {
         return await _db.UserCarImages
+            .AsNoTracking()
             .Where(i => i.UserCarId == carId)
             .OrderByDescending(i => i.IsPrimary)
             .ThenBy(i => i.SortOrder)

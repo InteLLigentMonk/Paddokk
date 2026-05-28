@@ -20,6 +20,7 @@ public class JourneyRepository : IJourneyRepository
     public async Task<List<Journey>> GetUserJourneysAsync(string userId, CancellationToken cancellationToken)
     {
         return await _db.Journeys
+            .AsNoTracking()
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -41,6 +42,7 @@ public class JourneyRepository : IJourneyRepository
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         var journeys = await baseQuery
+            .AsNoTracking()
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -73,6 +75,7 @@ public class JourneyRepository : IJourneyRepository
     public async Task<List<Journey>> GetUserJourneysByUsernameAsync(string username, string? currentUserId, CancellationToken cancellationToken)
     {
         return await _db.Journeys
+            .AsNoTracking()
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -97,6 +100,7 @@ public class JourneyRepository : IJourneyRepository
         CancellationToken cancellationToken)
     {
         return await _db.Journeys
+            .AsNoTracking()
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -118,6 +122,7 @@ public class JourneyRepository : IJourneyRepository
     public async Task<Journey?> GetJourneyBySlugAsync(string username, string slug, string? currentUserId, CancellationToken cancellationToken)
     {
         return await _db.Journeys
+            .AsNoTracking()
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -155,6 +160,7 @@ public class JourneyRepository : IJourneyRepository
         };
 
         var journeys = await ordered
+            .AsNoTracking()
             .Include(j => j.User)
             .Include(j => j.UserCar).ThenInclude(c => c.CarMake)
             .Include(j => j.UserCar).ThenInclude(c => c.CarModel)
@@ -274,6 +280,7 @@ public class JourneyRepository : IJourneyRepository
         var totalCount = await baseQuery.CountAsync(cancellationToken);
 
         var posts = await baseQuery
+            .AsNoTracking()
             .Include(jp => jp.Author)
             .Include(jp => jp.Images)
             .Include(jp => jp.Comments)
@@ -401,6 +408,7 @@ public class JourneyRepository : IJourneyRepository
     public async Task<List<Journey>> GetUserJourneysWithStatsAsync(string userId, CancellationToken cancellationToken)
     {
         return await _db.Journeys
+            .AsNoTracking()
             .Include(j => j.Posts)
             .Include(j => j.Subscriptions)
             .Include(j => j.Likes)

@@ -7,6 +7,7 @@ import {
   UsersGetUserByUsernameParams,
   UsersGetUserCarBySlugParams,
   UsersGetUserCarsByUsernameParams,
+  UsersGetUserCarsByUsernameQueryParams,
   UsersGetUserJourneysByUsernameParams,
   UsersUpdateCurrentUserBody,
 } from "@/generated/api-zod/users/users.zod";
@@ -27,6 +28,10 @@ const getCarJourneysSchema = UsersGetCarJourneysParams.extend(
   UsersGetCarJourneysQueryParams.shape,
 );
 
+const getUserCarsByUsernameSchema = UsersGetUserCarsByUsernameParams.extend(
+  UsersGetUserCarsByUsernameQueryParams.shape,
+);
+
 const updateCurrentUserSchema = UsersUpdateCurrentUserBody.partial();
 
 export const getCurrentUserFn = createServerFn({ method: "GET" }).handler(
@@ -40,10 +45,10 @@ export const getUserByUsernameFn = createServerFn({ method: "GET" })
   );
 
 export const getUserCarsByUsernameFn = createServerFn({ method: "GET" })
-  .inputValidator(UsersGetUserCarsByUsernameParams)
+  .inputValidator(getUserCarsByUsernameSchema)
   .handler(
-    async ({ data: { username } }) =>
-      await usersGetUserCarsByUsername(username),
+    async ({ data: { username, limit } }) =>
+      await usersGetUserCarsByUsername(username, { limit }),
   );
 
 export const getUserCarBySlugFn = createServerFn({ method: "GET" })

@@ -11,7 +11,8 @@ import type {
   UpdateUserCommand,
   UserCarDto,
   UserDto,
-  UsersGetCarJourneysParams
+  UsersGetCarJourneysParams,
+  UsersGetUserCarsByUsernameParams
 } from '../schemas';
 
 import { apiFetcher } from '../../../lib/api/client';
@@ -177,20 +178,29 @@ export const usersGetUserByUsername = async (username: string, options?: Request
 );}
 
 
-export const getUsersGetUserCarsByUsernameUrl = (username: string,) => {
+export const getUsersGetUserCarsByUsernameUrl = (username: string,
+    params?: UsersGetUserCarsByUsernameParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/Users/by-username/${username}/cars`
+  return stringifiedParams.length > 0 ? `/api/v1/Users/by-username/${username}/cars?${stringifiedParams}` : `/api/v1/Users/by-username/${username}/cars`
 }
 
 /**
  * @summary Get a user's cars (filtered by visibility)
  */
-export const usersGetUserCarsByUsername = async (username: string, options?: RequestInit): Promise<UserCarDto[]> => {
+export const usersGetUserCarsByUsername = async (username: string,
+    params?: UsersGetUserCarsByUsernameParams, options?: RequestInit): Promise<UserCarDto[]> => {
 
-  return apiFetcher<UserCarDto[]>(getUsersGetUserCarsByUsernameUrl(username),
+  return apiFetcher<UserCarDto[]>(getUsersGetUserCarsByUsernameUrl(username,params),
   {
     ...options,
     method: 'GET'

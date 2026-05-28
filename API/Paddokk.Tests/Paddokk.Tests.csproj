@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Paddokk.Core\Paddokk.Core.csproj" />
     <ProjectReference Include="..\Paddokk.Api\Paddokk.Api.csproj" />
+    <ProjectReference Include="..\Paddokk.Data\Paddokk.Data.csproj" />
   </ItemGroup>
 
 </Project>

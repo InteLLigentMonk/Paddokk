@@ -31,7 +31,8 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
   const [subscribeLoading, setSubscribeLoading] = useState(false);
 
   const { data: ownerCars, isLoading } = useQuery(
-    userCarsByUsernameQueryOptions(car.ownerUsername),
+    // Request 6 so the current car can be filtered out and still leave up to 5 siblings.
+    userCarsByUsernameQueryOptions(car.ownerUsername, 6),
   );
 
   const otherCars =
