@@ -89,6 +89,26 @@ Marketplace, Stores, Harness-designer and more.
 - Always use the latest docs for reference material, get it with context7.
 - Make shure to conform to OWASP top 10 for security.
 
+## Design principles
+
+### Deep modules
+
+Prefer **deep modules** (Ousterhout): a simple interface that hides a rich implementation. Value comes from the ratio of complexity *hidden* to surface *exposed*.
+
+Examples already in this repo:
+- `apiFetcher<T>(url, options)` — one call signature; hides token retrieval, header negotiation, FormData detection, and `ApiError` throwing.
+- MediatR `IRequest<T>` + `IRequestHandler<TRequest, TResult>` handlers — uniform interface; implementations span validation, EF queries, blob I/O, and DTO mapping.
+- BFF server functions that consolidate Orval calls, input validation, and auth shaping behind one `createServerFn` export.
+- `handleUploadError(err, fallbackMessage)` — two args; hides the 429-vs-generic branching from every upload call site.
+
+Anti-patterns to avoid:
+- Shallow wrappers: a server function that just re-exports one Orval call with no added validation or shaping. Call the SDK directly.
+- One-method "manager" / "helper" classes that forward to a single other method.
+- Splitting a cohesive responsibility across many tiny files to "reduce file size". Cohesion beats line count.
+- Thin pass-through layers with business logic leaked into them (already covered for controllers under .NET Conventions — same principle).
+
+Test before adding a new abstraction: *does this interface let callers ignore more complexity than the abstraction itself adds?* If no, inline it.
+
 ## Plan Mode
 - Make the plan extremely concise. Sacrifice grammar for the sake of concision.
 - At the end of each plan, give me a list of unresolved questions to answer, if any.
