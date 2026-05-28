@@ -24,6 +24,7 @@ import {
 } from "@/lib/api/user-journeys";
 import { useUserJourneysInfinite } from "@/hooks/use-user-journeys";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
+import { handleUploadError } from "@/lib/api/upload-error";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
 import { useNotifications } from "@/integrations/mantine";
@@ -116,8 +117,8 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
             : "Journey updated!",
         });
         handleClose();
-      } catch {
-        notifications.error({ message: "Failed to update journey" });
+      } catch (err) {
+        handleUploadError(err, "Failed to update journey");
         setIsSubmitting(false);
       }
     },

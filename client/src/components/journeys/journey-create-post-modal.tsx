@@ -21,6 +21,7 @@ import { useNotifications } from "@/integrations/mantine";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { useCreateJourneyPost } from "@/hooks/use-journey-detail";
 import { getImageLimitsFn } from "@/lib/api/limits";
+import { handleUploadError } from "@/lib/api/upload-error";
 import {
   journeysDeleteJourneyPostImage,
   journeysUploadJourneyPostImage,
@@ -135,10 +136,10 @@ export function JourneyCreatePostModal({
             ),
           );
         })
-        .catch(() => {
+        .catch((err) => {
           setImages((prev) => prev.filter((img) => img.tempId !== tempId));
           URL.revokeObjectURL(previewUrl);
-          notifications.error({ message: "Failed to upload image" });
+          handleUploadError(err, "Failed to upload image");
         });
     }
   };

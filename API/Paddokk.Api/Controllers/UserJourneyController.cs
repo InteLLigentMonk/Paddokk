@@ -129,7 +129,7 @@ public class UserJourneysController(ISender sender) : ApiControllerBase
     }
 
     [HttpPost("{journeyId}/cover-image")]
-    [EnableRateLimiting("writes")]
+    [EnableRateLimiting("upload")]
     [EndpointSummary("Upload journey cover image")]
     public async Task<ActionResult<JourneyDto>> UploadJourneyCoverImage(int journeyId, IFormFile file, CancellationToken ct)
     {

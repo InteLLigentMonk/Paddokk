@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Data;
 using Paddokk.Data.Seeding;
@@ -29,6 +31,16 @@ builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
+    options.OnRejected = (context, _) =>
+    {
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter =
+                ((int)retryAfter.TotalSeconds).ToString();
+        }
+        return ValueTask.CompletedTask;
+    };
+
     options.AddFixedWindowLimiter("writes", o =>
     {
         o.PermitLimit = 30;
@@ -39,6 +51,21 @@ builder.Services.AddRateLimiter(options =>
     {
         o.PermitLimit = 200;
         o.Window = TimeSpan.FromMinutes(1);
+    });
+
+    // Upload endpoints partition tighter than "writes" to protect storage quota.
+    // Per-user (authenticated) or per-IP (anonymous fallback) — 10 req/min/key.
+    options.AddPolicy("upload", context =>
+    {
+        var key = context.User.Identity?.IsAuthenticated == true
+            ? context.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "anonymous"
+            : context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+
+        return RateLimitPartition.GetFixedWindowLimiter(key, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1)
+        });
     });
 });
 

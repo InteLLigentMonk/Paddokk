@@ -23,6 +23,7 @@ import { useCanAddJourney } from "@/hooks/use-can-add-journey";
 import { useUserCarsInfinite } from "@/hooks/use-user-cars";
 import { createJourneyFn } from "@/lib/api/user-journeys";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
+import { handleUploadError } from "@/lib/api/upload-error";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { CoverImageDropzone } from "@/components/shared/cover-image-dropzone";
 import { useNotifications } from "@/integrations/mantine";
@@ -145,8 +146,8 @@ export function CreateJourneyModal() {
             slug: journey.slug,
           },
         });
-      } catch {
-        notifications.error({ message: "Failed to create journey" });
+      } catch (err) {
+        handleUploadError(err, "Failed to create journey");
         setIsSubmitting(false);
       }
     },
