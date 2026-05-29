@@ -13,6 +13,7 @@ import {
   unsubscribeFromUserCarFn,
 } from "./user-cars";
 import { carKeys } from "./cars.keys";
+import { requirePage } from "./infinite";
 import type { CarSortKey } from "./cars";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedUserCarsResponse } from "@/generated/api/schemas";
@@ -26,15 +27,17 @@ export const browseCarsInfiniteQueryOptions = (
   infiniteQueryOptions({
     queryKey: carKeys.browseCars(terms, sort),
     queryFn: ({ pageParam }) =>
-      searchCarsFn({
-        data: {
-          terms,
-          sort,
-          isPublic: true,
-          page: pageParam,
-          pageSize: PAGE_SIZE,
-        },
-      }),
+      requirePage(
+        searchCarsFn({
+          data: {
+            terms,
+            sort,
+            isPublic: true,
+            page: pageParam,
+            pageSize: PAGE_SIZE,
+          },
+        }),
+      ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.hasMore ? allPages.length + 1 : undefined,

@@ -22,6 +22,7 @@ import {
   updateCurrentUserFn,
 } from "./users";
 import { getCarImagesFn } from "./car-images";
+import { requirePage } from "./infinite";
 import { userKeys } from "./users.keys";
 import { carKeys } from "./cars.keys";
 import type { FollowListType } from "./users.keys";
@@ -82,9 +83,11 @@ export const followListInfiniteQueryOptions = (
         page: pageParam,
         pageSize: FOLLOW_LIST_PAGE_SIZE,
       };
-      return type === "followers"
-        ? getFollowersFn({ data })
-        : getFollowingFn({ data });
+      return requirePage(
+        type === "followers"
+          ? getFollowersFn({ data })
+          : getFollowingFn({ data }),
+      );
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>

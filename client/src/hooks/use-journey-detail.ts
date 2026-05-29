@@ -15,6 +15,7 @@ import {
   reportCommentFn,
 } from "@/lib/api/journey-detail";
 import { journeyKeys } from "@/lib/api/journeys.keys";
+import { requirePage } from "@/lib/api/infinite";
 import { notify } from "@/integrations/mantine/use-notifications";
 
 const POSTS_PAGE_SIZE = 20;
@@ -39,9 +40,11 @@ export function useJourneyPostsInfinite(journeyId: number) {
   return useInfiniteQuery({
     queryKey: journeyKeys.posts(journeyId),
     queryFn: ({ pageParam = 1 }) =>
-      getJourneyPostsFn({
-        data: { journeyId, page: pageParam, pageSize: POSTS_PAGE_SIZE },
-      }),
+      requirePage(
+        getJourneyPostsFn({
+          data: { journeyId, page: pageParam, pageSize: POSTS_PAGE_SIZE },
+        }),
+      ),
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.page + 1 : undefined,
