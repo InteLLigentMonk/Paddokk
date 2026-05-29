@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Api.Extensions;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarBySlug;
+using Paddokk.Core.Features.Follows.Commands.FollowUser;
+using Paddokk.Core.Features.Follows.Commands.UnfollowUser;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarsByUsername;
 using Paddokk.Core.Features.Journeys.Queries.GetCarJourneys;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyBySlug;
@@ -60,6 +62,24 @@ public class UsersController(ISender sender) : ApiControllerBase
     {
         var result = await sender.Send(new DeleteCurrentUserCommand(), ct);
         return OkOrError(result);
+    }
+
+    [HttpPost("{id}/follow")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Follow a user")]
+    public async Task<IActionResult> FollowUser(string id, CancellationToken ct)
+    {
+        var result = await sender.Send(new FollowUserCommand(id), ct);
+        return result.IsSuccess ? NoContent() : FromError(result.Error);
+    }
+
+    [HttpDelete("{id}/follow")]
+    [EnableRateLimiting("writes")]
+    [EndpointSummary("Unfollow a user")]
+    public async Task<IActionResult> UnfollowUser(string id, CancellationToken ct)
+    {
+        var result = await sender.Send(new UnfollowUserCommand(id), ct);
+        return result.IsSuccess ? NoContent() : FromError(result.Error);
     }
 
     [HttpGet("{userId}")]

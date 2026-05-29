@@ -29,4 +29,7 @@ export interface UserDto {
   carCount: number;
   journeyCount: number;
   maxCars: number;
+  followerCount: number;
+  followingCount: number;
+  isFollowedByMe: boolean;
 }

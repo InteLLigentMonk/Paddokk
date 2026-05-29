@@ -20,5 +20,8 @@ namespace Paddokk.Core.Models.DTOs.User
         public required int CarCount { get; set; }
         public required int JourneyCount { get; set; }
         public required int MaxCars { get; set; }
+        public required int FollowerCount { get; set; }
+        public required int FollowingCount { get; set; }
+        public required bool IsFollowedByMe { get; set; }
     }
 }

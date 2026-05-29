@@ -53,6 +53,10 @@ public class ApplicationUser
     public ICollection<UserCarSubscription> UserCarSubscriptions { get; set; } = [];
     public ICollection<PostComment> Comments { get; set; } = [];
     public Journey? DefaultActiveJourney { get; set; }
+
+    // Follows: people following this user, and people this user follows.
+    public ICollection<UserFollow> Followers { get; set; } = [];
+    public ICollection<UserFollow> Following { get; set; } = [];
 }
 
 public enum SubscriptionTier
