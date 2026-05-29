@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.34.0...v0.34.1) (2026-05-29)
+
+
+### Refactoring
+
+* **query:** centralize query keys into per-feature factories ([#235](https://github.com/InteLLigentMonk/Paddokk/issues/235)) ([57b9095](https://github.com/InteLLigentMonk/Paddokk/commit/57b90953b5ff1f26cbbc7307efc7e9f5a1d54128)), closes [#233](https://github.com/InteLLigentMonk/Paddokk/issues/233)
+
 ## [0.34.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.33.0...v0.34.0) (2026-05-29)
 
 
