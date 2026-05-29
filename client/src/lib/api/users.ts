@@ -4,6 +4,10 @@ import {
   UsersFollowUserParams,
   UsersGetCarJourneysParams,
   UsersGetCarJourneysQueryParams,
+  UsersGetFollowersParams,
+  UsersGetFollowersQueryParams,
+  UsersGetFollowingParams,
+  UsersGetFollowingQueryParams,
   UsersGetJourneyBySlugParams,
   UsersGetUserByUsernameParams,
   UsersGetUserCarBySlugParams,
@@ -19,6 +23,8 @@ import {
   usersFollowUser,
   usersGetCarJourneys,
   usersGetCurrentUser,
+  usersGetFollowers,
+  usersGetFollowing,
   usersGetJourneyBySlug,
   usersGetUserByUsername,
   usersGetUserCarBySlug,
@@ -30,6 +36,14 @@ import {
 
 const getCarJourneysSchema = UsersGetCarJourneysParams.extend(
   UsersGetCarJourneysQueryParams.shape,
+);
+
+const getFollowersSchema = UsersGetFollowersParams.extend(
+  UsersGetFollowersQueryParams.shape,
+);
+
+const getFollowingSchema = UsersGetFollowingParams.extend(
+  UsersGetFollowingQueryParams.shape,
 );
 
 const getUserCarsByUsernameSchema = UsersGetUserCarsByUsernameParams.extend(
@@ -81,6 +95,20 @@ export const getCarJourneysFn = createServerFn({ method: "GET" })
   .handler(
     async ({ data: { username, carSlug, page, pageSize } }) =>
       await usersGetCarJourneys(username, carSlug, { page, pageSize }),
+  );
+
+export const getFollowersFn = createServerFn({ method: "GET" })
+  .inputValidator(getFollowersSchema)
+  .handler(
+    async ({ data: { id, page, pageSize } }) =>
+      await usersGetFollowers(id, { page, pageSize }),
+  );
+
+export const getFollowingFn = createServerFn({ method: "GET" })
+  .inputValidator(getFollowingSchema)
+  .handler(
+    async ({ data: { id, page, pageSize } }) =>
+      await usersGetFollowing(id, { page, pageSize }),
   );
 
 export const updateCurrentUserFn = createServerFn({ method: "POST" })
