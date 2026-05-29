@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.34.1...v0.34.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* **api:** prevent undefined infinite-query page from crashing browse grids ([#238](https://github.com/InteLLigentMonk/Paddokk/issues/238)) ([8296909](https://github.com/InteLLigentMonk/Paddokk/commit/8296909c5a7bd63a4299fa8c36d22763c6d59c13))
+
 ## [0.34.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.34.0...v0.34.1) (2026-05-29)
 
 
