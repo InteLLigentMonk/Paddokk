@@ -3,9 +3,11 @@
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { notifications } from "@mantine/notifications";
 import {
   changeUsernameFn,
   deleteCurrentUserFn,
+  followUserFn,
   getCarJourneysFn,
   getCurrentUserFn,
   getUserByUsernameFn,
@@ -13,9 +15,11 @@ import {
   getUserCarsByUsernameFn,
   getUserJourneyBySlugFn,
   getUserJourneysByUsernameFn,
+  unfollowUserFn,
   updateCurrentUserFn,
 } from "./users";
 import { getCarImagesFn } from "./car-images";
+import type { UserDto } from "@/generated/api/schemas";
 
 export const currentUserQueryOptions = () =>
   queryOptions({
@@ -99,5 +103,47 @@ export function useChangeUsername() {
 export function useDeleteCurrentUser() {
   return useMutation({
     mutationFn: deleteCurrentUserFn,
+  });
+}
+
+/**
+ * Optimistically toggles the follow relationship for a profile, patching the
+ * cached UserDto (isFollowedByMe + followerCount) immediately and rolling back
+ * to the prior snapshot if the server rejects the write.
+ */
+export function useToggleFollow(userId: string, username: string) {
+  const queryClient = useQueryClient();
+  const queryKey = ["user-by-username", username];
+
+  return useMutation({
+    mutationFn: (isCurrentlyFollowing: boolean) =>
+      isCurrentlyFollowing
+        ? unfollowUserFn({ data: { id: userId } })
+        : followUserFn({ data: { id: userId } }),
+    onMutate: async (isCurrentlyFollowing) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<UserDto>(queryKey);
+      if (previous) {
+        queryClient.setQueryData<UserDto>(queryKey, {
+          ...previous,
+          isFollowedByMe: !isCurrentlyFollowing,
+          followerCount:
+            previous.followerCount + (isCurrentlyFollowing ? -1 : 1),
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, _isCurrentlyFollowing, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(queryKey, context.previous);
+      }
+      notifications.show({
+        color: "red",
+        message: "Could not update follow. Please try again.",
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
   });
 }

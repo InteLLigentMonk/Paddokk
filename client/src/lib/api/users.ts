@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import {
   UsersChangeCurrentUsernameBody,
+  UsersFollowUserParams,
   UsersGetCarJourneysParams,
   UsersGetCarJourneysQueryParams,
   UsersGetJourneyBySlugParams,
@@ -9,11 +10,13 @@ import {
   UsersGetUserCarsByUsernameParams,
   UsersGetUserCarsByUsernameQueryParams,
   UsersGetUserJourneysByUsernameParams,
+  UsersUnfollowUserParams,
   UsersUpdateCurrentUserBody,
 } from "@/generated/api-zod/users/users.zod";
 import {
   usersChangeCurrentUsername,
   usersDeleteCurrentUser,
+  usersFollowUser,
   usersGetCarJourneys,
   usersGetCurrentUser,
   usersGetJourneyBySlug,
@@ -21,6 +24,7 @@ import {
   usersGetUserCarBySlug,
   usersGetUserCarsByUsername,
   usersGetUserJourneysByUsername,
+  usersUnfollowUser,
   usersUpdateCurrentUser,
 } from "@/generated/api/users/users";
 
@@ -101,3 +105,15 @@ export const deleteCurrentUserFn = createServerFn({ method: "POST" }).handler(
     await usersDeleteCurrentUser();
   },
 );
+
+export const followUserFn = createServerFn({ method: "POST" })
+  .inputValidator(UsersFollowUserParams)
+  .handler(async ({ data: { id } }) => {
+    await usersFollowUser(id);
+  });
+
+export const unfollowUserFn = createServerFn({ method: "POST" })
+  .inputValidator(UsersUnfollowUserParams)
+  .handler(async ({ data: { id } }) => {
+    await usersUnfollowUser(id);
+  });

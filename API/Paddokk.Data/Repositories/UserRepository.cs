@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Paddokk.Core.Interfaces;
+using Paddokk.Core.Models.DTOs.User;
 using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Data.Repositories;
@@ -7,6 +8,30 @@ namespace Paddokk.Data.Repositories;
 public class UserRepository(PaddokkDbContext db) : IUserRepository
 {
     private readonly PaddokkDbContext _db = db;
+
+    public Task<UserProfileProjection?> GetProfileByIdAsync(string userId, string? actorUserId, CancellationToken cancellationToken) =>
+        ProjectProfileAsync(_db.Users.Where(u => u.Id == userId), actorUserId, cancellationToken);
+
+    public Task<UserProfileProjection?> GetProfileByEmailAsync(string email, string? actorUserId, CancellationToken cancellationToken) =>
+        ProjectProfileAsync(_db.Users.Where(u => u.Email == email), actorUserId, cancellationToken);
+
+    public Task<UserProfileProjection?> GetProfileByUsernameAsync(string username, string? actorUserId, CancellationToken cancellationToken) =>
+        ProjectProfileAsync(_db.Users.Where(u => u.Username == username), actorUserId, cancellationToken);
+
+    // Counts become correlated COUNT subqueries; follower/following respect the UserFollow
+    // soft-delete query filter (both sides), so a soft-deleted user drops out of the totals.
+    private static Task<UserProfileProjection?> ProjectProfileAsync(
+        IQueryable<ApplicationUser> query, string? actorUserId, CancellationToken cancellationToken) =>
+        query
+            .AsNoTracking()
+            .Select(u => new UserProfileProjection(
+                u,
+                u.Cars.Count,
+                u.Journeys.Count,
+                u.Followers.Count(f => f.IsActive),
+                u.Following.Count(f => f.IsActive),
+                actorUserId != null && u.Followers.Any(f => f.FollowerId == actorUserId && f.IsActive)))
+            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<ApplicationUser?> GetByIdAsync(string userId, CancellationToken cancellationToken)
     {

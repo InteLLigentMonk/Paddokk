@@ -109,6 +109,52 @@ export const usersChangeCurrentUsername = async (changeUsernameCommand: ChangeUs
 );}
 
 
+export const getUsersFollowUserUrl = (id: string,) => {
+
+
+
+
+  return `/api/v1/Users/${id}/follow`
+}
+
+/**
+ * @summary Follow a user
+ */
+export const usersFollowUser = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return apiFetcher<void>(getUsersFollowUserUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+export const getUsersUnfollowUserUrl = (id: string,) => {
+
+
+
+
+  return `/api/v1/Users/${id}/follow`
+}
+
+/**
+ * @summary Unfollow a user
+ */
+export const usersUnfollowUser = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return apiFetcher<void>(getUsersUnfollowUserUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
 export const getUsersGetUserByIdUrl = (userId: string,) => {
 
 

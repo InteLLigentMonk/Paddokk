@@ -203,6 +203,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<IJourneyRepository, JourneyRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserFollowRepository, UserFollowRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
