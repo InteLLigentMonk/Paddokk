@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.33.0...v0.34.0) (2026-05-29)
+
+
+### Features
+
+* **follows:** add followers/following list endpoints and profile tabs ([#234](https://github.com/InteLLigentMonk/Paddokk/issues/234)) ([3d86008](https://github.com/InteLLigentMonk/Paddokk/commit/3d860087b9c4021a12e3abae245314016d00112f)), closes [#179](https://github.com/InteLLigentMonk/Paddokk/issues/179)
+
 ## [0.33.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.32.0...v0.33.0) (2026-05-29)
 
 
