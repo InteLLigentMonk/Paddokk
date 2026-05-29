@@ -15,6 +15,7 @@ import {
   unsubscribeFromJourneyFn,
 } from "./journeys";
 import { journeyKeys } from "./journeys.keys";
+import { requirePage } from "./infinite";
 import type { JourneySortKey } from "./journeys";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedJourneysResponse } from "@/generated/api/schemas";
@@ -28,14 +29,16 @@ export const browseJourneysInfiniteQueryOptions = (
   infiniteQueryOptions({
     queryKey: journeyKeys.browse(terms, sort),
     queryFn: ({ pageParam }) =>
-      searchJourneysFn({
-        data: {
-          Terms: terms,
-          SortBy: sort,
-          Page: pageParam,
-          PageSize: PAGE_SIZE,
-        },
-      }),
+      requirePage(
+        searchJourneysFn({
+          data: {
+            Terms: terms,
+            SortBy: sort,
+            Page: pageParam,
+            PageSize: PAGE_SIZE,
+          },
+        }),
+      ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.hasMore ? allPages.length + 1 : undefined,
