@@ -11,6 +11,7 @@ import {
   userJourneysByUsernameQueryOptions,
 } from "@/lib/api/users.queries";
 import { getDefaultActiveJourneyFn } from "@/lib/api/user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { openCreateJourneyModal } from "@/lib/stores/journeys-page-store";
 
@@ -42,7 +43,7 @@ function UserJourneysPage() {
   } = useQuery(userJourneysByUsernameQueryOptions(username));
 
   const { data: defaultJourney } = useQuery({
-    queryKey: ["default-active-journey"],
+    queryKey: journeyKeys.defaultActiveJourney,
     queryFn: () => getDefaultActiveJourneyFn(),
     enabled: isOwner,
   });

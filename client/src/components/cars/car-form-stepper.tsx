@@ -6,6 +6,7 @@ import { CarBasicInfoStep } from "./car-basic-info-step";
 import { CarImagesStep } from "./car-images-step";
 import { userCarsCreateUserCar } from "@/generated/api/user-cars/user-cars";
 import { carImagesUploadCarImage } from "@/generated/api/car-images/car-images";
+import { carKeys } from "@/lib/api/cars.keys";
 import { handleUploadError } from "@/lib/api/upload-error";
 import { useNotifications } from "@/integrations/mantine";
 
@@ -81,13 +82,10 @@ export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
       for (const img of pendingImages) {
         await carImagesUploadCarImage(carId, { File: img.file });
       }
-      queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-cars" || key === "user-cars-by-username";
-        },
-      });
-      queryClient.invalidateQueries({ queryKey: ["car-limits"] });
+      carKeys.userCarListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
+      queryClient.invalidateQueries({ queryKey: carKeys.carLimits });
       notifications.success({ message: "Car added successfully!" });
       onSuccess();
     } catch (err) {

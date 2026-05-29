@@ -14,6 +14,7 @@ import {
   replyToCommentFn,
   reportCommentFn,
 } from "@/lib/api/journey-detail";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 import { notify } from "@/integrations/mantine/use-notifications";
 
 const POSTS_PAGE_SIZE = 20;
@@ -21,13 +22,13 @@ const COMMENTS_PAGE_SIZE = 20;
 
 export const journeyDetailQueryOptions = (journeyId: number) =>
   queryOptions({
-    queryKey: ["journey-detail", journeyId],
+    queryKey: journeyKeys.detail(journeyId),
     queryFn: () => getJourneyDetailFn({ data: { journeyId } }),
   });
 
 export const postCommentsQueryOptions = (postId: number) =>
   queryOptions({
-    queryKey: ["post-comments", postId],
+    queryKey: journeyKeys.postComments(postId),
     queryFn: () =>
       getPostCommentsFn({
         data: { postId, page: 1, pageSize: COMMENTS_PAGE_SIZE },
@@ -36,7 +37,7 @@ export const postCommentsQueryOptions = (postId: number) =>
 
 export function useJourneyPostsInfinite(journeyId: number) {
   return useInfiniteQuery({
-    queryKey: ["journey-posts", journeyId],
+    queryKey: journeyKeys.posts(journeyId),
     queryFn: ({ pageParam = 1 }) =>
       getJourneyPostsFn({
         data: { journeyId, page: pageParam, pageSize: POSTS_PAGE_SIZE },
@@ -54,7 +55,9 @@ export function useCreateComment(postId: number) {
     mutationFn: (content: string) =>
       createCommentFn({ data: { postId, content } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+      queryClient.invalidateQueries({
+        queryKey: journeyKeys.postComments(postId),
+      });
     },
   });
 }
@@ -65,7 +68,9 @@ export function useDeleteComment(postId: number) {
   return useMutation({
     mutationFn: (commentId: number) => deleteCommentFn({ data: { commentId } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+      queryClient.invalidateQueries({
+        queryKey: journeyKeys.postComments(postId),
+      });
     },
   });
 }
@@ -82,7 +87,9 @@ export function useReplyToComment(postId: number) {
       parentCommentId: number;
     }) => replyToCommentFn({ data: { postId, content, parentCommentId } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post-comments", postId] });
+      queryClient.invalidateQueries({
+        queryKey: journeyKeys.postComments(postId),
+      });
     },
   });
 }
@@ -135,7 +142,7 @@ export function useCreateJourneyPost(journeyId: number) {
       images: Array<PostImagePayload>;
     }) => createJourneyPostFn({ data: { journeyId, ...payload } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["journey-posts", journeyId] });
+      queryClient.invalidateQueries({ queryKey: journeyKeys.posts(journeyId) });
     },
   });
 }

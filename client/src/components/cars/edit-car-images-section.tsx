@@ -40,6 +40,7 @@ import type { CarImageDto } from "@/generated/api/schemas";
 import { CdnImage } from "@/components/shared/cdn-image";
 import { useNotifications } from "@/integrations/mantine";
 import { getImageLimitsFn } from "@/lib/api/limits";
+import { carKeys } from "@/lib/api/cars.keys";
 
 interface ExistingImageCardProps {
   image: CarImageDto;
@@ -189,7 +190,7 @@ export function EditCarImagesSection({
   const notifications = useNotifications();
 
   const { data: limitsData } = useQuery({
-    queryKey: ["image-limits"],
+    queryKey: carKeys.imageLimits,
     queryFn: () => getImageLimitsFn(),
   });
   const maxImages = limitsData ? Number(limitsData.maxImagesPerCar) : 10;

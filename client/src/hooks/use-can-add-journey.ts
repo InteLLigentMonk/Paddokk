@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { userJourneysCanCreateJourney } from "@/generated/api/user-journeys/user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 
 export function useCanAddJourney() {
   const { data, isLoading } = useQuery({
-    queryKey: ["journey-limits"],
+    queryKey: journeyKeys.journeyLimits,
     queryFn: () => userJourneysCanCreateJourney(),
   });
 

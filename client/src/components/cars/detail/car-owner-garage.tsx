@@ -15,6 +15,7 @@ import { Bell } from "lucide-react";
 import type { UserCarDto } from "@/generated/api/schemas";
 import { optimizeImageUrl } from "@/lib/utils/optimize-image-url";
 import { userCarsByUsernameQueryOptions } from "@/lib/api/users.queries";
+import { userKeys } from "@/lib/api/users.keys";
 import {
   subscribeToUserCarFn,
   unsubscribeFromUserCarFn,
@@ -47,7 +48,7 @@ export function CarOwnerGarage({ car }: CarOwnerGarageProps) {
       } else {
         await subscribeToUserCarFn({ data: { carId: Number(car.id) } });
       }
-      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.userCarDetailRoot });
     } catch {
       notifications.error({ message: "Failed to update follow" });
     } finally {

@@ -22,6 +22,7 @@ import {
 import { useCanAddJourney } from "@/hooks/use-can-add-journey";
 import { useUserCarsInfinite } from "@/hooks/use-user-cars";
 import { createJourneyFn } from "@/lib/api/user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
 import { handleUploadError } from "@/lib/api/upload-error";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
@@ -123,18 +124,13 @@ export function CreateJourneyModal() {
           });
         }
 
-        queryClient.invalidateQueries({
-          predicate: (q) => {
-            const key = q.queryKey[0];
-            return (
-              key === "user-journeys" || key === "user-journeys-by-username"
-            );
-          },
-        });
-        queryClient.invalidateQueries({ queryKey: ["journey-limits"] });
+        journeyKeys.userJourneyListRoots.forEach((queryKey) =>
+          queryClient.invalidateQueries({ queryKey }),
+        );
+        queryClient.invalidateQueries({ queryKey: journeyKeys.journeyLimits });
         if (value.setAsDefaultActive) {
           queryClient.invalidateQueries({
-            queryKey: ["default-active-journey"],
+            queryKey: journeyKeys.defaultActiveJourney,
           });
         }
         notifications.success({ message: "Journey created!" });

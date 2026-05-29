@@ -9,6 +9,7 @@ import {
   userCarsDeleteUserCar,
   userCarsGetUserCar,
 } from "@/generated/api/user-cars/user-cars";
+import { carKeys } from "@/lib/api/cars.keys";
 import { useNotifications } from "@/integrations/mantine";
 
 export function DeleteCarConfirm() {
@@ -21,7 +22,7 @@ export function DeleteCarConfirm() {
   const notifications = useNotifications();
 
   const { data } = useQuery({
-    queryKey: ["user-car", carId],
+    queryKey: carKeys.userCar(carId),
     queryFn: () => userCarsGetUserCar(carId!),
     enabled: isOpen && !!carId,
   });
@@ -37,13 +38,10 @@ export function DeleteCarConfirm() {
     },
     onSuccess: () => {
       notifications.success({ message: "Car deleted successfully" });
-      queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-cars" || key === "user-cars-by-username";
-        },
-      });
-      queryClient.invalidateQueries({ queryKey: ["car-limits"] });
+      carKeys.userCarListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
+      queryClient.invalidateQueries({ queryKey: carKeys.carLimits });
       closeDeleteCarConfirm();
     },
   });

@@ -14,6 +14,7 @@ import {
   unlikeJourneyFn,
   unsubscribeFromJourneyFn,
 } from "./journeys";
+import { journeyKeys } from "./journeys.keys";
 import type { JourneySortKey } from "./journeys";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedJourneysResponse } from "@/generated/api/schemas";
@@ -25,7 +26,7 @@ export const browseJourneysInfiniteQueryOptions = (
   sort: number,
 ) =>
   infiniteQueryOptions({
-    queryKey: ["browse-journeys", { terms, sort }] as const,
+    queryKey: journeyKeys.browse(terms, sort),
     queryFn: ({ pageParam }) =>
       searchJourneysFn({
         data: {
@@ -42,7 +43,7 @@ export const browseJourneysInfiniteQueryOptions = (
 
 export const browseJourneysStatsQueryOptions = (terms: Array<string>) =>
   queryOptions({
-    queryKey: ["browse-journeys-stats", { terms }] as const,
+    queryKey: journeyKeys.browseStats(terms),
     queryFn: () => getJourneysBrowseStatsFn({ data: { Terms: terms } }),
   });
 
@@ -82,11 +83,11 @@ export function useToggleJourneyLike(journeyId: number) {
         ? unlikeJourneyFn({ data: { journeyId } })
         : likeJourneyFn({ data: { journeyId } }),
     onMutate: async (isCurrentlyLiked) => {
-      await queryClient.cancelQueries({ queryKey: ["browse-journeys"] });
+      await queryClient.cancelQueries({ queryKey: journeyKeys.browseRoot });
       const snapshots = queryClient.getQueriesData<
         InfiniteData<PagedJourneysResponse>
       >({
-        queryKey: ["browse-journeys"],
+        queryKey: journeyKeys.browseRoot,
       });
       snapshots.forEach(([key, data]) => {
         if (!data) return;
@@ -111,7 +112,7 @@ export function useToggleJourneyLike(journeyId: number) {
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["browse-journeys"] });
+      queryClient.invalidateQueries({ queryKey: journeyKeys.browseRoot });
     },
   });
 }
@@ -125,11 +126,11 @@ export function useToggleJourneySubscription(journeyId: number) {
         ? unsubscribeFromJourneyFn({ data: { journeyId } })
         : subscribeToJourneyFn({ data: { journeyId } }),
     onMutate: async (isCurrentlySubscribed) => {
-      await queryClient.cancelQueries({ queryKey: ["browse-journeys"] });
+      await queryClient.cancelQueries({ queryKey: journeyKeys.browseRoot });
       const snapshots = queryClient.getQueriesData<
         InfiniteData<PagedJourneysResponse>
       >({
-        queryKey: ["browse-journeys"],
+        queryKey: journeyKeys.browseRoot,
       });
       snapshots.forEach(([key, data]) => {
         if (!data) return;
@@ -155,7 +156,7 @@ export function useToggleJourneySubscription(journeyId: number) {
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["browse-journeys"] });
+      queryClient.invalidateQueries({ queryKey: journeyKeys.browseRoot });
     },
   });
 }

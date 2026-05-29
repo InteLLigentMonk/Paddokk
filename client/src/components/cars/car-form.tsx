@@ -27,6 +27,7 @@ import {
   userCarsCreateUserCar,
   userCarsUpdateUserCar,
 } from "@/generated/api/user-cars/user-cars";
+import { carKeys } from "@/lib/api/cars.keys";
 import { useNotifications } from "@/integrations/mantine";
 
 interface CarFormProps {
@@ -57,17 +58,17 @@ export function CarForm({
   );
 
   const { data: makesData } = useQuery({
-    queryKey: ["car-makes"],
+    queryKey: carKeys.carMakes,
     queryFn: () => carsGetCarMakes(),
     enabled: !isCustomBuild,
   });
   const { data: modelsData } = useQuery({
-    queryKey: ["car-models", selectedMakeId],
+    queryKey: carKeys.carModels(selectedMakeId),
     queryFn: () => carsGetCarModels(selectedMakeId!),
     enabled: !isCustomBuild && !!selectedMakeId,
   });
   const { data: generationsData } = useQuery({
-    queryKey: ["car-generations", selectedModelId],
+    queryKey: carKeys.carGenerations(selectedModelId),
     queryFn: () => carsGetCarGenerations(selectedModelId!),
     enabled: !isCustomBuild && !!selectedModelId,
   });
@@ -99,13 +100,10 @@ export function CarForm({
     mutationFn: (payload: CreateUserCarCommand) =>
       userCarsCreateUserCar(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-cars" || key === "user-cars-by-username";
-        },
-      });
-      queryClient.invalidateQueries({ queryKey: ["car-limits"] });
+      carKeys.userCarListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
+      queryClient.invalidateQueries({ queryKey: carKeys.carLimits });
       notifications.success({ message: "Car added successfully!" });
       onSuccess();
     },
@@ -133,13 +131,10 @@ export function CarForm({
         isPrimary,
       } as UpdateUserCarCommand),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-cars" || key === "user-cars-by-username";
-        },
-      });
-      queryClient.invalidateQueries({ queryKey: ["car-limits"] });
+      carKeys.userCarListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
+      queryClient.invalidateQueries({ queryKey: carKeys.carLimits });
       notifications.success({ message: "Car updated successfully!" });
       onSuccess();
     },

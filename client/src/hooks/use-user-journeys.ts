@@ -1,11 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getUserJourneysFn } from "@/lib/api/user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 
 const USER_JOURNEYS_PAGE_SIZE = 20;
 
 export function useUserJourneysInfinite(enabled = true) {
   return useInfiniteQuery({
-    queryKey: ["user-journeys"],
+    queryKey: journeyKeys.userJourneysRoot,
     queryFn: ({ pageParam = 1 }) =>
       getUserJourneysFn({
         data: { page: pageParam, pageSize: USER_JOURNEYS_PAGE_SIZE },

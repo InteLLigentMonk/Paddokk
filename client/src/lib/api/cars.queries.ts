@@ -12,6 +12,7 @@ import {
   unlikeUserCarFn,
   unsubscribeFromUserCarFn,
 } from "./user-cars";
+import { carKeys } from "./cars.keys";
 import type { CarSortKey } from "./cars";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { PagedUserCarsResponse } from "@/generated/api/schemas";
@@ -23,7 +24,7 @@ export const browseCarsInfiniteQueryOptions = (
   sort: number,
 ) =>
   infiniteQueryOptions({
-    queryKey: ["browse-cars", { terms, sort }] as const,
+    queryKey: carKeys.browseCars(terms, sort),
     queryFn: ({ pageParam }) =>
       searchCarsFn({
         data: {
@@ -41,7 +42,7 @@ export const browseCarsInfiniteQueryOptions = (
 
 export const browseCarsStatsQueryOptions = (terms: Array<string>) =>
   queryOptions({
-    queryKey: ["browse-cars-stats", { terms }] as const,
+    queryKey: carKeys.browseCarsStats(terms),
     queryFn: () => getCarsBrowseStatsFn({ data: { terms, isPublic: true } }),
   });
 
@@ -79,11 +80,11 @@ export function useToggleCarLike(carId: number) {
         ? unlikeUserCarFn({ data: { carId } })
         : likeUserCarFn({ data: { carId } }),
     onMutate: async (isCurrentlyLiked) => {
-      await queryClient.cancelQueries({ queryKey: ["browse-cars"] });
+      await queryClient.cancelQueries({ queryKey: carKeys.browseCarsRoot });
       const snapshots = queryClient.getQueriesData<
         InfiniteData<PagedUserCarsResponse>
       >({
-        queryKey: ["browse-cars"],
+        queryKey: carKeys.browseCarsRoot,
       });
       snapshots.forEach(([key, data]) => {
         if (!data) return;
@@ -108,7 +109,7 @@ export function useToggleCarLike(carId: number) {
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["browse-cars"] });
+      queryClient.invalidateQueries({ queryKey: carKeys.browseCarsRoot });
     },
   });
 }
@@ -122,11 +123,11 @@ export function useToggleCarSubscription(carId: number) {
         ? unsubscribeFromUserCarFn({ data: { carId } })
         : subscribeToUserCarFn({ data: { carId } }),
     onMutate: async (isCurrentlySubscribed) => {
-      await queryClient.cancelQueries({ queryKey: ["browse-cars"] });
+      await queryClient.cancelQueries({ queryKey: carKeys.browseCarsRoot });
       const snapshots = queryClient.getQueriesData<
         InfiniteData<PagedUserCarsResponse>
       >({
-        queryKey: ["browse-cars"],
+        queryKey: carKeys.browseCarsRoot,
       });
       snapshots.forEach(([key, data]) => {
         if (!data) return;
@@ -152,7 +153,7 @@ export function useToggleCarSubscription(carId: number) {
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["browse-cars"] });
+      queryClient.invalidateQueries({ queryKey: carKeys.browseCarsRoot });
     },
   });
 }

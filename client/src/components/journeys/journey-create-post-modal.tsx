@@ -21,6 +21,7 @@ import { useNotifications } from "@/integrations/mantine";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { useCreateJourneyPost } from "@/hooks/use-journey-detail";
 import { getImageLimitsFn } from "@/lib/api/limits";
+import { carKeys } from "@/lib/api/cars.keys";
 import { handleUploadError } from "@/lib/api/upload-error";
 import {
   journeysDeleteJourneyPostImage,
@@ -63,7 +64,7 @@ export function JourneyCreatePostModal({
   const journeyId = Number(journey.id);
 
   const { data: imageLimits } = useQuery({
-    queryKey: ["image-limits"],
+    queryKey: carKeys.imageLimits,
     queryFn: () => getImageLimitsFn(),
     enabled: opened,
   });

@@ -20,6 +20,7 @@ import { CarImagePreview } from "./car-image-preview";
 import type { DragEndEvent } from "@dnd-kit/core";
 import type { PendingImage } from "./car-form-stepper";
 import { limitsGetImageLimits } from "@/generated/api/limits/limits";
+import { carKeys } from "@/lib/api/cars.keys";
 import { useNotifications } from "@/integrations/mantine";
 
 interface CarImagesStepProps {
@@ -40,7 +41,7 @@ export function CarImagesStep({
   const notifications = useNotifications();
 
   const { data: limitsData } = useQuery({
-    queryKey: ["image-limits"],
+    queryKey: carKeys.imageLimits,
     queryFn: () => limitsGetImageLimits(),
   });
   const maxImages = limitsData ? Number(limitsData.maxImagesPerCar) : 10;

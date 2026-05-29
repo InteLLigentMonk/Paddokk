@@ -21,6 +21,7 @@ import {
   unsubscribeFromUserCarFn,
   updateUserCarFn,
 } from "@/lib/api/user-cars";
+import { carKeys } from "@/lib/api/cars.keys";
 import { useNotifications } from "@/integrations/mantine";
 
 interface CarCardProps {
@@ -42,12 +43,9 @@ export function CarCard({ car }: CarCardProps) {
       : `${car.carMakeName} ${car.carModelName}`);
 
   const invalidateUserCars = () =>
-    queryClient.invalidateQueries({
-      predicate: (q) => {
-        const key = q.queryKey[0];
-        return key === "user-cars" || key === "user-cars-by-username";
-      },
-    });
+    carKeys.userCarListRoots.forEach((queryKey) =>
+      queryClient.invalidateQueries({ queryKey }),
+    );
 
   const likeMutation = useMutation({
     mutationFn: () =>

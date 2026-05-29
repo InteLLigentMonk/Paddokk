@@ -10,6 +10,7 @@ import {
   useSession,
 } from "@/lib/auth-client";
 import { useNotifications } from "@/integrations/mantine";
+import { authKeys } from "@/lib/api/auth.keys";
 
 /**
  * Custom hook for authentication operations
@@ -55,7 +56,7 @@ export function useAuth() {
       });
 
       // Remove stale auth cache so beforeLoad fetches a fresh authenticated session
-      queryClient.removeQueries({ queryKey: ["auth-session"] });
+      queryClient.removeQueries({ queryKey: authKeys.session });
       navigate({ to: "/dashboard" });
 
       return { success: true };
@@ -103,7 +104,7 @@ export function useAuth() {
       });
 
       // Remove stale auth cache so beforeLoad fetches a fresh authenticated session
-      queryClient.removeQueries({ queryKey: ["auth-session"] });
+      queryClient.removeQueries({ queryKey: authKeys.session });
       navigate({ to: "/dashboard" });
 
       return { success: true };
@@ -131,7 +132,7 @@ export function useAuth() {
 
       // Remove stale auth cache before navigating so beforeLoad fetches a fresh
       // (null) session — otherwise the 5-min staleTime keeps isAuthenticated=true.
-      queryClient.removeQueries({ queryKey: ["auth-session"] });
+      queryClient.removeQueries({ queryKey: authKeys.session });
       await navigate({ to: "/" });
       queryClient.clear();
 
