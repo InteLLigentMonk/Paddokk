@@ -50,6 +50,7 @@ import { Route as AppUsersUsernameCarsSlugRouteImport } from './routes/_app/user
 import { Route as AppUsersUsernameJourneysSlugIndexRouteImport } from './routes/_app/users/$username/journeys/$slug/index'
 import { Route as AppUsersUsernameCarsSlugIndexRouteImport } from './routes/_app/users/$username/cars/$slug/index'
 import { Route as AppUsersUsernameCarsSlugEditRouteImport } from './routes/_app/users/$username/cars/$slug/edit'
+import { Route as AppUsersUsernameJourneysSlugV2IndexRouteImport } from './routes/_app/users/$username/journeys/$slug/v2/index'
 
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
@@ -261,6 +262,12 @@ const AppUsersUsernameCarsSlugEditRoute =
     path: '/edit',
     getParentRoute: () => AppUsersUsernameCarsSlugRoute,
   } as any)
+const AppUsersUsernameJourneysSlugV2IndexRoute =
+  AppUsersUsernameJourneysSlugV2IndexRouteImport.update({
+    id: '/v2/',
+    path: '/v2/',
+    getParentRoute: () => AppUsersUsernameJourneysSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
@@ -301,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
   '/users/$username/cars/$slug/': typeof AppUsersUsernameCarsSlugIndexRoute
   '/users/$username/journeys/$slug/': typeof AppUsersUsernameJourneysSlugIndexRoute
+  '/users/$username/journeys/$slug/v2/': typeof AppUsersUsernameJourneysSlugV2IndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
@@ -333,6 +341,7 @@ export interface FileRoutesByTo {
   '/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
   '/users/$username/cars/$slug': typeof AppUsersUsernameCarsSlugIndexRoute
   '/users/$username/journeys/$slug': typeof AppUsersUsernameJourneysSlugIndexRoute
+  '/users/$username/journeys/$slug/v2': typeof AppUsersUsernameJourneysSlugV2IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -377,6 +386,7 @@ export interface FileRoutesById {
   '/_app/users/$username/cars/$slug/edit': typeof AppUsersUsernameCarsSlugEditRoute
   '/_app/users/$username/cars/$slug/': typeof AppUsersUsernameCarsSlugIndexRoute
   '/_app/users/$username/journeys/$slug/': typeof AppUsersUsernameJourneysSlugIndexRoute
+  '/_app/users/$username/journeys/$slug/v2/': typeof AppUsersUsernameJourneysSlugV2IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -419,6 +429,7 @@ export interface FileRouteTypes {
     | '/users/$username/cars/$slug/edit'
     | '/users/$username/cars/$slug/'
     | '/users/$username/journeys/$slug/'
+    | '/users/$username/journeys/$slug/v2/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/users/$username/cars/$slug/edit'
     | '/users/$username/cars/$slug'
     | '/users/$username/journeys/$slug'
+    | '/users/$username/journeys/$slug/v2'
   id:
     | '__root__'
     | '/_app'
@@ -494,6 +506,7 @@ export interface FileRouteTypes {
     | '/_app/users/$username/cars/$slug/edit'
     | '/_app/users/$username/cars/$slug/'
     | '/_app/users/$username/journeys/$slug/'
+    | '/_app/users/$username/journeys/$slug/v2/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -792,6 +805,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsersUsernameCarsSlugEditRouteImport
       parentRoute: typeof AppUsersUsernameCarsSlugRoute
     }
+    '/_app/users/$username/journeys/$slug/v2/': {
+      id: '/_app/users/$username/journeys/$slug/v2/'
+      path: '/v2'
+      fullPath: '/users/$username/journeys/$slug/v2/'
+      preLoaderRoute: typeof AppUsersUsernameJourneysSlugV2IndexRouteImport
+      parentRoute: typeof AppUsersUsernameJourneysSlugRoute
+    }
   }
 }
 
@@ -869,12 +889,15 @@ const AppUsersUsernameCarsRouteWithChildren =
 
 interface AppUsersUsernameJourneysSlugRouteChildren {
   AppUsersUsernameJourneysSlugIndexRoute: typeof AppUsersUsernameJourneysSlugIndexRoute
+  AppUsersUsernameJourneysSlugV2IndexRoute: typeof AppUsersUsernameJourneysSlugV2IndexRoute
 }
 
 const AppUsersUsernameJourneysSlugRouteChildren: AppUsersUsernameJourneysSlugRouteChildren =
   {
     AppUsersUsernameJourneysSlugIndexRoute:
       AppUsersUsernameJourneysSlugIndexRoute,
+    AppUsersUsernameJourneysSlugV2IndexRoute:
+      AppUsersUsernameJourneysSlugV2IndexRoute,
   }
 
 const AppUsersUsernameJourneysSlugRouteWithChildren =

@@ -8,10 +8,13 @@
 import type {
   ChangeUsernameCommand,
   JourneyDto,
+  PagedResultOfUserDto,
   UpdateUserCommand,
   UserCarDto,
   UserDto,
   UsersGetCarJourneysParams,
+  UsersGetFollowersParams,
+  UsersGetFollowingParams,
   UsersGetUserCarsByUsernameParams
 } from '../schemas';
 
@@ -149,6 +152,70 @@ export const usersUnfollowUser = async (id: string, options?: RequestInit): Prom
   {
     ...options,
     method: 'DELETE'
+
+
+  }
+);}
+
+
+export const getUsersGetFollowersUrl = (id: string,
+    params?: UsersGetFollowersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/Users/${id}/followers?${stringifiedParams}` : `/api/v1/Users/${id}/followers`
+}
+
+/**
+ * @summary Get a user's followers (paged, public)
+ */
+export const usersGetFollowers = async (id: string,
+    params?: UsersGetFollowersParams, options?: RequestInit): Promise<PagedResultOfUserDto> => {
+
+  return apiFetcher<PagedResultOfUserDto>(getUsersGetFollowersUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+export const getUsersGetFollowingUrl = (id: string,
+    params?: UsersGetFollowingParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/Users/${id}/following?${stringifiedParams}` : `/api/v1/Users/${id}/following`
+}
+
+/**
+ * @summary Get users a user follows (paged, public)
+ */
+export const usersGetFollowing = async (id: string,
+    params?: UsersGetFollowingParams, options?: RequestInit): Promise<PagedResultOfUserDto> => {
+
+  return apiFetcher<PagedResultOfUserDto>(getUsersGetFollowingUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
 
 
   }

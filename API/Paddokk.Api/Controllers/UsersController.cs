@@ -4,9 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Api.Extensions;
+using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarBySlug;
 using Paddokk.Core.Features.Follows.Commands.FollowUser;
 using Paddokk.Core.Features.Follows.Commands.UnfollowUser;
+using Paddokk.Core.Features.Follows.Queries.GetFollowers;
+using Paddokk.Core.Features.Follows.Queries.GetFollowing;
 using Paddokk.Core.Features.Cars.Queries.GetUserCarsByUsername;
 using Paddokk.Core.Features.Journeys.Queries.GetCarJourneys;
 using Paddokk.Core.Features.Journeys.Queries.GetJourneyBySlug;
@@ -80,6 +83,34 @@ public class UsersController(ISender sender) : ApiControllerBase
     {
         var result = await sender.Send(new UnfollowUserCommand(id), ct);
         return result.IsSuccess ? NoContent() : FromError(result.Error);
+    }
+
+    [HttpGet("{id}/followers")]
+    [AllowAnonymous]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get a user's followers (paged, public)")]
+    public async Task<ActionResult<PagedResult<UserDto>>> GetFollowers(
+        string id,
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize)
+    {
+        var result = await sender.Send(new GetFollowersQuery(id, page, pageSize), ct);
+        return OkOrError(result);
+    }
+
+    [HttpGet("{id}/following")]
+    [AllowAnonymous]
+    [EnableRateLimiting("reads")]
+    [EndpointSummary("Get users a user follows (paged, public)")]
+    public async Task<ActionResult<PagedResult<UserDto>>> GetFollowing(
+        string id,
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = PaginationDefaults.DefaultPageSize)
+    {
+        var result = await sender.Send(new GetFollowingQuery(id, page, pageSize), ct);
+        return OkOrError(result);
     }
 
     [HttpGet("{userId}")]

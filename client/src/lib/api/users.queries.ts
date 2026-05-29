@@ -1,4 +1,5 @@
 ﻿import {
+  infiniteQueryOptions,
   queryOptions,
   useMutation,
   useQueryClient,
@@ -10,6 +11,8 @@ import {
   followUserFn,
   getCarJourneysFn,
   getCurrentUserFn,
+  getFollowersFn,
+  getFollowingFn,
   getUserByUsernameFn,
   getUserCarBySlugFn,
   getUserCarsByUsernameFn,
@@ -58,6 +61,31 @@ export const userJourneyBySlugQueryOptions = (username: string, slug: string) =>
   queryOptions({
     queryKey: ["journey-by-slug", username, slug],
     queryFn: () => getUserJourneyBySlugFn({ data: { username, slug } }),
+  });
+
+const FOLLOW_LIST_PAGE_SIZE = 20;
+
+export type FollowListType = "followers" | "following";
+
+export const followListInfiniteQueryOptions = (
+  userId: string,
+  type: FollowListType,
+) =>
+  infiniteQueryOptions({
+    queryKey: ["follow-list", type, userId] as const,
+    queryFn: ({ pageParam }) => {
+      const data = {
+        id: userId,
+        page: pageParam,
+        pageSize: FOLLOW_LIST_PAGE_SIZE,
+      };
+      return type === "followers"
+        ? getFollowersFn({ data })
+        : getFollowingFn({ data });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.hasNextPage ? allPages.length + 1 : undefined,
   });
 
 export const carImagesQueryOptions = (carId: number) =>
@@ -144,6 +172,9 @@ export function useToggleFollow(userId: string, username: string) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });
+      // Refresh any open followers/following lists so a follow-back from a row
+      // reflects the new relationship once the write settles.
+      queryClient.invalidateQueries({ queryKey: ["follow-list"] });
     },
   });
 }
