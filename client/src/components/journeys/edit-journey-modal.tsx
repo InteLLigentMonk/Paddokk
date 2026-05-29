@@ -23,6 +23,7 @@ import {
   updateJourneyFn,
 } from "@/lib/api/user-journeys";
 import { useUserJourneysInfinite } from "@/hooks/use-user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 import { userJourneysUploadJourneyCoverImage } from "@/generated/api/user-journeys/user-journeys";
 import { handleUploadError } from "@/lib/api/upload-error";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
@@ -61,7 +62,7 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
   const journeyId = Number(journey.id);
 
   const { data: defaultJourney } = useQuery({
-    queryKey: ["default-active-journey"],
+    queryKey: journeyKeys.defaultActiveJourney,
     queryFn: () => getDefaultActiveJourneyFn(),
   });
   const isDefault = defaultJourney
@@ -99,18 +100,15 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
           isDefault &&
           Number(value.status) !== Number(journey.status) &&
           Number(value.status) !== 1;
+        journeyKeys.userJourneyListRoots.forEach((queryKey) =>
+          queryClient.invalidateQueries({ queryKey }),
+        );
         queryClient.invalidateQueries({
-          predicate: (q) => {
-            const key = q.queryKey[0];
-            return (
-              key === "user-journeys" || key === "user-journeys-by-username"
-            );
-          },
+          queryKey: journeyKeys.detail(journeyId),
         });
         queryClient.invalidateQueries({
-          queryKey: ["journey-detail", journeyId],
+          queryKey: journeyKeys.defaultActiveJourney,
         });
-        queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
         notifications.success({
           message: defaultChanged
             ? "Aktiv resa uppdaterad"

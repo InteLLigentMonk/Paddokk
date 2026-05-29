@@ -16,6 +16,7 @@ import {
   carsGetCarMakes,
   carsGetCarModels,
 } from "@/generated/api/cars/cars";
+import { carKeys } from "@/lib/api/cars.keys";
 
 interface CarBasicInfoStepProps {
   initialData: CarBasicFormData | null;
@@ -45,17 +46,17 @@ export function CarBasicInfoStep({
   >(initialData?.carGenerationId ?? undefined);
 
   const { data: makesData } = useQuery({
-    queryKey: ["car-makes"],
+    queryKey: carKeys.carMakes,
     queryFn: () => carsGetCarMakes(),
     enabled: !isCustomBuild,
   });
   const { data: modelsData } = useQuery({
-    queryKey: ["car-models", selectedMakeId],
+    queryKey: carKeys.carModels(selectedMakeId),
     queryFn: () => carsGetCarModels(selectedMakeId!),
     enabled: !isCustomBuild && !!selectedMakeId,
   });
   const { data: generationsData } = useQuery({
-    queryKey: ["car-generations", selectedModelId],
+    queryKey: carKeys.carGenerations(selectedModelId),
     queryFn: () => carsGetCarGenerations(selectedModelId!),
     enabled: !isCustomBuild && !!selectedModelId,
   });

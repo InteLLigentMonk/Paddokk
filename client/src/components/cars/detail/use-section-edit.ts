@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { CarSpecCategoryDto } from "@/generated/api/schemas";
 import { useNotifications } from "@/integrations/mantine";
 import { updateUserCarFn } from "@/lib/api/user-cars";
+import { userKeys } from "@/lib/api/users.keys";
 
 type CarPatch = {
   ownerNote?: string | null;
@@ -36,7 +37,7 @@ export function useSectionEdit<T>(initial: T, carId: number) {
     setIsSaving(true);
     try {
       await updateUserCarFn({ data: { carId, ...patch } });
-      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.userCarDetailRoot });
       notifications.success({ message: successMessage });
       setIsEditing(false);
     } catch {

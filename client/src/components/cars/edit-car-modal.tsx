@@ -4,13 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { CarForm } from "./car-form";
 import { carsPageStore, closeEditCarModal } from "@/lib/stores/cars-page-store";
 import { userCarsGetUserCar } from "@/generated/api/user-cars/user-cars";
+import { carKeys } from "@/lib/api/cars.keys";
 
 export function EditCarModal() {
   const editCarState = useStore(carsPageStore, (state) => state.modals.editCar);
   const { open: isOpen, carId } = editCarState;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["user-car", carId],
+    queryKey: carKeys.userCar(carId),
     queryFn: () => userCarsGetUserCar(carId!),
     enabled: isOpen && !!carId,
   });

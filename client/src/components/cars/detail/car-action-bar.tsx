@@ -10,6 +10,7 @@ import {
   unlikeUserCarFn,
   unsubscribeFromUserCarFn,
 } from "@/lib/api/user-cars";
+import { userKeys } from "@/lib/api/users.keys";
 
 interface CarActionBarProps {
   car: UserCarDto;
@@ -29,7 +30,7 @@ export function CarActionBar({ car }: CarActionBarProps) {
       } else {
         await likeUserCarFn({ data: { carId: Number(car.id) } });
       }
-      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.userCarDetailRoot });
     } catch {
       notifications.error({ message: "Failed to update like" });
     } finally {
@@ -45,7 +46,7 @@ export function CarActionBar({ car }: CarActionBarProps) {
       } else {
         await subscribeToUserCarFn({ data: { carId: Number(car.id) } });
       }
-      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.userCarDetailRoot });
     } catch {
       notifications.error({ message: "Failed to update follow" });
     } finally {

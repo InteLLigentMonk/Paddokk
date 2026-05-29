@@ -10,6 +10,7 @@ import {
   deleteUserJourneyFn,
   getDefaultActiveJourneyFn,
 } from "@/lib/api/user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 import { useNotifications } from "@/integrations/mantine";
 
 export function DeleteJourneyConfirm() {
@@ -22,13 +23,13 @@ export function DeleteJourneyConfirm() {
   const notifications = useNotifications();
 
   const { data } = useQuery({
-    queryKey: ["user-journey", journeyId],
+    queryKey: journeyKeys.userJourney(journeyId),
     queryFn: () => userJourneysGetUserJourney(journeyId!),
     enabled: isOpen && !!journeyId,
   });
 
   const { data: defaultJourney } = useQuery({
-    queryKey: ["default-active-journey"],
+    queryKey: journeyKeys.defaultActiveJourney,
     queryFn: () => getDefaultActiveJourneyFn(),
     enabled: isOpen,
   });
@@ -52,14 +53,13 @@ export function DeleteJourneyConfirm() {
           ? "Resan borttagen, aktiv resa uppdaterad"
           : "Resan borttagen",
       });
+      journeyKeys.userJourneyListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
       queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-journeys" || key === "user-journeys-by-username";
-        },
+        queryKey: journeyKeys.defaultActiveJourney,
       });
-      queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
-      queryClient.invalidateQueries({ queryKey: ["journey-limits"] });
+      queryClient.invalidateQueries({ queryKey: journeyKeys.journeyLimits });
       closeDeleteJourneyConfirm();
     },
   });

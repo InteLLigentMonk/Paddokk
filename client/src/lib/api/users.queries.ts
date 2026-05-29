@@ -1,4 +1,4 @@
-﻿import {
+import {
   infiniteQueryOptions,
   queryOptions,
   useMutation,
@@ -22,17 +22,22 @@ import {
   updateCurrentUserFn,
 } from "./users";
 import { getCarImagesFn } from "./car-images";
+import { userKeys } from "./users.keys";
+import { carKeys } from "./cars.keys";
+import type { FollowListType } from "./users.keys";
 import type { UserDto } from "@/generated/api/schemas";
+
+export type { FollowListType };
 
 export const currentUserQueryOptions = () =>
   queryOptions({
-    queryKey: ["current-user"],
+    queryKey: userKeys.currentUser,
     queryFn: () => getCurrentUserFn(),
   });
 
 export const userByUsernameQueryOptions = (username: string) =>
   queryOptions({
-    queryKey: ["user-by-username", username],
+    queryKey: userKeys.userDetail(username),
     queryFn: () => getUserByUsernameFn({ data: { username } }),
   });
 
@@ -41,38 +46,36 @@ export const userCarsByUsernameQueryOptions = (
   limit?: number,
 ) =>
   queryOptions({
-    queryKey: ["user-cars-by-username", username, limit ?? null],
+    queryKey: userKeys.userCars(username, limit),
     queryFn: () => getUserCarsByUsernameFn({ data: { username, limit } }),
   });
 
 export const userCarBySlugQueryOptions = (username: string, slug: string) =>
   queryOptions({
-    queryKey: ["user-car-by-slug", username, slug],
+    queryKey: userKeys.userCarDetail(username, slug),
     queryFn: () => getUserCarBySlugFn({ data: { username, slug } }),
   });
 
 export const userJourneysByUsernameQueryOptions = (username: string) =>
   queryOptions({
-    queryKey: ["user-journeys-by-username", username],
+    queryKey: userKeys.userJourneys(username),
     queryFn: () => getUserJourneysByUsernameFn({ data: { username } }),
   });
 
 export const userJourneyBySlugQueryOptions = (username: string, slug: string) =>
   queryOptions({
-    queryKey: ["journey-by-slug", username, slug],
+    queryKey: userKeys.journeyDetail(username, slug),
     queryFn: () => getUserJourneyBySlugFn({ data: { username, slug } }),
   });
 
 const FOLLOW_LIST_PAGE_SIZE = 20;
-
-export type FollowListType = "followers" | "following";
 
 export const followListInfiniteQueryOptions = (
   userId: string,
   type: FollowListType,
 ) =>
   infiniteQueryOptions({
-    queryKey: ["follow-list", type, userId] as const,
+    queryKey: userKeys.followList(type, userId),
     queryFn: ({ pageParam }) => {
       const data = {
         id: userId,
@@ -90,7 +93,7 @@ export const followListInfiniteQueryOptions = (
 
 export const carImagesQueryOptions = (carId: number) =>
   queryOptions({
-    queryKey: ["car-images", carId],
+    queryKey: carKeys.carImages(carId),
     queryFn: () => getCarImagesFn({ data: { carId } }),
   });
 
@@ -101,7 +104,7 @@ export const carJourneysQueryOptions = (
   pageSize = 5,
 ) =>
   queryOptions({
-    queryKey: ["car-journeys", username, carSlug, page, pageSize],
+    queryKey: carKeys.carJourneys(username, carSlug, page, pageSize),
     queryFn: () =>
       getCarJourneysFn({ data: { username, carSlug, page, pageSize } }),
   });
@@ -111,8 +114,8 @@ export function useUpdateCurrentUser() {
   return useMutation({
     mutationFn: updateCurrentUserFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["current-user"] });
-      queryClient.invalidateQueries({ queryKey: ["user-by-username"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.currentUser });
+      queryClient.invalidateQueries({ queryKey: userKeys.userDetailRoot });
     },
   });
 }
@@ -122,8 +125,8 @@ export function useChangeUsername() {
   return useMutation({
     mutationFn: changeUsernameFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["current-user"] });
-      queryClient.invalidateQueries({ queryKey: ["user-by-username"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.currentUser });
+      queryClient.invalidateQueries({ queryKey: userKeys.userDetailRoot });
     },
   });
 }
@@ -141,7 +144,7 @@ export function useDeleteCurrentUser() {
  */
 export function useToggleFollow(userId: string, username: string) {
   const queryClient = useQueryClient();
-  const queryKey = ["user-by-username", username];
+  const queryKey = userKeys.userDetail(username);
 
   return useMutation({
     mutationFn: (isCurrentlyFollowing: boolean) =>
@@ -174,7 +177,7 @@ export function useToggleFollow(userId: string, username: string) {
       queryClient.invalidateQueries({ queryKey });
       // Refresh any open followers/following lists so a follow-back from a row
       // reflects the new relationship once the write settles.
-      queryClient.invalidateQueries({ queryKey: ["follow-list"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.followListRoot });
     },
   });
 }

@@ -16,6 +16,7 @@ import { CarDriveSelect, DRIVE_LABELS } from "./car-drive-select";
 
 import type { UserCarDto } from "@/generated/api/schemas";
 import { updateUserCarFn } from "@/lib/api/user-cars";
+import { userKeys } from "@/lib/api/users.keys";
 import { useNotifications } from "@/integrations/mantine";
 import { formatNumber } from "@/lib/utils/number-formatter";
 
@@ -94,7 +95,7 @@ export function CarSpecStrip({ car }: CarSpecStripProps) {
           odometerKm: odometerKm !== "" ? Number(odometerKm) : null,
         },
       });
-      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.userCarDetailRoot });
       notifications.success({ message: "Specs updated" });
       setIsEditing(false);
     } catch {

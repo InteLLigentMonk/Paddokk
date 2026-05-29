@@ -29,6 +29,7 @@ import {
 import type { UserCarDto } from "@/generated/api/schemas";
 import { useNotifications } from "@/integrations/mantine";
 import { updateUserCarFn } from "@/lib/api/user-cars";
+import { userKeys } from "@/lib/api/users.keys";
 import { formatNumber } from "@/lib/utils/number-formatter";
 
 interface VitalsRowProps {
@@ -92,7 +93,7 @@ export function CarVitalsCard({ car }: CarVitalsCardProps) {
           odometerKm: odometerKm !== "" ? Number(odometerKm) : null,
         },
       });
-      queryClient.invalidateQueries({ queryKey: ["user-car-by-slug"] });
+      queryClient.invalidateQueries({ queryKey: userKeys.userCarDetailRoot });
       notifications.success({ message: "Vitals updated" });
       setIsEditing(false);
     } catch {

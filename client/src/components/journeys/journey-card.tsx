@@ -36,6 +36,7 @@ import {
   setDefaultActiveJourneyFn,
   updateJourneyFn,
 } from "@/lib/api/user-journeys";
+import { journeyKeys } from "@/lib/api/journeys.keys";
 import { useNotifications } from "@/integrations/mantine";
 
 interface JourneyCardProps {
@@ -113,13 +114,12 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
         },
       }),
     onSuccess: (_, vars) => {
+      journeyKeys.userJourneyListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
       queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-journeys" || key === "user-journeys-by-username";
-        },
+        queryKey: journeyKeys.defaultActiveJourney,
       });
-      queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       const defaultChanged =
         isDefault &&
         vars.newStatus !== undefined &&
@@ -136,13 +136,12 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
   const setDefaultMutation = useMutation({
     mutationFn: () => setDefaultActiveJourneyFn({ data: { journeyId } }),
     onSuccess: () => {
+      journeyKeys.userJourneyListRoots.forEach((queryKey) =>
+        queryClient.invalidateQueries({ queryKey }),
+      );
       queryClient.invalidateQueries({
-        predicate: (q) => {
-          const key = q.queryKey[0];
-          return key === "user-journeys" || key === "user-journeys-by-username";
-        },
+        queryKey: journeyKeys.defaultActiveJourney,
       });
-      queryClient.invalidateQueries({ queryKey: ["default-active-journey"] });
       notifications.success({ message: "Aktiv resa uppdaterad" });
     },
     onError: () => {
