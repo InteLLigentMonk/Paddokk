@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.32.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.31.2...v0.32.0) (2026-05-29)
+
+
+### Features
+
+* **follows:** add user-follow aggregate and follow button on profile ([#229](https://github.com/InteLLigentMonk/Paddokk/issues/229)) ([f1ca392](https://github.com/InteLLigentMonk/Paddokk/commit/f1ca39285de2dd2be90f9ad1ca28921c41d1d836)), closes [#178](https://github.com/InteLLigentMonk/Paddokk/issues/178)
+
 ## [0.31.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.31.1...v0.31.2) (2026-05-28)
 
 
