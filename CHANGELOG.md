@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.35.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.34.2...v0.35.0) (2026-06-04)
+
+
+### Features
+
+* **feed:** personalised chronological feed with JourneyPost cards ([#242](https://github.com/InteLLigentMonk/Paddokk/issues/242)) ([d716cb4](https://github.com/InteLLigentMonk/Paddokk/commit/d716cb42ca393ebb6f6784869c5fec151a9d3aa2))
+
 ## [0.34.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.34.1...v0.34.2) (2026-05-29)
 
 
