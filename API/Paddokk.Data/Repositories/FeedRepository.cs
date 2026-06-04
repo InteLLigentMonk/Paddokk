@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Paddokk.Core.Common.Pagination;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.DTOs.Feed;
+using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Data.Repositories;
 
@@ -9,16 +10,21 @@ namespace Paddokk.Data.Repositories;
 /// Composes the personalised, strictly chronological Feed directly from the underlying
 /// entities — the module owns no storage of its own (#185).
 ///
-/// This tracer slice projects a single item type, <see cref="FeedItemType.JourneyPost"/>,
-/// drawn from its three source paths (Followed author / Subscribed Journey / Subscribed
-/// UserCar). Because all three are membership tests against the same JourneyPosts table,
-/// they collapse into one projected query whose rows are inherently distinct — a post
-/// matching several paths is still one row. Later slices add the other five item types as
-/// additional projected arms UNION-ed onto this one (heterogeneous tables, where the UNION
-/// genuinely earns its keep), ordered and paged across the whole set.
+/// Each item type is a thin UNION arm derived from an existing entity's timestamp; there
+/// is no event-store table. The arms are projected to a common scalar shape so Postgres can
+/// UNION them, ordered and paged across the whole set. Per-row collections (a JourneyPost's
+/// images and comment count) are deliberately NOT projected inside the UNION — EF Core cannot
+/// translate set operations over collection projections — so they are backfilled in a second,
+/// id-scoped query against only the page that survived pagination.
+///
+/// Source paths by item type:
+///   JourneyPost      Followed author OR Subscribed Journey OR Subscribed UserCar (Model A)
+///   UserCarCreated   author Followed                                            (#186)
+///   JourneyStarted   author Followed                                            (#186)
+///   JourneyCompleted author Followed                                            (#186)
 ///
 /// Per ADR-0001 this repository is not unit-tested; the UNION/projection semantics ride on
-/// the SQL and are verified by inspection / a future suite.
+/// the SQL and are verified by inspection.
 /// </summary>
 public class FeedRepository(PaddokkDbContext db) : IFeedRepository
 {
@@ -42,12 +48,10 @@ public class FeedRepository(PaddokkDbContext db) : IFeedRepository
             .Where(sub => sub.UserId == actorId && sub.IsActive)
             .Select(sub => sub.UserCarId);
 
+        // Arm 1 — JourneyPost. Images and comment count are backfilled after paging (see
+        // class remarks); the UNION projection carries only scalars.
         var journeyPostItems = db.JourneyPosts
-            .AsNoTracking()
-            // Visibility: never surface non-public Journeys or soft-deleted authors' content.
             .Where(post => post.Journey.IsPublic && !post.Author.IsDeleted)
-            // The three JourneyPost source paths (Model A: a UserCar-Subscription covers
-            // every Journey on that UserCar).
             .Where(post =>
                 followedAuthorIds.Contains(post.AuthorId)
                 || subscribedJourneyIds.Contains(post.JourneyId)
@@ -70,16 +74,94 @@ public class FeedRepository(PaddokkDbContext db) : IFeedRepository
                     ?? (post.Journey.UserCar.CarModel != null ? post.Journey.UserCar.CarModel.Name : null),
                 JourneyPostId = post.Id,
                 TextContent = post.TextContent,
-                ImageUrls = post.Images
-                    .OrderBy(img => img.SortOrder)
-                    .Select(img => img.ImageUrl)
-                    .ToList(),
-                CommentCount = post.Comments.Count
+                ImageUrls = null,
+                CommentCount = null
             });
 
-        // The full union across all six item types is assembled here in later slices:
-        //   feed = journeyPostItems.Union(lifecycleItems).Union(contentUpdateItems);
-        var feed = journeyPostItems;
+        // Arm 2 — UserCarCreated. A Followed User adds a new UserCar.
+        var userCarCreatedItems = db.UserCars
+            .Where(car => car.IsActive && car.IsPublic && !car.User.IsDeleted)
+            .Where(car => followedAuthorIds.Contains(car.PrincipalId))
+            .Select(car => new FeedItemDto
+            {
+                Type = FeedItemType.UserCarCreated,
+                CreatedAt = car.CreatedAt,
+                ActorUsername = car.User.Username,
+                ActorDisplayName = car.User.DisplayName,
+                ActorAvatarUrl = car.User.AvatarUrl,
+                JourneyId = null,
+                JourneyTitle = null,
+                JourneySlug = null,
+                UserCarId = car.Id,
+                UserCarSlug = car.Slug,
+                UserCarLabel =
+                    car.Nickname
+                    ?? car.CustomBuildName
+                    ?? (car.CarModel != null ? car.CarModel.Name : null),
+                JourneyPostId = null,
+                TextContent = null,
+                ImageUrls = null,
+                CommentCount = null
+            });
+
+        // Arm 3 — JourneyStarted. A Followed User starts a new Journey.
+        var journeyStartedItems = db.Journeys
+            .Where(journey => journey.IsPublic && !journey.User.IsDeleted)
+            .Where(journey => followedAuthorIds.Contains(journey.PrincipalId))
+            .Select(journey => new FeedItemDto
+            {
+                Type = FeedItemType.JourneyStarted,
+                CreatedAt = journey.CreatedAt,
+                ActorUsername = journey.User.Username,
+                ActorDisplayName = journey.User.DisplayName,
+                ActorAvatarUrl = journey.User.AvatarUrl,
+                JourneyId = journey.Id,
+                JourneyTitle = journey.Title,
+                JourneySlug = journey.Slug,
+                UserCarId = journey.UserCarId,
+                UserCarSlug = journey.UserCar.Slug,
+                UserCarLabel =
+                    journey.UserCar.Nickname
+                    ?? journey.UserCar.CustomBuildName
+                    ?? (journey.UserCar.CarModel != null ? journey.UserCar.CarModel.Name : null),
+                JourneyPostId = null,
+                TextContent = null,
+                ImageUrls = null,
+                CommentCount = null
+            });
+
+        // Arm 4 — JourneyCompleted. A Followed User marks a Journey complete; ordered by the
+        // completion moment, not the journey's creation.
+        var journeyCompletedItems = db.Journeys
+            .Where(journey => journey.IsPublic && !journey.User.IsDeleted)
+            .Where(journey => journey.Status == JourneyStatus.Completed && journey.CompletedAt != null)
+            .Where(journey => followedAuthorIds.Contains(journey.PrincipalId))
+            .Select(journey => new FeedItemDto
+            {
+                Type = FeedItemType.JourneyCompleted,
+                CreatedAt = journey.CompletedAt!.Value,
+                ActorUsername = journey.User.Username,
+                ActorDisplayName = journey.User.DisplayName,
+                ActorAvatarUrl = journey.User.AvatarUrl,
+                JourneyId = journey.Id,
+                JourneyTitle = journey.Title,
+                JourneySlug = journey.Slug,
+                UserCarId = journey.UserCarId,
+                UserCarSlug = journey.UserCar.Slug,
+                UserCarLabel =
+                    journey.UserCar.Nickname
+                    ?? journey.UserCar.CustomBuildName
+                    ?? (journey.UserCar.CarModel != null ? journey.UserCar.CarModel.Name : null),
+                JourneyPostId = null,
+                TextContent = null,
+                ImageUrls = null,
+                CommentCount = null
+            });
+
+        var feed = journeyPostItems
+            .Union(userCarCreatedItems)
+            .Union(journeyStartedItems)
+            .Union(journeyCompletedItems);
 
         var totalCount = await feed.CountAsync(cancellationToken);
 
@@ -92,6 +174,46 @@ public class FeedRepository(PaddokkDbContext db) : IFeedRepository
             .Take(s)
             .ToListAsync(cancellationToken);
 
-        return (items, totalCount);
+        return (await BackfillJourneyPostContentAsync(items, cancellationToken), totalCount);
+    }
+
+    /// <summary>
+    /// Attaches the image strip and comment count to the JourneyPost rows on the current
+    /// page. Scoped to the page's post ids so the collection load never fans out across the
+    /// whole feed, and kept out of the UNION where EF cannot translate it.
+    /// </summary>
+    private async Task<IReadOnlyList<FeedItemDto>> BackfillJourneyPostContentAsync(
+        List<FeedItemDto> items,
+        CancellationToken cancellationToken)
+    {
+        var postIds = items
+            .Where(item => item.Type == FeedItemType.JourneyPost && item.JourneyPostId != null)
+            .Select(item => item.JourneyPostId!.Value)
+            .ToList();
+
+        if (postIds.Count == 0)
+            return items;
+
+        var content = await db.JourneyPosts
+            .Where(post => postIds.Contains(post.Id))
+            .Select(post => new
+            {
+                post.Id,
+                ImageUrls = post.Images
+                    .OrderBy(img => img.SortOrder)
+                    .Select(img => img.ImageUrl)
+                    .ToList(),
+                CommentCount = post.Comments.Count
+            })
+            .ToDictionaryAsync(x => x.Id, cancellationToken);
+
+        return items
+            .Select(item =>
+                item.Type == FeedItemType.JourneyPost
+                && item.JourneyPostId is int id
+                && content.TryGetValue(id, out var extra)
+                    ? item with { ImageUrls = extra.ImageUrls, CommentCount = extra.CommentCount }
+                    : item)
+            .ToList();
     }
 }

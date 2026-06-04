@@ -16,13 +16,21 @@ export const FEED_ITEM_TYPE = {
 } as const;
 
 /**
- * A stable React key for a feed item. Only JourneyPost ships in this slice; later item
- * types extend this with their own identifying id.
+ * A stable React key for a feed item, derived from the identity of the source entity each
+ * item type projects from.
  */
 export function feedItemKey(item: FeedItemDto): string {
-  if (item.type === FEED_ITEM_TYPE.JourneyPost) {
-    return `journey-post-${item.journeyPostId}`;
+  switch (item.type) {
+    case FEED_ITEM_TYPE.JourneyPost:
+      return `journey-post-${item.journeyPostId}`;
+    case FEED_ITEM_TYPE.UserCarCreated:
+      return `user-car-created-${item.userCarId}`;
+    case FEED_ITEM_TYPE.JourneyStarted:
+      return `journey-started-${item.journeyId}`;
+    case FEED_ITEM_TYPE.JourneyCompleted:
+      return `journey-completed-${item.journeyId}`;
+    default:
+      // Fallback until the remaining item types land — actor + timestamp is unique enough.
+      return `${item.type}-${item.actorUsername}-${item.createdAt}`;
   }
-  // Fallback until the remaining item types land — actor + timestamp is unique enough.
-  return `${item.type}-${item.actorUsername}-${item.createdAt}`;
 }
