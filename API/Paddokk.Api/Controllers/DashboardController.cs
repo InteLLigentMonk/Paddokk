@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Paddokk.Core.Features.Dashboard;
-using Paddokk.Core.Features.Journeys.Queries.GetTrendingJourneys;
-using Paddokk.Core.Models.DTOs.Journey;
 
 namespace Paddokk.Api.Controllers;
 
@@ -21,17 +19,5 @@ public class DashboardController(ISender sender) : ApiControllerBase
     {
         var result = await sender.Send(new GetDashboardQuery(), ct);
         return OkOrError(result);
-    }
-
-    [HttpGet("feed")]
-    [EnableRateLimiting("reads")]
-    [EndpointSummary("Get activity feed for dashboard (trending journeys)")]
-    public async Task<ActionResult<IEnumerable<JourneyDto>>> GetActivityFeed(
-        CancellationToken ct,
-        [FromQuery] int skip = 0,
-        [FromQuery] int take = 20)
-    {
-        var feed = await sender.Send(new GetTrendingJourneysQuery(), ct);
-        return Ok(feed.Skip(skip).Take(take));
     }
 }

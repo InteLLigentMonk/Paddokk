@@ -6,9 +6,7 @@
  * OpenAPI spec version: v1
  */
 import type {
-  DashboardGetActivityFeedParams,
-  DashboardResponse,
-  JourneyDto
+  DashboardResponse
 } from '../schemas';
 
 import { apiFetcher } from '../../../lib/api/client';
@@ -27,36 +25,6 @@ export const getDashboardGetDashboardUrl = () => {
 export const dashboardGetDashboard = async ( options?: RequestInit): Promise<DashboardResponse> => {
 
   return apiFetcher<DashboardResponse>(getDashboardGetDashboardUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-export const getDashboardGetActivityFeedUrl = (params?: DashboardGetActivityFeedParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/v1/users/me/Dashboard/feed?${stringifiedParams}` : `/api/v1/users/me/Dashboard/feed`
-}
-
-/**
- * @summary Get activity feed for dashboard (trending journeys)
- */
-export const dashboardGetActivityFeed = async (params?: DashboardGetActivityFeedParams, options?: RequestInit): Promise<JourneyDto[]> => {
-
-  return apiFetcher<JourneyDto[]>(getDashboardGetActivityFeedUrl(params),
   {
     ...options,
     method: 'GET'

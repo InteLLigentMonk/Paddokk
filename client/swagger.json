@@ -1568,25 +1568,25 @@
         }
       }
     },
-    "/api/v1/users/me/Dashboard/feed": {
+    "/api/v1/Feed": {
       "get": {
         "tags": [
-          "Dashboard"
+          "Feed"
         ],
-        "summary": "Get activity feed for dashboard (trending journeys)",
-        "operationId": "Dashboard_GetActivityFeed",
+        "summary": "Get the authenticated user's personalised, strictly chronological feed",
+        "operationId": "Feed_GetFeed",
         "parameters": [
           {
-            "name": "skip",
+            "name": "page",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 0
+              "default": 1
             }
           },
           {
-            "name": "take",
+            "name": "pageSize",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -1601,26 +1601,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JourneyDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfFeedItemDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JourneyDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfFeedItemDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JourneyDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfFeedItemDto"
                 }
               }
             }
@@ -6867,6 +6858,106 @@
           }
         }
       },
+      "FeedItemDto": {
+        "required": [
+          "type",
+          "createdAt",
+          "actorUsername",
+          "actorDisplayName"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/FeedItemType"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actorUsername": {
+            "type": "string"
+          },
+          "actorDisplayName": {
+            "type": "string"
+          },
+          "actorAvatarUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "journeyId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "journeyTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "journeySlug": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCarId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "userCarSlug": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCarLabel": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "journeyPostId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "textContent": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "imageUrls": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "commentCount": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "FeedItemType": {
+        "type": "integer"
+      },
       "GetCarsBrowseStatsResponse": {
         "type": "object",
         "properties": {
@@ -7327,6 +7418,39 @@
             "format": "int32"
           },
           "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfFeedItemDto": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount",
+          "hasNextPage"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeedItemDto"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasNextPage": {
             "type": "boolean"
           }
         }
@@ -8184,6 +8308,9 @@
     },
     {
       "name": "Dashboard"
+    },
+    {
+      "name": "Feed"
     },
     {
       "name": "Journeys"
