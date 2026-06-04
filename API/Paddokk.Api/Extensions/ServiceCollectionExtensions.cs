@@ -200,6 +200,7 @@ public static class ServiceCollectionExtensions
         // Register application repositories here
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IFeedRepository, FeedRepository>();
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<IJourneyRepository, JourneyRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
