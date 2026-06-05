@@ -35,7 +35,8 @@ export const FeedGetFeedResponse = zod.strictObject({
   "journeyPostId": zod.number().nullish(),
   "textContent": zod.string().nullish(),
   "imageUrls": zod.array(zod.string()).nullish(),
-  "commentCount": zod.number().nullish()
+  "commentCount": zod.number().nullish(),
+  "photoCount": zod.number().nullish()
 })),
   "page": zod.number(),
   "pageSize": zod.number(),

@@ -51,4 +51,9 @@ public record FeedItemDto
     public string? TextContent { get; init; }
     public IReadOnlyList<string>? ImageUrls { get; init; }
     public int? CommentCount { get; init; }
+
+    // PhotosAdded payload — populated when Type == PhotosAdded. ImageUrls carries a small
+    // thumbnail selection; PhotoCount is the full size of the upload session, which may
+    // exceed the number of thumbnails shown.
+    public int? PhotoCount { get; init; }
 }

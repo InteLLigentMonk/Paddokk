@@ -29,6 +29,9 @@ export function feedItemKey(item: FeedItemDto): string {
       return `journey-started-${item.journeyId}`;
     case FEED_ITEM_TYPE.JourneyCompleted:
       return `journey-completed-${item.journeyId}`;
+    case FEED_ITEM_TYPE.PhotosAdded:
+      // One card per (car, 10-minute upload session); the session's earliest upload is its key.
+      return `photos-added-${item.userCarId}-${item.createdAt}`;
     default:
       // Fallback until the remaining item types land — actor + timestamp is unique enough.
       return `${item.type}-${item.actorUsername}-${item.createdAt}`;

@@ -15,6 +15,7 @@ import { FeedDayDivider } from "./feed-day-divider";
 import { FeedEmptyState } from "./feed-empty-state";
 import { FeedJourneyPostCard } from "./feed-journey-post-card";
 import { FeedLifecycleCard } from "./feed-lifecycle-card";
+import { FeedPhotosAddedCard } from "./feed-photos-added-card";
 import { FEED_ITEM_TYPE, feedItemKey } from "./feed-item-type";
 import type { FeedItemDto } from "@/generated/api/schemas";
 import { dayKey } from "@/lib/feed/feed-time";
@@ -31,9 +32,9 @@ function FeedCardSkeleton() {
 }
 
 /**
- * Renders a single feed item by its discriminator. PhotosAdded and SpecChanged land in
- * later slices; until then they fall through to nothing (the union type stays closed, so
- * this switch stays exhaustive).
+ * Renders a single feed item by its discriminator. SpecChanged lands in a later slice;
+ * until then it falls through to nothing (the union type stays closed, so this switch
+ * stays exhaustive).
  */
 function FeedItem({ item }: { item: FeedItemDto }) {
   switch (item.type) {
@@ -43,6 +44,8 @@ function FeedItem({ item }: { item: FeedItemDto }) {
     case FEED_ITEM_TYPE.JourneyStarted:
     case FEED_ITEM_TYPE.JourneyCompleted:
       return <FeedLifecycleCard item={item} />;
+    case FEED_ITEM_TYPE.PhotosAdded:
+      return <FeedPhotosAddedCard item={item} />;
     default:
       return null;
   }
