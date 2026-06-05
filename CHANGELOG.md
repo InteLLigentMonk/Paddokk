@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.36.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.35.0...v0.36.0) (2026-06-05)
+
+
+### Features
+
+* **feed:** lifecycle, PhotosAdded, and SpecChanged events ([#244](https://github.com/InteLLigentMonk/Paddokk/issues/244)) ([0d6475a](https://github.com/InteLLigentMonk/Paddokk/commit/0d6475ac86207fbfc305bb3ed052bb1eaa0e6ba4))
+
 ## [0.35.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.34.2...v0.35.0) (2026-06-04)
 
 
