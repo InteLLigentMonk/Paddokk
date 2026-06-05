@@ -211,11 +211,46 @@ public class FeedRepository(PaddokkDbContext db) : IFeedRepository
                 PhotoCount = g.Count()
             });
 
+        // Arm 6 — SpecChanged. A UserCar whose specs have evolved since creation. UpdatedAt is
+        // bumped only on a real spec change (see UpdateUserCarHandler), and creation sets
+        // UpdatedAt == CreatedAt, so UpdatedAt > CreatedAt is the precise "has been spec-edited"
+        // predicate — a freshly created car never surfaces here (that is UserCarCreated's job).
+        // Recipients: actor Follows the owner OR Subscribes to the UserCar; never the actor's own.
+        var specChangedItems = db.UserCars
+            .Where(car => car.IsActive && car.IsPublic && car.UpdatedAt > car.CreatedAt)
+            .Where(car => car.PrincipalId != actorId)
+            .Where(car =>
+                followedAuthorIds.Contains(car.PrincipalId)
+                || subscribedCarIds.Contains(car.Id))
+            .Select(car => new FeedItemDto
+            {
+                Type = FeedItemType.SpecChanged,
+                CreatedAt = car.UpdatedAt,
+                ActorUsername = car.User.Username,
+                ActorDisplayName = car.User.DisplayName,
+                ActorAvatarUrl = car.User.AvatarUrl,
+                JourneyId = null,
+                JourneyTitle = null,
+                JourneySlug = null,
+                UserCarId = car.Id,
+                UserCarSlug = car.Slug,
+                UserCarLabel =
+                    car.Nickname
+                    ?? car.CustomBuildName
+                    ?? (car.CarModel != null ? car.CarModel.Name : null),
+                JourneyPostId = null,
+                TextContent = null,
+                ImageUrls = null,
+                CommentCount = null,
+                PhotoCount = null
+            });
+
         var feed = journeyPostItems
             .Union(userCarCreatedItems)
             .Union(journeyStartedItems)
             .Union(journeyCompletedItems)
-            .Union(photosAddedItems);
+            .Union(photosAddedItems)
+            .Union(specChangedItems);
 
         var totalCount = await feed.CountAsync(cancellationToken);
 

@@ -16,6 +16,7 @@ import { FeedEmptyState } from "./feed-empty-state";
 import { FeedJourneyPostCard } from "./feed-journey-post-card";
 import { FeedLifecycleCard } from "./feed-lifecycle-card";
 import { FeedPhotosAddedCard } from "./feed-photos-added-card";
+import { FeedSpecChangedCard } from "./feed-spec-changed-card";
 import { FEED_ITEM_TYPE, feedItemKey } from "./feed-item-type";
 import type { FeedItemDto } from "@/generated/api/schemas";
 import { dayKey } from "@/lib/feed/feed-time";
@@ -32,9 +33,8 @@ function FeedCardSkeleton() {
 }
 
 /**
- * Renders a single feed item by its discriminator. SpecChanged lands in a later slice;
- * until then it falls through to nothing (the union type stays closed, so this switch
- * stays exhaustive).
+ * Renders a single feed item by its discriminator. All six item types now have a card; the
+ * union type is closed, so this switch is exhaustive.
  */
 function FeedItem({ item }: { item: FeedItemDto }) {
   switch (item.type) {
@@ -46,6 +46,8 @@ function FeedItem({ item }: { item: FeedItemDto }) {
       return <FeedLifecycleCard item={item} />;
     case FEED_ITEM_TYPE.PhotosAdded:
       return <FeedPhotosAddedCard item={item} />;
+    case FEED_ITEM_TYPE.SpecChanged:
+      return <FeedSpecChangedCard item={item} />;
     default:
       return null;
   }

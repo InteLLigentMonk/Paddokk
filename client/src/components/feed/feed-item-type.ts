@@ -32,6 +32,9 @@ export function feedItemKey(item: FeedItemDto): string {
     case FEED_ITEM_TYPE.PhotosAdded:
       // One card per (car, 10-minute upload session); the session's earliest upload is its key.
       return `photos-added-${item.userCarId}-${item.createdAt}`;
+    case FEED_ITEM_TYPE.SpecChanged:
+      // Keyed by the edit moment so successive spec edits to the same car stay distinct.
+      return `spec-changed-${item.userCarId}-${item.createdAt}`;
     default:
       // Fallback until the remaining item types land — actor + timestamp is unique enough.
       return `${item.type}-${item.actorUsername}-${item.createdAt}`;
