@@ -15,6 +15,7 @@ import { Link, getRouteApi } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LogOut, Search, Settings, User } from "lucide-react";
 import { ColorSchemeToggle } from "./color-scheme-toggle";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useAuth } from "@/hooks/use-auth";
 import { currentUserQueryOptions } from "@/lib/api/users.queries";
 import { userProfileUrl } from "@/lib/urls";
@@ -196,6 +197,8 @@ export function AppHeader() {
               <Search {...iconProps} />
             </ActionIcon>
           </Box>
+
+          <NotificationBell />
 
           <ColorSchemeToggle />
 
