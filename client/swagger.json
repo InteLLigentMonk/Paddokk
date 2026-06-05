@@ -6952,6 +6952,13 @@
               "integer"
             ],
             "format": "int32"
+          },
+          "photoCount": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },

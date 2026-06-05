@@ -71,6 +71,10 @@ public sealed class CreateUserCarHandler(
         var slug = await slugGenerator.EnsureUniqueAsync(
             slugCandidate, actor.UserId, carRepository.SlugExistsAsync, cancellationToken);
 
+        // Equal timestamps at creation so the Feed can treat UpdatedAt > CreatedAt as the
+        // unambiguous "has been spec-edited since creation" signal (#188).
+        var now = DateTime.UtcNow;
+
         var userCar = new UserCar
         {
             PrincipalId = actor.UserId,
@@ -86,8 +90,8 @@ public sealed class CreateUserCarHandler(
             Color = request.Color,
             SearchText = searchText,
             IsPrimary = isPrimary,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         if (isPrimary)

@@ -14,6 +14,9 @@ import { AlertCircle } from "lucide-react";
 import { FeedDayDivider } from "./feed-day-divider";
 import { FeedEmptyState } from "./feed-empty-state";
 import { FeedJourneyPostCard } from "./feed-journey-post-card";
+import { FeedLifecycleCard } from "./feed-lifecycle-card";
+import { FeedPhotosAddedCard } from "./feed-photos-added-card";
+import { FeedSpecChangedCard } from "./feed-spec-changed-card";
 import { FEED_ITEM_TYPE, feedItemKey } from "./feed-item-type";
 import type { FeedItemDto } from "@/generated/api/schemas";
 import { dayKey } from "@/lib/feed/feed-time";
@@ -30,14 +33,21 @@ function FeedCardSkeleton() {
 }
 
 /**
- * Renders a single feed item by its discriminator. Only JourneyPost ships in this
- * slice; the remaining five types fall through to nothing until their own slices
- * land their cards (the union type stays closed, so this switch stays exhaustive).
+ * Renders a single feed item by its discriminator. All six item types now have a card; the
+ * union type is closed, so this switch is exhaustive.
  */
 function FeedItem({ item }: { item: FeedItemDto }) {
   switch (item.type) {
     case FEED_ITEM_TYPE.JourneyPost:
       return <FeedJourneyPostCard item={item} />;
+    case FEED_ITEM_TYPE.UserCarCreated:
+    case FEED_ITEM_TYPE.JourneyStarted:
+    case FEED_ITEM_TYPE.JourneyCompleted:
+      return <FeedLifecycleCard item={item} />;
+    case FEED_ITEM_TYPE.PhotosAdded:
+      return <FeedPhotosAddedCard item={item} />;
+    case FEED_ITEM_TYPE.SpecChanged:
+      return <FeedSpecChangedCard item={item} />;
     default:
       return null;
   }
