@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.39.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.38.0...v0.39.0) (2026-06-06)
+
+
+### Features
+
+* **notifications:** wire CommentOnYourPost notification end-to-end ([#250](https://github.com/InteLLigentMonk/Paddokk/issues/250)) ([00f2bbc](https://github.com/InteLLigentMonk/Paddokk/commit/00f2bbce8da5e1ca66d3562ea2f08086439daf22))
+
 ## [0.38.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.37.0...v0.38.0) (2026-06-06)
 
 
