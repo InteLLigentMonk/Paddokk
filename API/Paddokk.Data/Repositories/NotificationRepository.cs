@@ -93,11 +93,13 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
         IReadOnlyList<NotificationDto> items, CancellationToken cancellationToken)
     {
         var journeyTargets = await ResolveJourneyTargetsAsync(items, cancellationToken);
+        var carTargets = await ResolveCarTargetsAsync(items, cancellationToken);
 
         return items
             .Select(item => item.EntityType switch
             {
                 "Journey" when journeyTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
+                "UserCar" when carTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
                 _ => item,
             })
             .ToList();
@@ -126,5 +128,30 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
         return rows.ToDictionary(
             r => r.Id.ToString(),
             r => $"/users/{r.OwnerUsername}/journeys/{r.Slug}");
+    }
+
+    private async Task<IReadOnlyDictionary<string, string>> ResolveCarTargetsAsync(
+        IReadOnlyList<NotificationDto> items, CancellationToken cancellationToken)
+    {
+        var ids = items
+            .Where(i => i.EntityType == "UserCar")
+            .Select(i => int.TryParse(i.EntityId, out var id) ? id : (int?)null)
+            .Where(id => id is not null)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToList();
+
+        if (ids.Count == 0)
+            return new Dictionary<string, string>();
+
+        var rows = await _db.UserCars
+            .AsNoTracking()
+            .Where(c => ids.Contains(c.Id))
+            .Select(c => new { c.Id, c.Slug, OwnerUsername = c.User.Username })
+            .ToListAsync(cancellationToken);
+
+        return rows.ToDictionary(
+            r => r.Id.ToString(),
+            r => $"/users/{r.OwnerUsername}/cars/{r.Slug}");
     }
 }
