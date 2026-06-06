@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.39.0...v0.40.0) (2026-06-06)
+
+
+### Features
+
+* **notifications:** wire ReplyToYourComment and NewFollower notifications ([#252](https://github.com/InteLLigentMonk/Paddokk/issues/252)) ([5613112](https://github.com/InteLLigentMonk/Paddokk/commit/5613112af426f43b291fbfa9e3a5df7bcfad5c36))
+
 ## [0.39.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.38.0...v0.39.0) (2026-06-06)
 
 
