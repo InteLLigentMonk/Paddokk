@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.36.0...v0.37.0) (2026-06-06)
+
+
+### Features
+
+* **notifications:** infrastructure, bell, hub page, and JourneyLiked notification ([#246](https://github.com/InteLLigentMonk/Paddokk/issues/246)) ([9225b27](https://github.com/InteLLigentMonk/Paddokk/commit/9225b27d83fcaef14564c3805a6bac4f8174dc14))
+
 ## [0.36.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.35.0...v0.36.0) (2026-06-05)
 
 
