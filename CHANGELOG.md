@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.37.0...v0.38.0) (2026-06-06)
+
+
+### Features
+
+* **notifications:** wire CarLiked notification end-to-end ([#181](https://github.com/InteLLigentMonk/Paddokk/issues/181)) ([#248](https://github.com/InteLLigentMonk/Paddokk/issues/248)) ([b3da190](https://github.com/InteLLigentMonk/Paddokk/commit/b3da1903f6dc0b7b1566e34fbcb4bd7ac0f74a68))
+
 ## [0.37.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.36.0...v0.37.0) (2026-06-06)
 
 
