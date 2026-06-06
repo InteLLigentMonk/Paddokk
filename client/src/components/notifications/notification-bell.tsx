@@ -16,13 +16,13 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
+import { NotificationItem } from "./notification-item";
 import type { NotificationDto } from "@/generated/api/schemas";
 import {
   notificationsInfiniteQueryOptions,
   unreadCountQueryOptions,
 } from "@/lib/api/notifications.queries";
 import { useNotificationActivate } from "@/lib/notifications/use-notification-activate";
-import { NotificationItem } from "./notification-item";
 
 const DROPDOWN_LIMIT = 8;
 
@@ -102,7 +102,7 @@ export function NotificationBell() {
 
 interface NotificationDropdownBodyProps {
   isLoading: boolean;
-  items: NotificationDto[];
+  items: Array<NotificationDto>;
   onActivate: (notification: NotificationDto) => void;
 }
 

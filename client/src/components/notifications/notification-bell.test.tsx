@@ -46,7 +46,9 @@ vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => mocks.navigate,
 }));
 
-function notification(overrides: Partial<NotificationDto> = {}): NotificationDto {
+function notification(
+  overrides: Partial<NotificationDto> = {},
+): NotificationDto {
   return {
     id: 1,
     type: 0, // JourneyLiked
@@ -63,7 +65,7 @@ function notification(overrides: Partial<NotificationDto> = {}): NotificationDto
   };
 }
 
-function page(items: NotificationDto[]): PagedResultOfNotificationDto {
+function page(items: Array<NotificationDto>): PagedResultOfNotificationDto {
   return {
     items,
     page: 1,

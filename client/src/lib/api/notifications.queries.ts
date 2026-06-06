@@ -1,12 +1,10 @@
 import {
-  type InfiniteData,
   infiniteQueryOptions,
   queryOptions,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { notifications as toast } from "@mantine/notifications";
-import type { PagedResultOfNotificationDto } from "@/generated/api/schemas";
 import {
   getNotificationsFn,
   getUnreadCountFn,
@@ -15,6 +13,8 @@ import {
 } from "./notifications";
 import { notificationKeys } from "./notifications.keys";
 import { requirePage } from "./infinite";
+import type { InfiniteData } from "@tanstack/react-query";
+import type { PagedResultOfNotificationDto } from "@/generated/api/schemas";
 
 const PAGE_SIZE = 20;
 
@@ -67,25 +67,27 @@ export function useMarkNotificationRead() {
         notificationKeys.unreadCount,
       );
 
-      let flippedUnread = false;
+      // Decide the badge delta from the pre-patch snapshot, before mutating the caches.
+      const wasUnread = listSnapshots.some(([, data]) =>
+        data?.pages.some((page) =>
+          page.items.some((item) => item.id === id && !item.read),
+        ),
+      );
+
       listSnapshots.forEach(([key, data]) => {
         if (!data) return;
         queryClient.setQueryData<NotificationListData>(key, {
           ...data,
           pages: data.pages.map((page) => ({
             ...page,
-            items: page.items.map((item) => {
-              const isTargetUnread = item.id === id && !item.read;
-              if (isTargetUnread) {
-                flippedUnread = true;
-              }
-              return isTargetUnread ? { ...item, read: true } : item;
-            }),
+            items: page.items.map((item) =>
+              item.id === id ? { ...item, read: true } : item,
+            ),
           })),
         });
       });
 
-      if (flippedUnread && countSnapshot != null) {
+      if (wasUnread && countSnapshot !== undefined) {
         queryClient.setQueryData(
           notificationKeys.unreadCount,
           Math.max(0, countSnapshot - 1),
