@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Paddokk.Core.Features.Comments.Events;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.DTOs.Comment;
@@ -10,6 +11,7 @@ namespace Paddokk.Core.Features.Comments.Commands.CreateComment;
 public sealed class CreateCommentHandler(
     ICommentRepository comments,
     IActorResolver actor,
+    IPublisher publisher,
     ILogger<CreateCommentHandler> logger) : IRequestHandler<CreateCommentCommand, Result<PostCommentDto>>
 {
     public async Task<Result<PostCommentDto>> Handle(CreateCommentCommand command, CancellationToken ct)
@@ -49,6 +51,13 @@ public sealed class CreateCommentHandler(
         logger.LogInformation("User {UserId} commented on post {PostId}", actor.UserId, command.PostId);
 
         var created = await comments.GetCommentByIdAsync(comment.Id, ct);
+
+        // Top-level Comments notify the post author (CommentOnYourPost). Replies route to the
+        // separate ReplyToYourComment flow, so they raise no event here (ADR-0002).
+        if (command.ParentCommentId is null)
+            await publisher.Publish(
+                new CommentedOnPost(actor.UserId, command.PostId, created!.JourneyPost.AuthorId),
+                ct);
 
         return Result<PostCommentDto>.Success(CommentMapping.ToDto(created!, actor.UserId));
     }
