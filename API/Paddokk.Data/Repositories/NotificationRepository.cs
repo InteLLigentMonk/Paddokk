@@ -95,6 +95,7 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
         var journeyTargets = await ResolveJourneyTargetsAsync(items, cancellationToken);
         var carTargets = await ResolveCarTargetsAsync(items, cancellationToken);
         var postTargets = await ResolveJourneyPostTargetsAsync(items, cancellationToken);
+        var userTargets = await ResolveUserTargetsAsync(items, cancellationToken);
 
         return items
             .Select(item => item.EntityType switch
@@ -102,6 +103,7 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
                 "Journey" when journeyTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
                 "UserCar" when carTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
                 "JourneyPost" when postTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
+                "User" when userTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
                 _ => item,
             })
             .ToList();
@@ -181,5 +183,30 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
         return rows.ToDictionary(
             r => r.Id.ToString(),
             r => $"/users/{r.OwnerUsername}/journeys/{r.Slug}");
+    }
+
+    private async Task<IReadOnlyDictionary<string, string>> ResolveUserTargetsAsync(
+        IReadOnlyList<NotificationDto> items, CancellationToken cancellationToken)
+    {
+        // Unlike the others, a User EntityId is the string user id itself — no int parse.
+        var ids = items
+            .Where(i => i.EntityType == "User")
+            .Select(i => i.EntityId)
+            .Distinct()
+            .ToList();
+
+        if (ids.Count == 0)
+            return new Dictionary<string, string>();
+
+        // NewFollower deep-links to the follower's profile (story 14).
+        var rows = await _db.Users
+            .AsNoTracking()
+            .Where(u => ids.Contains(u.Id))
+            .Select(u => new { u.Id, u.Username })
+            .ToListAsync(cancellationToken);
+
+        return rows.ToDictionary(
+            r => r.Id,
+            r => $"/users/{r.Username}");
     }
 }
