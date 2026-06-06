@@ -22,6 +22,8 @@ public sealed class CreateCommentHandler(
         if (!await comments.UserExist(actor.UserId, ct))
             return Result<PostCommentDto>.Failure(Error.NotFound("User not found"));
 
+        string? parentCommentAuthorId = null;
+
         if (command.ParentCommentId is int parentId)
         {
             var parent = await comments.GetCommentByIdAsync(parentId, ct);
@@ -34,6 +36,8 @@ public sealed class CreateCommentHandler(
 
             if (parent.JourneyPost.AuthorId != actor.UserId)
                 return Result<PostCommentDto>.Failure(Error.Unauthorized("Only the post owner can reply"));
+
+            parentCommentAuthorId = parent.AuthorId;
         }
 
         var comment = new PostComment
@@ -52,11 +56,15 @@ public sealed class CreateCommentHandler(
 
         var created = await comments.GetCommentByIdAsync(comment.Id, ct);
 
-        // Top-level Comments notify the post author (CommentOnYourPost). Replies route to the
-        // separate ReplyToYourComment flow, so they raise no event here (ADR-0002).
+        // Top-level Comments notify the post author (CommentOnYourPost); Replies notify the parent
+        // Comment's author (ReplyToYourComment). Exactly one of the two fires per create (ADR-0002).
         if (command.ParentCommentId is null)
             await publisher.Publish(
                 new CommentedOnPost(actor.UserId, command.PostId, created!.JourneyPost.AuthorId),
+                ct);
+        else
+            await publisher.Publish(
+                new RepliedToComment(actor.UserId, command.PostId, parentCommentAuthorId!),
                 ct);
 
         return Result<PostCommentDto>.Success(CommentMapping.ToDto(created!, actor.UserId));
