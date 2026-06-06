@@ -84,6 +84,8 @@ public class CreateCommentHandlerTests
         await _publisher.Received(1).Publish(
             Arg.Is<CommentedOnPost>(e => e.ActorId == VisitorId && e.PostId == PostId && e.PostAuthorId == PostOwnerId),
             Arg.Any<CancellationToken>());
+        // Top-level Comments route to CommentOnYourPost only, never the Reply flow (ADR-0002).
+        await _publisher.DidNotReceive().Publish(Arg.Any<RepliedToComment>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -176,5 +178,10 @@ public class CreateCommentHandlerTests
         captured.AuthorId.Should().Be(PostOwnerId);
         // Replies route to the separate ReplyToYourComment flow, never CommentOnYourPost (ADR-0002).
         await _publisher.DidNotReceive().Publish(Arg.Any<CommentedOnPost>(), Arg.Any<CancellationToken>());
+        // The Reply notifies the parent Comment's author (VisitorId), not the post author.
+        await _publisher.Received(1).Publish(
+            Arg.Is<RepliedToComment>(e =>
+                e.ActorId == PostOwnerId && e.PostId == PostId && e.ParentCommentAuthorId == VisitorId),
+            Arg.Any<CancellationToken>());
     }
 }
