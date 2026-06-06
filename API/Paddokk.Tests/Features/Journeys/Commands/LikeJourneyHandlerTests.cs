@@ -1,6 +1,8 @@
 using FluentAssertions;
+using MediatR;
 using NSubstitute;
 using Paddokk.Core.Features.Journeys.Commands.LikeJourney;
+using Paddokk.Core.Features.Journeys.Events;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.Entities;
@@ -11,11 +13,12 @@ public class LikeJourneyHandlerTests
 {
     private readonly IJourneyRepository _journeyRepo = Substitute.For<IJourneyRepository>();
     private readonly IActorResolver _actor = Substitute.For<IActorResolver>();
+    private readonly IPublisher _publisher = Substitute.For<IPublisher>();
     private readonly LikeJourneyHandler _handler;
 
     public LikeJourneyHandlerTests()
     {
-        _handler = new LikeJourneyHandler(_journeyRepo, _actor);
+        _handler = new LikeJourneyHandler(_journeyRepo, _actor, _publisher);
     }
 
     [Fact]
@@ -29,6 +32,7 @@ public class LikeJourneyHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error!.Type.Should().Be(ErrorType.Conflict);
+        await _publisher.DidNotReceive().Publish(Arg.Any<JourneyLiked>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -41,10 +45,11 @@ public class LikeJourneyHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error!.Type.Should().Be(ErrorType.NotFound);
+        await _publisher.DidNotReceive().Publish(Arg.Any<JourneyLiked>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task Handle_NonOwnerLikesJourney_CreatesLike()
+    public async Task Handle_NonOwnerLikesJourney_CreatesLikeAndPublishesEvent()
     {
         _actor.UserId.Returns("visitor-1");
         _journeyRepo.GetJourneyByIdAsync(1, Arg.Any<CancellationToken>())
@@ -57,10 +62,13 @@ public class LikeJourneyHandlerTests
         await _journeyRepo.Received(1).CreateLikeAsync(
             Arg.Is<JourneyLike>(l => l.UserId == "visitor-1" && l.JourneyId == 1),
             Arg.Any<CancellationToken>());
+        await _publisher.Received(1).Publish(
+            Arg.Is<JourneyLiked>(e => e.ActorId == "visitor-1" && e.JourneyId == 1 && e.JourneyOwnerId == "owner-1"),
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task Handle_NonOwnerAlreadyLiked_IsIdempotent()
+    public async Task Handle_NonOwnerAlreadyLiked_IsIdempotentAndDoesNotPublish()
     {
         _actor.UserId.Returns("visitor-1");
         _journeyRepo.GetJourneyByIdAsync(1, Arg.Any<CancellationToken>())
@@ -72,5 +80,6 @@ public class LikeJourneyHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         await _journeyRepo.DidNotReceive().CreateLikeAsync(Arg.Any<JourneyLike>(), Arg.Any<CancellationToken>());
+        await _publisher.DidNotReceive().Publish(Arg.Any<JourneyLiked>(), Arg.Any<CancellationToken>());
     }
 }

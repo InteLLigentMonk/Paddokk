@@ -1,11 +1,15 @@
 using MediatR;
+using Paddokk.Core.Features.Journeys.Events;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Journeys.Commands.LikeJourney;
 
-public sealed class LikeJourneyHandler(IJourneyRepository journeyRepository, IActorResolver actor)
+public sealed class LikeJourneyHandler(
+    IJourneyRepository journeyRepository,
+    IActorResolver actor,
+    IPublisher publisher)
     : IRequestHandler<LikeJourneyCommand, Result>
 {
     public async Task<Result> Handle(LikeJourneyCommand request, CancellationToken cancellationToken)
@@ -21,7 +25,7 @@ public sealed class LikeJourneyHandler(IJourneyRepository journeyRepository, IAc
         var existing = await journeyRepository.GetLikeAsync(actor.UserId, request.JourneyId, cancellationToken);
 
         if (existing is not null)
-            return Result.Success(); // idempotent
+            return Result.Success(); // idempotent — no event, no duplicate notification
 
         await journeyRepository.CreateLikeAsync(new JourneyLike
         {
@@ -29,6 +33,10 @@ public sealed class LikeJourneyHandler(IJourneyRepository journeyRepository, IAc
             JourneyId = request.JourneyId,
             CreatedAt = DateTime.UtcNow
         }, cancellationToken);
+
+        await publisher.Publish(
+            new JourneyLiked(actor.UserId, request.JourneyId, journey.PrincipalId),
+            cancellationToken);
 
         return Result.Success();
     }
