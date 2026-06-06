@@ -94,12 +94,14 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
     {
         var journeyTargets = await ResolveJourneyTargetsAsync(items, cancellationToken);
         var carTargets = await ResolveCarTargetsAsync(items, cancellationToken);
+        var postTargets = await ResolveJourneyPostTargetsAsync(items, cancellationToken);
 
         return items
             .Select(item => item.EntityType switch
             {
                 "Journey" when journeyTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
                 "UserCar" when carTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
+                "JourneyPost" when postTargets.TryGetValue(item.EntityId, out var url) => item with { TargetUrl = url },
                 _ => item,
             })
             .ToList();
@@ -153,5 +155,31 @@ public class NotificationRepository(PaddokkDbContext db) : INotificationReposito
         return rows.ToDictionary(
             r => r.Id.ToString(),
             r => $"/users/{r.OwnerUsername}/cars/{r.Slug}");
+    }
+
+    private async Task<IReadOnlyDictionary<string, string>> ResolveJourneyPostTargetsAsync(
+        IReadOnlyList<NotificationDto> items, CancellationToken cancellationToken)
+    {
+        var ids = items
+            .Where(i => i.EntityType == "JourneyPost")
+            .Select(i => int.TryParse(i.EntityId, out var id) ? id : (int?)null)
+            .Where(id => id is not null)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToList();
+
+        if (ids.Count == 0)
+            return new Dictionary<string, string>();
+
+        // A JourneyPost has no page of its own; deep-link to its owning Journey (story 14).
+        var rows = await _db.JourneyPosts
+            .AsNoTracking()
+            .Where(p => ids.Contains(p.Id))
+            .Select(p => new { p.Id, p.Journey.Slug, OwnerUsername = p.Journey.User.Username })
+            .ToListAsync(cancellationToken);
+
+        return rows.ToDictionary(
+            r => r.Id.ToString(),
+            r => $"/users/{r.OwnerUsername}/journeys/{r.Slug}");
     }
 }

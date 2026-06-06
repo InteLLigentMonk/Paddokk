@@ -1,7 +1,9 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Paddokk.Core.Features.Comments.Commands.CreateComment;
+using Paddokk.Core.Features.Comments.Events;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.Entities;
@@ -16,6 +18,7 @@ public class CreateCommentHandlerTests
 
     private readonly ICommentRepository _comments = Substitute.For<ICommentRepository>();
     private readonly IActorResolver _actor = Substitute.For<IActorResolver>();
+    private readonly IPublisher _publisher = Substitute.For<IPublisher>();
     private readonly CreateCommentHandler _handler;
 
     public CreateCommentHandlerTests()
@@ -29,7 +32,7 @@ public class CreateCommentHandlerTests
         _comments.GetCommentByIdAsync(42, Arg.Any<CancellationToken>())
             .Returns(ci => CommentTestHelpers.BuildComment(42, PostId, _actor.UserId, PostOwnerId));
 
-        _handler = new CreateCommentHandler(_comments, _actor, NullLogger<CreateCommentHandler>.Instance);
+        _handler = new CreateCommentHandler(_comments, _actor, _publisher, NullLogger<CreateCommentHandler>.Instance);
     }
 
     [Fact]
@@ -78,6 +81,9 @@ public class CreateCommentHandlerTests
         captured.JourneyPostId.Should().Be(PostId);
         captured.Content.Should().Be("hello");
         captured.ParentCommentId.Should().BeNull();
+        await _publisher.Received(1).Publish(
+            Arg.Is<CommentedOnPost>(e => e.ActorId == VisitorId && e.PostId == PostId && e.PostAuthorId == PostOwnerId),
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -168,5 +174,7 @@ public class CreateCommentHandlerTests
         captured.Should().NotBeNull();
         captured!.ParentCommentId.Should().Be(7);
         captured.AuthorId.Should().Be(PostOwnerId);
+        // Replies route to the separate ReplyToYourComment flow, never CommentOnYourPost (ADR-0002).
+        await _publisher.DidNotReceive().Publish(Arg.Any<CommentedOnPost>(), Arg.Any<CancellationToken>());
     }
 }
