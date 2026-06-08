@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.40.0...v0.40.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* erase avatar blob and fail loud on account deletion ([#254](https://github.com/InteLLigentMonk/Paddokk/issues/254)) ([7165e5d](https://github.com/InteLLigentMonk/Paddokk/commit/7165e5d59bcc9410daf0cee2bee81be69ac42134))
+
 ## [0.40.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.39.0...v0.40.0) (2026-06-06)
 
 
