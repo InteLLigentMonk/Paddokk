@@ -11,12 +11,13 @@ public class DeleteCurrentUserHandlerTests
 {
     private readonly IUserRepository _repo = Substitute.For<IUserRepository>();
     private readonly IActorResolver _actor = Substitute.For<IActorResolver>();
+    private readonly IImageService _imageService = Substitute.For<IImageService>();
     private readonly DeleteCurrentUserHandler _handler;
 
     public DeleteCurrentUserHandlerTests()
     {
         _actor.UserId.Returns("user-1");
-        _handler = new DeleteCurrentUserHandler(_repo, _actor);
+        _handler = new DeleteCurrentUserHandler(_repo, _actor, _imageService);
     }
 
     [Fact]
@@ -72,6 +73,31 @@ public class DeleteCurrentUserHandlerTests
         captured.OriginalUserId.Should().Be("user-1");
         captured.ReservedAt.Should().BeOnOrAfter(before);
         captured.ReleaseAfter.Should().BeOnOrAfter(before.AddDays(179));
+    }
+
+    [Fact]
+    public async Task Handle_DeletesAvatarBlob()
+    {
+        var user = NewUser();
+        _repo.GetByIdAsync("user-1", Arg.Any<CancellationToken>()).Returns(user);
+
+        await _handler.Handle(new DeleteCurrentUserCommand(), CancellationToken.None);
+
+        await _imageService.Received(1).DeleteImageAsync(
+            "https://example.com/avatar.png", Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Handle_NoAvatar_DoesNotCallImageService()
+    {
+        var user = NewUser();
+        user.AvatarUrl = null;
+        _repo.GetByIdAsync("user-1", Arg.Any<CancellationToken>()).Returns(user);
+
+        await _handler.Handle(new DeleteCurrentUserCommand(), CancellationToken.None);
+
+        await _imageService.DidNotReceive().DeleteImageAsync(
+            Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
