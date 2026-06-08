@@ -5,7 +5,10 @@ using Paddokk.Core.Models.Entities;
 
 namespace Paddokk.Core.Features.Users.Commands.DeleteCurrentUser;
 
-public sealed class DeleteCurrentUserHandler(IUserRepository userRepository, IActorResolver actor)
+public sealed class DeleteCurrentUserHandler(
+    IUserRepository userRepository,
+    IActorResolver actor,
+    IImageService imageService)
     : IRequestHandler<DeleteCurrentUserCommand, Result>
 {
     public static readonly TimeSpan ReservationWindow = TimeSpan.FromDays(180);
@@ -20,6 +23,11 @@ public sealed class DeleteCurrentUserHandler(IUserRepository userRepository, IAc
         var originalUsername = user.Username;
         var now = DateTime.UtcNow;
         var shortId = Guid.NewGuid().ToString("N")[..8];
+
+        // Erase the avatar blob before anonymising the row. If this throws the whole
+        // operation fails loudly rather than leaving the image orphaned in storage.
+        if (!string.IsNullOrWhiteSpace(user.AvatarUrl))
+            await imageService.DeleteImageAsync(user.AvatarUrl, cancellationToken);
 
         await userRepository.ReserveUsernameAsync(new ReservedUsername
         {

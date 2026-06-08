@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { APIError } from "better-auth/api";
 import { jwt } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "./db/index.server";
+import { deleteApiUser } from "./delete-api-user";
 import * as schema from "./db/schema";
 import { sendEmail } from "./email/email.server";
 import { buildChangeEmailEmail } from "./email/templates/change-email";
@@ -63,21 +65,28 @@ export const auth = betterAuth({
     },
     deleteUser: {
       enabled: true,
+      // Anonymise the user on the .NET API BEFORE BetterAuth hard-deletes its
+      // own records. Every failure path throws an APIError so the deletion is
+      // aborted rather than leaving orphaned PII on the API side.
       beforeDelete: async (_user, request) => {
-        if (!request) return;
+        if (!request) {
+          throw new APIError("INTERNAL_SERVER_ERROR", {
+            message: "Could not delete account: missing request context",
+          });
+        }
         const tokenRes = await auth.handler(
           new Request(`${apiUrl.replace(/\/$/, "")}/api/auth/token`, {
             headers: request.headers,
           }),
         );
-        if (!tokenRes.ok) return;
+        if (!tokenRes.ok) {
+          throw new APIError("INTERNAL_SERVER_ERROR", {
+            message: `Could not delete account: token request failed (${tokenRes.status})`,
+          });
+        }
         const { token } = (await tokenRes.json()) as { token?: string };
-        if (!token) return;
 
-        await fetch(`${apiUrl}/api/v1/Users/me`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await deleteApiUser({ apiUrl, token: token ?? null });
       },
     },
   },
