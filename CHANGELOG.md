@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.40.1...v0.40.2) (2026-06-08)
+
+
+### Maintenance
+
+* add note skill for lightweight issue capture ([#256](https://github.com/InteLLigentMonk/Paddokk/issues/256)) ([9257ed1](https://github.com/InteLLigentMonk/Paddokk/commit/9257ed135a4dbb7041f0441a4761ca99d996fb69))
+
 ## [0.40.1](https://github.com/InteLLigentMonk/Paddokk/compare/v0.40.0...v0.40.1) (2026-06-08)
 
 
