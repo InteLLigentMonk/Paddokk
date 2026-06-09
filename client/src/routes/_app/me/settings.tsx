@@ -12,8 +12,9 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { Lock, Mail, Trash2, User } from "lucide-react";
+import { Cookie, Lock, Mail, Trash2, User } from "lucide-react";
 import { currentUserQueryOptions } from "@/lib/api/users.queries";
+import { ManageCookies } from "@/components/consent";
 import { ChangeEmailForm } from "@/components/profile/change-email-form";
 import { ChangePasswordForm } from "@/components/profile/change-password-form";
 import { ChangeUsernameForm } from "@/components/profile/change-username-form";
@@ -49,6 +50,9 @@ function SettingsPage() {
             </Tabs.Tab>
             <Tabs.Tab value="security" leftSection={<Lock size={16} />}>
               Security
+            </Tabs.Tab>
+            <Tabs.Tab value="privacy" leftSection={<Cookie size={16} />}>
+              Privacy
             </Tabs.Tab>
           </Tabs.List>
 
@@ -141,6 +145,28 @@ function SettingsPage() {
                 </Stack>
               </Card>
             </Stack>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="privacy" pt="lg">
+            <Card withBorder radius="md" padding="lg">
+              <Stack gap="md">
+                <Stack gap={2}>
+                  <Title order={3}>Cookies</Title>
+                  <Text size="sm" c="dimmed">
+                    Review or change your cookie choices
+                  </Text>
+                </Stack>
+                <Divider />
+                <Group justify="space-between" wrap="nowrap">
+                  <Text size="sm" c="dimmed">
+                    Reopen the cookie consent banner to update which
+                    non-essential cookies you allow. Essential cookies are
+                    always active.
+                  </Text>
+                  <ManageCookies variant="button" />
+                </Group>
+              </Stack>
+            </Card>
           </Tabs.Panel>
         </Tabs>
       </Stack>

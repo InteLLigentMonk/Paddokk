@@ -17,6 +17,13 @@ import {
 } from "../integrations/mantine";
 
 import { authSessionQueryOptions } from "../lib/api/auth.queries";
+import {
+  ConsentProvider,
+  
+  readConsentRecord
+} from "../lib/consent";
+import { ConsentBanner } from "../components/consent";
+import type {ConsentRecord} from "../lib/consent";
 import type { QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
@@ -30,6 +37,7 @@ interface MyRouterContext {
       image?: string;
     } | null;
   };
+  consent: ConsentRecord | null;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -43,6 +51,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         isAuthenticated: !!session.user,
         user: session.user ?? null,
       },
+      consent: await readConsentRecord(),
     };
   },
 
@@ -104,10 +113,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 }
 
 function RootProviders() {
+  const { consent } = Route.useRouteContext();
+
   return (
     <MantineProvider>
       <NotificationsContainer />
-      <Outlet />
+      <ConsentProvider initialRecord={consent}>
+        <Outlet />
+        <ConsentBanner />
+      </ConsentProvider>
     </MantineProvider>
   );
 }
