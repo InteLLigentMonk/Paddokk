@@ -7,6 +7,7 @@ import {
   Text,
 } from "@mantine/core";
 import { footerNavLinks, legalLinks } from "@/data/marketing";
+import { ManageCookies } from "@/components/consent";
 
 export function MarketingFooter() {
   const currentYear = new Date().getFullYear();
@@ -66,6 +67,7 @@ export function MarketingFooter() {
                 {link.label}
               </Text>
             ))}
+            <ManageCookies />
           </Stack>
         </SimpleGrid>
 

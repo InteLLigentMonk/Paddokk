@@ -23,6 +23,7 @@ export const getRouter = () => {
         isAuthenticated: false,
         user: null,
       },
+      consent: null,
     },
 
     defaultPreload: "intent",
