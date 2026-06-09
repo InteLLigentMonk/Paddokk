@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.40.2...v0.41.0) (2026-06-09)
+
+
+### Features
+
+* **gdpr:** cookie consent provider, banner, and revisit controls ([#258](https://github.com/InteLLigentMonk/Paddokk/issues/258)) ([7148eab](https://github.com/InteLLigentMonk/Paddokk/commit/7148eab64192f7febeb07833660ba523bb089e4d)), closes [#199](https://github.com/InteLLigentMonk/Paddokk/issues/199)
+
 ## [0.40.2](https://github.com/InteLLigentMonk/Paddokk/compare/v0.40.1...v0.40.2) (2026-06-08)
 
 
