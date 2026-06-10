@@ -10,9 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MarketingRouteImport } from './routes/_marketing'
+import { Route as LegalRouteImport } from './routes/_legal'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
+import { Route as LegalTermsRouteImport } from './routes/_legal/terms'
+import { Route as LegalPrivacyRouteImport } from './routes/_legal/privacy'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
@@ -56,6 +59,10 @@ const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/_legal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -68,6 +75,16 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarketingRoute,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => LegalRoute,
 } as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -288,6 +305,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/privacy': typeof LegalPrivacyRoute
+  '/terms': typeof LegalTermsRoute
   '/me/inventory': typeof AppMeInventoryRoute
   '/me/notifications': typeof AppMeNotificationsRoute
   '/me/settings': typeof AppMeSettingsRoute
@@ -326,6 +345,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/signup': typeof AuthSignupRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/privacy': typeof LegalPrivacyRoute
+  '/terms': typeof LegalTermsRoute
   '/me/inventory': typeof AppMeInventoryRoute
   '/me/notifications': typeof AppMeNotificationsRoute
   '/me/settings': typeof AppMeSettingsRoute
@@ -347,6 +368,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
+  '/_legal': typeof LegalRouteWithChildren
   '/_marketing': typeof MarketingRouteWithChildren
   '/_app/cars': typeof AppCarsRouteWithChildren
   '/_app/community': typeof AppCommunityRoute
@@ -365,6 +387,8 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
+  '/_legal/privacy': typeof LegalPrivacyRoute
+  '/_legal/terms': typeof LegalTermsRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/_app/me/inventory': typeof AppMeInventoryRoute
   '/_app/me/notifications': typeof AppMeNotificationsRoute
@@ -409,6 +433,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/privacy'
+    | '/terms'
     | '/me/inventory'
     | '/me/notifications'
     | '/me/settings'
@@ -447,6 +473,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/verify-email'
+    | '/privacy'
+    | '/terms'
     | '/me/inventory'
     | '/me/notifications'
     | '/me/settings'
@@ -467,6 +495,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_auth'
+    | '/_legal'
     | '/_marketing'
     | '/_app/cars'
     | '/_app/community'
@@ -485,6 +514,8 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/signup'
     | '/_auth/verify-email'
+    | '/_legal/privacy'
+    | '/_legal/terms'
     | '/_marketing/'
     | '/_app/me/inventory'
     | '/_app/me/notifications'
@@ -512,6 +543,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  LegalRoute: typeof LegalRouteWithChildren
   MarketingRoute: typeof MarketingRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -523,6 +555,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_legal': {
+      id: '/_legal'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -545,6 +584,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof MarketingIndexRouteImport
       parentRoute: typeof MarketingRoute
+    }
+    '/_legal/terms': {
+      id: '/_legal/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/_legal/privacy': {
+      id: '/_legal/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof LegalRoute
     }
     '/_auth/verify-email': {
       id: '/_auth/verify-email'
@@ -989,6 +1042,18 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface LegalRouteChildren {
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
+}
+
+const LegalRouteChildren: LegalRouteChildren = {
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
+}
+
+const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
+
 interface MarketingRouteChildren {
   MarketingIndexRoute: typeof MarketingIndexRoute
 }
@@ -1004,6 +1069,7 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  LegalRoute: LegalRouteWithChildren,
   MarketingRoute: MarketingRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

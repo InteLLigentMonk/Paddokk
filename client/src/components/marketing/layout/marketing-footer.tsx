@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import {
   Box,
   Container,
@@ -6,8 +7,32 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import type { NavLink } from "@/data/marketing";
 import { footerNavLinks, legalLinks } from "@/data/marketing";
 import { ManageCookies } from "@/components/consent";
+
+/** Render a footer link, using SPA navigation for in-app routes. */
+function FooterLink({ link }: { link: NavLink }) {
+  const commonProps = {
+    fz: "sm" as const,
+    c: "dimmed" as const,
+    style: { textDecoration: "none" },
+  };
+
+  if (link.type === "route") {
+    return (
+      <Text component={Link} to={link.href} {...commonProps}>
+        {link.label}
+      </Text>
+    );
+  }
+
+  return (
+    <Text component="a" href={link.href} {...commonProps}>
+      {link.label}
+    </Text>
+  );
+}
 
 export function MarketingFooter() {
   const currentYear = new Date().getFullYear();
@@ -37,16 +62,7 @@ export function MarketingFooter() {
               Navigation
             </Text>
             {footerNavLinks.map((link) => (
-              <Text
-                key={link.href}
-                component="a"
-                href={link.href}
-                fz="sm"
-                c="dimmed"
-                style={{ textDecoration: "none" }}
-              >
-                {link.label}
-              </Text>
+              <FooterLink key={link.href} link={link} />
             ))}
           </Stack>
 
@@ -56,16 +72,7 @@ export function MarketingFooter() {
               Legal
             </Text>
             {legalLinks.map((link) => (
-              <Text
-                key={link.href}
-                component="a"
-                href={link.href}
-                fz="sm"
-                c="dimmed"
-                style={{ textDecoration: "none" }}
-              >
-                {link.label}
-              </Text>
+              <FooterLink key={link.href} link={link} />
             ))}
             <ManageCookies />
           </Stack>
