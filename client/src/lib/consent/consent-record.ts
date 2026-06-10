@@ -4,13 +4,17 @@
  * stays trivially unit-testable.
  */
 
+import { LEGAL_VERSION } from "@/lib/legal/legal-version";
+
 export const CONSENT_COOKIE_NAME = "paddokk_consent";
 
 /**
- * Bumping this re-prompts every visitor on their next visit, because a stored
- * record whose policyVersion no longer matches is treated as "no decision".
+ * The consent policy tracks the legal-document version (single source of truth
+ * in `@/lib/legal/legal-version`). Bumping it re-prompts every visitor on their
+ * next visit, because a stored record whose policyVersion no longer matches is
+ * treated as "no decision".
  */
-export const CONSENT_POLICY_VERSION = "2026-05";
+export const CONSENT_POLICY_VERSION = LEGAL_VERSION;
 
 export type ConsentDecision = "all" | "essential";
 
