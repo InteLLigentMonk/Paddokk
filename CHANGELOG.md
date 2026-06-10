@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.41.0...v0.42.0) (2026-06-10)
+
+
+### Features
+
+* **legal:** add privacy policy and terms of service pages ([#260](https://github.com/InteLLigentMonk/Paddokk/issues/260)) ([5593d99](https://github.com/InteLLigentMonk/Paddokk/commit/5593d99fd9b8681a867196489729fb31f5051fec))
+
 ## [0.41.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.40.2...v0.41.0) (2026-06-09)
 
 
