@@ -13,7 +13,6 @@ import { SocialLoginButtons } from "./social-login-buttons";
 import { AuthFormWrapper } from "./auth-form-wrapper";
 import { signupSchema } from "@/lib/validation/auth-schemas";
 import { useAuth } from "@/hooks/use-auth";
-import { closeAuthModal } from "@/lib/stores/auth-modal-store";
 
 interface SignupFormProps {
   mode?: "modal" | "page";
@@ -26,11 +25,6 @@ export function SignupForm({
 }: SignupFormProps) {
   const { register, isRegistering } = useAuth();
   const navigate = useNavigate();
-
-  // When the form is shown inside the auth modal, navigating to a legal page
-  // would otherwise leave the modal open on top of it. Close it on link click
-  // so the user lands cleanly on /privacy or /terms.
-  const handleLegalLinkClick = mode === "modal" ? closeAuthModal : undefined;
 
   const form = useForm({
     defaultValues: {
@@ -246,8 +240,9 @@ export function SignupForm({
                     <Anchor
                       component={Link}
                       to="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       inherit
-                      onClick={handleLegalLinkClick}
                     >
                       Privacy Policy
                     </Anchor>{" "}
@@ -255,8 +250,9 @@ export function SignupForm({
                     <Anchor
                       component={Link}
                       to="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       inherit
-                      onClick={handleLegalLinkClick}
                     >
                       Terms of Service
                     </Anchor>
