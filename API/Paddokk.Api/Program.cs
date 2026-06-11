@@ -87,6 +87,9 @@ builder.Services.AddJwtAuthentication(builder.Configuration, builder.Environment
 // Application Services
 builder.Services.AddApplicationServices();
 
+// GDPR data export pipeline (options, services, Resend, hosted workers)
+builder.Services.AddDataExport(builder.Configuration);
+
 // Swagger
 builder.Services.AddOpenApiWithJwt();
 

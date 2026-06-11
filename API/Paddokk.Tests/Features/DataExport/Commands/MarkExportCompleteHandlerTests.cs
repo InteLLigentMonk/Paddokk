@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Paddokk.Core.Features.DataExport.Commands.MarkExportComplete;
 using Paddokk.Core.Interfaces;
@@ -16,7 +17,7 @@ public class MarkExportCompleteHandlerTests
 
     public MarkExportCompleteHandlerTests()
     {
-        _handler = new MarkExportCompleteHandler(_repo, _userRepo, _email);
+        _handler = new MarkExportCompleteHandler(_repo, _userRepo, _email, NullLogger<MarkExportCompleteHandler>.Instance);
     }
 
     [Fact]

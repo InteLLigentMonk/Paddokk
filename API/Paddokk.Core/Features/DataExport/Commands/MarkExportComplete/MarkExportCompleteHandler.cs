@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 using Paddokk.Core.Models.Entities;
@@ -8,7 +9,8 @@ namespace Paddokk.Core.Features.DataExport.Commands.MarkExportComplete;
 public sealed class MarkExportCompleteHandler(
     IDataExportRepository repository,
     IUserRepository userRepository,
-    IExportEmailSender emailSender)
+    IExportEmailSender emailSender,
+    ILogger<MarkExportCompleteHandler> logger)
     : IRequestHandler<MarkExportCompleteCommand, Result>
 {
     public async Task<Result> Handle(MarkExportCompleteCommand command, CancellationToken ct)
@@ -28,9 +30,21 @@ public sealed class MarkExportCompleteHandler(
         request.CompletedAt = DateTime.UtcNow;
         await repository.UpdateAsync(request, ct);
 
-        var user = await userRepository.GetByIdAsync(request.UserId, ct);
-        if (!string.IsNullOrEmpty(user?.Email))
-            await emailSender.SendExportReadyAsync(user.Email, command.DownloadUrl, command.ExpiresAt, ct);
+        // Email runs after the Ready transition is persisted and is best-effort: a Resend outage must
+        // not flip the export back to Failed or orphan the blob that was already written.
+        try
+        {
+            var user = await userRepository.GetByIdAsync(request.UserId, ct);
+            if (!string.IsNullOrEmpty(user?.Email))
+                await emailSender.SendExportReadyAsync(user.Email, command.DownloadUrl, command.ExpiresAt, ct);
+            else
+                logger.LogWarning("Data export {RequestId} ready but user {UserId} has no email on file",
+                    request.Id, request.UserId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send data export ready email for request {RequestId}", request.Id);
+        }
 
         return Result.Success();
     }

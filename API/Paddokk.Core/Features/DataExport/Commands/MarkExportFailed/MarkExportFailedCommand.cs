@@ -1,4 +1,4 @@
-using MediatR;
+using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models;
 
 namespace Paddokk.Core.Features.DataExport.Commands.MarkExportFailed;
@@ -8,4 +8,4 @@ namespace Paddokk.Core.Features.DataExport.Commands.MarkExportFailed;
 /// request to Failed so the user becomes eligible to request a fresh export after the cooldown.
 /// Idempotent against already-terminal requests.
 /// </summary>
-public sealed record MarkExportFailedCommand(Guid RequestId) : IRequest<Result>;
+public sealed record MarkExportFailedCommand(Guid RequestId) : ICommand<Result>;
