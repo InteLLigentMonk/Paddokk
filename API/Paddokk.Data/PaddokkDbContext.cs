@@ -27,6 +27,7 @@ public class PaddokkDbContext : DbContext
     public DbSet<ReservedUsername> ReservedUsernames { get; set; }
     public DbSet<UserFollow> UserFollows { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<DataExportRequest> DataExportRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
