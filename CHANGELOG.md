@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.42.0...v0.43.0) (2026-06-11)
+
+
+### Features
+
+* **gdpr:** sign-up policy acknowledgement checkbox ([#263](https://github.com/InteLLigentMonk/Paddokk/issues/263)) ([5a3ca57](https://github.com/InteLLigentMonk/Paddokk/commit/5a3ca576b04200f5b50e96f1ae014575d5dd3a4c))
+
 ## [0.42.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.41.0...v0.42.0) (2026-06-10)
 
 
