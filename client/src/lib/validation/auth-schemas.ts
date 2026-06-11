@@ -29,6 +29,9 @@ export const signupSchema = z
         "Password must contain at least one uppercase letter, one lowercase letter, and one number",
       ),
     confirmPassword: z.string(),
+    acceptedTerms: z.literal(true, {
+      error: "You must agree to the Privacy Policy and Terms of Service",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

@@ -2,12 +2,13 @@ import { useForm } from "@tanstack/react-form";
 import {
   Anchor,
   Button,
+  Checkbox,
   Group,
   PasswordInput,
   Stack,
   TextInput,
 } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { SocialLoginButtons } from "./social-login-buttons";
 import { AuthFormWrapper } from "./auth-form-wrapper";
 import { signupSchema } from "@/lib/validation/auth-schemas";
@@ -32,6 +33,7 @@ export function SignupForm({
       email: "",
       password: "",
       confirmPassword: "",
+      acceptedTerms: false as boolean,
     },
     validators: {
       onChange: signupSchema,
@@ -208,6 +210,42 @@ export function SignupForm({
                 }
                 disabled={isRegistering}
                 required
+              />
+            )}
+          </form.Field>
+
+          <form.Field
+            name="acceptedTerms"
+            validators={{
+              onChange: signupSchema.shape.acceptedTerms,
+            }}
+          >
+            {(field) => (
+              <Checkbox
+                checked={field.state.value}
+                onChange={(e) => field.handleChange(e.currentTarget.checked)}
+                onBlur={field.handleBlur}
+                disabled={isRegistering}
+                error={
+                  field.state.meta.isTouched &&
+                  field.state.meta.errors.length > 0
+                    ? field.state.meta.errors
+                        .map((e) => e?.message ?? "")
+                        .join(", ")
+                    : undefined
+                }
+                label={
+                  <>
+                    I have read and agree to the{" "}
+                    <Anchor component={Link} to="/privacy" inherit>
+                      Privacy Policy
+                    </Anchor>{" "}
+                    and{" "}
+                    <Anchor component={Link} to="/terms" inherit>
+                      Terms of Service
+                    </Anchor>
+                  </>
+                }
               />
             )}
           </form.Field>
