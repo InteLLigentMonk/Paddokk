@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Paddokk.Api.BackgroundServices;
 using Paddokk.Api.OpenApi;
 using Paddokk.Api.Security;
 using Paddokk.Core.Behaviours;
@@ -13,10 +14,12 @@ using Paddokk.Core.Common;
 using Paddokk.Core.Common.ImageUpload;
 using Paddokk.Core.Features.Cars.Commands.CreateUserCar;
 using Paddokk.Core.Features.Comments.Commands.CreateComment;
+using Paddokk.Core.Features.DataExport;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Services;
 using Paddokk.Data;
 using Paddokk.Data.Repositories;
+using Resend;
 
 
 namespace Paddokk.Api.Extensions;
@@ -208,6 +211,53 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserFollowRepository, UserFollowRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the GDPR data export pipeline: options, repositories/services, the Resend email
+    /// client, and the polling + cleanup hosted services.
+    /// </summary>
+    public static IServiceCollection AddDataExport(
+        this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
+    {
+        services.Configure<DataExportOptions>(configuration.GetSection(DataExportOptions.SectionName));
+        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+
+        services.AddScoped<IDataExportRepository, DataExportRepository>();
+        services.AddScoped<IDataExportReader, DataExportReader>();
+        services.AddScoped<IDataExportAssembler, DataExportAssembler>();
+        services.AddScoped<IDataExportBlobStore, DataExportBlobStore>();
+        services.AddScoped<IDataExportProcessor, DataExportProcessor>();
+        services.AddScoped<IDataExportCleanupService, DataExportCleanupService>();
+
+        // In local development "Development:LogEmailsOnly" routes mail to the log instead of Resend,
+        // so no API key or verified domain is needed to exercise the pipeline. Gated on the
+        // Development environment as well: a stray LogEmailsOnly=true in production config must never
+        // cause the logging sender (which writes the SAS download link) to be used in production.
+        if (environment.IsDevelopment() && configuration.GetValue<bool>("Development:LogEmailsOnly"))
+        {
+            services.AddScoped<IExportEmailSender, LoggingExportEmailSender>();
+        }
+        else
+        {
+            // Fail fast: a missing key here would otherwise yield a live Resend client with a blank
+            // token that only fails (silently, swallowed) at send time, leaving users un-notified.
+            var resendApiKey = configuration["Email:Resend:ApiKey"];
+            if (string.IsNullOrWhiteSpace(resendApiKey))
+            {
+                throw new InvalidOperationException(
+                    "Email:Resend:ApiKey is required when email delivery is enabled "
+                    + "(set Development:LogEmailsOnly=true in the Development environment to log emails instead).");
+            }
+
+            services.AddScoped<IExportEmailSender, ResendExportEmailSender>();
+            services.AddResend(options => options.ApiToken = resendApiKey);
+        }
+
+        services.AddHostedService<DataExportWorker>();
+        services.AddHostedService<DataExportCleanupWorker>();
 
         return services;
     }

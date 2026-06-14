@@ -2,6 +2,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Paddokk.Core.Common;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.DTOs.Image;
 using Paddokk.Core.Models.DTOs.Journey;
@@ -89,13 +90,11 @@ public class ImageService : IImageService
     {
         try
         {
-            var uri = new Uri(imageUrl);
-            var pathParts = uri.AbsolutePath.Split('/');
-            var containerName = pathParts[1];
-            var blobName = string.Join('/', pathParts.Skip(2));
+            var parsed = BlobUrlParser.Parse(imageUrl)
+                ?? throw new InvalidOperationException($"Invalid image URL: {imageUrl}");
 
-            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-            await containerClient.DeleteBlobIfExistsAsync(blobName, cancellationToken: cancellationToken);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(parsed.Container);
+            await containerClient.DeleteBlobIfExistsAsync(parsed.BlobName, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
