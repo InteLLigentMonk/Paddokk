@@ -4,6 +4,7 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Paddokk.Core.Common;
 using Paddokk.Core.Features.DataExport;
 using Paddokk.Core.Interfaces;
 
@@ -30,7 +31,7 @@ public sealed class DataExportBlobStore(
         // Private container: SAS-token access only, never public.
         await container.CreateIfNotExistsAsync(PublicAccessType.None, cancellationToken: ct);
 
-        var blobName = $"{userId}/{requestId}.json";
+        var blobName = DataExportBlobNaming.BuildBlobName(userId, requestId);
         var blob = container.GetBlobClient(blobName);
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
@@ -57,19 +58,14 @@ public sealed class DataExportBlobStore(
 
     public async Task DeleteAsync(string blobUri, CancellationToken ct)
     {
-        // blobUri is the unsigned blob URL; the blob path is everything after the container segment
-        // (any SAS query string is ignored).
-        var uri = new Uri(blobUri);
-        var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        if (segments.Length < 2)
+        var parsed = BlobUrlParser.Parse(blobUri);
+        if (parsed is null)
         {
             logger.LogWarning("Could not parse blob path from export URL; skipping delete");
             return;
         }
 
-        var containerName = segments[0];
-        var blobName = string.Join('/', segments.Skip(1));
-
+        var (containerName, blobName) = parsed.Value;
         var container = blobServiceClient.GetBlobContainerClient(containerName);
         await container.DeleteBlobIfExistsAsync(blobName, cancellationToken: ct);
         logger.LogInformation("Deleted expired data export blob {BlobName}", blobName);

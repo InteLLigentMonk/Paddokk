@@ -10,6 +10,16 @@ public class DataExportRequestConfiguration : IEntityTypeConfiguration<DataExpor
     {
         builder.HasKey(e => e.Id);
 
+        // Optimistic concurrency via Postgres' system xmin column: if two workers race to claim the
+        // same Pending row, only one SaveChanges succeeds; the other gets a DbUpdateConcurrencyException
+        // and backs off, so a request is never double-processed. xmin is a system column, so this maps
+        // a shadow property and adds no schema column.
+        builder.Property<uint>("xmin")
+            .HasColumnName("xmin")
+            .HasColumnType("xid")
+            .ValueGeneratedOnAddOrUpdate()
+            .IsConcurrencyToken();
+
         builder.Property(e => e.UserId)
             .IsRequired()
             .HasMaxLength(450);

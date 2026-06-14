@@ -39,8 +39,6 @@ public class DataExportRepository(PaddokkDbContext db) : IDataExportRepository
 
     public async Task<DataExportRequest?> ClaimNextPendingAsync(CancellationToken ct)
     {
-        // Single-instance worker: claim the oldest Pending row by flipping it to Building. Multi-
-        // instance deployments would need a row lock / SELECT ... FOR UPDATE SKIP LOCKED here.
         var request = await _db.DataExportRequests
             .Where(r => r.Status == DataExportStatus.Pending)
             .OrderBy(r => r.RequestedAt)
@@ -50,7 +48,18 @@ public class DataExportRepository(PaddokkDbContext db) : IDataExportRepository
             return null;
 
         request.Status = DataExportStatus.Building;
-        await _db.SaveChangesAsync(ct);
+
+        try
+        {
+            await _db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Another worker claimed this row first (xmin concurrency token). Leave it to them and
+            // let the caller poll again rather than double-processing.
+            return null;
+        }
+
         return request;
     }
 

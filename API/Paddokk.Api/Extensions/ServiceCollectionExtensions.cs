@@ -242,11 +242,18 @@ public static class ServiceCollectionExtensions
         }
         else
         {
-            services.AddScoped<IExportEmailSender, ResendExportEmailSender>();
-            services.AddResend(options =>
+            // Fail fast: a missing key here would otherwise yield a live Resend client with a blank
+            // token that only fails (silently, swallowed) at send time, leaving users un-notified.
+            var resendApiKey = configuration["Email:Resend:ApiKey"];
+            if (string.IsNullOrWhiteSpace(resendApiKey))
             {
-                options.ApiToken = configuration["Email:Resend:ApiKey"] ?? string.Empty;
-            });
+                throw new InvalidOperationException(
+                    "Email:Resend:ApiKey is required when email delivery is enabled "
+                    + "(set Development:LogEmailsOnly=true in the Development environment to log emails instead).");
+            }
+
+            services.AddScoped<IExportEmailSender, ResendExportEmailSender>();
+            services.AddResend(options => options.ApiToken = resendApiKey);
         }
 
         services.AddHostedService<DataExportWorker>();
