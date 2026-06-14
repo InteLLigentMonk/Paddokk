@@ -30,15 +30,18 @@ public class MarkExportCompleteHandlerTests
         var expiresAt = DateTime.UtcNow.AddDays(7);
 
         var result = await _handler.Handle(
-            new MarkExportCompleteCommand(request.Id, "https://blob/sas", expiresAt), CancellationToken.None);
+            new MarkExportCompleteCommand(request.Id, "https://blob/data.json", "https://blob/data.json?sastoken", expiresAt),
+            CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         request.Status.Should().Be(DataExportStatus.Ready);
-        request.BlobUrl.Should().Be("https://blob/sas");
+        // Only the unsigned blob URL is persisted; the SAS token must not be stored at rest.
+        request.BlobUrl.Should().Be("https://blob/data.json");
         request.ExpiresAt.Should().Be(expiresAt);
         request.CompletedAt.Should().NotBeNull();
         await _repo.Received(1).UpdateAsync(request, Arg.Any<CancellationToken>());
-        await _email.Received(1).SendExportReadyAsync("user@example.com", "https://blob/sas", expiresAt, Arg.Any<CancellationToken>());
+        // The SAS download link is what gets emailed.
+        await _email.Received(1).SendExportReadyAsync("user@example.com", "https://blob/data.json?sastoken", expiresAt, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -48,7 +51,7 @@ public class MarkExportCompleteHandlerTests
         _repo.GetByIdAsync(request.Id, Arg.Any<CancellationToken>()).Returns(request);
 
         var result = await _handler.Handle(
-            new MarkExportCompleteCommand(request.Id, "https://blob/sas", DateTime.UtcNow.AddDays(7)),
+            new MarkExportCompleteCommand(request.Id, "https://blob/data.json", "https://blob/data.json?sastoken", DateTime.UtcNow.AddDays(7)),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
@@ -63,7 +66,7 @@ public class MarkExportCompleteHandlerTests
         _repo.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((DataExportRequest?)null);
 
         var result = await _handler.Handle(
-            new MarkExportCompleteCommand(Guid.NewGuid(), "https://blob/sas", DateTime.UtcNow.AddDays(7)),
+            new MarkExportCompleteCommand(Guid.NewGuid(), "https://blob/data.json", "https://blob/data.json?sastoken", DateTime.UtcNow.AddDays(7)),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeFalse();

@@ -22,7 +22,7 @@ public sealed class DataExportBlobStore(
 {
     private readonly DataExportOptions _options = options.Value;
 
-    public async Task<string> SaveAndCreateDownloadUrlAsync(
+    public async Task<DataExportBlobResult> SaveAndCreateDownloadUrlAsync(
         string userId, Guid requestId, string json, DateTime expiresAt, CancellationToken ct)
     {
         var container = blobServiceClient.GetBlobContainerClient(_options.BlobContainerName);
@@ -50,14 +50,16 @@ public sealed class DataExportBlobStore(
         var sasUri = blob.GenerateSasUri(BlobSasPermissions.Read, new DateTimeOffset(expiresAt, TimeSpan.Zero));
         logger.LogInformation("Wrote data export blob {BlobName} for user {UserId}", blobName, userId);
 
-        return sasUri.ToString();
+        // BlobUri is the unsigned URL (safe to persist); the SAS URI carries the read token and is
+        // only ever emailed to the user.
+        return new DataExportBlobResult(blob.Uri.ToString(), sasUri.ToString());
     }
 
-    public async Task DeleteAsync(string downloadUrl, CancellationToken ct)
+    public async Task DeleteAsync(string blobUri, CancellationToken ct)
     {
-        // The download URL is a SAS link; the blob path is everything after the container segment,
-        // the SAS query string is ignored.
-        var uri = new Uri(downloadUrl);
+        // blobUri is the unsigned blob URL; the blob path is everything after the container segment
+        // (any SAS query string is ignored).
+        var uri = new Uri(blobUri);
         var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
         if (segments.Length < 2)
         {

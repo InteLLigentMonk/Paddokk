@@ -219,7 +219,8 @@ public static class ServiceCollectionExtensions
     /// Registers the GDPR data export pipeline: options, repositories/services, the Resend email
     /// client, and the polling + cleanup hosted services.
     /// </summary>
-    public static IServiceCollection AddDataExport(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDataExport(
+        this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         services.Configure<DataExportOptions>(configuration.GetSection(DataExportOptions.SectionName));
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
@@ -232,8 +233,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDataExportCleanupService, DataExportCleanupService>();
 
         // In local development "Development:LogEmailsOnly" routes mail to the log instead of Resend,
-        // so no API key or verified domain is needed to exercise the pipeline.
-        if (configuration.GetValue<bool>("Development:LogEmailsOnly"))
+        // so no API key or verified domain is needed to exercise the pipeline. Gated on the
+        // Development environment as well: a stray LogEmailsOnly=true in production config must never
+        // cause the logging sender (which writes the SAS download link) to be used in production.
+        if (environment.IsDevelopment() && configuration.GetValue<bool>("Development:LogEmailsOnly"))
         {
             services.AddScoped<IExportEmailSender, LoggingExportEmailSender>();
         }

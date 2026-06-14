@@ -25,7 +25,9 @@ public sealed class MarkExportCompleteHandler(
             return Result.Success();
 
         request.Status = DataExportStatus.Ready;
-        request.BlobUrl = command.DownloadUrl;
+        // Persist only the unsigned blob URL — the SAS query string is a bearer credential and must
+        // not be stored at rest. Cleanup needs the path, not the signature.
+        request.BlobUrl = command.BlobUri;
         request.ExpiresAt = command.ExpiresAt;
         request.CompletedAt = DateTime.UtcNow;
         await repository.UpdateAsync(request, ct);

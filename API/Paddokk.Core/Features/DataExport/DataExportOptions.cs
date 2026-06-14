@@ -22,4 +22,9 @@ public class DataExportOptions
 
     // How often the expiry cleanup sweep runs (it also runs once on host startup).
     public int CleanupIntervalHours { get; set; } = 24;
+
+    // A request sitting in Building longer than this (measured from RequestedAt) is treated as stuck
+    // (e.g. the worker died mid-process) and reclaimed to Failed so the user is unblocked. Healthy
+    // exports complete in seconds, so this is generous.
+    public int StuckBuildingThresholdMinutes { get; set; } = 60;
 }

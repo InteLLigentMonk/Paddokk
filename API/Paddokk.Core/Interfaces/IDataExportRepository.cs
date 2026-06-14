@@ -27,5 +27,11 @@ public interface IDataExportRepository
     /// <summary>Ready requests whose <c>ExpiresAt</c> is in the past — candidates for cleanup.</summary>
     Task<IReadOnlyList<DataExportRequest>> GetExpiredReadyAsync(DateTime now, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Building requests older than <paramref name="olderThan"/> — treated as stuck (worker died
+    /// mid-process) and reclaimed by the cleanup sweep.
+    /// </summary>
+    Task<IReadOnlyList<DataExportRequest>> GetStuckBuildingAsync(DateTime olderThan, CancellationToken cancellationToken);
+
     Task UpdateAsync(DataExportRequest request, CancellationToken cancellationToken);
 }

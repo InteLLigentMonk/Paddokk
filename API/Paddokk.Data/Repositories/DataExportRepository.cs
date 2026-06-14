@@ -61,6 +61,13 @@ public class DataExportRepository(PaddokkDbContext db) : IDataExportRepository
             .ToListAsync(ct);
     }
 
+    public async Task<IReadOnlyList<DataExportRequest>> GetStuckBuildingAsync(DateTime olderThan, CancellationToken ct)
+    {
+        return await _db.DataExportRequests
+            .Where(r => r.Status == DataExportStatus.Building && r.RequestedAt < olderThan)
+            .ToListAsync(ct);
+    }
+
     public async Task UpdateAsync(DataExportRequest request, CancellationToken ct)
     {
         _db.DataExportRequests.Update(request);
