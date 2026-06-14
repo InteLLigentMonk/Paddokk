@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.44.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.43.0...v0.44.0) (2026-06-14)
+
+
+### Features
+
+* **api:** GDPR data export backend ([#202](https://github.com/InteLLigentMonk/Paddokk/issues/202)) ([#265](https://github.com/InteLLigentMonk/Paddokk/issues/265)) ([a1f1be9](https://github.com/InteLLigentMonk/Paddokk/commit/a1f1be97532f4c7170316ab832f9d222daa2b352))
+
 ## [0.43.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.42.0...v0.43.0) (2026-06-11)
 
 
