@@ -7,18 +7,20 @@ import {
   Container,
   Divider,
   Group,
+  SimpleGrid,
   Stack,
   Tabs,
   Text,
   Title,
 } from "@mantine/core";
-import { Cookie, Lock, Mail, Trash2, User } from "lucide-react";
+import { Cookie, Database, Lock, Mail, Trash2, User } from "lucide-react";
 import { currentUserQueryOptions } from "@/lib/api/users.queries";
 import { ManageCookies } from "@/components/consent";
 import { ChangeEmailForm } from "@/components/profile/change-email-form";
 import { ChangePasswordForm } from "@/components/profile/change-password-form";
 import { ChangeUsernameForm } from "@/components/profile/change-username-form";
 import { DeleteAccountModal } from "@/components/profile/delete-account-modal";
+import { ExportDataAction } from "@/components/profile/export-data-action";
 import { ProfileFieldsForm } from "@/components/profile/profile-fields-form";
 
 export const Route = createFileRoute("/_app/me/settings")({
@@ -53,6 +55,9 @@ function SettingsPage() {
             </Tabs.Tab>
             <Tabs.Tab value="privacy" leftSection={<Cookie size={16} />}>
               Privacy
+            </Tabs.Tab>
+            <Tabs.Tab value="data" leftSection={<Database size={16} />}>
+              Your data
             </Tabs.Tab>
           </Tabs.List>
 
@@ -102,49 +107,18 @@ function SettingsPage() {
           </Tabs.Panel>
 
           <Tabs.Panel value="security" pt="lg">
-            <Stack gap="lg">
-              <Card withBorder radius="md" padding="lg">
-                <Stack gap="md">
-                  <Stack gap={2}>
-                    <Title order={3}>Change password</Title>
-                    <Text size="sm" c="dimmed">
-                      Update the password used to sign in
-                    </Text>
-                  </Stack>
-                  <Divider />
-                  <ChangePasswordForm />
+            <Card withBorder radius="md" padding="lg">
+              <Stack gap="md">
+                <Stack gap={2}>
+                  <Title order={3}>Change password</Title>
+                  <Text size="sm" c="dimmed">
+                    Update the password used to sign in
+                  </Text>
                 </Stack>
-              </Card>
-
-              <Card withBorder radius="md" padding="lg">
-                <Stack gap="md">
-                  <Stack gap={2}>
-                    <Title order={3} c="red">
-                      Danger zone
-                    </Title>
-                    <Text size="sm" c="dimmed">
-                      Permanently delete your account
-                    </Text>
-                  </Stack>
-                  <Divider />
-                  <Group justify="space-between" wrap="nowrap">
-                    <Text size="sm" c="dimmed">
-                      Deleting your account anonymizes your profile. Cars,
-                      journeys and posts you created remain but are attributed
-                      to "Deleted User".
-                    </Text>
-                    <Button
-                      color="red"
-                      variant="light"
-                      leftSection={<Trash2 size={16} />}
-                      onClick={() => setDeleteModalOpened(true)}
-                    >
-                      Delete account
-                    </Button>
-                  </Group>
-                </Stack>
-              </Card>
-            </Stack>
+                <Divider />
+                <ChangePasswordForm />
+              </Stack>
+            </Card>
           </Tabs.Panel>
 
           <Tabs.Panel value="privacy" pt="lg">
@@ -165,6 +139,49 @@ function SettingsPage() {
                   </Text>
                   <ManageCookies variant="button" />
                 </Group>
+              </Stack>
+            </Card>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="data" pt="lg">
+            <Card withBorder radius="md" padding="lg">
+              <Stack gap="md">
+                <Stack gap={2}>
+                  <Title order={3}>Your data</Title>
+                  <Text size="sm" c="dimmed">
+                    Exercise your GDPR rights over the data Paddokk holds about
+                    you
+                  </Text>
+                </Stack>
+                <Divider />
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
+                  <Stack gap="xs" align="flex-start">
+                    <Title order={4}>Export my data</Title>
+                    <Text size="sm" c="dimmed">
+                      Right of access — download everything Paddokk holds about
+                      you
+                    </Text>
+                    <ExportDataAction />
+                  </Stack>
+
+                  <Stack gap="xs" align="flex-start">
+                    <Title order={4} c="red">
+                      Delete my account
+                    </Title>
+                    <Text size="sm" c="dimmed">
+                      Right to erasure — permanently delete your account and all
+                      your data
+                    </Text>
+                    <Button
+                      color="red"
+                      variant="light"
+                      leftSection={<Trash2 size={16} />}
+                      onClick={() => setDeleteModalOpened(true)}
+                    >
+                      Delete account
+                    </Button>
+                  </Stack>
+                </SimpleGrid>
               </Stack>
             </Card>
           </Tabs.Panel>

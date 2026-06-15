@@ -1,4 +1,5 @@
 import { notify } from "../mantine";
+import type { Mutation } from "@tanstack/react-query";
 import { ApiError } from "@/lib/api/api-error";
 import { RATE_LIMIT_MESSAGE } from "@/lib/api/upload-error";
 
@@ -24,8 +25,18 @@ export function createQueryErrorHandler() {
 }
 
 export function createMutationErrorHandler() {
-  return (error: Error) => {
+  return (
+    error: Error,
+    _variables: unknown,
+    _context: unknown,
+    mutation: Mutation<unknown, unknown, unknown, unknown>,
+  ) => {
     if (error.name === "AbortError") {
+      return;
+    }
+
+    // Some mutations surface errors inline at the call site and opt out of the toast.
+    if (mutation.meta?.suppressGlobalError) {
       return;
     }
 
