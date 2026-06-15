@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.44.0...v0.45.0) (2026-06-15)
+
+
+### Features
+
+* **gdpr:** add data export UI and "Your data" settings section ([#267](https://github.com/InteLLigentMonk/Paddokk/issues/267)) ([b311612](https://github.com/InteLLigentMonk/Paddokk/commit/b3116122e21ba06bc32a11ad511c134ec43a1aa1))
+
 ## [0.44.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.43.0...v0.44.0) (2026-06-14)
 
 
