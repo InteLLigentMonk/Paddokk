@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.46.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.45.0...v0.46.0) (2026-06-18)
+
+
+### Features
+
+* **auth:** enable Google and Facebook OAuth social login ([#270](https://github.com/InteLLigentMonk/Paddokk/issues/270)) ([03fb53b](https://github.com/InteLLigentMonk/Paddokk/commit/03fb53beb9a9c0420102b2c7cc1350c673719717))
+
 ## [0.45.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.44.0...v0.45.0) (2026-06-15)
 
 
