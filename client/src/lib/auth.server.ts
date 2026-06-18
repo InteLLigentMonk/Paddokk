@@ -4,6 +4,7 @@ import { APIError } from "better-auth/api";
 import { jwt } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "./db/index.server";
+import { getSocialProviderCredentials } from "./auth/social-config";
 import { deleteApiUser } from "./delete-api-user";
 import * as schema from "./db/schema";
 import { sendEmail } from "./email/email.server";
@@ -18,6 +19,15 @@ const trustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS
   ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((o) => o.trim())
   : [];
 
+// Only register providers whose client id + secret are both present. Buttons
+// for unconfigured providers are disabled in the UI via the enabled-providers
+// server function, so the two stay in sync.
+const credentials = getSocialProviderCredentials();
+const socialProviders = {
+  ...(credentials.google ? { google: credentials.google } : {}),
+  ...(credentials.facebook ? { facebook: credentials.facebook } : {}),
+};
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -25,6 +35,26 @@ export const auth = betterAuth({
   }),
 
   trustedOrigins,
+
+  socialProviders,
+
+  account: {
+    accountLinking: {
+      enabled: true,
+      // Facebook's Graph API exposes no `email_verified` flag, so better-auth
+      // treats the FB email as unverified and would refuse same-email linking
+      // (account_not_linked). Facebook does require confirming an email before
+      // it is added to an account, so we trust it for linking. Google is NOT
+      // listed because it already returns a verified email and needs no
+      // exception. GitHub/Apple etc. are intentionally absent.
+      trustedProviders: ["facebook"],
+      // The existing *local* account must still have a verified email before a
+      // social login can link into it (default true since 1.6.11). This keeps
+      // the protective half of the policy for issue #204: a social login never
+      // links into an unverified pre-registered account (hijack-safe).
+      requireLocalEmailVerified: true,
+    },
+  },
 
   emailAndPassword: {
     enabled: true,
@@ -100,5 +130,5 @@ export const auth = betterAuth({
     },
   },
 
-  plugins: [tanstackStartCookies(), jwt()],
+  plugins: [jwt(), tanstackStartCookies()],
 });
