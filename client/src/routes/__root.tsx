@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useRouter,
+  useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
@@ -17,13 +20,12 @@ import {
 } from "../integrations/mantine";
 
 import { authSessionQueryOptions } from "../lib/api/auth.queries";
-import {
-  ConsentProvider,
-  
-  readConsentRecord
-} from "../lib/consent";
+import { ConsentProvider, readConsentRecord } from "../lib/consent";
 import { ConsentBanner } from "../components/consent";
-import type {ConsentRecord} from "../lib/consent";
+import { ErrorPage } from "../components/common/error-page";
+import { NotFoundPage } from "../components/common/not-found-page";
+import { reportError } from "../lib/error-reporting";
+import type { ConsentRecord } from "../lib/consent";
 import type { QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
@@ -83,7 +85,37 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   shellComponent: RootDocument,
   component: RootProviders,
+  errorComponent: RootErrorComponent,
+  notFoundComponent: NotFoundPage,
 });
+
+function RootErrorComponent({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  const router = useRouter();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  const { auth } = Route.useRouteContext();
+
+  useEffect(() => {
+    reportError(error, { route: pathname, actorId: auth.user?.id ?? null });
+  }, [error, pathname, auth]);
+
+  return (
+    <ErrorPage
+      error={error}
+      onReload={() => {
+        reset();
+        void router.invalidate();
+      }}
+    />
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -93,7 +125,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <MantineProvider>
+          <NotificationsContainer />
+          {children}
+        </MantineProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",
@@ -116,12 +151,9 @@ function RootProviders() {
   const { consent } = Route.useRouteContext();
 
   return (
-    <MantineProvider>
-      <NotificationsContainer />
-      <ConsentProvider initialRecord={consent}>
-        <Outlet />
-        <ConsentBanner />
-      </ConsentProvider>
-    </MantineProvider>
+    <ConsentProvider initialRecord={consent}>
+      <Outlet />
+      <ConsentBanner />
+    </ConsentProvider>
   );
 }
