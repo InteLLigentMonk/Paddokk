@@ -1,11 +1,14 @@
-using System.Net;
 using System.Text.Json;
 using FluentValidation;
+using Paddokk.Api.OpenApi;
+using Paddokk.Core.Models;
 
 namespace Paddokk.Api.Middleware;
 
 public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
 {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
     private readonly RequestDelegate _next = next;
     private readonly ILogger<GlobalExceptionMiddleware> _logger = logger;
 
@@ -28,27 +31,45 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
     {
         context.Response.ContentType = "application/json";
 
-        var (statusCode, message) = ex switch
+        var response = ex switch
         {
-            ValidationException ve => (HttpStatusCode.BadRequest,
-                string.Join("; ", ve.Errors.Select(e => e.ErrorMessage))),
-            UnauthorizedAccessException => (HttpStatusCode.Forbidden, ex.Message),
-            KeyNotFoundException => (HttpStatusCode.NotFound, ex.Message),
-            ArgumentException => (HttpStatusCode.BadRequest, ex.Message),
-            InvalidOperationException => (HttpStatusCode.BadRequest, ex.Message),
-            OperationCanceledException => (HttpStatusCode.ServiceUnavailable, "Request was cancelled"),
-            _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred")
+            ValidationException ve => BuildValidationResponse(ve),
+            UnauthorizedAccessException => new ApiErrorResponse(
+                ErrorCodes.Forbidden, ex.Message, StatusCodes.Status403Forbidden),
+            KeyNotFoundException => new ApiErrorResponse(
+                ErrorCodes.NotFound, ex.Message, StatusCodes.Status404NotFound),
+            ArgumentException => new ApiErrorResponse(
+                ErrorCodes.ValidationFailed, ex.Message, StatusCodes.Status400BadRequest),
+            InvalidOperationException => new ApiErrorResponse(
+                ErrorCodes.ValidationFailed, ex.Message, StatusCodes.Status400BadRequest),
+            OperationCanceledException => new ApiErrorResponse(
+                ErrorCodes.RequestCancelled, "Request was cancelled", StatusCodes.Status503ServiceUnavailable),
+            // Do not leak internal exception details to clients.
+            _ => new ApiErrorResponse(
+                ErrorCodes.Internal, "An unexpected error occurred", StatusCodes.Status500InternalServerError)
         };
 
-        context.Response.StatusCode = (int)statusCode;
+        context.Response.StatusCode = response.Status;
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));
+    }
 
-        var response = new
-        {
-            error = message,
-            statusCode = (int)statusCode,
-            path = context.Request.Path.Value
-        };
+    private static ApiErrorResponse BuildValidationResponse(ValidationException ve)
+    {
+        var errors = ve.Errors
+            .Select(failure => new ApiValidationError(
+                failure.PropertyName,
+                ErrorCodes.IsKnown(failure.ErrorCode) ? failure.ErrorCode : ErrorCodes.ValidationFailed,
+                failure.ErrorMessage))
+            .ToList();
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        var message = string.Join("; ", errors.Select(e => e.Message));
+
+        // When a single failure carries a stable code (e.g. an upload rejection), surface it
+        // at the top level so the frontend can branch without inspecting the errors array.
+        var topCode = errors.Count == 1 && ErrorCodes.IsKnown(errors[0].Code)
+            ? errors[0].Code
+            : ErrorCodes.ValidationFailed;
+
+        return new ApiErrorResponse(topCode, message, StatusCodes.Status400BadRequest, errors);
     }
 }

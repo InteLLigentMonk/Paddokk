@@ -41,6 +41,7 @@ public class SubscribeToJourneyHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error!.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Code.Should().Be(ErrorCodes.SubscribeToOwnSubject);
     }
 
     [Fact]

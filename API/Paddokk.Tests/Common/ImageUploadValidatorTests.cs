@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Paddokk.Core.Common.ImageUpload;
+using Paddokk.Core.Models;
 
 namespace Paddokk.Tests.Common;
 
@@ -162,5 +163,44 @@ public class ImageUploadValidatorTests
         var result = _validator.Validate(file);
 
         result.IsValid.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Validate_OverMaxSize_HasUploadTooLargeCode()
+    {
+        var file = ImageUploadTestFiles.MakeFile(
+            ImageUploadTestFiles.JpegMagic,
+            "image/jpeg",
+            lengthOverride: ImageUploadValidator.MaxFileSizeBytes + 1);
+
+        _validator.Validate(file).Code.Should().Be(ErrorCodes.UploadTooLarge);
+    }
+
+    [Fact]
+    public void Validate_DisallowedContentType_HasUnsupportedFormatCode()
+    {
+        var file = ImageUploadTestFiles.MakeFile(ImageUploadTestFiles.JpegMagic, "application/pdf");
+
+        _validator.Validate(file).Code.Should().Be(ErrorCodes.UploadUnsupportedFormat);
+    }
+
+    [Fact]
+    public void Validate_MagicByteMismatch_HasContentMismatchCode()
+    {
+        var file = ImageUploadTestFiles.MakeFile(ImageUploadTestFiles.PngMagic, "image/jpeg");
+
+        _validator.Validate(file).Code.Should().Be(ErrorCodes.UploadContentMismatch);
+    }
+
+    [Fact]
+    public void Validate_NullFile_HasUploadRequiredCode()
+    {
+        _validator.Validate(null).Code.Should().Be(ErrorCodes.UploadRequired);
+    }
+
+    [Fact]
+    public void Validate_HappyPath_HasNullCode()
+    {
+        _validator.Validate(ImageUploadTestFiles.JpegFile()).Code.Should().BeNull();
     }
 }

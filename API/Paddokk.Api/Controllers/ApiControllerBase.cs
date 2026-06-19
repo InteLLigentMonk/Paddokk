@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Paddokk.Api.OpenApi;
 using Paddokk.Core.Models;
 
 namespace Paddokk.Api.Controllers;
@@ -6,14 +8,19 @@ namespace Paddokk.Api.Controllers;
 [ApiController]
 public abstract class ApiControllerBase : ControllerBase
 {
-    protected ActionResult FromError(Error error) => error.Type switch
+    protected ActionResult FromError(Error error)
     {
-        ErrorType.NotFound => NotFound(new { error = error.Message }),
-        ErrorType.Unauthorized => Forbid(),
-        ErrorType.Conflict => Conflict(new { error = error.Message }),
-        ErrorType.Validation => BadRequest(new { error = error.Message }),
-        _ => StatusCode(500, new { error = error.Message })
-    };
+        var status = error.Type switch
+        {
+            ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Unauthorized => StatusCodes.Status403Forbidden,
+            ErrorType.Conflict => StatusCodes.Status409Conflict,
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError
+        };
+
+        return StatusCode(status, new ApiErrorResponse(error.Code, error.Message, status));
+    }
 
     protected ActionResult<T> OkOrError<T>(Result<T> result) =>
         result.IsSuccess ? Ok(result.Value) : FromError(result.Error);

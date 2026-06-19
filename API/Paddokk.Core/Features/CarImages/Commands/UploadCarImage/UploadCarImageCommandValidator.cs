@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.Results;
 using Paddokk.Core.Common.ImageUpload;
 
 namespace Paddokk.Core.Features.CarImages.Commands.UploadCarImage;
@@ -11,7 +12,7 @@ public sealed class UploadCarImageCommandValidator : AbstractValidator<UploadCar
         {
             var result = imageValidator.Validate(file);
             if (!result.IsValid)
-                ctx.AddFailure("File", result.Reason!);
+                ctx.AddFailure(new ValidationFailure("File", result.Reason!) { ErrorCode = result.Code });
         });
     }
 }
