@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Paddokk.Core.Models;
 
 namespace Paddokk.Core.Common.ImageUpload;
 
@@ -12,20 +13,23 @@ public sealed class ImageUploadValidator : IImageUploadValidator
     public ImageValidationResult Validate(IFormFile? file)
     {
         if (file is null || file.Length == 0)
-            return ImageValidationResult.Invalid("File is required");
+            return ImageValidationResult.Invalid("File is required", ErrorCodes.UploadRequired);
 
         if (file.Length > MaxFileSizeBytes)
             return ImageValidationResult.Invalid(
-                $"File exceeds maximum size of {MaxFileSizeBytes / (1024 * 1024)} MiB");
+                $"File exceeds maximum size of {MaxFileSizeBytes / (1024 * 1024)} MiB",
+                ErrorCodes.UploadTooLarge);
 
         var contentType = file.ContentType?.ToLowerInvariant();
         if (contentType is null || !AllowedContentTypes.Contains(contentType))
             return ImageValidationResult.Invalid(
-                $"Content type '{file.ContentType}' is not allowed. Allowed types: {string.Join(", ", AllowedContentTypes)}");
+                $"Content type '{file.ContentType}' is not allowed. Allowed types: {string.Join(", ", AllowedContentTypes)}",
+                ErrorCodes.UploadUnsupportedFormat);
 
         if (!MagicBytesMatchContentType(file, contentType))
             return ImageValidationResult.Invalid(
-                $"File contents do not match declared content type '{contentType}'");
+                $"File contents do not match declared content type '{contentType}'",
+                ErrorCodes.UploadContentMismatch);
 
         return ImageValidationResult.Valid();
     }

@@ -19,7 +19,9 @@ public static class Subscriptions
             return Result.Failure(Error.NotFound($"{subject.Label} not found"));
 
         if (subject.PrincipalIdOf(loaded) == actorUserId)
-            return Result.Failure(Error.Conflict($"Cannot subscribe to your own {subject.Label.ToLowerInvariant()}"));
+            return Result.Failure(Error.Conflict(
+                $"Cannot subscribe to your own {subject.Label.ToLowerInvariant()}",
+                ErrorCodes.SubscribeToOwnSubject));
 
         var existing = await relation.FindAsync(cancellationToken);
 

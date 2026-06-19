@@ -1,16 +1,16 @@
 namespace Paddokk.Api.OpenApi;
 
 /// <summary>
-/// Matches the JSON shape returned by GlobalExceptionMiddleware.
+/// Canonical error envelope returned by the API for every failure, whether it
+/// originates from a domain <c>Result</c> (via <c>ApiControllerBase.FromError</c>) or
+/// an unhandled exception (via <c>GlobalExceptionMiddleware</c>). The frontend branches
+/// on <see cref="Code"/> to render specific, actionable messages.
 /// </summary>
-public class ApiErrorResponse
-{
-    /// <summary>Human-readable error message.</summary>
-    public string Error { get; set; } = string.Empty;
+public sealed record ApiErrorResponse(
+    string Code,
+    string Message,
+    int Status,
+    IReadOnlyList<ApiValidationError>? Errors = null);
 
-    /// <summary>HTTP status code.</summary>
-    public int StatusCode { get; set; }
-
-    /// <summary>Request path that triggered the error.</summary>
-    public string Path { get; set; } = string.Empty;
-}
+/// <summary>A single field-level validation failure within an <see cref="ApiErrorResponse"/>.</summary>
+public sealed record ApiValidationError(string Field, string Code, string Message);
