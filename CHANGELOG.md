@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.47.0...v0.48.0) (2026-06-19)
+
+
+### Features
+
+* **api:** unified error envelope with machine-readable error codes ([#279](https://github.com/InteLLigentMonk/Paddokk/issues/279)) ([f242ffb](https://github.com/InteLLigentMonk/Paddokk/commit/f242ffb9af56021324840a53289637d44f5202d6)), closes [#277](https://github.com/InteLLigentMonk/Paddokk/issues/277)
+
 ## [0.47.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.46.0...v0.47.0) (2026-06-19)
 
 
