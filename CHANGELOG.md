@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.47.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.46.0...v0.47.0) (2026-06-19)
+
+
+### Features
+
+* **ux:** add global error boundary, 404 and 500 pages ([#274](https://github.com/InteLLigentMonk/Paddokk/issues/274)) ([9ccd419](https://github.com/InteLLigentMonk/Paddokk/commit/9ccd419c072aac772c28b12b40c16863ca86bb4c)), closes [#205](https://github.com/InteLLigentMonk/Paddokk/issues/205)
+
 ## [0.46.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.45.0...v0.46.0) (2026-06-18)
 
 
