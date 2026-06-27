@@ -1,9 +1,9 @@
 import { useForm } from "@tanstack/react-form";
 import { Alert, Button, Group, Stack, Text, TextInput } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { Info } from "lucide-react";
 import type { UserDto } from "@/generated/api/schemas";
-import { ApiError } from "@/lib/api/api-error";
+import { notify } from "@/integrations/mantine";
+import { SEVERITY_COLOR, resolveApiError } from "@/lib/api/error-resolver";
 import { useChangeUsername } from "@/lib/api/users.queries";
 import { changeUsernameSchema } from "@/lib/validation/profile-schemas";
 
@@ -17,27 +17,22 @@ export function ChangeUsernameForm({ user }: ChangeUsernameFormProps) {
   const form = useForm({
     defaultValues: { username: user.username },
     validators: { onChange: changeUsernameSchema },
-    onSubmit: async ({ value }) => {
+    onSubmit: ({ value }) => {
       if (value.username === user.username) return;
-      try {
-        await changeUsername.mutateAsync({
-          data: { username: value.username },
-        });
-        notifications.show({
-          color: "green",
-          message: "Username updated",
-        });
-      } catch (error) {
-        notifications.show({
-          color: "red",
-          message:
-            error instanceof ApiError
-              ? error.message
-              : "Could not change username. Please try again.",
-        });
-      }
+      changeUsername.mutate(
+        { data: { username: value.username } },
+        {
+          onSuccess: () => notify.success({ message: "Username updated" }),
+        },
+      );
     },
   });
+
+  // Diagnostic backend messages are never shown (ADR-0007); inline copy comes from
+  // the resolver, keyed on the error code (USERNAME_TAKEN, USERNAME_CHANGE_TOO_SOON, ...).
+  const resolvedError = changeUsername.isError
+    ? resolveApiError(changeUsername.error)
+    : null;
 
   return (
     <form
@@ -79,6 +74,12 @@ export function ChangeUsernameForm({ user }: ChangeUsernameFormProps) {
             />
           )}
         </form.Field>
+
+        {resolvedError && (
+          <Alert color={SEVERITY_COLOR[resolvedError.severity]} variant="light">
+            {resolvedError.message}
+          </Alert>
+        )}
 
         <Group justify="flex-end">
           <form.Subscribe

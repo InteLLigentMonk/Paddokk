@@ -22,6 +22,14 @@ public class ApiErrorEnvelopeTests
 
     private sealed class TestController : ApiControllerBase
     {
+        public TestController()
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { TraceIdentifier = "trace-abc" }
+            };
+        }
+
         public ActionResult Expose(Error error) => FromError(error);
     }
 
@@ -40,6 +48,7 @@ public class ApiErrorEnvelopeTests
         body.Code.Should().Be(ErrorCodes.SubscribeToOwnSubject);
         body.Message.Should().Be("own journey");
         body.Status.Should().Be(StatusCodes.Status409Conflict);
+        body.TraceId.Should().Be("trace-abc");
     }
 
     [Fact]
@@ -76,7 +85,7 @@ public class ApiErrorEnvelopeTests
 
     private static async Task<(int status, ApiErrorResponse body)> RunMiddlewareAsync(Exception ex)
     {
-        var context = new DefaultHttpContext();
+        var context = new DefaultHttpContext { TraceIdentifier = "trace-xyz" };
         context.Response.Body = new MemoryStream();
 
         var middleware = new GlobalExceptionMiddleware(
@@ -126,6 +135,17 @@ public class ApiErrorEnvelopeTests
         status.Should().Be(StatusCodes.Status500InternalServerError);
         body.Code.Should().Be(ErrorCodes.Internal);
         body.Message.Should().NotContain("secret");
+        body.TraceId.Should().Be("trace-xyz");
+    }
+
+    [Fact]
+    public async Task InvalidOperationException_Returns400WithoutLeakingMessage()
+    {
+        var (status, body) = await RunMiddlewareAsync(new InvalidOperationException("internal state detail"));
+
+        status.Should().Be(StatusCodes.Status400BadRequest);
+        body.Code.Should().Be(ErrorCodes.ValidationFailed);
+        body.Message.Should().NotContain("internal state detail");
     }
 
     [Fact]

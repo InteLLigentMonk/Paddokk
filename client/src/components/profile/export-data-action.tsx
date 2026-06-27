@@ -1,27 +1,17 @@
 import { Alert, Button, Stack } from "@mantine/core";
 import { CircleCheck, Download } from "lucide-react";
 import { useRequestDataExport } from "@/lib/api/data-export.queries";
-import { ApiError } from "@/lib/api/api-error";
+import { SEVERITY_COLOR, resolveApiError } from "@/lib/api/error-resolver";
 
 const SUCCESS_MESSAGE =
   "Export requested — you'll receive an email when it's ready.";
-const COOLDOWN_MESSAGE =
-  "You requested an export recently — please wait before requesting again.";
-const THROTTLED_MESSAGE =
-  "You're going a bit too fast — please wait a moment and try again.";
-const ERROR_MESSAGE = "Could not request your export. Please try again.";
-
-function rateLimitMessage(error: unknown): string | null {
-  if (!(error instanceof ApiError)) return null;
-  if (error.status === 409) return COOLDOWN_MESSAGE;
-  if (error.status === 429) return THROTTLED_MESSAGE;
-  return null;
-}
+const FALLBACK_MESSAGE = "Could not request your export. Please try again.";
 
 /**
  * "Export my data" action. Renders the export-request state inline — confirmation
- * on success, a soft warning when rate-limited, a retryable error otherwise. No
- * page reload; the button itself is the retry affordance.
+ * on success, a soft warning when rate-limited (EXPORT_COOLDOWN / 429), a retryable
+ * error otherwise. Copy and severity come from the shared resolver, keyed on the
+ * error code. No page reload; the button itself is the retry affordance.
  */
 export function ExportDataAction() {
   const mutation = useRequestDataExport();
@@ -44,8 +34,8 @@ export function ExportDataAction() {
     );
   }
 
-  const rateLimited = mutation.isError
-    ? rateLimitMessage(mutation.error)
+  const resolvedError = mutation.isError
+    ? resolveApiError(mutation.error, { fallbackMessage: FALLBACK_MESSAGE })
     : null;
 
   return (
@@ -58,14 +48,9 @@ export function ExportDataAction() {
       >
         Export my data
       </Button>
-      {rateLimited && (
-        <Alert color="yellow" variant="light">
-          {rateLimited}
-        </Alert>
-      )}
-      {mutation.isError && !rateLimited && (
-        <Alert color="red" variant="light">
-          {ERROR_MESSAGE}
+      {resolvedError && (
+        <Alert color={SEVERITY_COLOR[resolvedError.severity]} variant="light">
+          {resolvedError.message}
         </Alert>
       )}
     </Stack>

@@ -20,7 +20,7 @@ public sealed class LikeJourneyHandler(
             return Result.Failure(Error.NotFound($"Journey {request.JourneyId} not found"));
 
         if (journey.PrincipalId == actor.UserId)
-            return Result.Failure(Error.Conflict("Cannot like your own journey"));
+            return Result.Failure(Error.Conflict("Cannot like your own journey", ErrorCodes.LikeOwnSubject));
 
         var existing = await journeyRepository.GetLikeAsync(actor.UserId, request.JourneyId, cancellationToken);
 

@@ -55,10 +55,14 @@ describe("ExportDataAction", () => {
     ).toHaveProperty("disabled", true);
   });
 
-  it("shows the cooldown message on a 409 conflict and keeps the button enabled", async () => {
+  it("shows the cooldown message on an EXPORT_COOLDOWN conflict and keeps the button enabled", async () => {
     const user = userEvent.setup();
     mocks.requestDataExportFn.mockRejectedValue(
-      new ApiError(409, "A data export was requested recently."),
+      new ApiError(
+        409,
+        "A data export was requested recently.",
+        "EXPORT_COOLDOWN",
+      ),
     );
     renderAction();
 
@@ -75,7 +79,7 @@ describe("ExportDataAction", () => {
   it("shows a rate-limit message on a 429 response", async () => {
     const user = userEvent.setup();
     mocks.requestDataExportFn.mockRejectedValue(
-      new ApiError(429, "Too many requests"),
+      new ApiError(429, "Too many requests", "RATE_LIMITED"),
     );
     renderAction();
 

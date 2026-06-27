@@ -18,6 +18,7 @@ import { JourneyDetailHeader } from "@/components/journeys/journey-detail-header
 import { JourneyCreatePostBar } from "@/components/journeys/journey-create-post-bar";
 import { JourneyPostCard } from "@/components/journeys/journey-post-card";
 import { userJourneyBySlugQueryOptions } from "@/lib/api/users.queries";
+import { isNotFoundError } from "@/lib/api/error-resolver";
 
 function PostsLoadingSkeleton() {
   return (
@@ -39,8 +40,9 @@ export const Route = createFileRoute("/_app/users/$username/journeys/$slug/")({
       await queryClient.ensureQueryData(
         userJourneyBySlugQueryOptions(params.username, params.slug),
       );
-    } catch {
-      throw notFound();
+    } catch (error) {
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
     }
   },
   component: JourneyDetailPage,

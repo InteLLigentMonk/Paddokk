@@ -16,6 +16,7 @@ import {
   userByUsernameQueryOptions,
   userCarsByUsernameQueryOptions,
 } from "@/lib/api/users.queries";
+import { isNotFoundError } from "@/lib/api/error-resolver";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   carsPageStore,
@@ -35,8 +36,9 @@ export const Route = createFileRoute("/_app/users/$username/cars/")({
       await queryClient.ensureQueryData(
         userByUsernameQueryOptions(params.username),
       );
-    } catch {
-      throw notFound();
+    } catch (error) {
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
     }
     await queryClient.ensureQueryData(
       userCarsByUsernameQueryOptions(params.username),

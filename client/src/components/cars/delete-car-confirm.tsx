@@ -30,6 +30,7 @@ export function DeleteCarConfirm() {
   const car = data;
 
   const deleteMutation = useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: (id: number) => userCarsDeleteUserCar(id),
     onError: () => {
       notifications.error({

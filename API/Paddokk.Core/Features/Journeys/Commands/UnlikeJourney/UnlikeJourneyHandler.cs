@@ -15,7 +15,7 @@ public sealed class UnlikeJourneyHandler(IJourneyRepository journeyRepository, I
             return Result.Failure(Error.NotFound($"Journey {request.JourneyId} not found"));
 
         if (journey.PrincipalId == actor.UserId)
-            return Result.Failure(Error.Conflict("Cannot unlike your own journey"));
+            return Result.Failure(Error.Conflict("Cannot unlike your own journey", ErrorCodes.LikeOwnSubject));
 
         var like = await journeyRepository.GetLikeAsync(actor.UserId, request.JourneyId, cancellationToken);
 

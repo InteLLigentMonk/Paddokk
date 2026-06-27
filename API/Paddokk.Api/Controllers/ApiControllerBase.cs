@@ -19,7 +19,8 @@ public abstract class ApiControllerBase : ControllerBase
             _ => StatusCodes.Status500InternalServerError
         };
 
-        return StatusCode(status, new ApiErrorResponse(error.Code, error.Message, status));
+        return StatusCode(status, new ApiErrorResponse(
+            error.Code, error.Message, status, TraceId: HttpContext.TraceIdentifier));
     }
 
     protected ActionResult<T> OkOrError<T>(Result<T> result) =>

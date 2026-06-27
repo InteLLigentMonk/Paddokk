@@ -6697,17 +6697,53 @@
   "components": {
     "schemas": {
       "ApiErrorResponse": {
+        "required": [
+          "code",
+          "message",
+          "status"
+        ],
         "type": "object",
         "properties": {
-          "error": {
+          "code": {
             "type": "string"
           },
-          "statusCode": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
             "type": "integer",
             "format": "int32"
           },
-          "path": {
-            "type": "string"
+          "errors": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "required": [
+                "field",
+                "code",
+                "message"
+              ],
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "traceId": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

@@ -97,9 +97,10 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
     [journey.carMakeName, journey.carModelName, journey.carYear]
       .filter(Boolean)
       .join(" ") ||
-    "OkÃ¤nd bil";
+    "Unknown car";
 
   const statusMutation = useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: (vars: {
       newStatus?: JourneyStatus;
       completedAt?: string | null;
@@ -125,15 +126,16 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
         vars.newStatus !== undefined &&
         Number(vars.newStatus) !== STATUS_ACTIVE;
       notifications.success({
-        message: defaultChanged ? "Aktiv resa uppdaterad" : "Resan uppdaterad",
+        message: defaultChanged ? "Active journey updated" : "Journey updated",
       });
     },
     onError: () => {
-      notifications.error({ message: "Kunde inte uppdatera resan" });
+      notifications.error({ message: "Could not update the journey" });
     },
   });
 
   const setDefaultMutation = useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: () => setDefaultActiveJourneyFn({ data: { journeyId } }),
     onSuccess: () => {
       journeyKeys.userJourneyListRoots.forEach((queryKey) =>
@@ -142,10 +144,10 @@ export function JourneyCard({ journey, isDefault = false }: JourneyCardProps) {
       queryClient.invalidateQueries({
         queryKey: journeyKeys.defaultActiveJourney,
       });
-      notifications.success({ message: "Aktiv resa uppdaterad" });
+      notifications.success({ message: "Active journey updated" });
     },
     onError: () => {
-      notifications.error({ message: "Kunde inte sÃ¤tta som aktiv resa" });
+      notifications.error({ message: "Could not set as active journey" });
     },
   });
 

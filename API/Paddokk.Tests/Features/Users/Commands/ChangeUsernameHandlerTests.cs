@@ -53,6 +53,7 @@ public class ChangeUsernameHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Code.Should().Be(ErrorCodes.UsernameTaken);
     }
 
     [Fact]
@@ -66,6 +67,7 @@ public class ChangeUsernameHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Code.Should().Be(ErrorCodes.UsernameChangeTooSoon);
     }
 
     [Fact]
@@ -92,6 +94,7 @@ public class ChangeUsernameHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Code.Should().Be(ErrorCodes.UsernameReserved);
     }
 
     [Fact]

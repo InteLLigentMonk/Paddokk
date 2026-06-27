@@ -66,6 +66,7 @@ public class RequestDataExportHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Code.Should().Be(ErrorCodes.ExportCooldown);
         await _repo.DidNotReceive().AddAsync(Arg.Any<DataExportRequest>(), Arg.Any<CancellationToken>());
     }
 

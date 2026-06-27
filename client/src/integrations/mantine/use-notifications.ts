@@ -1,7 +1,8 @@
 import { notifications as mantineNotifications } from "@mantine/notifications";
+import type { ReactNode } from "react";
 
 export interface NotificationOptions {
-  message: string;
+  message: ReactNode;
   title?: string;
   autoClose?: number | false;
   withCloseButton?: boolean;

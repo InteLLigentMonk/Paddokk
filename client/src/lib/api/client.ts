@@ -1,5 +1,6 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { ApiError } from "./api-error";
+import { ApiErrorCode } from "./error-resolver";
 
 export type ErrorType = ApiError;
 export type BodyType<TData> = TData;
@@ -61,13 +62,20 @@ export const apiFetcher = async <T>(
   const res = await fetch(`${apiUrl}${url}`, { ...options, headers });
 
   if (!res.ok) {
+    // Unified error envelope: { code, message, status, errors? }. Only fabricate
+    // a status-based message when the backend genuinely sent nothing usable.
     const problem = await res.json().catch(() => null);
-    throw new ApiError(
-      res.status,
-      problem?.title ?? `API error: ${res.status}`,
-      problem?.detail,
-      problem?.errors,
-    );
+    const message =
+      typeof problem?.message === "string" && problem.message.length > 0
+        ? problem.message
+        : `API error: ${res.status}`;
+    const code =
+      typeof problem?.code === "string" && problem.code.length > 0
+        ? problem.code
+        : ApiErrorCode.Internal;
+    const traceId =
+      typeof problem?.traceId === "string" ? problem.traceId : undefined;
+    throw new ApiError(res.status, message, code, problem?.errors, traceId);
   }
 
   if (res.status === 204) {

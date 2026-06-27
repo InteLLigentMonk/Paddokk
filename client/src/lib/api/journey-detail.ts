@@ -108,7 +108,7 @@ export const reportCommentFn = createServerFn({ method: "POST" })
           return {
             kind: "notImplemented",
             title: error.message,
-            message: error.detail ?? "",
+            message: "",
           };
         }
         throw error;

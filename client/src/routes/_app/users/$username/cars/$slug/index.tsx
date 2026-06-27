@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CarDetailPage } from "@/components/cars/car-detail-page";
+import { isNotFoundError } from "@/lib/api/error-resolver";
 import {
   carImagesQueryOptions,
   carJourneysQueryOptions,
@@ -23,8 +24,9 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug/")({
           carJourneysQueryOptions(params.username, params.slug),
         ),
       ]);
-    } catch {
-      throw notFound();
+    } catch (error) {
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
     }
   },
   component: UserCarDetailRoute,
