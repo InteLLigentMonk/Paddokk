@@ -57,6 +57,7 @@ export function useMarkNotificationRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: (id: number) => markNotificationReadFn({ data: { id } }),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: notificationKeys.root });
@@ -122,6 +123,7 @@ export function useMarkAllRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: () => markAllReadFn(),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: notificationKeys.root });

@@ -10,6 +10,7 @@ import {
   userByUsernameQueryOptions,
   userJourneysByUsernameQueryOptions,
 } from "@/lib/api/users.queries";
+import { isNotFoundError } from "@/lib/api/error-resolver";
 import { getDefaultActiveJourneyFn } from "@/lib/api/user-journeys";
 import { journeyKeys } from "@/lib/api/journeys.keys";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -21,8 +22,9 @@ export const Route = createFileRoute("/_app/users/$username/journeys/")({
       await queryClient.ensureQueryData(
         userByUsernameQueryOptions(params.username),
       );
-    } catch {
-      throw notFound();
+    } catch (error) {
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
     }
     await queryClient.ensureQueryData(
       userJourneysByUsernameQueryOptions(params.username),

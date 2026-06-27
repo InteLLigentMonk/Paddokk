@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 import { userCarBySlugQueryOptions } from "@/lib/api/users.queries";
+import { isNotFoundError } from "@/lib/api/error-resolver";
 
 export const Route = createFileRoute("/_app/users/$username/cars/$slug")({
   loader: async ({ params, context: { queryClient } }) => {
@@ -14,8 +15,9 @@ export const Route = createFileRoute("/_app/users/$username/cars/$slug")({
           : `${car.carMakeName ?? ""} ${car.carModelName ?? ""}`.trim()) ||
         params.slug;
       return { displayName };
-    } catch {
-      throw notFound();
+    } catch (error) {
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
     }
   },
   staticData: {

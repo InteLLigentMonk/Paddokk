@@ -31,6 +31,7 @@ public class LikeUserCarHandlerTests
 
         result.IsSuccess.Should().BeFalse();
         result.Error!.Type.Should().Be(ErrorType.Conflict);
+        result.Error.Code.Should().Be(ErrorCodes.LikeOwnSubject);
         await _publisher.DidNotReceive().Publish(Arg.Any<CarLiked>(), Arg.Any<CancellationToken>());
     }
 

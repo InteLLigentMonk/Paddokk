@@ -4,7 +4,6 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { notifications } from "@mantine/notifications";
 import {
   changeUsernameFn,
   deleteCurrentUserFn,
@@ -126,6 +125,8 @@ export function useUpdateCurrentUser() {
 export function useChangeUsername() {
   const queryClient = useQueryClient();
   return useMutation({
+    // The form renders the failure inline (field-level codes), so opt out of the toast.
+    meta: { suppressGlobalError: true },
     mutationFn: changeUsernameFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.currentUser });
@@ -168,13 +169,10 @@ export function useToggleFollow(userId: string, username: string) {
       return { previous };
     },
     onError: (_err, _isCurrentlyFollowing, context) => {
+      // Roll back the optimistic patch; the global mutation handler shows the toast.
       if (context?.previous) {
         queryClient.setQueryData(queryKey, context.previous);
       }
-      notifications.show({
-        color: "red",
-        message: "Could not update follow. Please try again.",
-      });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });

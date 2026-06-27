@@ -30,7 +30,8 @@ public sealed class RequestDataExportHandler(
             completedAt > DateTime.UtcNow.AddHours(-_options.CooldownHours))
         {
             return Result<DataExportRequestDto>.Failure(Error.Conflict(
-                $"A data export was requested recently. Try again after {_options.CooldownHours} hours."));
+                $"A data export was requested recently. Try again after {_options.CooldownHours} hours.",
+                ErrorCodes.ExportCooldown));
         }
 
         var request = new DataExportRequest

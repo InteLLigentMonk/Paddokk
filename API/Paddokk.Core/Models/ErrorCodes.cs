@@ -18,6 +18,15 @@ public static class ErrorCodes
 
     // Domain-specific codes.
     public const string SubscribeToOwnSubject = "SUBSCRIBE_TO_OWN_SUBJECT";
+    public const string LikeOwnSubject = "LIKE_OWN_SUBJECT";
+
+    // Username change (see ChangeUsernameHandler) — each maps to inline, field-level copy.
+    public const string UsernameTaken = "USERNAME_TAKEN";
+    public const string UsernameReserved = "USERNAME_RESERVED";
+    public const string UsernameChangeTooSoon = "USERNAME_CHANGE_TOO_SOON";
+
+    // Data export (see RequestDataExportHandler).
+    public const string ExportCooldown = "EXPORT_COOLDOWN";
 
     // Image-upload validator codes (see IImageUploadValidator).
     public const string UploadRequired = "UPLOAD_REQUIRED";
@@ -28,7 +37,8 @@ public static class ErrorCodes
     private static readonly HashSet<string> KnownCodes = new(StringComparer.Ordinal)
     {
         NotFound, Conflict, Forbidden, ValidationFailed, Internal, RateLimited, RequestCancelled,
-        SubscribeToOwnSubject,
+        SubscribeToOwnSubject, LikeOwnSubject,
+        UsernameTaken, UsernameReserved, UsernameChangeTooSoon, ExportCooldown,
         UploadRequired, UploadTooLarge, UploadUnsupportedFormat, UploadContentMismatch
     };
 

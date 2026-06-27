@@ -4,7 +4,6 @@
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { notifications } from "@mantine/notifications";
 import { CAR_SEARCH_SORT, getCarsBrowseStatsFn, searchCarsFn } from "./cars";
 import {
   likeUserCarFn,
@@ -103,12 +102,9 @@ export function useToggleCarLike(carId: number) {
       return { snapshots };
     },
     onError: (_err, _vars, context) => {
+      // Roll back the optimistic patch; the global mutation handler shows the toast.
       context?.snapshots.forEach(([key, data]) => {
         queryClient.setQueryData(key, data);
-      });
-      notifications.show({
-        color: "red",
-        message: "Kunde inte uppdatera gillamarkering. FÃ¶rsÃ¶k igen.",
       });
     },
     onSettled: () => {
@@ -147,12 +143,9 @@ export function useToggleCarSubscription(carId: number) {
       return { snapshots };
     },
     onError: (_err, _vars, context) => {
+      // Roll back the optimistic patch; the global mutation handler shows the toast.
       context?.snapshots.forEach(([key, data]) => {
         queryClient.setQueryData(key, data);
-      });
-      notifications.show({
-        color: "red",
-        message: "Kunde inte uppdatera prenumeration. FÃ¶rsÃ¶k igen.",
       });
     },
     onSettled: () => {

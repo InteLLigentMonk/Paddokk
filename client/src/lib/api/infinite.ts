@@ -1,4 +1,5 @@
 import { ApiError } from "./api-error";
+import { ApiErrorCode } from "./error-resolver";
 
 /**
  * Guards an infinite-query page fetch against an empty-body response.
@@ -15,7 +16,11 @@ export async function requirePage<T>(
 ): Promise<T> {
   const result = await page;
   if (result == null) {
-    throw new ApiError(502, "Received an empty response while loading a page");
+    throw new ApiError(
+      502,
+      "Received an empty response while loading a page",
+      ApiErrorCode.EmptyResponse,
+    );
   }
   return result;
 }

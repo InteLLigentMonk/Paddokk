@@ -99,6 +99,7 @@ export function useReplyToComment(postId: number) {
 
 export function useReportComment() {
   return useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: ({
       commentId,
       reason,

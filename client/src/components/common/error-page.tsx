@@ -8,7 +8,8 @@ import {
   Title,
 } from "@mantine/core";
 import { RefreshCw, ServerCrash } from "lucide-react";
-import { SUPPORT_EMAIL } from "@/lib/support";
+import { buildSupportHref } from "@/lib/support";
+import { isApiError } from "@/lib/api/api-error";
 
 interface ErrorPageProps {
   /** The caught error. Used to build a helpful support mail body. */
@@ -20,20 +21,6 @@ interface ErrorPageProps {
   onReload?: () => void;
 }
 
-function buildReportHref(error?: Error): string {
-  const subject = encodeURIComponent("Problem report");
-  const body = encodeURIComponent(
-    [
-      "I ran into an error on Paddokk.",
-      "",
-      "What I was doing:",
-      "",
-      error?.message ? `Technical detail: ${error.message}` : "",
-    ].join("\n"),
-  );
-  return `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
-}
-
 /**
  * Full-page 500 state shown by the root `errorComponent` when a route loader
  * or component throws. Presentational: the boundary owns error reporting and
@@ -41,6 +28,10 @@ function buildReportHref(error?: Error): string {
  */
 export function ErrorPage({ error, onReload }: ErrorPageProps) {
   const handleReload = onReload ?? (() => window.location.reload());
+
+  // The backend message is diagnostic and never shown (ADR-0007); the support link and
+  // on-screen reference carry the correlation id instead, so a report ties to the log line.
+  const traceId = isApiError(error) ? error.traceId : undefined;
 
   return (
     <Container size="sm" py="xl">
@@ -58,8 +49,15 @@ export function ErrorPage({ error, onReload }: ErrorPageProps) {
           >
             Reload
           </Button>
-          <Anchor href={buildReportHref(error)}>Report a problem</Anchor>
+          <Anchor href={buildSupportHref("Problem report", traceId)}>
+            Report a problem
+          </Anchor>
         </Group>
+        {traceId && (
+          <Text c="dimmed" size="xs">
+            Reference: {traceId}
+          </Text>
+        )}
       </Stack>
     </Container>
   );

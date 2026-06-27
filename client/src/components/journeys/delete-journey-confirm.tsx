@@ -40,18 +40,19 @@ export function DeleteJourneyConfirm() {
     : false;
 
   const deleteMutation = useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: (id: number) =>
       deleteUserJourneyFn({ data: { journeyId: id } }),
     onError: () => {
       notifications.error({
-        message: "Kunde inte ta bort resan. FÃ¶rsÃ¶k igen.",
+        message: "Could not delete the journey. Please try again.",
       });
     },
     onSuccess: () => {
       notifications.success({
         message: isDefault
-          ? "Resan borttagen, aktiv resa uppdaterad"
-          : "Resan borttagen",
+          ? "Journey deleted, active journey updated"
+          : "Journey deleted",
       });
       journeyKeys.userJourneyListRoots.forEach((queryKey) =>
         queryClient.invalidateQueries({ queryKey }),
@@ -74,24 +75,24 @@ export function DeleteJourneyConfirm() {
     <Modal
       opened={isOpen}
       onClose={closeDeleteJourneyConfirm}
-      title="Ta bort resa"
+      title="Delete journey"
       centered
     >
       <Stack gap="lg">
         <Text>
-          Ã„r du sÃ¤ker pÃ¥ att du vill ta bort{" "}
-          <strong>{journey?.title ?? "resan"}</strong>?
+          Are you sure you want to delete{" "}
+          <strong>{journey?.title ?? "this journey"}</strong>?
         </Text>
 
         <Text size="sm" c="orange">
-          Resan och alla dess inlÃ¤gg kommer att tas bort permanent.
+          The journey and all its posts will be permanently deleted.
         </Text>
 
         {journey && Number(journey.postCount) > 0 && (
           <Text size="sm" c="orange">
-            Den hÃ¤r resan har {journey.postCount}{" "}
-            {Number(journey.postCount) === 1 ? "inlÃ¤gg" : "inlÃ¤gg"} som ocksÃ¥
-            tas bort.
+            This journey has {journey.postCount}{" "}
+            {Number(journey.postCount) === 1 ? "post" : "posts"} that will also
+            be deleted.
           </Text>
         )}
 
@@ -101,14 +102,14 @@ export function DeleteJourneyConfirm() {
             onClick={closeDeleteJourneyConfirm}
             disabled={deleteMutation.isPending}
           >
-            Avbryt
+            Cancel
           </Button>
           <Button
             color="red"
             onClick={handleDelete}
             loading={deleteMutation.isPending}
           >
-            Ta bort
+            Delete
           </Button>
         </Group>
       </Stack>

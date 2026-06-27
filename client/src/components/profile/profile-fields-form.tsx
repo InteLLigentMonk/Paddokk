@@ -1,8 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { Button, Group, Stack, TextInput, Textarea } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import type { UserDto } from "@/generated/api/schemas";
-import { ApiError } from "@/lib/api/api-error";
+import { notify } from "@/integrations/mantine";
 import { useUpdateCurrentUser } from "@/lib/api/users.queries";
 import { updateProfileSchema } from "@/lib/validation/profile-schemas";
 
@@ -21,29 +20,22 @@ export function ProfileFieldsForm({ user }: ProfileFieldsFormProps) {
       bio: user.bio ?? "",
     },
     validators: { onChange: updateProfileSchema },
-    onSubmit: async ({ value }) => {
-      try {
-        await updateUser.mutateAsync({
+    onSubmit: ({ value }) => {
+      // Diagnostic backend messages are never shown (ADR-0007). Success is confirmed here;
+      // failures are surfaced by the global mutation handler via the shared resolver.
+      updateUser.mutate(
+        {
           data: {
             firstName: value.firstName,
             lastName: value.lastName || null,
             displayName: value.displayName,
             bio: value.bio || null,
           },
-        });
-        notifications.show({
-          color: "green",
-          message: "Profile updated",
-        });
-      } catch (error) {
-        notifications.show({
-          color: "red",
-          message:
-            error instanceof ApiError
-              ? error.message
-              : "Could not update profile. Please try again.",
-        });
-      }
+        },
+        {
+          onSuccess: () => notify.success({ message: "Profile updated" }),
+        },
+      );
     },
   });
 

@@ -15,7 +15,7 @@ public sealed class UnlikeUserCarHandler(ICarRepository carRepository, IActorRes
             return Result.Failure(Error.NotFound($"Car {request.CarId} not found"));
 
         if (car.PrincipalId == actor.UserId)
-            return Result.Failure(Error.Conflict("Cannot unlike your own car"));
+            return Result.Failure(Error.Conflict("Cannot unlike your own car", ErrorCodes.LikeOwnSubject));
 
         var like = await carRepository.GetCarLikeAsync(actor.UserId, request.CarId, cancellationToken);
 

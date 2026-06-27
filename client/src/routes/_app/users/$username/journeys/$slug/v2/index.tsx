@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Box } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { userJourneyBySlugQueryOptions } from "@/lib/api/users.queries";
+import { isNotFoundError } from "@/lib/api/error-resolver";
 
 export const Route = createFileRoute(
   "/_app/users/$username/journeys/$slug/v2/",
@@ -12,7 +13,8 @@ export const Route = createFileRoute(
         userJourneyBySlugQueryOptions(params.username, params.slug),
       );
     } catch (error) {
-      throw notFound();
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
     }
   },
   component: JourneyDetailPageV2,

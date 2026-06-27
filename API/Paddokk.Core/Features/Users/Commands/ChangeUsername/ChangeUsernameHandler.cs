@@ -30,15 +30,18 @@ public sealed class ChangeUsernameHandler(IUserRepository userRepository, IActor
             {
                 var daysLeft = (int)Math.Ceiling((nextAllowed - DateTime.UtcNow).TotalDays);
                 return Result<UserDto>.Failure(Error.Conflict(
-                    $"Username can be changed again in {daysLeft} day(s)"));
+                    $"Username can be changed again in {daysLeft} day(s)",
+                    ErrorCodes.UsernameChangeTooSoon));
             }
         }
 
         if (UsernameGenerator.Reserved.Contains(newUsername))
-            return Result<UserDto>.Failure(Error.Conflict("Username is reserved"));
+            return Result<UserDto>.Failure(Error.Conflict(
+                "Username is reserved", ErrorCodes.UsernameReserved));
 
         if (await userRepository.UsernameExistsAsync(newUsername, cancellationToken))
-            return Result<UserDto>.Failure(Error.Conflict("Username is already taken"));
+            return Result<UserDto>.Failure(Error.Conflict(
+                "Username is already taken", ErrorCodes.UsernameTaken));
 
         user.Username = newUsername;
         user.LastUsernameChangeAt = DateTime.UtcNow;

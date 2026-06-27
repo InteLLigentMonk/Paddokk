@@ -64,6 +64,7 @@ export function CarCard({ car }: CarCardProps) {
   });
 
   const setPrimaryMutation = useMutation({
+    meta: { suppressGlobalError: true },
     mutationFn: () =>
       updateUserCarFn({ data: { carId: Number(car.id), isPrimary: true } }),
     onSuccess: () => {

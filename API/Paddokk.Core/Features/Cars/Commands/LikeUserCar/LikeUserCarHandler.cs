@@ -20,7 +20,7 @@ public sealed class LikeUserCarHandler(
             return Result.Failure(Error.NotFound($"Car {request.CarId} not found"));
 
         if (car.PrincipalId == actor.UserId)
-            return Result.Failure(Error.Conflict("Cannot like your own car"));
+            return Result.Failure(Error.Conflict("Cannot like your own car", ErrorCodes.LikeOwnSubject));
 
         var existing = await carRepository.GetCarLikeAsync(actor.UserId, request.CarId, cancellationToken);
 

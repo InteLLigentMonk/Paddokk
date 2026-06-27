@@ -1,26 +1,14 @@
-import { notify } from "../mantine";
-import type { Mutation } from "@tanstack/react-query";
-import { ApiError } from "@/lib/api/api-error";
-import { RATE_LIMIT_MESSAGE } from "@/lib/api/upload-error";
-
-function isRateLimitError(error: Error): boolean {
-  return error instanceof ApiError && error.status === 429;
-}
+import type { Mutation, Query } from "@tanstack/react-query";
+import { notifyApiError } from "@/lib/api/notify-api-error";
 
 export function createQueryErrorHandler() {
-  return (error: Error) => {
-    if (error.name === "AbortError") {
-      return;
-    }
-
-    if (isRateLimitError(error)) {
-      notify.warning({ message: RATE_LIMIT_MESSAGE });
-      return;
-    }
-
-    notify.error({
-      message: error.message || "An error occurred while fetching data",
-    });
+  return (error: Error, query: Query<unknown, unknown>) => {
+    // Route-critical queries are fetched by a loader (ensureQueryData/prefetch) with no
+    // observers attached; their failures are owned by the route's notFound/error boundary,
+    // so toasting here would double-surface the same error (see ADR-0007). Once a component
+    // mounts and observes the query, a (re)fetch failure is a widget error and does toast.
+    if (query.getObserversCount() === 0) return;
+    notifyApiError(error);
   };
 }
 
@@ -31,22 +19,10 @@ export function createMutationErrorHandler() {
     _context: unknown,
     mutation: Mutation<unknown, unknown, unknown, unknown>,
   ) => {
-    if (error.name === "AbortError") {
-      return;
-    }
-
     // Some mutations surface errors inline at the call site and opt out of the toast.
     if (mutation.meta?.suppressGlobalError) {
       return;
     }
-
-    if (isRateLimitError(error)) {
-      notify.warning({ message: RATE_LIMIT_MESSAGE });
-      return;
-    }
-
-    notify.error({
-      message: error.message || "An error occurred while saving data",
-    });
+    notifyApiError(error);
   };
 }

@@ -162,6 +162,7 @@ describe("FollowButton", () => {
       ).toBeDefined();
     });
     expect(screen.getByTestId("follower-count").textContent).toBe("5");
-    expect(mocks.notificationsShow).toHaveBeenCalled();
+    // The error toast is now owned by the global mutation handler (ADR-0007), not the
+    // mutation's onError — which here only rolls back — so it is not asserted at this level.
   });
 });
