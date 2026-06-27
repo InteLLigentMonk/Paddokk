@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.48.0...v0.49.0) (2026-06-27)
+
+
+### Features
+
+* **errors:** adopt ADR-0007 error-handling strategy ([#281](https://github.com/InteLLigentMonk/Paddokk/issues/281)) ([35527af](https://github.com/InteLLigentMonk/Paddokk/commit/35527af3e29ef6387cc86223a31bbd12cbc26bd5))
+
 ## [0.48.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.47.0...v0.48.0) (2026-06-19)
 
 
