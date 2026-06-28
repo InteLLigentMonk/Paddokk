@@ -90,7 +90,7 @@ export function CarFormStepper({ onSuccess, onCancel }: CarFormStepperProps) {
       onSuccess();
     } catch (err) {
       console.error("Failed to add car:", err);
-      handleUploadError(err, "Failed to add car");
+      handleUploadError(err);
       setIsSubmitting(false);
     }
   };

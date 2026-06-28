@@ -143,7 +143,7 @@ export function CreateJourneyModal() {
           },
         });
       } catch (err) {
-        handleUploadError(err, "Failed to create journey");
+        handleUploadError(err);
         setIsSubmitting(false);
       }
     },

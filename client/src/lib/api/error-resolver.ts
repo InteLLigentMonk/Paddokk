@@ -24,6 +24,9 @@ export const ApiErrorCode = {
   UploadTooLarge: "UPLOAD_TOO_LARGE",
   UploadUnsupportedFormat: "UPLOAD_UNSUPPORTED_FORMAT",
   UploadContentMismatch: "UPLOAD_CONTENT_MISMATCH",
+  UploadDimensionsTooSmall: "UPLOAD_DIMENSIONS_TOO_SMALL",
+  UploadDimensionsTooLarge: "UPLOAD_DIMENSIONS_TOO_LARGE",
+  UploadInvalidImage: "UPLOAD_INVALID_IMAGE",
   EmptyResponse: "EMPTY_RESPONSE",
 } as const;
 
@@ -57,6 +60,9 @@ export const RATE_LIMIT_MESSAGE =
   "You're going a bit too fast — please wait a moment and try again.";
 
 export const FALLBACK_MESSAGE = "Something went wrong. Try again.";
+
+export const NETWORK_ERROR_MESSAGE =
+  "We couldn't reach the server. Check your connection and try again.";
 
 export interface ResolveOptions {
   /**
@@ -107,22 +113,45 @@ const CODE_MESSAGES: Partial<Record<string, ResolvedError>> = {
     severity: "error",
   },
   [ApiErrorCode.UploadTooLarge]: {
-    message: "That file is too large. Please choose a smaller one.",
+    message: "Your image is too large. Maximum size is 5 MB.",
     severity: "error",
   },
   [ApiErrorCode.UploadUnsupportedFormat]: {
-    message:
-      "That file type isn't supported. Please use a JPEG, PNG, or WebP image.",
+    message: "Only JPEG, PNG, and WebP images are supported.",
     severity: "error",
   },
   [ApiErrorCode.UploadContentMismatch]: {
     message: "That file doesn't look like a valid image.",
     severity: "error",
   },
+  [ApiErrorCode.UploadInvalidImage]: {
+    message: "That file doesn't look like a valid image. Please try another.",
+    severity: "error",
+  },
+  [ApiErrorCode.UploadDimensionsTooSmall]: {
+    message: "Your image is too small. Please use one at least 100×100 pixels.",
+    severity: "error",
+  },
+  [ApiErrorCode.UploadDimensionsTooLarge]: {
+    message:
+      "Your image's dimensions are too large. The maximum is 4000×4000 pixels.",
+    severity: "error",
+  },
 };
 
 function isAbort(error: unknown): boolean {
   return error instanceof Error && error.name === "AbortError";
+}
+
+/**
+ * True when a failure is a connection/transport problem rather than a structured
+ * backend response — i.e. `fetch` itself rejected (offline, DNS, connection
+ * refused), surfacing as a `TypeError` with no error envelope. Retrying makes
+ * sense here, so the upload shim offers a Retry CTA for these. User- or
+ * navigation-initiated aborts are excluded: they are intentional, not failures.
+ */
+export function isNetworkError(error: unknown): boolean {
+  return error instanceof Error && !isApiError(error) && !isAbort(error);
 }
 
 /**

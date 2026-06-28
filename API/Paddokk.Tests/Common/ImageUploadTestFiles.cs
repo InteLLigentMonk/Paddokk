@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
+using SkiaSharp;
 
 namespace Paddokk.Tests.Common;
 
@@ -24,22 +25,36 @@ internal static class ImageUploadTestFiles
         return file;
     }
 
-    internal static IFormFile JpegFile(int sizeBytes = 1024) =>
-        MakeFile(BuildPayload(JpegMagic, sizeBytes), "image/jpeg");
+    // The happy-path fixtures are real, decodable images at a valid size so they pass
+    // the validator's decode/dimension gate. `sizeBytes` overrides only the reported
+    // Length (for size-boundary tests); the actual bytes remain a valid image.
+    internal static IFormFile JpegFile(int? sizeBytes = null) =>
+        MakeFile(EncodeImage(SKEncodedImageFormat.Jpeg, 200, 200), "image/jpeg", sizeBytes);
 
-    internal static IFormFile PngFile(int sizeBytes = 1024) =>
-        MakeFile(BuildPayload(PngMagic, sizeBytes), "image/png");
+    internal static IFormFile PngFile(int? sizeBytes = null) =>
+        MakeFile(EncodeImage(SKEncodedImageFormat.Png, 200, 200), "image/png", sizeBytes);
 
-    internal static IFormFile WebpFile(int sizeBytes = 1024) =>
-        MakeFile(BuildPayload(WebpMagic, sizeBytes), "image/webp");
+    internal static IFormFile WebpFile(int? sizeBytes = null) =>
+        MakeFile(EncodeImage(SKEncodedImageFormat.Webp, 200, 200), "image/webp", sizeBytes);
 
-    internal static byte[] BuildPayload(byte[] magic, int totalSizeBytes)
+    /// <summary>A real JPEG of the given dimensions, for exercising the dimension checks.</summary>
+    internal static IFormFile JpegFileOfSize(int width, int height) =>
+        MakeFile(EncodeImage(SKEncodedImageFormat.Jpeg, width, height), "image/jpeg");
+
+    /// <summary>Real magic bytes for the content type, but a body Skia cannot decode.</summary>
+    internal static IFormFile UndecodableImage(byte[] magic, string contentType)
     {
-        if (totalSizeBytes < magic.Length)
-            return magic.AsSpan(0, totalSizeBytes).ToArray();
-
-        var payload = new byte[totalSizeBytes];
+        var payload = new byte[magic.Length + 16];
         Array.Copy(magic, payload, magic.Length);
-        return payload;
+        return MakeFile(payload, contentType);
+    }
+
+    internal static byte[] EncodeImage(SKEncodedImageFormat format, int width, int height)
+    {
+        using var surface = SKSurface.Create(new SKImageInfo(width, height));
+        surface.Canvas.Clear(SKColors.CornflowerBlue);
+        using var image = surface.Snapshot();
+        using var data = image.Encode(format, 90);
+        return data.ToArray();
     }
 }

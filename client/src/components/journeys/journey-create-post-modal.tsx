@@ -103,45 +103,51 @@ export function JourneyCreatePostModal({
     onClose();
   };
 
+  // Uploads a single file as its own optimistic preview entry. Standalone and
+  // idempotent, so a connection failure can offer a Retry that simply re-runs it.
+  const uploadImage = (file: File) => {
+    const tempId = crypto.randomUUID();
+    const previewUrl = URL.createObjectURL(file);
+
+    setImages((prev) => [
+      ...prev,
+      {
+        tempId,
+        imageUrl: "",
+        caption: "",
+        sortOrder: prev.length,
+        previewUrl,
+        isUploading: true,
+      },
+    ]);
+
+    journeysUploadJourneyPostImage(journeyId, { file })
+      .then((result) => {
+        setImages((prev) =>
+          prev.map((img) =>
+            img.tempId === tempId
+              ? {
+                  ...img,
+                  imageUrl: result.imageUrl,
+                  isUploading: false,
+                }
+              : img,
+          ),
+        );
+      })
+      .catch((err) => {
+        setImages((prev) => prev.filter((img) => img.tempId !== tempId));
+        URL.revokeObjectURL(previewUrl);
+        handleUploadError(err, () => uploadImage(file));
+      });
+  };
+
   const handleDrop = (files: Array<File>) => {
     const remaining = maxImages - images.length;
     const toUpload = files.slice(0, remaining);
 
     for (const file of toUpload) {
-      const tempId = crypto.randomUUID();
-      const previewUrl = URL.createObjectURL(file);
-
-      setImages((prev) => [
-        ...prev,
-        {
-          tempId,
-          imageUrl: "",
-          caption: "",
-          sortOrder: prev.length,
-          previewUrl,
-          isUploading: true,
-        },
-      ]);
-
-      journeysUploadJourneyPostImage(journeyId, { file })
-        .then((result) => {
-          setImages((prev) =>
-            prev.map((img) =>
-              img.tempId === tempId
-                ? {
-                    ...img,
-                    imageUrl: result.imageUrl,
-                    isUploading: false,
-                  }
-                : img,
-            ),
-          );
-        })
-        .catch((err) => {
-          setImages((prev) => prev.filter((img) => img.tempId !== tempId));
-          URL.revokeObjectURL(previewUrl);
-          handleUploadError(err, "Failed to upload image");
-        });
+      uploadImage(file);
     }
   };
 

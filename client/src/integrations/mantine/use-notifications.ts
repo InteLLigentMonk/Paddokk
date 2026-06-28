@@ -6,6 +6,8 @@ export interface NotificationOptions {
   title?: string;
   autoClose?: number | false;
   withCloseButton?: boolean;
+  /** Stable id, so a notification can later be dismissed via {@link NotificationUtilities.dismiss}. */
+  id?: string;
 }
 
 export interface NotificationUtilities {
@@ -13,6 +15,8 @@ export interface NotificationUtilities {
   error: (options: NotificationOptions) => void;
   warning: (options: NotificationOptions) => void;
   info: (options: NotificationOptions) => void;
+  /** Hides an open notification by id (e.g. clearing a stale failure toast after a retry). */
+  dismiss: (id: string) => void;
 }
 
 function createNotificationUtilities(): NotificationUtilities {
@@ -55,6 +59,10 @@ function createNotificationUtilities(): NotificationUtilities {
         color: "blue",
         ...options,
       });
+    },
+
+    dismiss: (id) => {
+      mantineNotifications.hide(id);
     },
   };
 }
