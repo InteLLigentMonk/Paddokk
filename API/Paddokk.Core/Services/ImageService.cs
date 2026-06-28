@@ -3,6 +3,7 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Paddokk.Core.Common;
+using Paddokk.Core.Common.ImageUpload;
 using Paddokk.Core.Interfaces;
 using Paddokk.Core.Models.DTOs.Image;
 using Paddokk.Core.Models.DTOs.Journey;
@@ -26,9 +27,6 @@ public class ImageService : IImageService
     private const int WebpQuality = 90;
     private const string ImmutableCacheControl = "public, max-age=31536000, immutable";
 
-    private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10MB
-    private readonly string[] _allowedFormats = { "image/jpg", "image/jpeg", "image/png", "image/webp" };
-
     public ImageService(
         IUserRepository userRepository,
         BlobServiceClient blobServiceClient,
@@ -47,8 +45,9 @@ public class ImageService : IImageService
 
     public async Task<ImageUploadDto> UploadImageAsync(IFormFile file, ImageContext context, CancellationToken cancellationToken, int? contextId = null, string? caption = null)
     {
-        ValidateImageFile(file);
-
+        // Files reach here already validated by the upload command's
+        // ImageUploadValidator (single gate; see IImageUploadValidator), so this
+        // method trusts size/format/dimensions and goes straight to processing.
         var fileName = GenerateUniqueFileName(file.FileName);
         var containerName = GetContainerName(context);
 
@@ -124,8 +123,8 @@ public class ImageService : IImageService
         {
             MaxImagesPerPost = maxPerPost,
             MaxImagesPerCar = maxPerCar,
-            MaxFileSizeBytes = MaxFileSizeBytes,
-            AllowedFormats = _allowedFormats,
+            MaxFileSizeBytes = ImageUploadValidator.MaxFileSizeBytes,
+            AllowedFormats = ImageUploadValidator.AllowedContentTypes.ToArray(),
             SubscriptionTier = user.SubscriptionTier
         };
     }
@@ -319,36 +318,6 @@ public class ImageService : IImageService
         {
             if (string.IsNullOrEmpty(image.ImageUrl))
                 throw new ArgumentException("Image URL cannot be empty");
-        }
-    }
-
-    // Helper Methods
-    private void ValidateImageFile(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-            throw new ArgumentException("No file provided");
-
-        if (file.Length > MaxFileSizeBytes)
-            throw new ArgumentException($"File too large. Maximum size: {MaxFileSizeBytes / (1024 * 1024)}MB");
-
-        if (!_allowedFormats.Contains(file.ContentType.ToLower()))
-            throw new ArgumentException($"Invalid file format. Allowed: {string.Join(", ", _allowedFormats)}");
-
-        try
-        {
-            using var stream = file.OpenReadStream();
-            using var codec = SKCodec.Create(stream) ?? throw new ArgumentException("Invalid image file");
-            var info = codec.Info;
-
-            if (info.Width < 100 || info.Height < 100)
-                throw new ArgumentException("Image too small. Minimum size: 100x100 pixels");
-
-            if (info.Width > 4000 || info.Height > 4000)
-                throw new ArgumentException("Image too large. Maximum size: 4000x4000 pixels");
-        }
-        catch (Exception ex) when (ex is not ArgumentException)
-        {
-            throw new ArgumentException("Invalid image file");
         }
     }
 

@@ -4,6 +4,7 @@ import {
   ApiErrorCode,
   FALLBACK_MESSAGE,
   RATE_LIMIT_MESSAGE,
+  isNetworkError,
   isNotFoundError,
   resolveApiError,
 } from "./error-resolver";
@@ -82,6 +83,53 @@ describe("resolveApiError", () => {
     expect(resolved?.severity).toBe("error");
   });
 
+  it("maps UPLOAD_TOO_LARGE to image-specific copy with the size limit", () => {
+    const error = new ApiError(400, "too big", ApiErrorCode.UploadTooLarge);
+    expect(resolveApiError(error)).toEqual({
+      message: "Your image is too large. Maximum size is 5 MB.",
+      severity: "error",
+    });
+  });
+
+  it("maps UPLOAD_UNSUPPORTED_FORMAT to the supported-formats copy", () => {
+    const error = new ApiError(
+      400,
+      "bad type",
+      ApiErrorCode.UploadUnsupportedFormat,
+    );
+    expect(resolveApiError(error)).toEqual({
+      message: "Only JPEG, PNG, and WebP images are supported.",
+      severity: "error",
+    });
+  });
+
+  it("maps UPLOAD_DIMENSIONS_TOO_SMALL to actionable copy", () => {
+    const error = new ApiError(
+      400,
+      "too small",
+      ApiErrorCode.UploadDimensionsTooSmall,
+    );
+    expect(resolveApiError(error)?.message).toContain("too small");
+  });
+
+  it("maps UPLOAD_DIMENSIONS_TOO_LARGE to actionable copy", () => {
+    const error = new ApiError(
+      400,
+      "too big",
+      ApiErrorCode.UploadDimensionsTooLarge,
+    );
+    expect(resolveApiError(error)?.message).toContain("4000×4000");
+  });
+
+  it("maps UPLOAD_INVALID_IMAGE to a not-a-valid-image message", () => {
+    const error = new ApiError(
+      400,
+      "undecodable",
+      ApiErrorCode.UploadInvalidImage,
+    );
+    expect(resolveApiError(error)?.message).toContain("valid image");
+  });
+
   it("falls back for a non-ApiError thrown value", () => {
     expect(resolveApiError(new Error("weird"))?.message).toBe(FALLBACK_MESSAGE);
   });
@@ -132,6 +180,28 @@ describe("resolveApiError", () => {
     );
     expect(resolveApiError(tooSoon)?.severity).toBe("warning");
     expect(resolveApiError(exportCooldown)?.severity).toBe("warning");
+  });
+});
+
+describe("isNetworkError", () => {
+  it("is true for a connection failure (fetch TypeError)", () => {
+    expect(isNetworkError(new TypeError("Failed to fetch"))).toBe(true);
+  });
+
+  it("is false for a structured ApiError", () => {
+    expect(
+      isNetworkError(new ApiError(500, "boom", ApiErrorCode.Internal)),
+    ).toBe(false);
+  });
+
+  it("is false for an aborted request (user/navigation initiated)", () => {
+    const error = new Error("aborted");
+    error.name = "AbortError";
+    expect(isNetworkError(error)).toBe(false);
+  });
+
+  it("is false for a non-Error thrown value", () => {
+    expect(isNetworkError("nope")).toBe(false);
   });
 });
 

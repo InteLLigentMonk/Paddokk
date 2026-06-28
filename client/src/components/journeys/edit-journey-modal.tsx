@@ -116,7 +116,7 @@ function EditJourneyForm({ journey, onClose }: EditJourneyFormProps) {
         });
         handleClose();
       } catch (err) {
-        handleUploadError(err, "Failed to update journey");
+        handleUploadError(err);
         setIsSubmitting(false);
       }
     },

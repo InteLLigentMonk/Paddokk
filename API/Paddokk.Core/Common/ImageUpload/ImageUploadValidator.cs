@@ -1,11 +1,17 @@
 using Microsoft.AspNetCore.Http;
 using Paddokk.Core.Models;
+using SkiaSharp;
 
 namespace Paddokk.Core.Common.ImageUpload;
 
 public sealed class ImageUploadValidator : IImageUploadValidator
 {
     public const long MaxFileSizeBytes = 5 * 1024 * 1024;
+
+    // Below this an image is too small to be useful; above it the master image
+    // (resized for edge optimization) would waste storage and decode time.
+    public const int MinDimensionPixels = 100;
+    public const int MaxDimensionPixels = 4000;
 
     public static readonly IReadOnlyList<string> AllowedContentTypes =
         new[] { "image/jpeg", "image/png", "image/webp" };
@@ -30,6 +36,32 @@ public sealed class ImageUploadValidator : IImageUploadValidator
             return ImageValidationResult.Invalid(
                 $"File contents do not match declared content type '{contentType}'",
                 ErrorCodes.UploadContentMismatch);
+
+        return ValidateDecodableDimensions(file);
+    }
+
+    // The single gate for "is this actually a usable image": decodes the header to
+    // confirm the bytes form a real image and that its dimensions are in range.
+    // Header-only (SKCodec.Info), so it does not pay the cost of a full pixel decode.
+    private static ImageValidationResult ValidateDecodableDimensions(IFormFile file)
+    {
+        using var stream = file.OpenReadStream();
+        using var codec = SKCodec.Create(stream);
+        if (codec is null)
+            return ImageValidationResult.Invalid(
+                "File could not be decoded as an image", ErrorCodes.UploadInvalidImage);
+
+        var info = codec.Info;
+
+        if (info.Width < MinDimensionPixels || info.Height < MinDimensionPixels)
+            return ImageValidationResult.Invalid(
+                $"Image is {info.Width}x{info.Height}px; minimum is {MinDimensionPixels}x{MinDimensionPixels}px",
+                ErrorCodes.UploadDimensionsTooSmall);
+
+        if (info.Width > MaxDimensionPixels || info.Height > MaxDimensionPixels)
+            return ImageValidationResult.Invalid(
+                $"Image is {info.Width}x{info.Height}px; maximum is {MaxDimensionPixels}x{MaxDimensionPixels}px",
+                ErrorCodes.UploadDimensionsTooLarge);
 
         return ImageValidationResult.Valid();
     }

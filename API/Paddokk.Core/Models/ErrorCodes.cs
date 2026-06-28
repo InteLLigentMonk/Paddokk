@@ -33,13 +33,17 @@ public static class ErrorCodes
     public const string UploadTooLarge = "UPLOAD_TOO_LARGE";
     public const string UploadUnsupportedFormat = "UPLOAD_UNSUPPORTED_FORMAT";
     public const string UploadContentMismatch = "UPLOAD_CONTENT_MISMATCH";
+    public const string UploadDimensionsTooSmall = "UPLOAD_DIMENSIONS_TOO_SMALL";
+    public const string UploadDimensionsTooLarge = "UPLOAD_DIMENSIONS_TOO_LARGE";
+    public const string UploadInvalidImage = "UPLOAD_INVALID_IMAGE";
 
     private static readonly HashSet<string> KnownCodes = new(StringComparer.Ordinal)
     {
         NotFound, Conflict, Forbidden, ValidationFailed, Internal, RateLimited, RequestCancelled,
         SubscribeToOwnSubject, LikeOwnSubject,
         UsernameTaken, UsernameReserved, UsernameChangeTooSoon, ExportCooldown,
-        UploadRequired, UploadTooLarge, UploadUnsupportedFormat, UploadContentMismatch
+        UploadRequired, UploadTooLarge, UploadUnsupportedFormat, UploadContentMismatch,
+        UploadDimensionsTooSmall, UploadDimensionsTooLarge, UploadInvalidImage
     };
 
     /// <summary>

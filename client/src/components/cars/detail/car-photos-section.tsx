@@ -79,7 +79,7 @@ export function CarPhotosSection({ car, images }: CarPhotosSectionProps) {
       notifications.success({ message: "Photos updated" });
       setIsEditing(false);
     } catch (err) {
-      handleUploadError(err, "Failed to save photos");
+      handleUploadError(err);
     } finally {
       setIsSaving(false);
     }

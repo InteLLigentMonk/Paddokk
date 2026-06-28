@@ -203,4 +203,53 @@ public class ImageUploadValidatorTests
     {
         _validator.Validate(ImageUploadTestFiles.JpegFile()).Code.Should().BeNull();
     }
+
+    [Fact]
+    public void Validate_BelowMinimumDimensions_ReturnsDimensionsTooSmallCode()
+    {
+        var file = ImageUploadTestFiles.JpegFileOfSize(
+            ImageUploadValidator.MinDimensionPixels - 1,
+            ImageUploadValidator.MinDimensionPixels - 1);
+
+        var result = _validator.Validate(file);
+
+        result.IsValid.Should().BeFalse();
+        result.Code.Should().Be(ErrorCodes.UploadDimensionsTooSmall);
+    }
+
+    [Fact]
+    public void Validate_ExactlyMinimumDimensions_ReturnsValid()
+    {
+        var file = ImageUploadTestFiles.JpegFileOfSize(
+            ImageUploadValidator.MinDimensionPixels,
+            ImageUploadValidator.MinDimensionPixels);
+
+        _validator.Validate(file).IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Validate_AboveMaximumDimensions_ReturnsDimensionsTooLargeCode()
+    {
+        // Only one axis over the limit, kept short on the other to bound allocation.
+        var file = ImageUploadTestFiles.JpegFileOfSize(
+            ImageUploadValidator.MaxDimensionPixels + 1,
+            ImageUploadValidator.MinDimensionPixels);
+
+        var result = _validator.Validate(file);
+
+        result.IsValid.Should().BeFalse();
+        result.Code.Should().Be(ErrorCodes.UploadDimensionsTooLarge);
+    }
+
+    [Fact]
+    public void Validate_RealMagicButUndecodableBody_ReturnsInvalidImageCode()
+    {
+        var file = ImageUploadTestFiles.UndecodableImage(
+            ImageUploadTestFiles.PngMagic, "image/png");
+
+        var result = _validator.Validate(file);
+
+        result.IsValid.Should().BeFalse();
+        result.Code.Should().Be(ErrorCodes.UploadInvalidImage);
+    }
 }
