@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.50.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.49.0...v0.50.0) (2026-06-28)
+
+
+### Features
+
+* **uploads:** actionable image upload error messages ([#207](https://github.com/InteLLigentMonk/Paddokk/issues/207)) ([#283](https://github.com/InteLLigentMonk/Paddokk/issues/283)) ([92a205a](https://github.com/InteLLigentMonk/Paddokk/commit/92a205a6d1ece700d81a56bb893b49a7fd8daaaa))
+
 ## [0.49.0](https://github.com/InteLLigentMonk/Paddokk/compare/v0.48.0...v0.49.0) (2026-06-27)
 
 
